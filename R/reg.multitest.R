@@ -102,10 +102,10 @@ ghera <<- hera1
 			clusterExport(cl, "not_excluded", envir=environment())
 			foreach(i = unique_IDs) %dopar% {
 				library(stargazer) #ugh
-				if(any(not_excluded[,1] == i)) {
+				if(any(not_excluded[,1] == as.factor(i))) {
 					stargazer(not_excluded[not_excluded[,1] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential associations not excluded with specimen: ", i, sep=""))
 				}
-				if(any(not_excluded[,4] == i)) {
+				if(any(not_excluded[,4] == as.factor(i))) {
 					stargazer(not_excluded[not_excluded[,4] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential associations not excluded with specimen: ", i, sep=""))
 				}
 				sink(as.character(i), append = TRUE, split = FALSE)
