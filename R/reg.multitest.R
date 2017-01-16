@@ -91,10 +91,11 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 
 	if(!stdout) {		
 		if(oo[2]) {
+ghera <<- hera1
 			not_excluded <- hera1[hera1$Ex == "Cannot Exclude",]
 			temp1 <- unique(not_excluded[,1])
 			temp2 <- unique(not_excluded[,4])
-			unique_IDs <- c(temp1,temp2)
+			unique_IDs <- unique(c(temp1,temp2))
 
 			cl <- makeCluster(no_cores)
 			registerDoSNOW(cl)
@@ -102,12 +103,12 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			foreach(i = unique_IDs) %dopar% {
 				library(stargazer) #ugh
 				if(any(not_excluded[,1] == i)) {
-					stargazer(not_excluded[not_excluded[,1] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential pair matches not excluded with specimen: ", i, sep=""))
+					stargazer(not_excluded[not_excluded[,1] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential associations not excluded with specimen: ", i, sep=""))
 				}
 				if(any(not_excluded[,4] == i)) {
-					stargazer(not_excluded[not_excluded[,4] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential pair matches not excluded with specimen: ", i, sep=""))
+					stargazer(not_excluded[not_excluded[,4] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential associations not excluded with specimen: ", i, sep=""))
 				}
-				sink(i, append = TRUE, split = FALSE)
+				sink(as.character(i), append = TRUE, split = FALSE)
 				cat('\nDate: ', strftime(Sys.time(), "%Y-%m-%d %H:%M:%S"), 'Analyst___________', ' Initials___________') 
 				cat('\nFor Official Use Only') 
 				sink()	

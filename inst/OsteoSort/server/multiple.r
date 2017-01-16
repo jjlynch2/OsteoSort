@@ -175,6 +175,7 @@
 		tempdata1 <- as.data.frame(tempdata1) #combines first four columns with now numeric measurements
 
 	if(input$testtype2 != 'Regression_match') {
+
 		#logic for calling input functions
 		if(input$standard == 'Standard' & input$bone != 'altt' & input$bone != 'alttp' & input$bone != 'altta' & input$bone != 'hu' & input$bone != 'hr' & input$bone != 'hs' & input$bone != 'hss' & input$bone != 'fi' & input$bone != 'ft' & input$bone != 'ftt'){
 			if(input$bone == 'clavicle') {threshold <- input$clavicle; measurements <- input$MeasurementsUsed1} 
@@ -185,12 +186,12 @@
 			if(input$bone == 'os_coxa') {threshold <- input$os_coxa; measurements <- input$MeasurementsUsed6} 
 			if(input$bone == 'femur') {threshold <- input$femur; measurements <- input$MeasurementsUsed7} 
 			if(input$bone == 'tibia') {threshold <- input$tibia; measurements <- input$MeasurementsUsed8} 
-			if(input$bone == 'fibula') {threshold <- input$fibula; measurements <- input$MeasurementsUsed9}        
+			if(input$bone == 'fibula') {threshold <- input$fibula; measurements <- input$MeasurementsUsed9}
+			if(is.null(threshold)) {threshold <- 1}        
 
 			wtf <- pm.input(bone=toString(input$bone), sort=tempdata1, template='standard',tresh=threshold, measurements=measurements)
 			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2))
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])       
-		     	          
 		}	
 		if(input$standard == 'Supplemental' & input$bone != 'altt' & input$bone != 'alttp' & input$bone != 'altta' & input$bone != 'hu' & input$bone != 'hr' & input$bone != 'hs' & input$bone != 'hss' & input$bone != 'fi' & input$bone != 'ft' & input$bone != 'ftt'){
 			if(input$bone == 'clavicle') {threshold <- input$claviclea; measurements <- input$MeasurementsUseda} 
@@ -202,7 +203,8 @@
 			if(input$bone == 'femur') {threshold <- input$femurg; measurements <- input$MeasurementsUsedg} 
 			if(input$bone == 'tibia') {threshold <- input$tibiah; measurements <- input$MeasurementsUsedh} 
 			if(input$bone == 'fibula') {threshold <- input$fibulai; measurements <- input$MeasurementsUsedi}                 
-
+			if(is.null(threshold)) {threshold <- 1}        
+			
 			wtf <- pm.input(bone=toString(input$bone), sort=tempdata1, template='supplemental',tresh=threshold, measurements=measurements)                                	      
 			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2))
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])           
@@ -255,7 +257,7 @@
 				if(input$assbone2 == 'Femur') {threshold <- input$femur; measurements2 <- input$MeasurementsUsed7} 
 				if(input$assbone2 == 'Tibia') {threshold <- input$tibia; measurements2 <- input$MeasurementsUsed8} 
 				if(input$assbone2 == 'Fibula') {threshold <- input$fibula; measurements2 <- input$MeasurementsUsed9}        
-
+				if(is.null(threshold)) {threshold <- 1}        
 			}
 			if(input$standard == "Supplemental") {
 				if(input$assbone1 == 'Clavicle') {threshold <- input$claviclea; measurements <- input$MeasurementsUseda} 
@@ -277,7 +279,7 @@
 				if(input$assbone2 == 'Femur') {threshold <- input$femurg; measurements2 <- input$MeasurementsUsedg} 
 				if(input$assbone2 == 'Tibia') {threshold <- input$tibiah; measurements2 <- input$MeasurementsUsedh} 
 				if(input$assbone2 == 'Fibula') {threshold <- input$fibulai; measurements2 <- input$MeasurementsUsedi}              
-
+				if(is.null(threshold)) {threshold <- 1}        
 			}
 		
 		

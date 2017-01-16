@@ -73,7 +73,6 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = length(difa) - 1)
 		} 
 		
-		
 		return(data.frame(a=X[,1],b=X[,3],c=X[,5],d=X[,2],e=X[,4],f=X[,6],g=gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)])),h=round(p.value, digits = 3),i=ncol(y)/2,j=nrow(y), stringsAsFactors=FALSE)) 
 	}
 	
@@ -91,7 +90,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			not_excluded <- hera1[hera1$p.value > alphalevel,]
 			temp1 <- unique(not_excluded[,1])
 			temp2 <- unique(not_excluded[,4])
-			unique_IDs <- c(temp1,temp2)
+			unique_IDs <- unique(c(temp1,temp2))
 
 			cl <- makeCluster(no_cores)
 			registerDoSNOW(cl)
@@ -104,7 +103,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 				if(any(not_excluded[,4] == i)) {
 					stargazer(not_excluded[not_excluded[,4] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential pair matches not excluded with specimen: ", i, sep=""))
 				}
-				sink(i, append = TRUE, split = FALSE)
+				sink(as.character(i), append = TRUE, split = FALSE)
 				cat('\nDate: ', strftime(Sys.time(), "%Y-%m-%d %H:%M:%S"), 'Analyst___________', ' Initials___________') 
 				cat('\nFor Official Use Only') 
 				sink()	

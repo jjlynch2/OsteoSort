@@ -90,9 +90,9 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 		if(oo[2]) {
 			not_excluded <<- hera1[hera1$p.value > alphalevel,]
 		
-			temp1 <<- unique(not_excluded[,1])
-			temp2 <<- unique(not_excluded[,4])
-			unique_IDs <<- c(temp1,temp2)
+			temp1 <- unique(not_excluded[,1])
+			temp2 <- unique(not_excluded[,4])
+			unique_IDs <- unique(c(temp1,temp2))
 		
 			cl <- makeCluster(no_cores)
 			registerDoSNOW(cl)
@@ -100,12 +100,12 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 			foreach(i = unique_IDs) %dopar% {
 				library(stargazer) #ugh
 				if(any(not_excluded[,1] == i)) {
-					stargazer(not_excluded[not_excluded[,1] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential articulation matches not excluded with specimen: ", i, sep=""))
+					stargazer(not_excluded[not_excluded[,1] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential articulations not excluded with specimen: ", i, sep=""))
 				}
 				if(any(not_excluded[,4] == i)) {
-					stargazer(not_excluded[not_excluded[,4] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential articulation matches not excluded with specimen: ", i, sep=""))
+					stargazer(not_excluded[not_excluded[,4] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential articulations not excluded with specimen: ", i, sep=""))
 				}
-				sink(i, append = TRUE, split = FALSE)
+				sink(as.character(i), append = TRUE, split = FALSE)
 				cat('\nDate: ', strftime(Sys.time(), "%Y-%m-%d %H:%M:%S"), 'Analyst___________', ' Initials___________') 
 				cat('\nFor Official Use Only') 
 				sink()	

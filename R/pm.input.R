@@ -52,7 +52,7 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 2
 	#lower case filter
 	sort$Side <- tolower(sort$Side)
 	sort$Element <- tolower(sort$Element)
-	
+	bone <- tolower(bone)#
 	#sort by bone
 	sort <- sort[sort$Element == bone,]
 	
