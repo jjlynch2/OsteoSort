@@ -1,0 +1,128 @@
+#' reg.test Input Function
+#' Function to produce combinations for associating elements with regression
+#' @param sort data to be sorted 
+#' @keywords reg.test
+#' @export
+#' @examples 
+#' reg.multitest()
+
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE)) {	
+     print("Statistical association comparisons have started.")
+	library(parallel)
+	library(foreach)
+	library(doSNOW)
+	require(compiler)
+	library(earth)
+	enableJIT(3)
+
+	if(detectCores() > 1) {no_cores <- round(detectCores() /2)}
+	if(detectCores() == 1) {no_cores <- 1}
+	
+	options(warn = -1) #disables warnings
+	if(is.na(sort) || is.null(sort)) {return(NULL)} #input san
+	if(is.na(ref) || is.null(ref)) {return(NULL)} #input san
+	
+	workingdir = getwd()
+
+	if(!stdout) { 
+		if(!a) {
+			if (!is.null(sessiontempdir)) {
+				setwd(sessiontempdir)
+			}
+			direc <- randomstring(n = 1, length = 12)
+			dir.create(direc)
+			setwd(direc)
+		}
+		if(a) {
+			setwd(sessiontempdir)
+			direc <- NULL
+		}
+	}
+
+	is.unique <<- list()
+	unique.model <<- list()
+	
+	hera1 <- apply(sort, 1, function(x) {
+	
+		temp1 <- na.omit(x[seq(from = splitn[1]+1, to = splitn[2])])
+		temp1n <- names(temp1[-1][-1][-1]) #captures measurement names
+		temp2 <- na.omit(x[seq(from = 1, to = splitn[1])])
+		temp2n <- names(temp2[-1][-1][-1]) #captures measurement names
+		
+		t1 <- as.data.frame(ref[temp1n])# reference
+		t2 <- as.data.frame(ref[temp2n])
+		
+		output1 <- lapply(is.unique, function(x) { 
+			ident <- identical(x, unique(c(temp1n, temp2n)))
+			return(ident) 
+		})
+
+		index <- match(TRUE,output1)
+
+		if(is.na(index)) {
+			model1 <- earth(t1,rowSums(t2), varmod.method="lm", nfold=10, ncross=30) #model1
+			
+			is.unique[[length(is.unique)+1]] <<-   unique(c(temp1n,temp2n))
+			unique.model[[length(unique.model)+1]] <<- model1
+		}
+		else model1 <- unique.model[[index]]
+		
+		rsqr1 <- model1$rsq #R-squared
+		
+		predictors <- as.numeric(temp1[-1][-1][-1]) #removes ID, Side, Element and converts to numeric
+		names(predictors) <- temp1n #Applies measurement names again for use in predict()
+
+		pm1 <- predict(model1, predictors, interval="pint", level = predlevel) #prediction interval based on the lm from model1
+		
+		
+		predicted <- sum(as.numeric(temp2[-1][-1][-1])) #removes ID, Side, Element and converts to numeric and sums
+		
+		if(predicted <= pm1[3] && predicted >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
+			within <- "Cannot Exclude"
+		}
+		else within <- "Excluded"
+		return(c(temp1[1], temp1[2], temp1[3], temp2[1], temp2[2], temp2[3], RSquare = rsqr1, Ex=within))
+
+	})
+	
+     print("Statistical association comparisons completed.")
+     print("File generation has started.")
+	hera1 <- as.data.frame(t(hera1))
+
+	if(!stdout) {		
+		if(oo[2]) {
+			not_excluded <- hera1[hera1$Ex == "Cannot Exclude",]
+			temp1 <- unique(not_excluded[,1])
+			temp2 <- unique(not_excluded[,4])
+			unique_IDs <- c(temp1,temp2)
+
+			cl <- makeCluster(no_cores)
+			registerDoSNOW(cl)
+			clusterExport(cl, "not_excluded", envir=environment())
+			foreach(i = unique_IDs) %dopar% {
+				library(stargazer) #ugh
+				if(any(not_excluded[,1] == i)) {
+					stargazer(not_excluded[not_excluded[,1] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential pair matches not excluded with specimen: ", i, sep=""))
+				}
+				if(any(not_excluded[,4] == i)) {
+					stargazer(not_excluded[not_excluded[,4] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential pair matches not excluded with specimen: ", i, sep=""))
+				}
+				sink(i, append = TRUE, split = FALSE)
+				cat('\nDate: ', strftime(Sys.time(), "%Y-%m-%d %H:%M:%S"), 'Analyst___________', ' Initials___________') 
+				cat('\nFor Official Use Only') 
+				sink()	
+			}
+			stopCluster(cl)
+		}
+		if(oo[1]) {
+			write.csv(hera1[hera1$Ex == "Cannot Exclude",], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
+			write.csv(hera1[hera1$Ex == "Excluded",], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+		}
+	}
+
+	setwd(workingdir)
+     print("File generation has completed.")
+	enableJIT(0)
+	return(list(direc,hera1[hera1$Ex == "Cannot Exclude",], hera1[hera1$Ex == "Excluded",]))
+	
+}
