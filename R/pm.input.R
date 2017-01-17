@@ -15,7 +15,7 @@
 #' @examples
 #' pm.input()
 
-pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 2, measurements = NULL) {
+pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1, measurements = NULL) {
      print("Import and reference generation has started.")
 	library(data.table)
 	options(warn = -1) #disables warnings

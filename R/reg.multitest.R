@@ -39,6 +39,9 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 		}
 	}
 
+	#use random name, assign(), eval(as.symbol()) for global lists? 
+	#would avoid environmental scoping problem
+	
 	is.unique <<- list()
 	unique.model <<- list()
 	
@@ -81,7 +84,9 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			within <- "Cannot Exclude"
 		}
 		else within <- "Excluded"
-		return(c(temp1[1], temp1[2], temp1[3], temp2[1], temp2[2], temp2[3], RSquare = rsqr1, Ex=within))
+		
+		#temp2 <- as.data.frame(t(temp2)) #converts temp2 to dataframe for $ operator
+		return(c(temp1[1], temp1[2], temp1[3], temp2[1], temp2[2], temp2[3], RSquare = round(rsqr1, digits = 3), Excluded=within, Sample_size = nrow(t1)))
 
 	})
 	
@@ -91,22 +96,21 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 
 	if(!stdout) {		
 		if(oo[2]) {
-ghera <<- hera1
-			not_excluded <- hera1[hera1$Ex == "Cannot Exclude",]
-			temp1 <- unique(not_excluded[,1])
-			temp2 <- unique(not_excluded[,4])
-			unique_IDs <- unique(c(temp1,temp2))
+			not_excluded <<- hera1[hera1$Ex == "Cannot Exclude",][,-8]
+			temp1 <<- unique(as.character(not_excluded[,1]))
+			temp2 <<- unique(as.character(not_excluded[,4]))
+			unique_IDs <<- unique(c(temp1,temp2))
 
 			cl <- makeCluster(no_cores)
 			registerDoSNOW(cl)
 			clusterExport(cl, "not_excluded", envir=environment())
 			foreach(i = unique_IDs) %dopar% {
 				library(stargazer) #ugh
-				if(any(not_excluded[,1] == as.factor(i))) {
-					stargazer(not_excluded[not_excluded[,1] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential associations not excluded with specimen: ", i, sep=""))
+				if(any(as.character(not_excluded[,1]) == i)) {
+					stargazer(not_excluded[as.character(not_excluded[,1]) == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential associations not excluded with specimen: ", i, sep=""))
 				}
-				if(any(not_excluded[,4] == as.factor(i))) {
-					stargazer(not_excluded[not_excluded[,4] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential associations not excluded with specimen: ", i, sep=""))
+				if(any(as.character(not_excluded[,4]) == i)) {
+					stargazer(not_excluded[as.character(not_excluded[,4]) == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential associations not excluded with specimen: ", i, sep=""))
 				}
 				sink(as.character(i), append = TRUE, split = FALSE)
 				cat('\nDate: ', strftime(Sys.time(), "%Y-%m-%d %H:%M:%S"), 'Analyst___________', ' Initials___________') 
@@ -116,14 +120,15 @@ ghera <<- hera1
 			stopCluster(cl)
 		}
 		if(oo[1]) {
-			write.csv(hera1[hera1$Ex == "Cannot Exclude",], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
-			write.csv(hera1[hera1$Ex == "Excluded",], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+			write.csv(hera1[hera1$Ex == "Cannot Exclude",][,-8], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
+			write.csv(hera1[hera1$Ex == "Excluded",][,-8], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
 	}
 
 	setwd(workingdir)
      print("File generation has completed.")
 	enableJIT(0)
-	return(list(direc,hera1[hera1$Ex == "Cannot Exclude",], hera1[hera1$Ex == "Excluded",]))
+
+	return(list(direc,hera1[hera1$Ex == "Cannot Exclude",][,-8], hera1[hera1$Ex == "Excluded",][,-8]))
 	
 }

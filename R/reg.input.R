@@ -6,7 +6,7 @@
 #' @examples 
 #' reg.input()
 
-reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ulna", side2 = "right", template = 'standard', threshold = NULL, measurements1 = NULL, measurements2 = NULL) {
+reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ulna", side2 = "right", template = 'standard', tresh = NULL, measurements1 = NULL, measurements2 = NULL) {
      print("Import and reference generation has started.")
 
 	r1 <- FALSE
@@ -145,14 +145,33 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 	}
 	ref <- test[-1,]
 	
+	
+	###################treshold
+	if(tresh == 1){tresh2 <- 4}
+	if(tresh == 2){tresh2 <- 4}
+	if(tresh == 3){tresh2 <- 5}
+	if(tresh == 4){tresh2 <- 6}
+	if(tresh == 5){tresh2 <- 7}
+	if(tresh == 6){tresh2 <- 8}
+	if(tresh == 7){tresh2 <- 9}
+	if(tresh == 8){tresh2 <- 10}
+	if(tresh == 9){tresh2 <- 11}
+	if(tresh == 10){tresh2 <- 12}
+	if(tresh == 11){tresh2 <- 13}
+	###################treshold
+	
+	
+	sort1 <- sort1[rowSums(!is.na(sort1)) > tresh2,] #threshold	
+	sort2 <- sort2[rowSums(!is.na(sort2)) > tresh2,] #threshold	
+	
 	#creates combinations of sort data
 	nvars1 <- length(unique(sort1[,1]))
 	nvars2 <- length(unique(sort2[,1]))
 	indices <- expand.grid(1:nvars1, 1:nvars2)
-	#sort1 <- sort1[indices[,1],]
-	#sort2 <- sort2[indices[,2],]
-	
+
 	res <- cbind(sort1[indices[,1],], sort2[indices[,2],]) #Alternative approach combining both into a single data.frame
+
+
 	
      print("Import and reference generation completed.")
 	return(list(res, ref, splitn = c(bone1temp+3, bone2temp+3+bone1temp+3)))

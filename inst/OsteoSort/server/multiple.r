@@ -285,7 +285,7 @@
 		
 		
 		
-			wtf <- reg.input(sort = tempdata1, bone1 = input$assbone1, side1 = input$assside1, bone2 = input$assbone2, side2 = input$assside2, template = input$standard, measurements1 = measurements, measurements2 = measurements2)
+			wtf <- reg.input(tresh=threshold,sort = tempdata1, bone1 = input$assbone1, side1 = input$assside1, bone2 = input$assbone2, side2 = input$assside2, template = input$standard, measurements1 = measurements, measurements2 = measurements2)
 			direc2 <- reg.multitest(sort = wtf[[1]], ref = wtf[[2]], splitn = wtf[[3]], predlevel = input$asspredlevel, stdout = FALSE, oo = c(input$fileoutput1, input$fileoutput2) )
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])
 		}
@@ -310,12 +310,15 @@
 			lent <- length(unique(rbind(as.matrix(direc2[[2]][1]),as.matrix(direc2[[2]][4])))) #fix for number of specimens matched
 
 		}
-		
 		temp1 <- direc2[[2]][1]
 		temp2 <- direc2[[2]][4]
 		temp3 <- direc2[[3]][1]
 		temp4 <- direc2[[3]][4]
-
+		#Forces ID name 
+		names(temp1) <- "ID"
+		names(temp2) <- "ID"
+		names(temp3) <- "ID"
+		names(temp4) <- "ID"
 		co <- ""
 		if(input$research) {
 			#used to assess accuracy of methodology
@@ -402,12 +405,12 @@
 						column(4,
 							h4("Predictor"),
 							selectInput("assside1", "Side", c(Left='Left', Right='Right')),
-							selectInput("assbone1", "Element", c(Clavicle="Clavicle", Scapula="Scapula", Humerus="Humerus", Radius="Radius", Ulna="Ulna", Os_coxa="os_coxa", Femur="Femur", Tibia="Tibia", Fibula="Fibula"))
+							selectInput("assbone1", "Element", c(Clavicle="Clavicle", Scapula="Scapula", Humerus="Humerus", Radius="Radius", Ulna="Ulna", Os_coxa="Os_coxa", Femur="Femur", Tibia="Tibia", Fibula="Fibula"))
 						),
 						column(4,
 							h4("Predicted"),
 							selectInput("assside2", "Side", c(Left='Left', Right='Right')),
-							selectInput("assbone2", "Element", c(Clavicle="Clavicle", Scapula="Scapula", Humerus="Humerus", Radius="Radius", Ulna="Ulna", Os_coxa="os_coxa", Femur="Femur", Tibia="Tibia", Fibula="Fibula"))
+							selectInput("assbone2", "Element", c(Clavicle="Clavicle", Scapula="Scapula", Humerus="Humerus", Radius="Radius", Ulna="Ulna", Os_coxa="Os_coxa", Femur="Femur", Tibia="Tibia", Fibula="Fibula"))
 						)
 					)
 				})
