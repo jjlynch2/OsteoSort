@@ -6,7 +6,7 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE)) {	
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE)) {	    
      print("Statistical association comparisons have started.")
 	library(parallel)
 	library(foreach)
@@ -46,15 +46,14 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	unique.model <<- list()
 	
 	hera1 <- apply(sort, 1, function(x) {
-	
+
 		temp1 <- na.omit(x[seq(from = splitn[1]+1, to = splitn[2])])
 		temp1n <- names(temp1[-1][-1][-1]) #captures measurement names
 		temp2 <- na.omit(x[seq(from = 1, to = splitn[1])])
 		temp2n <- names(temp2[-1][-1][-1]) #captures measurement names
-		
+
 		t1 <- as.data.frame(ref[temp1n])# reference
 		t2 <- as.data.frame(ref[temp2n])
-		
 		output1 <- lapply(is.unique, function(x) { 
 			ident <- identical(x, unique(c(temp1n, temp2n)))
 			return(ident) 
