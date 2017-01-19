@@ -141,25 +141,27 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 	}
 	ref <- test[-1,]
 
-	tresh[1] <- as.numeric(tresh[1])
-	tresh[2] <- as.numeric(tresh[2])
-
-	###################treshold
-	if(tresh[1] == 1 || tresh[2] == 1){tresh2 <- 4; tresh3 <- 4}
-	if(tresh[1] == 2 || tresh[2] == 2){tresh2 <- 4; tresh3 <- 4}
-	if(tresh[1] == 3 || tresh[2] == 3){tresh2 <- 5; tresh3 <- 5}
-	if(tresh[1] == 4 || tresh[2] == 4){tresh2 <- 6; tresh3 <- 6}
-	if(tresh[1] == 5 || tresh[2] == 5){tresh2 <- 7; tresh3 <- 7}
-	if(tresh[1] == 6 || tresh[2] == 6){tresh2 <- 8; tresh3 <- 8}
-	if(tresh[1] == 7 || tresh[2] == 7){tresh2 <- 9; tresh3 <- 9}
-	if(tresh[1] == 8 || tresh[2] == 8){tresh2 <- 10; tresh3 <- 10}
-	if(tresh[1] == 9 || tresh[2] == 9){tresh2 <- 11; tresh3 <- 11}
-	if(tresh[1] == 10 || tresh[2] == 10){tresh2 <- 12; tresh3 <- 12}
-	if(tresh[1] == 11 || tresh[2] == 11){tresh2 <- 13; tresh3 <- 13}
-	###################treshold
-
-	sort1 <- sort1[rowSums(!is.na(sort1)) >= tresh2,] #threshold	
-	sort2 <- sort2[rowSums(!is.na(sort2)) >= tresh3,] #threshold	
+	if(!is.null(tresh)) {
+		tresh[1] <- as.numeric(tresh[1])
+		tresh[2] <- as.numeric(tresh[2])
+	
+		###################treshold
+		if(tresh[1] == 1 || tresh[2] == 1){tresh2 <- 4; tresh3 <- 4}
+		if(tresh[1] == 2 || tresh[2] == 2){tresh2 <- 4; tresh3 <- 4}
+		if(tresh[1] == 3 || tresh[2] == 3){tresh2 <- 5; tresh3 <- 5}
+		if(tresh[1] == 4 || tresh[2] == 4){tresh2 <- 6; tresh3 <- 6}
+		if(tresh[1] == 5 || tresh[2] == 5){tresh2 <- 7; tresh3 <- 7}
+		if(tresh[1] == 6 || tresh[2] == 6){tresh2 <- 8; tresh3 <- 8}
+		if(tresh[1] == 7 || tresh[2] == 7){tresh2 <- 9; tresh3 <- 9}
+		if(tresh[1] == 8 || tresh[2] == 8){tresh2 <- 10; tresh3 <- 10}
+		if(tresh[1] == 9 || tresh[2] == 9){tresh2 <- 11; tresh3 <- 11}
+		if(tresh[1] == 10 || tresh[2] == 10){tresh2 <- 12; tresh3 <- 12}
+		if(tresh[1] == 11 || tresh[2] == 11){tresh2 <- 13; tresh3 <- 13}
+		###################treshold
+		sort1 <- sort1[rowSums(!is.na(sort1)) >= tresh2,] #threshold	
+		sort2 <- sort2[rowSums(!is.na(sort2)) >= tresh3,] #threshold
+	}
+	
 
 	bone1temp <- ncol(sort1) #number of variables   
 	bone2temp <- ncol(sort2) #number of variables  
