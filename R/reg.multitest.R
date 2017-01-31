@@ -63,7 +63,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 
 		if(is.na(index)) {
 			model1 <- earth(t1,rowSums(t2), varmod.method="lm", nfold=10, ncross=30) #model1
-			
+			#compare lm, gam, power, earth and variable cross-validation and folds
 			is.unique[[length(is.unique)+1]] <<-   unique(c(temp1n,temp2n))
 			unique.model[[length(unique.model)+1]] <<- model1
 		}
@@ -83,7 +83,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			within <- "Cannot Exclude"
 		}
 		else within <- "Excluded"
-		
+print(within)
 		#temp2 <- as.data.frame(t(temp2)) #converts temp2 to dataframe for $ operator
 		return(c(temp1[1], temp1[2], temp1[3], temp2[1], temp2[2], temp2[3], RSquare = round(rsqr1, digits = 3), Excluded=within, Sample_size = nrow(t1)))
 

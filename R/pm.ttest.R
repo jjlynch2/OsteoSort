@@ -62,7 +62,8 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			difsd <- sd(difa)
 			if(testagainst) {difm <- 0} 
 			if(!testagainst) {difm <- mean(difa)}
-			p.value <- 2 * pt(-abs((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) - difm) / difsd), df = length(difa) - 1)
+			#p.value <- 2 * pt(-abs((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) - difm) / difsd), df = length(difa) - 1)
+			p.value <- pt((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 		}
 		
 		if(!absolutevalue) {
@@ -73,7 +74,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = length(difa) - 1)
 		} 
 		
-		return(data.frame(a=X[,1],b=X[,3],c=X[,5],d=X[,2],e=X[,4],f=X[,6],g=gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)])),h=round(p.value, digits = 3),i=ncol(y)/2,j=nrow(y), stringsAsFactors=FALSE)) 
+		return(data.frame(a=X[,1],b=X[,3],c=X[,5],d=X[,2],e=X[,4],f=X[,6],g=gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)])),h=round(p.value, digits = 4),i=ncol(y)/2,j=nrow(y), stringsAsFactors=FALSE)) 
 	}
 	
 	

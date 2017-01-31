@@ -318,16 +318,26 @@
 		names(temp3) <- "ID"
 		names(temp4) <- "ID"
 		co <- ""
+
+		
 		if(input$research) {
 			#used to assess accuracy of methodology
+			
+			globala <- as.matrix(direc2[[3]][1])
+			globalb <- as.matrix(direc2[[3]][4])
+			cn <- 0
+			for(xx in 1:nrow(globala)) {
+				if(globala[xx] == globalb[xx]) {cn <- cn +1}
+			}
+			
 			global1 <- as.matrix(direc2[[2]][1])
 			global2 <- as.matrix(direc2[[2]][4])
 			co <- 0
 			 for(i in 1:nrow(global1)) {
-			 	if(as.character(global1[i]) == as.character(global2[i])) {co <- co + 1}
+			 	if(global1[i] == global2[i]) {co <- co + 1}
 			 }		
 			#used to assess accuracy of methodology
-			 co <- paste("Percent correct: ", co, " (", round(co/nrow(unique(rbind(temp1,temp2,temp3,temp4))),digits = 2) * 100, "%)", "<br/>", "Percent incorrect: ", nrow(unique(rbind(temp1,temp2,temp3,temp4))) - co, " (", round(1 - co/nrow(unique(rbind(temp1,temp2,temp3,temp4))),digits = 2) * 100, "%)",  "<br/>", sep="")
+			 co <- paste("True exclusions: ", (ll - cn) - nmatch, " (", round(((ll-cn) - nmatch) / ll, digits = 3) * 100, "%)" , "<br/>", "False exclusions: ", cn, " (", round(cn / ll, digits = 3) * 100, "%)" , "<br/>","Percent correct: ", co, " (", round(co/nrow(unique(rbind(temp1,temp2,temp3,temp4))),digits = 3) * 100, "%)", "<br/>", "Percent incorrect: ", cn, " (", round(cn / (co + cn) ,digits = 3) * 100, "%)",  "<br/>", sep="")
 		}
 		
 		#
@@ -348,10 +358,10 @@
 		
 		
 		samplesize <- nrow(unique(rbind(temp1,temp2,temp3,temp4)))
-		
+
 		#Output results                  
 			output$contents <- renderUI({
-				HTML(paste(co,"Statistical analysis complete.",'<br/>',"Number of comparisons conducted: ",ll, "<br/>", "Total specimens tested: ", samplesize,'<br/>',"Number of specimens with 1 or more potential matches: ",lent, '<br/>', "Total number of potential matches: ", nmatch, '<br/>', "Mean number of potential matches per specimen: ", round(mean_potential_matches, digits = 2) , "<br/>", "Standard deviation of potential matches: ", round(std_potential_matches, digits = 2) ,"<br/>", "Total number of exclusions: ", ll - nmatch, " (", round((ll - nmatch) / ll, digits = 2) * 100, "%)", '<br/><br/>'))
+				HTML(paste(co,"Statistical analysis complete.",'<br/>',"Number of comparisons conducted: ",ll, "<br/>", "Total specimens tested: ", samplesize,'<br/>',"Number of specimens with 1 or more potential matches: ",lent, '<br/>', "Total number of potential matches: ", nmatch ,'<br/>', "Mean number of potential matches per specimen: ", round(mean_potential_matches, digits = 1) ,  " (", round(round(mean_potential_matches, digits = 1)/samplesize, digits = 3) * 100, "%)", "<br/>", "Standard deviation of potential matches: ", round(std_potential_matches, digits = 1) ,"<br/>", "Total number of exclusions: ", ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)", '<br/><br/>'))
 			})   
 
 			output$table <- DT::renderDataTable({
