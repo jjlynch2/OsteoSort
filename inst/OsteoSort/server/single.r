@@ -340,7 +340,7 @@
 				dft <- data.frame(dft)
 				colnames(dft)[1:3] <- c("ID","Side","Element")
 				wtf <- pm.input(bone=toString(input$zz), sort=dft, template=strsplit(input$a,"_")[[1]][2],tresh=1)                                      
-				direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp = sessiontemp, alphalevel = input$alphalevels, absolutevalue = input$absolutevalues, testagainst = input$testagainstsingle, oo = c(input$fileoutput3, input$fileoutput4))  
+				direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], power = input$power1, stdout = FALSE, sessiontemp = sessiontemp, alphalevel = input$alphalevels, absolutevalue = input$absolutevalues, testagainst = input$testagainstsingle, oo = c(input$fileoutput3, input$fileoutput4))  
 				
 				tempDF <- rbind(direc2[[2]], direc2[[3]]) #combines both dataframes into a single one. Both are needed for multiple but only 1 for single.
 				output$table2 <- DT::renderDataTable({

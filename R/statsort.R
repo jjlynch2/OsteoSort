@@ -426,7 +426,7 @@ statsort <- function (file, bone = "femur", side = "both", population = "trotter
 		pointestimate[i,1] <- file[i,1] #ID name
 		pointestimate[i,2] <- file[i,2] #Side name
 		pointestimate[i,3] <- file[i,3] #Bone name
-		pointestimate[i,4] <- as.numeric(file[i,4]) * slope + intercept #PE name
+		pointestimate[i,4] <- round(as.numeric(file[i,4]) * slope + intercept, digits=2) #PE name
 	}
 	
 	
@@ -545,5 +545,5 @@ statsort <- function (file, bone = "femur", side = "both", population = "trotter
 	if(stdout) {p1}
 	
 	setwd(workingdir)
-	return(list(direc,outlierdflower,outlierdfupper,nonoutliersdf,p1,m,s,me,IQQ))
+	return(list(direc,outlierdflower,outlierdfupper,nonoutliersdf,p1,round(m, digits = 2),round(s, digits=2),round(me, digits=2),round(IQQ, digits=2)))
 }

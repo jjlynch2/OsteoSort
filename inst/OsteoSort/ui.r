@@ -1214,6 +1214,7 @@ shinyUI(
 								sliderInput(inputId = "alphalevels2", label = "Prediction Interval Level", min=0.01, max=1, value=0.9, step = 0.01),
 								sliderInput(inputId = "alphalevels", label = "Alpha Level", min=0.01, max=1, value=0.05, step = 0.01),
 								checkboxInput(inputId = "absolutevalues", label = "Absolute D-value |a-b|", value = TRUE),
+								checkboxInput(inputId = "power1", label = "Half-normalization transformation (Absolute models only)", value = TRUE),
 								checkboxInput(inputId = "testagainstsingle", label = "Zero reference sample mean", value = FALSE)
 							)
 							)	
@@ -1427,6 +1428,7 @@ shinyUI(
 									sliderInput(inputId = "asspredlevel", label = "Prediction Interval Level", min=0.01, max=1, value=0.9, step=0.01),
 									sliderInput(inputId = "alphalevel", label = "Alpha Level", min=0.01, max=1, value=0.05, step = 0.01),
 									checkboxInput(inputId = "absolutevalue", label = "Absolute D-value |a-b|", value = TRUE),
+									checkboxInput(inputId = "power2", label = "Half-normalization transformation (Absolute models only)", value = TRUE),
 									checkboxInput(inputId = "testagainst", label = "Zero reference sample mean", value = FALSE),
 									checkboxInput(inputId = "research", label = "Calculate research statistics", value = FALSE)
 								)

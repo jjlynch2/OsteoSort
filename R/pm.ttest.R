@@ -20,7 +20,7 @@
 #' @examples
 #' pm.ttest()
 
-pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE)) {
+pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE)) {
      print("Statistical pair match comparisons have started.")
 	library(parallel)
 	library(foreach)
@@ -28,12 +28,15 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	require(compiler)
 	enableJIT(3)
 
-	if(detectCores() > 1) {no_cores <- round(detectCores() /2)}
+	if(detectCores() > 1) {no_cores <- round(detectCores() - 1)}
 	if(detectCores() == 1) {no_cores <- 1}
 	
 	options(warn = -1) #disables warnings
 	if(is.na(sortdata) || is.null(sortdata)) {return(NULL)} #input san
 	if(is.na(refdata) || is.null(refdata)) {return(NULL)} #input san
+	
+	if(power) {p1 <- 0.00005; p2 <- 0.33} #half normal transformation
+	if(!power) {p1 <- 0; p2 <- 1} #used to prevent writing new code inside loop. This transformation doesn't change the data
 	
 	workingdir = getwd()
 
@@ -57,13 +60,14 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 		temp1 <- temp1[seq(1,length(temp1),2)]
 		temp1 <- sort(c(temp1, paste(temp1,"R",sep="")))
 		y <- as.data.frame(refdata)[temp1]
-		if(absolutevalue) {
-			difa <- rowSums(abs((y[c(T,F)] - y[c(F,T)])))
+		if(absolutevalue) { 
+			difa <- ( rowSums(abs((y[c(T,F)] - y[c(F,T)]))) + p1 ) ^ p2
 			difsd <- sd(difa)
 			if(testagainst) {difm <- 0} 
 			if(!testagainst) {difm <- mean(difa)}
-			#p.value <- 2 * pt(-abs((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) - difm) / difsd), df = length(difa) - 1)
-			p.value <- pt((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
+		
+			tt <- (sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + 0.00005) ^0.33
+			p.value <- pt((tt - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 		}
 		
 		if(!absolutevalue) {
@@ -74,14 +78,17 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = length(difa) - 1)
 		} 
 		
-		return(data.frame(a=X[,1],b=X[,3],c=X[,5],d=X[,2],e=X[,4],f=X[,6],g=gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)])),h=round(p.value, digits = 4),i=ncol(y)/2,j=nrow(y), stringsAsFactors=FALSE)) 
+		return(data.frame(a=X[,1],b=X[,3],c=X[,5],d=X[,2],e=X[,4],f=X[,6],g=gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)])),h=round(p.value, digits = 4),i=ncol(y)/2,j=nrow(y), k=round(difm, digits = 4), l=round(difsd, digits = 4),stringsAsFactors=FALSE)) 
 	}
 	
+	ptm <- proc.time()
 	
-	if(.Platform$OS.type == "unix") {hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE); hera1 <- melt(hera1, id.vars = c("a","b","c","d","e","f","g","h","i","j")); hera1 <- hera1[-11]}  
+	if(.Platform$OS.type == "unix") {hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE); hera1 <- melt(hera1, id.vars = c("a","b","c","d","e","f","g","h","i","j","k","l")); hera1 <- hera1[-13]}  
 	if(.Platform$OS.type != "unix") {hera1 <- lapply(FUN = myfun, X = sortdata); hera1 <- data.frame(hera1)}
 
-	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size")
+	print(paste("Function finished in: ",proc.time() - ptm, sep=""))
+
+	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd")
      print("Statistical pair match comparisons completed.")
      print("File generation has started.")
 
