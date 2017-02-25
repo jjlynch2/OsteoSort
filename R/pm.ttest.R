@@ -20,16 +20,13 @@
 #' @examples
 #' pm.ttest()
 
-pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE)) {
+pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1) {
      print("Statistical pair match comparisons have started.")
 	library(parallel)
 	library(foreach)
 	library(doSNOW)
 	require(compiler)
 	enableJIT(3)
-
-	if(detectCores() > 1) {no_cores <- round(detectCores() - 1)}
-	if(detectCores() == 1) {no_cores <- 1}
 	
 	options(warn = -1) #disables warnings
 	if(is.na(sortdata) || is.null(sortdata)) {return(NULL)} #input san
@@ -66,7 +63,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			if(testagainst) {difm <- 0} 
 			if(!testagainst) {difm <- mean(difa)}
 		
-			tt <- (sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + 0.00005) ^0.33
+			tt <- (sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ^p2
 			p.value <- pt((tt - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 		}
 		
@@ -81,12 +78,10 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 		return(data.frame(a=X[,1],b=X[,3],c=X[,5],d=X[,2],e=X[,4],f=X[,6],g=gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)])),h=round(p.value, digits = 4),i=ncol(y)/2,j=nrow(y), k=round(difm, digits = 4), l=round(difsd, digits = 4),stringsAsFactors=FALSE)) 
 	}
 	
-	ptm <- proc.time()
 	
 	if(.Platform$OS.type == "unix") {hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE); hera1 <- melt(hera1, id.vars = c("a","b","c","d","e","f","g","h","i","j","k","l")); hera1 <- hera1[-13]}  
 	if(.Platform$OS.type != "unix") {hera1 <- lapply(FUN = myfun, X = sortdata); hera1 <- data.frame(hera1)}
 
-	print(paste("Function finished in: ",proc.time() - ptm, sep=""))
 
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd")
      print("Statistical pair match comparisons completed.")

@@ -1431,6 +1431,9 @@ shinyUI(
 									checkboxInput(inputId = "power2", label = "Half-normalization transformation (Absolute models only)", value = TRUE),
 									checkboxInput(inputId = "testagainst", label = "Zero reference sample mean", value = FALSE),
 									checkboxInput(inputId = "research", label = "Calculate research statistics", value = FALSE)
+								),
+								tabPanel("Computational parameters",
+									uiOutput('ncores')
 								)
 								
 							)

@@ -7,7 +7,7 @@
 #' @examples
 #' all.ttest()
 
-all.ttest <- function(sort = NULL, test = NULL, tresh = NULL, measurements = NULL, sessiontemp = NULL, stdout = FALSE, alphalevel = 0.1, absolutevalue = TRUE, template = "Standard", testagainst = FALSE, oo = c(TRUE, FALSE)) {
+all.ttest <- function(sort = NULL, test = NULL, tresh = NULL, measurements = NULL, sessiontemp = NULL, stdout = FALSE, alphalevel = 0.1, absolutevalue = TRUE, template = "Standard", testagainst = FALSE, oo = c(TRUE, FALSE), no_cores = 1, power = TRUE) {
 	options(warn = -1)
 	if(is.null(sort) || is.null(test) || is.null(sessiontemp)) { return(NULL)}
 	if(test != "all_pm" && test != "all_art" && test != "all") { return(NULL)}
@@ -62,13 +62,13 @@ all.ttest <- function(sort = NULL, test = NULL, tresh = NULL, measurements = NUL
 		if(i == "clavicle" || i == "scapula" || i ==  "humerus" || i ==  "ulna" || i ==  "radius" || i ==  "os_coxa" || i ==  "femur" || i ==  "tibia" || i ==  "fibula") {
 			wtf <- pm.input(bone=i, sort=sort, template=template, tresh=threshold, measurements=m) 
 			if(class(wtf[[1]]) == "list") {
-				directemp <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = stdout, sessiontempdir=paste(direcb,i,sep="/"), alphalevel = alphalevel, absolutevalue = absolutevalue, a = TRUE, testagainst = testagainst, oo = oo)
+				directemp <- pm.ttest(power = power, refdata = wtf[[2]], sortdata = wtf[[1]], stdout = stdout, sessiontempdir=paste(direcb,i,sep="/"), alphalevel = alphalevel, absolutevalue = absolutevalue, a = TRUE, testagainst = testagainst, oo = oo, no_cores = no_cores)
 			}
 		}
 		if(i == "hu" || i == "hr" || i == "hs" || i == "hss" || i == "fi" || i == "ft" || i == "ftt") {
 			wtf <- art.input(bone=i, sort=sort)
 			if(class(wtf[[1]]) == "data.frame") {
-				directemp <- art.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = stdout, sessiontempdir=paste(direcb,i,sep="/"), alphalevel = alphalevel, absolutevalue = absolutevalue, a = TRUE, testagainst = testagainst, oo = oo)   	
+				directemp <- art.ttest(power = power, refdata = wtf[[2]], sortdata = wtf[[1]], stdout = stdout, sessiontempdir=paste(direcb,i,sep="/"), alphalevel = alphalevel, absolutevalue = absolutevalue, a = TRUE, testagainst = testagainst, oo = oo, no_cores = no_cores)   	
 			}
 		}	
 		if(class(directemp) == "list") {

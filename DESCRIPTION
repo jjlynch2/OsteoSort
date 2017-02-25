@@ -16,7 +16,8 @@ Depends:
     foreach,
     stargazer,
     shinythemes,
-    reshape2
+    reshape2,
+    data.table
 License: GPL-2
 LazyData: false
 Imports:

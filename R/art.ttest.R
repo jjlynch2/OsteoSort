@@ -20,7 +20,7 @@
 #' art.ttest()
 
 
-art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE)) {
+art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, no_cores = 1, alphalevel = 0.1, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), power = TRUE) {
      print("Statistical articulation comparisons have started.")
 	library(parallel)
 	library(foreach)
@@ -28,13 +28,13 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	require(compiler)
 	library(reshape2)
 	enableJIT(3)
-
-	if(detectCores() > 1) {no_cores <- round(detectCores() / 2)}
-	if(detectCores() == 1) {no_cores <- 1}
 	
 	options(warn = -1) #disables warnings
 	if(is.na(sortdata) || is.null(sortdata)) {return(NULL)} #input san
 	if(is.na(refdata) || is.null(refdata)) {return(NULL)} #input san
+	
+	if(power) {p1 <- 0.00005; p2 <- 0.33} #half normal transformation
+	if(!power) {p1 <- 0; p2 <- 1} #used to prevent writing new code inside loop. This transformation doesn't change the data
 	
 	workingdir = getwd()
 
@@ -55,11 +55,15 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	
 	hera1 <- apply(sortdata, 1, function(y){
 		if(absolutevalue) {
-			difa <- abs(refdata[,1] - refdata[,2])
+			difa <- ( abs(refdata[,1] - refdata[,2]) + p1 ) ^ p2
+			
 			difsd <- sd(difa)
 			if(testagainst) {difm <- 0} 
 			if(!testagainst) {difm <- mean(difa)}
-			p.value <- 2 * pt(-abs((abs(as.numeric(y[7]) - as.numeric(y[8])) - difm) / difsd), df = length(difa) - 1)
+			
+			
+			tt <- (abs(as.numeric(y[7]) - as.numeric(y[8])) + p1) ^ p2
+			p.value <- pt((tt - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 		}
 		if(!absolutevalue) {
 			difa <- refdata[,1] - refdata[,2]

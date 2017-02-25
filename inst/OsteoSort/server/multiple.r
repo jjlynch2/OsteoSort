@@ -136,6 +136,11 @@
 	}) 
 	######supplemental measurement combinator
 
+	output$ncores <- renderUI({
+		sliderInput(inputId = "numbercores", label = "Number of cores", min=1, max=detectCores(), value=1, step =1)
+	})
+
+
 	observeEvent(input$pro, {
 	
 			showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
@@ -189,7 +194,7 @@
 			if(is.null(threshold)) {threshold <- 1}        
 			
 			wtf <- pm.input(bone=toString(input$bone), sort=tempdata1, template='standard',tresh=threshold, measurements=measurements)
-			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, power = input$power2, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2))
+			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, power = input$power2, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores)
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])       
 		}	
 		if(input$standard == 'Supplemental' & input$bone != 'altt' & input$bone != 'alttp' & input$bone != 'altta' & input$bone != 'hu' & input$bone != 'hr' & input$bone != 'hs' & input$bone != 'hss' & input$bone != 'fi' & input$bone != 'ft' & input$bone != 'ftt'){
@@ -205,7 +210,7 @@
 			if(is.null(threshold)) {threshold <- 1}        
 			
 			wtf <- pm.input(bone=toString(input$bone), sort=tempdata1, template='supplemental',tresh=threshold, measurements=measurements)                                	      
-			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, power = input$power2, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2))
+			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, power = input$power2, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores)
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])           
 		}
 		if(input$bone == 'altt' || input$bone == 'alttp' || input$bone == 'altta') {
@@ -222,7 +227,7 @@
 			if(input$bone == 'alttp'){test <- "all_pm"}
 			if(input$bone == 'altta'){test <- "all_art"}
 					       		
-			direc2 <- all.ttest(sort = tempdata1, test = test, tresh = treshlist, measurements = mlist, template = input$standard, sessiontemp = sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, stdout = FALSE, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2))
+			direc2 <- all.ttest(power = input$power2, sort = tempdata1, test = test, tresh = treshlist, measurements = mlist, template = input$standard, sessiontemp = sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, stdout = FALSE, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores)
 			direc <- direc2[[1]]
 			nmatch <- direc2[[3]]
 			ll <- direc2[[4]]
@@ -230,7 +235,7 @@
 		}                  
 		if(input$bone == 'hu' | input$bone == 'hr' | input$bone == 'hs' | input$bone == "hss" | input$bone == 'fi' | input$bone == 'ft' | input$bone == 'ftt') {
 			wtf <- art.input(bone=toString(input$bone), sort=tempdata1)
-			direc2 <- art.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2))   
+			direc2 <- art.ttest(power = input$power2, refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores)   
 			ll <- nrow(wtf[[1]])                       
 		}      
 	}
@@ -337,7 +342,16 @@
 			 	if(global1[i] == global2[i]) {co <- co + 1}
 			 }		
 			#used to assess accuracy of methodology
-			 co <- paste("True exclusions: ", (ll - cn) - nmatch, " (", round(((ll-cn) - nmatch) / ll, digits = 3) * 100, "%)" , "<br/>", "False exclusions: ", cn, " (", round(cn / ll, digits = 3) * 100, "%)" , "<br/>","Percent correct: ", co, " (", round(co/nrow(unique(rbind(temp1,temp2,temp3,temp4))),digits = 3) * 100, "%)", "<br/>", "Percent incorrect: ", cn, " (", round(cn / (co + cn) ,digits = 3) * 100, "%)",  "<br/>", sep="")
+			 
+			TP <- (ll - cn) - nmatch
+			FP <- cn
+			FN <- nmatch - co
+			TN <- co
+
+		
+			co <- paste("True Positive: ", TP, "<br/>", "False Positive: ", FP, "<br/>", "False Negative: ", FN, "<br/>", "True Negative: ", TN, "<br/>", "Sensitivity: ", round(TP/(TP+FN), digits = 3), "<br/>", "Specificity: ", round(TN/(TN+FP), digits = 3),"<br/>",  "Positive Predictive Value: ", round(TP/(TP+FP), digits = 3), "<br/>", "Negative Predictive Value: ", round(TN/(TN+FN), digits = 3),"<br/>", "False Discovery Rate: ", round(FP/(FP+FN), digits = 3), "<br/>","Efficiency: ", round((TP+TN) / (TP+TN+FN+TN), digits = 3), "<br/>", sep = "")
+			 
+			 
 		}
 		
 		#
