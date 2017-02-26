@@ -6,13 +6,14 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE)) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), corlevel = 0.5) {	    
      print("Statistical association comparisons have started.")
 	library(parallel)
 	library(foreach)
 	library(doSNOW)
 	require(compiler)
 	library(earth)
+	library(RcppArmadillo)
 	enableJIT(3)
 
 	if(detectCores() > 1) {no_cores <- round(detectCores() /2)}
@@ -60,24 +61,71 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 		})
 
 		index <- match(TRUE,output1)
+		
+		B1PCAt <- prcomp(t1)
+		B2PCAt <- prcomp(t2)
+
+		B1PCA <- B1PCAt$x 
+		B2PCA <- B2PCAt$x
+			
+		t <- as.data.frame(cor(B1PCA, B2PCA, use="complete.obs"))
+			
+		predictednames <- c()
+		for(i in colnames(t)) {
+		    if(any(t[,i] > corlevel)) {
+			   predictednames <- c(predictednames, i)
+		    }
+		}
+
+		predictornames <- c()
+		for(i in rownames(t)) {
+		    if(any(t[i,]  > corlevel)) {
+			   predictornames <- c(predictornames, i)
+			   }
+		}
+		
 
 		if(is.na(index)) {
-			model1 <- earth(t1,rowSums(t2), varmod.method="lm", nfold=10, ncross=30) #model1
-			#compare lm, gam, power, earth and variable cross-validation and folds
+			if(length(predictornames) > 1) { B1PCA <- rowSums(B1PCA[,predictornames])}
+			if(length(predictednames) > 1) { B2PCA <- rowSums(B2PCA[,predictednames])}
+			if(length(predictornames) <= 1) { B1PCA <- B1PCA[,predictornames]}
+			if(length(predictednames) <= 1) { B2PCA <- B2PCA[,predictednames]}
+			
+			names(B1PCA) <- predictornames
+			names(B2PCA) <- predictednames
+
+			df1 <- as.data.frame(cbind(B1PCA, B2PCA))
+			model1 <- lm(B2PCA ~ B1PCA, data = df1)
+
 			is.unique[[length(is.unique)+1]] <<-   unique(c(temp1n,temp2n))
 			unique.model[[length(unique.model)+1]] <<- model1
 		}
 		else model1 <- unique.model[[index]]
 		
-		rsqr1 <- model1$rsq #R-squared
-		
-		predictors <- as.numeric(temp1[-1][-1][-1]) #removes ID, Side, Element and converts to numeric
-		names(predictors) <- temp1n #Applies measurement names again for use in predict()
+	   
+		rsqr1 <- summary(model1)$r.squared
 
-		pm1 <- predict(model1, predictors, interval="pint", level = predlevel) #prediction interval based on the lm from model1
+
+		temp2p <- as.data.frame(t(as.numeric(temp2[-1][-1][-1])))
+		temp1p <- as.data.frame(t(as.numeric(temp1[-1][-1][-1])))
+		
+		names(temp2p) <- temp2n
+		names(temp1p) <- temp1n		
+		
+		temp1p <- as.data.frame(predict(B1PCAt, temp1p))
+		temp2p <- as.data.frame(predict(B2PCAt, temp2p))
+
+		if(length(predictednames) > 1) {predicted <- sum(temp2p[,predictednames])}
+		if(length(predictornames) > 1) {predictors <- sum(temp1p[,predictornames])}
+		if(length(predictednames) <= 1) {predicted <- temp2p[,predictednames]}
+		if(length(predictornames) <= 1) {predictors <- temp1p[,predictornames]}
+
+		names(predictors) <- predictornames
+		names(predicted) <- predictednames
+
+		pm1 <- predict(model1, newdata = data.frame(B1PCA = predictors), interval="prediction", level = predlevel) #prediction interval based on the lm from model1
 		
 		
-		predicted <- sum(as.numeric(temp2[-1][-1][-1])) #removes ID, Side, Element and converts to numeric and sums
 		
 		if(predicted <= pm1[3] && predicted >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
 			within <- "Cannot Exclude"
@@ -128,6 +176,11 @@ print(within)
      print("File generation has completed.")
 	enableJIT(0)
 
-	return(list(direc,hera1[hera1$Ex == "Cannot Exclude",][,-8], hera1[hera1$Ex == "Excluded",][,-8]))
-	
+
+	if(nrow(hera1) == 1) {
+		return(list(direc,hera1[hera1$Ex == "Cannot Exclude",], hera1[hera1$Ex == "Excluded",]))
+	}
+	if(nrow(hera1) > 1) {
+		return(list(direc,hera1[hera1$Ex == "Cannot Exclude",][,-8], hera1[hera1$Ex == "Excluded",][,-8]))
+	}
 }

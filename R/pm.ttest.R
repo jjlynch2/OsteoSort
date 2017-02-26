@@ -52,6 +52,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 		}
 	}
 
+
 	myfun<-function(X){
 		temp1 <- names(as.data.frame(X)[-c(1:6)])
 		temp1 <- temp1[seq(1,length(temp1),2)]
@@ -74,6 +75,8 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			if(!testagainst) {difm <- mean(difa)}
 			p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = length(difa) - 1)
 		} 
+		
+		
 		
 		return(data.frame(a=X[,1],b=X[,3],c=X[,5],d=X[,2],e=X[,4],f=X[,6],g=gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)])),h=round(p.value, digits = 4),i=ncol(y)/2,j=nrow(y), k=round(difm, digits = 4), l=round(difsd, digits = 4),stringsAsFactors=FALSE)) 
 	}
@@ -118,6 +121,8 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			write.csv(as.matrix(hera1[hera1$p.value <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
 	}
+	
+	
 	
 	setwd(workingdir)
      print("File generation has completed.")
