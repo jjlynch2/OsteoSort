@@ -84,12 +84,16 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			   }
 		}
 		
+		
+		if(length(predictednames) < 1 || length(predictornames) < 1) {
+			return(c(temp1[1], temp1[2], temp1[3], temp2[1], temp2[2], temp2[3], RSquare = 0, Excluded="Not enough correlation", Sample_size = nrow(t1)))
+		}
 
 		if(is.na(index)) {
 			if(length(predictornames) > 1) { B1PCA <- rowSums(B1PCA[,predictornames])}
 			if(length(predictednames) > 1) { B2PCA <- rowSums(B2PCA[,predictednames])}
-			if(length(predictornames) <= 1) { B1PCA <- B1PCA[,predictornames]}
-			if(length(predictednames) <= 1) { B2PCA <- B2PCA[,predictednames]}
+			if(length(predictornames) == 1) { B1PCA <- B1PCA[,predictornames]}
+			if(length(predictednames) == 1) { B2PCA <- B2PCA[,predictednames]}
 			
 			names(B1PCA) <- predictornames
 			names(B2PCA) <- predictednames
