@@ -17,13 +17,12 @@
 
 pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1, measurements = NULL) {
      print("Import and reference generation has started.")
-	library(data.table)
 	options(warn = -1) #disables warnings
 	if(is.na(bone) || is.null(sort)) {return(NULL)} #input san
 	if(is.na(bone) || is.null(sort)) {return(NULL)} #input san
 	if(template != 'standard' && template != 'supplemental') {return(NULL)} #input san
 	if(!is.numeric(tresh)) {return(NULL)} #input san
-	
+
 	if(template == "standard") {
 		filename_bone <- bone
 		scapula <- c("Sca_01","Sca_02")
@@ -56,10 +55,10 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	#sort by bone
 	sort <- sort[sort$Element == bone,]
 	
-	
+
 	if(is.null(measurements)) {
 		measurements <- eval(as.symbol(bone))
-		colnames(sort) <- c(c("ID", "Side", "Element",measurements))
+		colnames(sort) <- c("ID", "Side", "Element",measurements)
 	}
 
 	sortdata <- array(NA,c(nrow(sort),length(measurements)+3))
@@ -75,7 +74,7 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	reftemp <- read.table(system.file("extdata", filename_bone, package = "osteosort"), header = TRUE, sep=",")
 	refdata <- array(NA,c(nrow(reftemp),length(measurements)*2)) #times two for left and right but doesnt create one for ID since it's not needed for reference
 	x <- 1
-	
+
 	namedf <- array(NA,c(ncol(refdata), 1))
 	for(i in seq(1,ncol(refdata),2)) {
 		refdata[,i] <- reftemp[[measurements[x]]]
@@ -90,8 +89,8 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	colnames(sortdata) <- c(c("A", "B", "C",measurements))
 	colnames(refdata) <- namedf
 
-	sortdata <- data.table(sortdata) 
-	reff <- data.table(refdata)
+	sortdata <- data.frame(sortdata) 
+	reff <- data.frame(refdata)
 
 	#creates unique combination between left and right elements and reorders them 
 	#so left and right measurements are next to each other similar to the reference data
@@ -150,7 +149,7 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 		recombined <- split(recombined, 1:nrow(recombined))
 	}
 	recombined <- recombined[sapply(recombined, ncol) > (tresh2+6)] 
-	
+
 	#nottested <- recombined[sapply(recombined, ncol) < (tresh2+6)] 
 	
 	#returns reff being the reference and recombined being the test combinations

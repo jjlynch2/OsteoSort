@@ -192,9 +192,9 @@
 			if(input$bone == 'tibia') {threshold <- input$tibia; measurements <- input$MeasurementsUsed8} 
 			if(input$bone == 'fibula') {threshold <- input$fibula; measurements <- input$MeasurementsUsed9}
 			if(is.null(threshold)) {threshold <- 1}        
-			
+
 			wtf <- pm.input(bone=toString(input$bone), sort=tempdata1, template='standard',tresh=threshold, measurements=measurements)
-			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, power = input$power2, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores)
+			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores, power = input$power2)
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])       
 		}	
 		if(input$standard == 'Supplemental' & input$bone != 'altt' & input$bone != 'alttp' & input$bone != 'altta' & input$bone != 'hu' & input$bone != 'hr' & input$bone != 'hs' & input$bone != 'hss' & input$bone != 'fi' & input$bone != 'ft' & input$bone != 'ftt'){
@@ -208,9 +208,9 @@
 			if(input$bone == 'tibia') {threshold <- input$tibiah; measurements <- input$MeasurementsUsedh} 
 			if(input$bone == 'fibula') {threshold <- input$fibulai; measurements <- input$MeasurementsUsedi}                 
 			if(is.null(threshold)) {threshold <- 1}        
-			
+
 			wtf <- pm.input(bone=toString(input$bone), sort=tempdata1, template='supplemental',tresh=threshold, measurements=measurements)                                	      
-			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, power = input$power2, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores)
+			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores, power = input$power2)
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])           
 		}
 		if(input$bone == 'altt' || input$bone == 'alttp' || input$bone == 'altta') {
