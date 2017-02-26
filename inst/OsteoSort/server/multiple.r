@@ -311,7 +311,7 @@
 			setwd(sessiontemp)
 
 			lent <- length(unique(rbind(as.matrix(direc2[[2]][1]),as.matrix(direc2[[2]][4])))) #fix for number of specimens matched
-
+			if(input$research) { lent <- lent * 2} ################FIX for statistics having same ID.
 		}
 		temp1 <- direc2[[2]][1]
 		temp2 <- direc2[[2]][4]
@@ -371,7 +371,8 @@
 		#
 		
 		
-		samplesize <- nrow(unique(rbind(temp1,temp2,temp3,temp4)))
+		samplesize <- nrow(unique(rbind(temp1,temp2,temp3,temp4))) 
+		if(input$research) { samplesize <- samplesize * 2} ################FIX for statistics having same ID.
 
 		#Output results                  
 			output$contents <- renderUI({

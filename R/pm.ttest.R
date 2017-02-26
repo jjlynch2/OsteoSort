@@ -21,6 +21,9 @@
 #' pm.ttest()
 
 pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1) {
+   
+   print("alpha")
+   print(alphalevel)
      print("Statistical pair match comparisons have started.")
 	library(parallel)
 	library(foreach)
