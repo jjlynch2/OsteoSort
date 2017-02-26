@@ -89,8 +89,9 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size")
      print("Statistical articulation comparisons completed.")
-     print("File generation has started.")
+
 	if(!stdout) {
+     	print("File generation has started.")
 		if(oo[2]) {
 			not_excluded <<- hera1[hera1$p.value > alphalevel,]
 		
@@ -120,10 +121,10 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 			write.csv(as.matrix(hera1[hera1$p.value > alphalevel,]), file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
 			write.csv(as.matrix(hera1[hera1$p.value <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
+     	print("File generation has completed.")
 	}
 
 	setwd(workingdir)
-     print("File generation has completed.")
 	enableJIT(0)
 	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,]))	
 }

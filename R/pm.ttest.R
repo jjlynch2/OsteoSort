@@ -21,9 +21,6 @@
 #' pm.ttest()
 
 pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1) {
-   
-   print("alpha")
-   print(alphalevel)
      print("Statistical pair match comparisons have started.")
 	library(parallel)
 	library(foreach)
@@ -91,10 +88,9 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd")
      print("Statistical pair match comparisons completed.")
-     print("File generation has started.")
-
      
-	if(!stdout) {		
+	if(!stdout) {	
+     	print("File generation has started.")	
 		if(oo[2]) {
 			not_excluded <- hera1[hera1$p.value > alphalevel,]
 			temp1 <- unique(not_excluded[,1])
@@ -123,12 +119,11 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			write.csv(as.matrix(hera1[hera1$p.value > alphalevel,]), file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
 			write.csv(as.matrix(hera1[hera1$p.value <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
+		
+    	 print("File generation has completed.")
 	}
 	
-	
-	
 	setwd(workingdir)
-     print("File generation has completed.")
 	enableJIT(0)
 	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,]))	
 }

@@ -89,8 +89,16 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	colnames(sortdata) <- c(c("A", "B", "C",measurements))
 	colnames(refdata) <- namedf
 
-	sortdata <- data.frame(sortdata) 
-	reff <- data.frame(refdata)
+
+
+#There is a bug that requires a data.table for the code below
+#otherwise the combinations get mixed up
+#will need to fix this eventually, but for now it works.
+	library(data.table)
+	sortdata <- data.table(sortdata) 
+	reff <- data.table(refdata)
+	
+
 
 	#creates unique combination between left and right elements and reorders them 
 	#so left and right measurements are next to each other similar to the reference data
