@@ -113,9 +113,8 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	   
 		rsqr1 <- summary(model1)$r.squared
 
-
-		temp2p <- data.frame(as.numeric(as.matrix(temp2[-1][-1][-1])))
-		temp1p <- data.frame(as.numeric(as.matrix(temp1[-1][-1][-1])))
+		temp2p <- data.frame(t(as.numeric(as.matrix(temp2[-1][-1][-1]))))
+		temp1p <- data.frame(t(as.numeric(as.matrix(temp1[-1][-1][-1]))))
 		
 		names(temp2p) <- temp2n
 		names(temp1p) <- temp1n		
