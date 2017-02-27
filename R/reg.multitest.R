@@ -14,6 +14,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	require(compiler)
 	library(earth)
 	library(RcppArmadillo)
+     library(data.table)
 	enableJIT(3)
 
 	if(detectCores() > 1) {no_cores <- round(detectCores() /2)}
@@ -140,13 +141,14 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 		else within <- "Excluded"
 
 		#temp2 <- as.data.frame(t(temp2)) #converts temp2 to dataframe for $ operator
-		return(c(ID = temp1[1], Side = temp1[2], Element = temp1[3], ID = temp2[1], Side = temp2[2], Element = temp2[3], RSquared = round(rsqr1, digits = 3), Sample_size = nrow(t1), Result=within))
+		return(data.frame(ID = temp1[1], Side = temp1[2], Element = temp1[3], ID = temp2[1], Side = temp2[2], Element = temp2[3], RSquared = round(rsqr1, digits = 3), Sample_size = nrow(t1), Result=within, stringsAsFactors=FALSE))
 
 	})
 
      print("Statistical association comparisons completed.")
      print("File generation has started.")
-	hera1 <- data.frame(hera1)
+
+     hera1 = as.data.frame(data.table::rbindlist(hera1))
 	names(hera1) <- c("ID","Side","Element","ID","Side","Element","RSquared", "Sample","Result")
 	
 	if(plotme) {
