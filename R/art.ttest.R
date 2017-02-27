@@ -30,6 +30,7 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
+	options(as.is = TRUE)
 	if(is.na(sortdata) || is.null(sortdata)) {return(NULL)} #input san
 	if(is.na(refdata) || is.null(refdata)) {return(NULL)} #input san
 	
@@ -52,17 +53,14 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 			direc <- NULL
 		}
 	}
-	
-	hera1 <- apply(sortdata, 1, function(y){
+
+	myfun<-function(X){
 		if(absolutevalue) {
 			difa <- ( abs(refdata[,1] - refdata[,2]) + p1 ) ^ p2
-			
 			difsd <- sd(difa)
 			if(testagainst) {difm <- 0} 
 			if(!testagainst) {difm <- mean(difa)}
-			
-			
-			tt <- (abs(as.numeric(y[7]) - as.numeric(y[8])) + p1) ^ p2
+			tt <- (abs(as.numeric(X[7]) - as.numeric(X[8])) + p1) ^ p2
 			p.value <- pt((tt - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 		}
 		if(!absolutevalue) {
@@ -70,22 +68,19 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 			difsd <- sd(difa)
 			if(testagainst) {difm <- 0} 
 			if(!testagainst) {difm <- mean(difa)}
-			p.value <- 2 * pt(-abs(( (as.numeric(y[7]) - as.numeric(y[8])) - difm) / difsd), df = length(difa) - 1)
+			p.value <- 2 * pt(-abs(( (as.numeric(X[7]) - as.numeric(X[8])) - difm) / difsd), df = length(difa) - 1)
 		}
 		
-		return(data.frame(a=y[1],b=y[3],c=y[5],d=y[2],e=y[4],f=y[6],g=gsub(",","",toString(names(y)[7:length(y)])),h=round(p.value, digits = 3),i=ncol(refdata)/2,j=nrow(refdata), stringsAsFactors=FALSE)) 
+		return(data.frame(a=X[1],b=X[3],c=X[5],d=X[2],e=X[4],f=X[6],g=gsub(",","",toString(names(X)[7:length(X)]), perl = TRUE),h=round(p.value, digits = 3),i=ncol(refdata)/2,j=nrow(refdata), stringsAsFactors=FALSE)) 
 		
-	})
+	}
+	
+	
+	if(.Platform$OS.type == "unix") {hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE); hera1 = as.data.frame(data.table::rbindlist(hera1))}  
+	if(.Platform$OS.type != "unix") {hera1 <- lapply(FUN = myfun, X = sortdata); hera1 <- data.frame(hera1)}
 	
 
-	
-	if(length(hera1) == 1) {
-		hera1 <- data.frame(hera1)
-	} #transform datatype if only a single row
-	if(length(hera1) != 1) {
-		hera1 <- melt(hera1, id.vars = c("a","b","c","d","e","f","g","h","i","j"))
-		hera1 <- hera1[-11]
-	}
+
 	
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size")
      print("Statistical articulation comparisons completed.")
@@ -129,7 +124,7 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 		}
      	print("File generation has completed.")
 	}
-
+	gc()
 	setwd(workingdir)
 	enableJIT(0)
 	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,], plotres))	

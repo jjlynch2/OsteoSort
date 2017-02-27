@@ -29,6 +29,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
+	options(as.is = TRUE)
 	if(is.na(sortdata) || is.null(sortdata)) {return(NULL)} #input san
 	if(is.na(refdata) || is.null(refdata)) {return(NULL)} #input san
 	
@@ -52,7 +53,6 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 		}
 	}
 
-
 	myfun<-function(X){
 		temp1 <- names(as.data.frame(X)[-c(1:6)])
 		temp1 <- temp1[seq(1,length(temp1),2)]
@@ -63,7 +63,6 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			difsd <- sd(difa)
 			if(testagainst) {difm <- 0} 
 			if(!testagainst) {difm <- mean(difa)}
-		
 			tt <- (sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ^p2
 			p.value <- pt((tt - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 		}
@@ -82,7 +81,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	}
 	
 	
-	if(.Platform$OS.type == "unix") {hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE); hera1 <- melt(hera1, id.vars = c("a","b","c","d","e","f","g","h","i","j","k","l")); hera1 <- hera1[-13]}  
+	if(.Platform$OS.type == "unix") {hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE); hera1 = as.data.frame(data.table::rbindlist(hera1))}  
 	if(.Platform$OS.type != "unix") {hera1 <- lapply(FUN = myfun, X = sortdata); hera1 <- data.frame(hera1)}
 
 
@@ -128,7 +127,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 		
     	 print("File generation has completed.")
 	}
-	
+	gc()
 	setwd(workingdir)
 	enableJIT(0)
 	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,],plotres))	

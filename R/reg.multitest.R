@@ -21,6 +21,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	if(detectCores() == 1) {no_cores <- 1}
 	
 	options(warn = -1) #disables warnings
+	options(as.is = TRUE)
 	if(is.na(sort) || is.null(sort)) {return(NULL)} #input san
 	if(is.na(ref) || is.null(ref)) {return(NULL)} #input san
 	
@@ -187,7 +188,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			write.csv(hera1[hera1$Result == "Excluded",][,-8], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
 	}
-
+	gc()
 	setwd(workingdir)
      print("File generation has completed.")
 	enableJIT(0)

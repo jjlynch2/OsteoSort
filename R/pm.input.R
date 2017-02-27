@@ -18,6 +18,7 @@
 pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1, measurements = NULL) {
      print("Import and reference generation has started.")
 	options(warn = -1) #disables warnings
+	options(as.is = TRUE)
 	if(is.na(bone) || is.null(sort)) {return(NULL)} #input san
 	if(is.na(bone) || is.null(sort)) {return(NULL)} #input san
 	if(template != 'standard' && template != 'supplemental') {return(NULL)} #input san
