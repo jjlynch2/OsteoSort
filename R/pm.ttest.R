@@ -20,7 +20,7 @@
 #' @examples
 #' pm.ttest()
 
-pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1) {
+pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1, plotme = FALSE) {
      print("Statistical pair match comparisons have started.")
 	library(parallel)
 	library(foreach)
@@ -89,6 +89,12 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd")
      print("Statistical pair match comparisons completed.")
      
+     #calls plot function for generating single user interface plots
+     if(plotme) {
+		plotres <- plotme(refdata = refdata, sortdata = sortdata, power = power, absolutevalue = absolutevalue, ttype = "pm")
+     }
+	if(!plotme) {plotres <- NULL}
+     
 	if(!stdout) {	
      	print("File generation has started.")	
 		if(oo[2]) {
@@ -125,5 +131,5 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	
 	setwd(workingdir)
 	enableJIT(0)
-	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,]))	
+	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,],plotres))	
 }

@@ -1200,7 +1200,7 @@ shinyUI(
 					
 					mainPanel(
 						htmlOutput('contents2'),
-						#tableOutput('table2'),
+						plotOutput('plotsingle', width = 400, height = 400),
 						DT::dataTableOutput('table2'),
 
 						bsModal("settingssingle", title = "Settings", trigger = "settings2", size = "large", 
@@ -1227,7 +1227,7 @@ shinyUI(
 			
 
 
-		
+
 		
 		
 

@@ -135,12 +135,18 @@
 		sliderInput(inputId = "fibulai", label = "Fibula", min=1, max=length(input$MeasurementsUsedi), value=1, step = 1)
 	}) 
 	######supplemental measurement combinator
-
+	
+	
+	numbercoresglobal <- reactiveValues(ncore = 1)
+	
+	observeEvent(input$numbercores, {
+		numbercoresglobal$ncore <- input$numbercores
+	})
 	output$ncores <- renderUI({
 		sliderInput(inputId = "numbercores", label = "Number of cores", min=1, max=detectCores(), value=1, step =1)
 	})
-
-
+			
+			
 	observeEvent(input$pro, {
 	
 			showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
@@ -191,10 +197,10 @@
 			if(input$bone == 'femur') {threshold <- input$femur; measurements <- input$MeasurementsUsed7} 
 			if(input$bone == 'tibia') {threshold <- input$tibia; measurements <- input$MeasurementsUsed8} 
 			if(input$bone == 'fibula') {threshold <- input$fibula; measurements <- input$MeasurementsUsed9}
-			if(is.null(threshold)) {threshold <- 1}        
-
+			if(is.null(threshold)) {threshold <- 1} 
+	
 			wtf <- pm.input(bone=toString(input$bone), sort=tempdata1, template='standard',tresh=threshold, measurements=measurements)
-			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores, power = input$power2)
+			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore, power = input$power2)
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])       
 		}	
 		if(input$standard == 'Supplemental' & input$bone != 'altt' & input$bone != 'alttp' & input$bone != 'altta' & input$bone != 'hu' & input$bone != 'hr' & input$bone != 'hs' & input$bone != 'hss' & input$bone != 'fi' & input$bone != 'ft' & input$bone != 'ftt'){
@@ -207,10 +213,10 @@
 			if(input$bone == 'femur') {threshold <- input$femurg; measurements <- input$MeasurementsUsedg} 
 			if(input$bone == 'tibia') {threshold <- input$tibiah; measurements <- input$MeasurementsUsedh} 
 			if(input$bone == 'fibula') {threshold <- input$fibulai; measurements <- input$MeasurementsUsedi}                 
-			if(is.null(threshold)) {threshold <- 1}        
+			if(is.null(threshold)) {threshold <- 1}   
 
 			wtf <- pm.input(bone=toString(input$bone), sort=tempdata1, template='supplemental',tresh=threshold, measurements=measurements)                                	      
-			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores, power = input$power2)
+			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore, power = input$power2)
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])           
 		}
 		if(input$bone == 'altt' || input$bone == 'alttp' || input$bone == 'altta') {
@@ -227,7 +233,7 @@
 			if(input$bone == 'alttp'){test <- "all_pm"}
 			if(input$bone == 'altta'){test <- "all_art"}
 					       		
-			direc2 <- all.ttest(power = input$power2, sort = tempdata1, test = test, tresh = treshlist, measurements = mlist, template = input$standard, sessiontemp = sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, stdout = FALSE, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores)
+			direc2 <- all.ttest(sort = tempdata1, test = test, tresh = treshlist, measurements = mlist, template = input$standard, sessiontemp = sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, stdout = FALSE, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore, power = input$power2)
 			direc <- direc2[[1]]
 			nmatch <- direc2[[3]]
 			ll <- direc2[[4]]
@@ -235,7 +241,7 @@
 		}                  
 		if(input$bone == 'hu' | input$bone == 'hr' | input$bone == 'hs' | input$bone == "hss" | input$bone == 'fi' | input$bone == 'ft' | input$bone == 'ftt') {
 			wtf <- art.input(bone=toString(input$bone), sort=tempdata1)
-			direc2 <- art.ttest(power = input$power2, refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = input$numbercores)   
+			direc2 <- art.ttest(power = input$power2, refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore)   
 			ll <- nrow(wtf[[1]])                       
 		}      
 	}
@@ -411,6 +417,8 @@
 
 		#######################generates options for multiple
 		observeEvent(input$testtype2, {
+		
+			
 			if(input$testtype2 == 'Pair_match') {
 				output$testtype2 <- renderUI({
 					selectInput('bone', 'Elements', c(All_pair_tests = 'alttp', Humerus='humerus', Ulna='ulna', Radius='radius', Femur='femur', Tibia='tibia', Fibula='fibula', Scapula='scapula', Os_coxa='os_coxa', Clavicle='clavicle'),'humerus')

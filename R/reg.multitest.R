@@ -6,7 +6,7 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), corlevel = 0.5) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), corlevel = 0.5, plotme = FALSE) {	    
      print("Statistical association comparisons have started.")
 	library(parallel)
 	library(foreach)
@@ -47,10 +47,14 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	unique.model <<- list()
 	
 	hera1 <- apply(sort, 1, function(x) {
-
-		temp1 <- na.omit(x[seq(from = splitn[1]+1, to = splitn[2])])
+		
+		x <- data.frame(t(x))
+		
+		temp1 <- x[seq(from = splitn[1]+1, to = splitn[2])]
+		temp1 <- temp1[ , colSums(is.na(temp1)) == 0]
 		temp1n <- names(temp1[-1][-1][-1]) #captures measurement names
-		temp2 <- na.omit(x[seq(from = 1, to = splitn[1])])
+		temp2 <- x[seq(from = 1, to = splitn[1])]
+		temp2 <- temp2[ , colSums(is.na(temp2)) == 0]
 		temp2n <- names(temp2[-1][-1][-1]) #captures measurement names
 
 		t1 <- as.data.frame(ref[temp1n])# reference
@@ -110,8 +114,8 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 		rsqr1 <- summary(model1)$r.squared
 
 
-		temp2p <- as.data.frame(t(as.numeric(temp2[-1][-1][-1])))
-		temp1p <- as.data.frame(t(as.numeric(temp1[-1][-1][-1])))
+		temp2p <- data.frame(as.numeric(as.matrix(temp2[-1][-1][-1])))
+		temp1p <- data.frame(as.numeric(as.matrix(temp1[-1][-1][-1])))
 		
 		names(temp2p) <- temp2n
 		names(temp1p) <- temp1n		
@@ -135,22 +139,28 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			within <- "Cannot Exclude"
 		}
 		else within <- "Excluded"
-print(within)
+
 		#temp2 <- as.data.frame(t(temp2)) #converts temp2 to dataframe for $ operator
-		return(c(temp1[1], temp1[2], temp1[3], temp2[1], temp2[2], temp2[3], RSquare = round(rsqr1, digits = 3), Excluded=within, Sample_size = nrow(t1)))
+		return(c(ID = temp1[1], Side = temp1[2], Element = temp1[3], ID = temp2[1], Side = temp2[2], Element = temp2[3], RSquared = round(rsqr1, digits = 3), Sample_size = nrow(t1), Result=within))
 
 	})
-	
+
      print("Statistical association comparisons completed.")
      print("File generation has started.")
-	hera1 <- as.data.frame(t(hera1))
+	hera1 <- data.frame(hera1)
+	names(hera1) <- c("ID","Side","Element","ID","Side","Element","RSquared", "Sample","Result")
+	
+	if(plotme) {
+		plotres <- plotme(sortdata = sort, refdata = ref, splitn = splitn, predlevel = predlevel, corlevel = corlevel, ttype = "reg")
+	}
+	if(!plotme) {plotres <- NULL}
 
 	if(!stdout) {		
 		if(oo[2]) {
-			not_excluded <<- hera1[hera1$Ex == "Cannot Exclude",][,-8]
-			temp1 <<- unique(as.character(not_excluded[,1]))
-			temp2 <<- unique(as.character(not_excluded[,4]))
-			unique_IDs <<- unique(c(temp1,temp2))
+			not_excluded <- hera1[hera1$Result == "Cannot Exclude",][,-8]
+			temp1 <- unique(as.character(not_excluded[,1]))
+			temp2 <- unique(as.character(not_excluded[,4]))
+			unique_IDs <- unique(c(temp1,temp2))
 
 			cl <- makeCluster(no_cores)
 			registerDoSNOW(cl)
@@ -170,9 +180,10 @@ print(within)
 			}
 			stopCluster(cl)
 		}
+
 		if(oo[1]) {
-			write.csv(hera1[hera1$Ex == "Cannot Exclude",][,-8], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
-			write.csv(hera1[hera1$Ex == "Excluded",][,-8], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+			write.csv(hera1[hera1$Result == "Cannot Exclude",][,-8], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
+			write.csv(hera1[hera1$Result == "Excluded",][,-8], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
 	}
 
@@ -182,9 +193,9 @@ print(within)
 
 
 	if(nrow(hera1) == 1) {
-		return(list(direc,hera1[hera1$Ex == "Cannot Exclude",], hera1[hera1$Ex == "Excluded",]))
+		return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",], plotres))
 	}
 	if(nrow(hera1) > 1) {
-		return(list(direc,hera1[hera1$Ex == "Cannot Exclude",][,-8], hera1[hera1$Ex == "Excluded",][,-8]))
+		return(list(direc,hera1[hera1$Result == "Cannot Exclude",][,-8], hera1[hera1$Result == "Excluded",][,-8], plotres))
 	}
 }

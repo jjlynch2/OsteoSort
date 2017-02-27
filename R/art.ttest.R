@@ -20,7 +20,7 @@
 #' art.ttest()
 
 
-art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, no_cores = 1, alphalevel = 0.1, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), power = TRUE) {
+art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, no_cores = 1, alphalevel = 0.1, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), power = TRUE, plotme = FALSE) {
      print("Statistical articulation comparisons have started.")
 	library(parallel)
 	library(foreach)
@@ -70,7 +70,7 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 			difsd <- sd(difa)
 			if(testagainst) {difm <- 0} 
 			if(!testagainst) {difm <- mean(difa)}
-			p.value <- 2 * pt(-abs((difb <- as.numeric(y[7]) - as.numeric(y[8]) - difm) / difsd), df = length(difa) - 1)
+			p.value <- 2 * pt(-abs(( (as.numeric(y[7]) - as.numeric(y[8])) - difm) / difsd), df = length(difa) - 1)
 		}
 		
 		return(data.frame(a=y[1],b=y[3],c=y[5],d=y[2],e=y[4],f=y[6],g=gsub(",","",toString(names(y)[7:length(y)])),h=round(p.value, digits = 3),i=ncol(refdata)/2,j=nrow(refdata), stringsAsFactors=FALSE)) 
@@ -89,7 +89,13 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size")
      print("Statistical articulation comparisons completed.")
-
+     
+     #calls plot function for generating single user interface plots
+     if(plotme) {
+		plotres <- plotme(refdata = refdata, sortdata = sortdata, power = power, absolutevalue = absolutevalue, ttype = "art")
+     }
+	if(!plotme) {plotres <- NULL}  
+   
 	if(!stdout) {
      	print("File generation has started.")
 		if(oo[2]) {
@@ -126,5 +132,5 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 
 	setwd(workingdir)
 	enableJIT(0)
-	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,]))	
+	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,], plotres))	
 }
