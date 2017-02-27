@@ -76,7 +76,7 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	}
 	
 	
-	if(.Platform$OS.type == "unix") {hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE); hera1 = as.data.frame(data.table::rbindlist(hera1))}  
+	if(.Platform$OS.type == "unix") {hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE); globalafter <<- hera1; hera1 = as.data.frame(data.table::rbindlist(hera1))}  
 	if(.Platform$OS.type != "unix") {hera1 <- lapply(FUN = myfun, X = sortdata); hera1 <- data.frame(hera1)}
 	
 
