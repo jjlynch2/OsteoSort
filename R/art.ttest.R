@@ -23,7 +23,6 @@
 art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, no_cores = 1, alphalevel = 0.1, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), power = TRUE, plotme = FALSE) {
      print("Statistical articulation comparisons have started.")
 	library(parallel)
-	library(foreach)
 	library(doSNOW)
 	require(compiler)
 	library(reshape2)
@@ -75,13 +74,9 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 		
 	}
 	
-	
-	if(.Platform$OS.type == "unix") {hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE); globalafter <<- hera1; hera1 = as.data.frame(data.table::rbindlist(hera1))}  
-	if(.Platform$OS.type != "unix") {hera1 <- lapply(FUN = myfun, X = sortdata); hera1 <- data.frame(hera1)}
-	
+	hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE)
+	hera1 = as.data.frame(data.table::rbindlist(hera1))
 
-
-	
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size")
      print("Statistical articulation comparisons completed.")
      
@@ -94,6 +89,7 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	if(!stdout) {
      	print("File generation has started.")
 		if(oo[2]) {
+			library(foreach)
 			not_excluded <<- hera1[hera1$p.value > alphalevel,]
 		
 			temp1 <- unique(not_excluded[,1])

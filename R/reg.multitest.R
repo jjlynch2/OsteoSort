@@ -6,10 +6,9 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), plotme = FALSE) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), plotme = FALSE, no_cores = 1) {	    
      print("Statistical association comparisons have started.")
 	library(parallel)
-	library(foreach)
 	library(doSNOW)
 	require(compiler)
 	library(earth)
@@ -50,9 +49,9 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	is.unique <<- list() 
 	unique.model <<- list()
 	
-	hera1 <- apply(sort, 1, function(x) {
-		x <- data.frame(t(x))
-		
+	myfun<-function(X){
+		x <- data.frame(X)
+
 		temp1 <- x[seq(from = splitn[1]+1, to = splitn[2])]
 		temp1 <- temp1[ , colSums(is.na(temp1)) == 0]
 		temp1n <- names(temp1[-1][-1][-1]) #captures measurement names
@@ -124,12 +123,16 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 
 		return(data.frame(ID = temp1[1], Side = temp1[2], Element = temp1[3], ID = temp2[1], Side = temp2[2], Element = temp2[3], RSquared = round(rsqr1, digits = 3), Sample_size = nrow(t1), Result=within, stringsAsFactors=FALSE))
 
-	})
-
+	}
+	
+	sortlist <- split(sort, 1:nrow(sort))
+	hera1 <- mclapply(FUN = myfun, X = sortlist, mc.cores = no_cores, mc.preschedule = TRUE)
+	hera1 = as.data.frame(data.table::rbindlist(hera1))
+	
+	rm(is.unique) #making the environment clean again
+	rm(unique.model)
+	
      print("Statistical association comparisons completed.")
-     print("File generation has started.")
-
-     hera1 = as.data.frame(data.table::rbindlist(hera1))
 	names(hera1) <- c("ID","Side","Element","ID","Side","Element","RSquared", "Sample","Result")
 	
 	if(plotme) {
@@ -137,8 +140,10 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	}
 	if(!plotme) {plotres <- NULL}
 
-	if(!stdout) {		
+	if(!stdout) {
+    	 print("File generation has started.")
 		if(oo[2]) {
+			library(foreach)
 			not_excluded <- hera1[hera1$Result == "Cannot Exclude",][,-8]
 			temp1 <- unique(as.character(not_excluded[,1]))
 			temp2 <- unique(as.character(not_excluded[,4]))

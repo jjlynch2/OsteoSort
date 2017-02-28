@@ -23,7 +23,6 @@
 pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1, plotme = FALSE) {
      print("Statistical pair match comparisons have started.")
 	library(parallel)
-	library(foreach)
 	library(doSNOW)
 	require(compiler)
 	enableJIT(3)
@@ -80,11 +79,9 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 		return(data.frame(a=X[,1],b=X[,3],c=X[,5],d=X[,2],e=X[,4],f=X[,6],g=gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)])),h=round(p.value, digits = 4),i=ncol(y)/2,j=nrow(y), k=round(difm, digits = 4), l=round(difsd, digits = 4),stringsAsFactors=FALSE)) 
 	}
 	
+	hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE)
+	hera1 = as.data.frame(data.table::rbindlist(hera1))
 	
-	if(.Platform$OS.type == "unix") {hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE); hera1 = as.data.frame(data.table::rbindlist(hera1))}  
-	if(.Platform$OS.type != "unix") {hera1 <- lapply(FUN = myfun, X = sortdata); hera1 <- data.frame(hera1)}
-
-
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd")
      print("Statistical pair match comparisons completed.")
      
@@ -97,6 +94,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	if(!stdout) {	
      	print("File generation has started.")	
 		if(oo[2]) {
+			library(foreach)
 			not_excluded <- hera1[hera1$p.value > alphalevel,]
 			temp1 <- unique(not_excluded[,1])
 			temp2 <- unique(not_excluded[,4])
