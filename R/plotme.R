@@ -8,7 +8,8 @@
 #' @examples
 #' plotme()
 
-plotme <- function (refdata = NULL, sortdata = NULL, power = TRUE, absolutevalue = TRUE, ttype = "pm", splitn = NULL, predlevel = 0.90, corlevel = 0.5) {   
+plotme <- function (refdata = NULL, sortdata = NULL, power = TRUE, absolutevalue = TRUE, ttype = "pm", splitn = NULL, predlevel = 0.90) {   
+	library(CCA)
 	if(power) {p1 <- 0.00005; p2 <- 0.33} #half normal transformation
 	if(!power) {p1 <- 0; p2 <- 1} #used to prevent writing new code inside loop. This transformation doesn't change the data
 	
@@ -68,79 +69,52 @@ plotme <- function (refdata = NULL, sortdata = NULL, power = TRUE, absolutevalue
 		t1 <- as.data.frame(ref[temp1n])# reference
 		t2 <- as.data.frame(ref[temp2n])
 		
-		B1PCAt <- prcomp(t1)
-		B2PCAt <- prcomp(t2)
+		B1PCAt <- prcomp(t1) #PCA one
+		B2PCAt <- prcomp(t2) #PCA two
 
-		B1PCA <- B1PCAt$x 
-		B2PCA <- B2PCAt$x
+		B1PCA <- B1PCAt$x #PC scores
+		B2PCA <- B2PCAt$x #PC scores
 			
-		t <- as.data.frame(cor(B1PCA, B2PCA, use="complete.obs"))
-			
-		predictednames <- c()
-		for(i in colnames(t)) {
-		    if(any(t[,i] > corlevel)) {
-			   predictednames <- c(predictednames, i)
-		    }
-		}
-
-		predictornames <- c()
-		for(i in rownames(t)) {
-		    if(any(t[i,]  > corlevel)) {
-			   predictornames <- c(predictornames, i)
-			   }
-		}
+		cmodel1 <- cc(B1PCA, B2PCA) #CCA model
+		score1 <- cmodel1$scores$xscores[,1] #takes first variate
+		score2 <- cmodel1$scores$yscores[,1] #takes first variate
+		model1 <- lm(score1~score2) #linear model
 		
-		if(length(predictednames) < 1 || length(predictornames) < 1) {
-			return(NULL)
-		}
-		
-		if(length(predictornames) > 1) { B1PCA <- rowSums(B1PCA[,predictornames])}
-		if(length(predictednames) > 1) { B2PCA <- rowSums(B2PCA[,predictednames])}
-		if(length(predictornames) == 1) { B1PCA <- B1PCA[,predictornames]}
-		if(length(predictednames) == 1) { B2PCA <- B2PCA[,predictednames]}
-			
-		names(B1PCA) <- predictornames
-		names(B2PCA) <- predictednames
-		
-		df1 <- as.data.frame(cbind(B1PCA, B2PCA))
-		model1 <- lm(B2PCA ~ B1PCA, data = df1)
-		
-
-	   
 		rsqr1 <- summary(model1)$r.squared
 
-
-		temp2p <- data.frame(as.numeric(as.matrix(temp2[-1][-1][-1])))
-		temp1p <- data.frame(as.numeric(as.matrix(temp1[-1][-1][-1])))
+		temp2p <- data.frame(t(as.numeric(as.matrix(temp2[-1][-1][-1]))))
+		temp1p <- data.frame(t(as.numeric(as.matrix(temp1[-1][-1][-1]))))
 		
 		names(temp2p) <- temp2n
-		names(temp1p) <- temp1n	
+		names(temp1p) <- temp1n		
 		
 		temp1p <- as.data.frame(predict(B1PCAt, temp1p))
 		temp2p <- as.data.frame(predict(B2PCAt, temp2p))
-
-		if(length(predictednames) > 1) {predicted <- sum(temp2p[,predictednames])}
-		if(length(predictornames) > 1) {predictors <- sum(temp1p[,predictornames])}
-		if(length(predictednames) <= 1) {predicted <- temp2p[,predictednames]}
-		if(length(predictornames) <= 1) {predictors <- temp1p[,predictornames]}
-
-		names(predictors) <- predictornames
-		names(predicted) <- predictednames
-
-		pm1 <- predict(model1, newdata = data.frame(B1PCA = predictors), interval="prediction", level = predlevel) #prediction interval based on the lm from model1
 		
+		#create CV from coef of cva
+		df1 <- 0
+		for(i in 1:length(temp1p)) {
+			p1 <- temp1p[i] * cmodel1$xcoef[i,1]
+			df1 <- (df1 + p1)
+		}
+		
+		df2 <- 0
+		for(i in 1:length(temp2p)) {
+			p2 <- temp2p[i] * cmodel1$ycoef[i,1]
+			df2 <- (df2 + p2)
+		}
 	
 	lmp1 <- predict(model1, interval="prediction", level = predlevel)
 	jpeg(paste("graph",".jpeg",sep=''),height = 800, width = 800)
 	dev.control('enable')
 		
-	plot(B2PCA,B1PCA, xlab = "", ylab = "")
+	plot(score1,score2, xlab = "", ylab = "")
 	
-	points(predicted,predictors,col="blue",pch=16)
+	points(df2,df1,col="blue",pch=16)
 	
-	matlines(lmp1[,1], B1PCA, col=c("red"))
-	matlines(lmp1[,2], B1PCA, col=c("blue"), lty = 4)
-	matlines(lmp1[,3], B1PCA, col=c("blue"), lty = 4)
+	matlines(lmp1[,1], score2, col=c("red"))
+	matlines(lmp1[,2], score2, col=c("blue"), lty = 4)
+	matlines(lmp1[,3], score2, col=c("blue"), lty = 4)
 	
 	plotted <- recordPlot()
 	dev.off()

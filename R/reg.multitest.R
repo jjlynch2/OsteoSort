@@ -6,14 +6,14 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), corlevel = 0.5, plotme = FALSE) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), plotme = FALSE) {	    
      print("Statistical association comparisons have started.")
 	library(parallel)
 	library(foreach)
 	library(doSNOW)
 	require(compiler)
 	library(earth)
-	library(RcppArmadillo)
+	library(CCA)
      library(data.table)
 	enableJIT(3)
 
@@ -45,11 +45,12 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	#use random name, assign(), eval(as.symbol()) for global lists? 
 	#would avoid environmental scoping problem
 	
-	is.unique <<- list()
+	#global stores models. Works for multi-user environment
+	#since reference doesn't change between them.
+	is.unique <<- list() 
 	unique.model <<- list()
 	
 	hera1 <- apply(sort, 1, function(x) {
-		
 		x <- data.frame(t(x))
 		
 		temp1 <- x[seq(from = splitn[1]+1, to = splitn[2])]
@@ -61,53 +62,29 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 
 		t1 <- as.data.frame(ref[temp1n])# reference
 		t2 <- as.data.frame(ref[temp2n])
+		
+		#check for cache
 		output1 <- lapply(is.unique, function(x) { 
 			ident <- identical(x, unique(c(temp1n, temp2n)))
 			return(ident) 
 		})
 
-		index <- match(TRUE,output1)
+		index <- match(TRUE,output1) #index of model if exists
 		
-		B1PCAt <- prcomp(t1)
-		B2PCAt <- prcomp(t2)
+		B1PCAt <- prcomp(t1) #PCA one
+		B2PCAt <- prcomp(t2) #PCA two
 
-		B1PCA <- B1PCAt$x 
-		B2PCA <- B2PCAt$x
+		B1PCA <- B1PCAt$x #PC scores
+		B2PCA <- B2PCAt$x #PC scores
 			
-		t <- as.data.frame(cor(B1PCA, B2PCA, use="complete.obs"))
-			
-		predictednames <- c()
-		for(i in colnames(t)) {
-		    if(any(t[,i] > corlevel)) {
-			   predictednames <- c(predictednames, i)
-		    }
-		}
-
-		predictornames <- c()
-		for(i in rownames(t)) {
-		    if(any(t[i,]  > corlevel)) {
-			   predictornames <- c(predictornames, i)
-			   }
-		}
-		
-		
-		if(length(predictednames) < 1 || length(predictornames) < 1) {
-			return(c(temp1[1], temp1[2], temp1[3], temp2[1], temp2[2], temp2[3], RSquare = 0, Excluded="Not enough correlation", Sample_size = nrow(t1)))
-		}
+		cmodel1 <- cc(B1PCA, B2PCA) #CCA model
+		score1 <- cmodel1$scores$xscores[,1] #takes first variate
+		score2 <- cmodel1$scores$yscores[,1] #takes first variate
 
 		if(is.na(index)) {
-			if(length(predictornames) > 1) { B1PCA <- rowSums(B1PCA[,predictornames])}
-			if(length(predictednames) > 1) { B2PCA <- rowSums(B2PCA[,predictednames])}
-			if(length(predictornames) == 1) { B1PCA <- B1PCA[,predictornames]}
-			if(length(predictednames) == 1) { B2PCA <- B2PCA[,predictednames]}
+			model1 <- lm(score2~score1) #linear model
 			
-			names(B1PCA) <- predictornames
-			names(B2PCA) <- predictednames
-
-			df1 <- as.data.frame(cbind(B1PCA, B2PCA))
-			model1 <- lm(B2PCA ~ B1PCA, data = df1)
-
-			is.unique[[length(is.unique)+1]] <<-   unique(c(temp1n,temp2n))
+			is.unique[[length(is.unique)+1]] <<-   unique(c(temp1n,temp2n)) #cache me outside 
 			unique.model[[length(unique.model)+1]] <<- model1
 		}
 		else model1 <- unique.model[[index]]
@@ -123,25 +100,28 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 		
 		temp1p <- as.data.frame(predict(B1PCAt, temp1p))
 		temp2p <- as.data.frame(predict(B2PCAt, temp2p))
-
-		if(length(predictednames) > 1) {predicted <- sum(temp2p[,predictednames])}
-		if(length(predictornames) > 1) {predictors <- sum(temp1p[,predictornames])}
-		if(length(predictednames) <= 1) {predicted <- temp2p[,predictednames]}
-		if(length(predictornames) <= 1) {predictors <- temp1p[,predictornames]}
-
-		names(predictors) <- predictornames
-		names(predicted) <- predictednames
-
-		pm1 <- predict(model1, newdata = data.frame(B1PCA = predictors), interval="prediction", level = predlevel) #prediction interval based on the lm from model1
+		
+		#create CV from coef of cva
+		df1 <- 0
+		for(i in 1:length(temp1p)) {
+			p1 <- temp1p[i] * cmodel1$xcoef[i,1]
+			df1 <- (df1 + p1)
+		}
+		
+		df2 <- 0
+		for(i in 1:length(temp2p)) {
+			p2 <- temp2p[i] * cmodel1$ycoef[i,1]
+			df2 <- (df2 + p2)
+		}
+		
+		pm1 <- predict(model1, newdata = data.frame(score1 = as.numeric(df1)), interval = "prediction", level = predlevel)
 		
 		
-		
-		if(predicted <= pm1[3] && predicted >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
+		if(df2[,1] <= pm1[3] && df2 >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
 			within <- "Cannot Exclude"
 		}
 		else within <- "Excluded"
 
-		#temp2 <- as.data.frame(t(temp2)) #converts temp2 to dataframe for $ operator
 		return(data.frame(ID = temp1[1], Side = temp1[2], Element = temp1[3], ID = temp2[1], Side = temp2[2], Element = temp2[3], RSquared = round(rsqr1, digits = 3), Sample_size = nrow(t1), Result=within, stringsAsFactors=FALSE))
 
 	})
@@ -153,7 +133,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	names(hera1) <- c("ID","Side","Element","ID","Side","Element","RSquared", "Sample","Result")
 	
 	if(plotme) {
-		plotres <- plotme(sortdata = sort, refdata = ref, splitn = splitn, predlevel = predlevel, corlevel = corlevel, ttype = "reg")
+		plotres <- plotme(sortdata = sort, refdata = ref, splitn = splitn, predlevel = predlevel, ttype = "reg")
 	}
 	if(!plotme) {plotres <- NULL}
 
