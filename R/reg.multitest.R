@@ -11,7 +11,6 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	library(parallel)
 	library(doSNOW)
 	require(compiler)
-	library(earth)
 	library(CCA)
      library(data.table)
 	enableJIT(3)

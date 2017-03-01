@@ -25,7 +25,6 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	library(parallel)
 	library(doSNOW)
 	require(compiler)
-	library(reshape2)
 	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
