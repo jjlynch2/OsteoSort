@@ -61,7 +61,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	unique.yrow <<- list()
 
 	myfunpm<-function(X){
-		temp1n <- names(X[-c(1:6)])
+		temp1n <- names(X[-c(1:6)][c(T,F)])
 		temp1 <- temp1n[seq(1,length(temp1n),2)]
 
 		output1 <- lapply(is.uniquepm, function(zz) { 
@@ -93,8 +93,8 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			unique.difsd[[length(unique.difsd)+1]] <<- difsd
 			unique.difm[[length(unique.difm)+1]] <<- difm
 			unique.df[[length(unique.df)+1]] <<- length(difa) - 1 #1 for degrees of freedom
-			unique.ycol[[length(unique.ycol)+1]] <<- ncol(y)
-			unique.yrow[[length(unique.yrow)+1]] <<- nrow(y)
+			unique.ycol[[length(unique.ycol)+1]] <<- ycol
+			unique.yrow[[length(unique.yrow)+1]] <<- yrow
 		}
 		else {
 			ycol <- as.numeric(unique.ycol[[index]])
@@ -111,7 +111,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			} 
 		}
 		
-		return(data.frame(X[,1], X[,3],X[,5],X[,2],X[,4],X[,6],gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)]), perl = TRUE),round(p.value, digits = 4),ycol/2,yrow,round(difm, digits = 4),round(difsd, digits = 4), stringsAsFactors=FALSE)) 
+		return(data.frame(X[,1], X[,3],X[,5],X[,2],X[,4],X[,6],toString(temp1n),round(p.value, digits = 4),ycol/2,yrow,round(difm, digits = 4),round(difsd, digits = 4), stringsAsFactors=FALSE)) 
 	} 
 
 

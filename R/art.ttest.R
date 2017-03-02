@@ -53,23 +53,63 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 		}
 	}
 
+	is.uniqueart <<- list()
+	unique.difsd2 <<- list()
+	unique.difm2 <<- list()
+	unique.df2 <<- list()
+	unique.ycol2 <<- list()
+	unique.yrow2 <<- list()
+
 	myfun<-function(X){
-		if(absolutevalue) {
-			difa <- ( abs(refdata[,1] - refdata[,2]) + p1 ) ^ p2
-			difsd <- sd(difa)
-			if(testagainst) {difm <- 0} 
-			else difm <- mean(difa)
-			tt <- (abs(as.numeric(X[7]) - as.numeric(X[8])) + p1) ^ p2
-			p.value <- pt((tt - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
+		Xname <- names(X[-c(1:6)])
+		output1 <- lapply(is.uniqueart, function(zz) { 
+			ident <- identical(zz, Xname)
+			return(ident) 
+		})
+		index <- match(TRUE,output1) #index of model if exists
+		if(is.na(index)) {
+			ycol <- ncol(refdata)
+			yrow <- nrow(refdata)
+			if(absolutevalue) {
+				difa <- ( abs(refdata[c(T,F)] - refdata[c(F,T)]) + p1 ) ^ p2
+				difsd <- sd(difa)
+				if(testagainst) {difm <- 0} 
+				else difm <- mean(difa)
+				p.value <- pt(((abs(as.numeric(X[7]) - as.numeric(X[8])) + p1) ^ p2 - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
+			}
+			else {
+				difa <- refdata[c(T,F)] - refdata[c(F,T)]
+				difsd <- sd(difa)
+				if(testagainst) {difm <- 0} 
+				else difm <- mean(difa)
+				p.value <- 2 * pt(-abs(( (as.numeric(X[7]) - as.numeric(X[8])) - difm) / difsd), df = length(difa) - 1)
+			}
+
+			is.uniqueart[[length(is.uniqueart)+1]] <<- Xname #cache me outside 
+			unique.difsd2[[length(unique.difsd2)+1]] <<- difsd
+			unique.difm2[[length(unique.difm2)+1]] <<- difm
+			unique.df2[[length(unique.df2)+1]] <<- length(difa) - 1 #1 for degrees of freedom
+			unique.ycol2[[length(unique.ycol2)+1]] <<- ycol
+			unique.yrow2[[length(unique.yrow2)+1]] <<- yrow
 		}
 		else {
-			difa <- refdata[,1] - refdata[,2]
-			difsd <- sd(difa)
-			if(testagainst) {difm <- 0} 
-			else difm <- mean(difa)
-			p.value <- 2 * pt(-abs(( (as.numeric(X[7]) - as.numeric(X[8])) - difm) / difsd), df = length(difa) - 1)
+			ycol <- as.numeric(unique.ycol2[[index]])
+			difm <- as.numeric(unique.difm2[[index]])
+			yrow <- as.numeric(unique.yrow2[[index]])
+			difsd <- as.numeric(unique.difsd2[[index]])
+			difdf <- as.numeric(unique.df2[[index]])
+			if(absolutevalue) {
+				p.value <- pt(((abs(X[7] - X[8]) + p1) ^ p2 - difm) / difsd, df = difdf, lower.tail = FALSE) #one-tail for absolute value model
+			}
+			else {
+				p.value <- 2 * pt(-abs(( (X[7] - X[8]) - difm) / difsd), df = difdf)
+			}
+
 		}
-		return(data.frame(X[1],X[3],X[5],X[2],X[4],X[6],gsub(",","",toString(names(X)[7:length(X)]), perl = TRUE),round(p.value, digits = 3),ncol(refdata)/2,nrow(refdata), stringsAsFactors=FALSE)) 
+
+
+
+		return(data.frame(X[1],X[3],X[5],X[2],X[4],X[6],toString(Xname),round(p.value, digits = 4),ycol/2,yrow, stringsAsFactors=FALSE)) 
 	}
 	
 	op <- system.time( hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE) )
@@ -78,7 +118,14 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size")
      print("Statistical articulation comparisons completed.")
-     
+
+	rm(is.uniqueart) #making the environment clean again
+	rm(unique.difsd2)
+	rm(unique.difm2)
+	rm(unique.df2)
+	rm(unique.ycol2)
+	rm(unique.yrow2)
+
      #calls plot function for generating single user interface plots
      if(plotme) {
 		plotres <- plotme(refdata = refdata, sortdata = sortdata, power = power, absolutevalue = absolutevalue, ttype = "art")
