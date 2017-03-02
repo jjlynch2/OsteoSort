@@ -24,7 +24,8 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
      print("Statistical pair match comparisons have started.")
 	library(parallel)
 	library(doSNOW)
-	require(compiler)
+	library(compiler)
+	library(data.table)
 	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
@@ -33,7 +34,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	if(is.na(refdata) || is.null(refdata)) {return(NULL)} #input san
 	
 	if(power) {p1 <- 0.00005; p2 <- 0.33} #half normal transformation
-	if(!power) {p1 <- 0; p2 <- 1} #used to prevent writing new code inside loop. This transformation doesn't change the data
+	else p1 <- 0; p2 <- 1 #used to prevent writing new code inside loop. This transformation doesn't change the data
 	
 	workingdir = getwd()
 
@@ -46,50 +47,93 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			dir.create(direc)
 			setwd(direc)
 		}
-		if(a) {
+		else {
 			setwd(sessiontempdir)
 			direc <- NULL
 		}
 	}
+	
+	is.uniquepm <<- list()
+	unique.difsd <<- list()
+	unique.difm <<- list()
+	unique.df <<- list()
+	unique.ycol <<- list()
+	unique.yrow <<- list()
 
-	myfun<-function(X){
-		temp1 <- names(as.data.frame(X)[-c(1:6)])
-		temp1 <- temp1[seq(1,length(temp1),2)]
-		temp1 <- sort(c(temp1, paste(temp1,"R",sep="")))
-		y <- as.data.frame(refdata)[temp1]
-		if(absolutevalue) { 
-			difa <- ( rowSums(abs((y[c(T,F)] - y[c(F,T)]))) + p1 ) ^ p2
-			difsd <- sd(difa)
-			if(testagainst) {difm <- 0} 
-			if(!testagainst) {difm <- mean(difa)}
-			tt <- (sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ^p2
-			p.value <- pt((tt - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
+	myfunpm<-function(X){
+		temp1n <- names(X[-c(1:6)])
+		temp1 <- temp1n[seq(1,length(temp1n),2)]
+
+		output1 <- lapply(is.uniquepm, function(zz) { 
+			ident <- identical(zz, temp1n)
+			return(ident) 
+		})
+		index <- match(TRUE,output1) #index of model if exists
+
+		if(is.na(index)) {
+			temp1 <- sort(c(temp1, paste(temp1,"R",sep="")))
+			y <- refdata[temp1]
+			ycol <- ncol(y)
+			yrow <- nrow(y)
+			if(absolutevalue) { 
+				difa <- ( rowSums(abs((y[c(T,F)] - y[c(F,T)]))) + p1 ) ^ p2
+				difsd <- sd(difa)
+				if(testagainst) {difm <- 0} 
+				else difm <- mean(difa)
+				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ^p2) - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
+			}
+			else {
+				difa <- rowSums(y[c(T,F)] - y[c(F,T)])
+				difsd <- sd(difa)
+				if(testagainst) {difm <- 0} 
+				else difm <- mean(difa)
+				p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = length(difa) - 1)
+			} 
+			is.uniquepm[[length(is.uniquepm)+1]] <<- temp1n #cache me outside 
+			unique.difsd[[length(unique.difsd)+1]] <<- difsd
+			unique.difm[[length(unique.difm)+1]] <<- difm
+			unique.df[[length(unique.df)+1]] <<- length(difa) - 1 #1 for degrees of freedom
+			unique.ycol[[length(unique.ycol)+1]] <<- ncol(y)
+			unique.yrow[[length(unique.yrow)+1]] <<- nrow(y)
+		}
+		else {
+			ycol <- as.numeric(unique.ycol[[index]])
+			difm <- as.numeric(unique.difm[[index]])
+			yrow <- as.numeric(unique.yrow[[index]])
+			difsd <- as.numeric(unique.difsd[[index]])
+			difdf <- as.numeric(unique.df[[index]])
+			if(absolutevalue) { 
+				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ^p2) - difm) / difsd, df = difdf, lower.tail = FALSE) #one-tail for absolute value model
+			}
+			else {
+
+				p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = difdf)
+			} 
 		}
 		
-		if(!absolutevalue) {
-			difa <- rowSums(y[c(T,F)] - y[c(F,T)])
-			difsd <- sd(difa)
-			if(testagainst) {difm <- 0}
-			if(!testagainst) {difm <- mean(difa)}
-			p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = length(difa) - 1)
-		} 
-		
-		
-		
-		return(data.frame(a=X[,1],b=X[,3],c=X[,5],d=X[,2],e=X[,4],f=X[,6],g=gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)])),h=round(p.value, digits = 4),i=ncol(y)/2,j=nrow(y), k=round(difm, digits = 4), l=round(difsd, digits = 4),stringsAsFactors=FALSE)) 
-	}
+		return(data.frame(X[,1], X[,3],X[,5],X[,2],X[,4],X[,6],gsub(",","",toString(colnames(X)[7:length(X)][c(T,F)]), perl = TRUE),round(p.value, digits = 4),ycol/2,yrow,round(difm, digits = 4),round(difsd, digits = 4), stringsAsFactors=FALSE)) 
+	} 
+
+
+	op <- system.time ( hera1 <- mclapply(FUN = myfunpm, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE) )
+	print(op)
+	hera1 <- as.data.frame(data.table::rbindlist(hera1))
 	
-	hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE)
-	hera1 = as.data.frame(data.table::rbindlist(hera1))
-	
-	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd")
+     colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd")
      print("Statistical pair match comparisons completed.")
      
+	rm(is.uniquepm) #making the environment clean again
+	rm(unique.difsd)
+	rm(unique.difm)
+	rm(unique.df)
+	rm(unique.ycol)
+	rm(unique.yrow)
+
      #calls plot function for generating single user interface plots
      if(plotme) {
 		plotres <- plotme(refdata = refdata, sortdata = sortdata, power = power, absolutevalue = absolutevalue, ttype = "pm")
      }
-	if(!plotme) {plotres <- NULL}
+	else plotres <- NULL
      
 	if(!stdout) {	
      	print("File generation has started.")	
@@ -123,7 +167,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			write.csv(as.matrix(hera1[hera1$p.value <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
 		
-    	 print("File generation has completed.")
+		print("File generation has completed.")
 	}
 	gc()
 	setwd(workingdir)

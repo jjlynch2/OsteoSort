@@ -131,6 +131,7 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 	ref1[,1] <- as.character(ref1[,1])
 	ref2[,1] <- as.character(ref2[,1])
 	test <- array()
+
 	for(i in 1:nrow(ref1)) {
 		for(a in 1:nrow(ref2)) {
 			if(ref1[i,1] == ref2[a,1]) {
@@ -173,8 +174,7 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 
 	res <- cbind(sort1[indices[,1],], sort2[indices[,2],]) #Alternative approach combining both into a single data.frame
 
-
-	
      print("Import and reference generation completed.")
+	gc()
 	return(list(res, ref, splitn = c(bone1temp, bone2temp+bone1temp)))
 }

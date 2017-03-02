@@ -16,7 +16,8 @@
 #' pm.input()
 
 pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1, measurements = NULL) {
-     print("Import and reference generation has started.")
+	library(data.table)    
+ 	print("Import and reference generation has started.")
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
 	if(is.na(bone) || is.null(sort)) {return(NULL)} #input san
@@ -90,16 +91,9 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	colnames(sortdata) <- c(c("A", "B", "C",measurements))
 	colnames(refdata) <- namedf
 
-
-
-#There is a bug that requires a data.table for the code below
-#otherwise the combinations get mixed up
-#will need to fix this eventually, but for now it works.
-	library(data.table)
 	sortdata <- data.table(sortdata) 
 	reff <- data.table(refdata)
 	
-
 
 	#creates unique combination between left and right elements and reorders them 
 	#so left and right measurements are next to each other similar to the reference data
@@ -122,11 +116,15 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 		ids <- split(cbind(d, c), r)
 		na.rows <- unique(sort(r))
 
-		#NAs
+
 		modified <- lapply(seq_along(na.rows), function(i) {
 			res[na.rows[i], -(ids[[i]]), drop = F]
 		})
-		unmodified <- split(res[-na.rows, ], (1:nrow(res))[-na.rows]) #no NAs
+
+
+
+		unmodified <- split(res[-na.rows, ], (1:nrow(res))[-na.rows]) 
+
 
 		#combined 
 		recombined <- list()
@@ -165,6 +163,6 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	###########################################################
 	if(length(recombined) == 0) {recombined <- NA}
      print("Import and reference generation completed.")
-
+	gc()
 	return(list(recombined,reff))
 }

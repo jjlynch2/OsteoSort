@@ -14,9 +14,6 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	library(CCA)
      library(data.table)
 	enableJIT(3)
-
-	if(detectCores() > 1) {no_cores <- round(detectCores() /2)}
-	if(detectCores() == 1) {no_cores <- 1}
 	
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
@@ -34,33 +31,30 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			dir.create(direc)
 			setwd(direc)
 		}
-		if(a) {
+		else {
 			setwd(sessiontempdir)
 			direc <- NULL
 		}
 	}
 
-	#use random name, assign(), eval(as.symbol()) for global lists? 
-	#would avoid environmental scoping problem
 	
 	#global stores models. Works for multi-user environment
 	#since reference doesn't change between them.
 	is.unique <<- list() 
 	unique.model <<- list()
-	
-	myfun<-function(X){
-		x <- data.frame(X)
+	unique.pca1 <<- list()
+	unique.pca2 <<- list()
+	unique.cca <<- list()
+	unique.t1r <<- list()
 
-		temp1 <- x[seq(from = splitn[1]+1, to = splitn[2])]
+	myfunreg<-function(X){
+		temp1 <- X[seq(from = splitn[1]+1, to = splitn[2])]
 		temp1 <- temp1[ , colSums(is.na(temp1)) == 0]
 		temp1n <- names(temp1[-1][-1][-1]) #captures measurement names
-		temp2 <- x[seq(from = 1, to = splitn[1])]
+		temp2 <- X[seq(from = 1, to = splitn[1])]
 		temp2 <- temp2[ , colSums(is.na(temp2)) == 0]
 		temp2n <- names(temp2[-1][-1][-1]) #captures measurement names
 
-		t1 <- as.data.frame(ref[temp1n])# reference
-		t2 <- as.data.frame(ref[temp2n])
-		
 		#check for cache
 		output1 <- lapply(is.unique, function(x) { 
 			ident <- identical(x, unique(c(temp1n, temp2n)))
@@ -68,26 +62,40 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 		})
 
 		index <- match(TRUE,output1) #index of model if exists
-		
-		B1PCAt <- prcomp(t1) #PCA one
-		B2PCAt <- prcomp(t2) #PCA two
-
-		B1PCA <- B1PCAt$x #PC scores
-		B2PCA <- B2PCAt$x #PC scores
-			
-		cmodel1 <- cc(B1PCA, B2PCA) #CCA model
-		score1 <- cmodel1$scores$xscores[,1] #takes first variate
-		score2 <- cmodel1$scores$yscores[,1] #takes first variate
 
 		if(is.na(index)) {
+			t1 <- ref[temp1n]# reference
+			t2 <- ref[temp2n]
+			t1r <- nrow(t1)
+			B1PCAt <- prcomp(t1) #PCA one
+			B2PCAt <- prcomp(t2) #PCA two
+
+			B1PCA <- B1PCAt$x #PC scores
+			B2PCA <- B2PCAt$x #PC scores
+			
+			cmodel1 <- cc(B1PCA, B2PCA) #CCA model
+			score1 <- cmodel1$scores$xscores[,1] #takes first variate
+			score2 <- cmodel1$scores$yscores[,1] #takes first variate
+
 			model1 <- lm(score2~score1) #linear model
 			
 			is.unique[[length(is.unique)+1]] <<-   unique(c(temp1n,temp2n)) #cache me outside 
 			unique.model[[length(unique.model)+1]] <<- model1
+			unique.pca1[[length(unique.pca1)+1]] <<- B1PCAt
+			unique.pca2[[length(unique.pca2)+1]] <<- B2PCAt
+			unique.cca[[length(unique.cca)+1]] <<- cmodel1
+			unique.t1r[[length(unique.t1r)+1]] <<- nrow(t1)
 		}
-		else model1 <- unique.model[[index]]
-		
-	   
+		else {
+			t1r <- unique.t1r[[index]]
+			model1 <- unique.model[[index]]
+			B1PCAt <- unique.pca1[[index]]
+			B2PCAt <- unique.pca2[[index]]
+			cmodel1 <- unique.cca[[index]]
+			B1PCA <- B1PCAt$x #PC scores
+			B2PCA <- B2PCAt$x #PC scores
+		}
+			
 		rsqr1 <- summary(model1)$r.squared
 
 		temp2p <- data.frame(t(as.numeric(as.matrix(temp2[-1][-1][-1]))))
@@ -120,24 +128,29 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 		}
 		else within <- "Excluded"
 
-		return(data.frame(ID = temp1[1], Side = temp1[2], Element = temp1[3], ID = temp2[1], Side = temp2[2], Element = temp2[3], RSquared = round(rsqr1, digits = 3), Sample_size = nrow(t1), Result=within, stringsAsFactors=FALSE))
+		return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],round(rsqr1, digits = 3),t1r,within, stringsAsFactors=FALSE))
 
 	}
 	
 	sortlist <- split(sort, 1:nrow(sort))
-	hera1 <- mclapply(FUN = myfun, X = sortlist, mc.cores = no_cores, mc.preschedule = TRUE)
+	op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = no_cores, mc.preschedule = TRUE) )
+	print(op)
 	hera1 = as.data.frame(data.table::rbindlist(hera1))
 	
 	rm(is.unique) #making the environment clean again
 	rm(unique.model)
-	
+	rm(unique.pca1)
+	rm(unique.pca2)
+	rm(unique.cca)
+	rm(unique.t1l)
+
      print("Statistical association comparisons completed.")
 	names(hera1) <- c("ID","Side","Element","ID","Side","Element","RSquared", "Sample","Result")
 	
 	if(plotme) {
 		plotres <- plotme(sortdata = sort, refdata = ref, splitn = splitn, predlevel = predlevel, ttype = "reg")
 	}
-	if(!plotme) {plotres <- NULL}
+	else plotres <- NULL
 
 	if(!stdout) {
     	 print("File generation has started.")
@@ -177,11 +190,8 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
      print("File generation has completed.")
 	enableJIT(0)
 
-
 	if(nrow(hera1) == 1) {
 		return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",], plotres))
 	}
-	if(nrow(hera1) > 1) {
-		return(list(direc,hera1[hera1$Result == "Cannot Exclude",][,-8], hera1[hera1$Result == "Excluded",][,-8], plotres))
-	}
+	else return(list(direc,hera1[hera1$Result == "Cannot Exclude",][,-8], hera1[hera1$Result == "Excluded",][,-8], plotres))
 }

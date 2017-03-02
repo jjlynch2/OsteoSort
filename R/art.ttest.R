@@ -24,7 +24,8 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
      print("Statistical articulation comparisons have started.")
 	library(parallel)
 	library(doSNOW)
-	require(compiler)
+	library(compiler)
+	library(data.table)
 	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
@@ -46,7 +47,7 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 			dir.create(direc)
 			setwd(direc)
 		}
-		if(a) {
+		else {
 			setwd(sessiontempdir)
 			direc <- NULL
 		}
@@ -57,23 +58,22 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 			difa <- ( abs(refdata[,1] - refdata[,2]) + p1 ) ^ p2
 			difsd <- sd(difa)
 			if(testagainst) {difm <- 0} 
-			if(!testagainst) {difm <- mean(difa)}
+			else difm <- mean(difa)
 			tt <- (abs(as.numeric(X[7]) - as.numeric(X[8])) + p1) ^ p2
 			p.value <- pt((tt - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 		}
-		if(!absolutevalue) {
+		else {
 			difa <- refdata[,1] - refdata[,2]
 			difsd <- sd(difa)
 			if(testagainst) {difm <- 0} 
-			if(!testagainst) {difm <- mean(difa)}
+			else difm <- mean(difa)
 			p.value <- 2 * pt(-abs(( (as.numeric(X[7]) - as.numeric(X[8])) - difm) / difsd), df = length(difa) - 1)
 		}
-		
-		return(data.frame(a=X[1],b=X[3],c=X[5],d=X[2],e=X[4],f=X[6],g=gsub(",","",toString(names(X)[7:length(X)]), perl = TRUE),h=round(p.value, digits = 3),i=ncol(refdata)/2,j=nrow(refdata), stringsAsFactors=FALSE)) 
-		
+		return(data.frame(X[1],X[3],X[5],X[2],X[4],X[6],gsub(",","",toString(names(X)[7:length(X)]), perl = TRUE),round(p.value, digits = 3),ncol(refdata)/2,nrow(refdata), stringsAsFactors=FALSE)) 
 	}
 	
-	hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE)
+	op <- system.time( hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE) )
+	print(op) 
 	hera1 = as.data.frame(data.table::rbindlist(hera1))
 
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size")
@@ -83,13 +83,13 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
      if(plotme) {
 		plotres <- plotme(refdata = refdata, sortdata = sortdata, power = power, absolutevalue = absolutevalue, ttype = "art")
      }
-	if(!plotme) {plotres <- NULL}  
+	else plotres <- NULL
    
 	if(!stdout) {
      	print("File generation has started.")
 		if(oo[2]) {
 			library(foreach)
-			not_excluded <<- hera1[hera1$p.value > alphalevel,]
+			not_excluded <- hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,]
 		
 			temp1 <- unique(not_excluded[,1])
 			temp2 <- unique(not_excluded[,4])
@@ -114,13 +114,13 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 			stopCluster(cl)
 		}
 		if(oo[1]) {
-			write.csv(as.matrix(hera1[hera1$p.value > alphalevel,]), file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
-			write.csv(as.matrix(hera1[hera1$p.value <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+			write.csv(as.matrix(hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,]), file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
+			write.csv(as.matrix(hera1[as.numeric(as.character(hera1$p.value)) <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
      	print("File generation has completed.")
 	}
 	gc()
 	setwd(workingdir)
 	enableJIT(0)
-	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,], plotres))	
+	return(list(direc,hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,],hera1[as.numeric(as.character(hera1$p.value)) <= alphalevel,], plotres))	
 }

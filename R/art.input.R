@@ -127,6 +127,7 @@ art.input <- function (bone = NULL, sort = NULL) {
      pn[,8] <- as.numeric(as.matrix(pn[,8]))
      sortdata <- split(pn, seq(nrow(pn)))
      
+	gc()
 	return(list(sortdata, refdata))
 
 
