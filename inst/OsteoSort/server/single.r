@@ -83,8 +83,8 @@
 				testt <- 'reg'
 			}	
 			if(input$zz == 'rafr') {
-				reghum <- cbind(ID=input$ID1, Side=input$rafrside1,Element= "radius", Rad_01=input$rafr45, Rad05=input$rafr46, Rad_06=input$rafr47)
-				reguln <- cbind(ID=input$ID2, Side=input$rafrside2, Element="femur", Fem_01=input$rafr60,Fem_02=input$rafr61,Fem_03=input$rafr62,Fem_04=input$rafr63,Fem_05=input$rafr64,Fem_06=input$rafr65,Fem_07=input$rafr66)
+				reghum <- cbind(ID=input$ID1, Side=input$rafrside1,Element= "radius", Rad_01=input$rafr45, Rad_05=input$rafr46, Rad_06=input$rafr47)
+				reguln <- cbind(ID=input$ID2, Side=input$rafrside2, Element="femur", Fem_01=input$rafr60,Fem_02=input$rafr61,Fem_03=input$rafr62,Fem_04=input$rafr63,Fem_06=input$rafr64,Fem_05=input$rafr65,Fem_07=input$rafr66)
 				testt <- 'reg'
 			}
 			if(input$zz == 'ratr') {
@@ -98,13 +98,13 @@
 				testt <- 'reg'
 			}
 			if(input$zz == 'fetr') {
-				reghum <- cbind(ID=input$ID1, Side=input$fetrside1, Element="femur", Fem_01=input$fetr60,Fem_02=input$fetr61,Fem_03=input$fetr62,Fem_04=input$fetr63,Fem_05=input$fetr64,Fem_06=input$fetr65,Fem_07=input$fetr66)
-				reguln <- cbind(ID=input$ID2, Side=input$fetrside2, Element="tibia", Tib_01=input$fetr69, Tib_02=input$fetr70,Tib_03=input$fetr71,Tib_04=input$fetr72,Tib_05=input$retr73)
+				reghum <- cbind(ID=input$ID1, Side=input$fetrside1, Element="femur", Fem_01=input$fetr60, Fem_02=input$fetr61,Fem_03=input$fetr62,Fem_04=input$fetr63,Fem_06=input$fetr64,Fem_05=input$fetr65,Fem_07=input$fetr66)
+				reguln <- cbind(ID=input$ID2, Side=input$fetrside2, Element="tibia", Tib_01=input$fetr69, Tib_02=input$fetr70,Tib_03=input$fetr71,Tib_04=input$fetr72,Tib_05=input$fetr73)
 				testt <- 'reg'		
 			}	
 			if(input$zz == 'fefir') {
-				reghum <- cbind(ID=input$ID1, Side=input$fefirside1,Element= "femur", Fem_01=input$fefir60,Fem_02=input$fefir61,Fem_03=input$fefir62,Fem_04=input$fefir63,Fem_05=input$fefir64,Fem_06=input$fefir65,Fem_07=input$fefir66)
-				reguln <- cbind(ID=input$ID2, Side=input$fefirside2, Element="fibula", Fib_01=input$fefir75, Fib_01=input$fefir76)
+				reghum <- cbind(ID=input$ID1, Side=input$fefirside1,Element= "femur", Fem_01=input$fefir60,Fem_02=input$fefir61,Fem_03=input$fefir62,Fem_04=input$fefir63,Fem_06=input$fefir64,Fem_05=input$fefir65,Fem_07=input$fefir66)
+				reguln <- cbind(ID=input$ID2, Side=input$fefirside2, Element="fibula", Fib_01=input$fefir75, Fib_02=input$fefir76)
 				testt <- 'reg'
 			}	
 			if(input$zz == 'tifir') {

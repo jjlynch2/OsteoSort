@@ -23,6 +23,7 @@
 
 art.input <- function (bone = NULL, sort = NULL) {
 	library(data.table)
+	library(plyr)
 	options(as.is = TRUE)
 	options(warn = -1)
 	if(is.null(bone) || is.null(sort)){return(NULL)}
@@ -68,7 +69,7 @@ art.input <- function (bone = NULL, sort = NULL) {
 	refdata <- cbind(reftemp[[measurements[1]]], reftemp[[measurements[2]]])
 	refdata <- na.omit(refdata)
 
-	if(nrow(sort) == 1) {sort[7] <- as.numeric(as.matrix(sort[7])); sort[8] <- as.numeric(as.matrix(sort[8])); return(list(list(data.table(sort)), refdata))} #returns if single user input since no sorting required
+	if(nrow(sort) == 1) {sort[7] <- as.numeric(as.matrix(sort[7])); sort[8] <- as.numeric(as.matrix(sort[8])); return(list(list(data.table(sort)), data.table(refdata)))} #returns if single user input since no sorting required
 
 	cols1 <- c(grep(paste("^","ID","$",sep=""), colnames(sort)), grep("Side", colnames(sort)), grep("Element", colnames(sort)), grep(paste("^",measurements[1],"$",sep=""), colnames(sort))) #greps column name to grab column index 
 	cols2 <- c(grep(paste("^","ID","$",sep=""), colnames(sort)), grep("Side", colnames(sort)), grep("Element", colnames(sort)), grep(paste("^",measurements[2],"$",sep=""), colnames(sort))) #greps column name to grab column index
@@ -121,13 +122,12 @@ art.input <- function (bone = NULL, sort = NULL) {
 	
 	colnames(sortdata) <- c("ID","ID","Side","Side","Element","Element",measurements[1],measurements[2])
      print("Import completed...Calling statistical function")
-     
-     pn <- data.table(sortdata)
-     pn[,7] <- as.numeric(as.matrix(pn[,7])) #ensures factor is converted to numeric for column before list
-     pn[,8] <- as.numeric(as.matrix(pn[,8]))
-     sortdata <- split(pn, seq(nrow(pn)))
+     globalbefore <<- sortdata
+     sortdata <- split(sortdata, seq(nrow(sortdata)))
+
      
 	gc()
+	refdata <- data.table(refdata)
 	return(list(sortdata, refdata))
 
 

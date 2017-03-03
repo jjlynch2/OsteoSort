@@ -27,14 +27,13 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	library(compiler)
 	library(data.table)
 	enableJIT(3)
-	
+
 	options(warn = -1) #disables warnings
-	options(as.is = TRUE)
 	if(is.na(sortdata) || is.null(sortdata)) {return(NULL)} #input san
 	if(is.na(refdata) || is.null(refdata)) {return(NULL)} #input san
 	
 	if(power) {p1 <- 0.00005; p2 <- 0.33} #half normal transformation
-	else p1 <- 0; p2 <- 1 #used to prevent writing new code inside loop. This transformation doesn't change the data
+	else {p1 <- 0; p2 <- 1} #used to prevent writing new code inside loop. This transformation doesn't change the data
 	
 	workingdir = getwd()
 
@@ -62,25 +61,24 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 
 	myfunpm<-function(X){
 		temp1n <- names(X[-c(1:6)][c(T,F)])
-		temp1 <- temp1n[seq(1,length(temp1n),2)]
+		temp1 <- sort(c(temp1n, paste(temp1n,"R",sep="")))
 
 		output1 <- lapply(is.uniquepm, function(zz) { 
-			ident <- identical(zz, temp1n)
+			ident <- identical(zz, temp1)
 			return(ident) 
 		})
 		index <- match(TRUE,output1) #index of model if exists
 
 		if(is.na(index)) {
-			temp1 <- sort(c(temp1, paste(temp1,"R",sep="")))
 			y <- refdata[temp1]
 			ycol <- ncol(y)
 			yrow <- nrow(y)
 			if(absolutevalue) { 
-				difa <- ( rowSums(abs((y[c(T,F)] - y[c(F,T)]))) + p1 ) ^ p2
+				difa <- ((rowSums(abs(y[c(T,F)] - y[c(F,T)]))+p1) ** p2)
 				difsd <- sd(difa)
 				if(testagainst) {difm <- 0} 
 				else difm <- mean(difa)
-				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ^p2) - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
+				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2) - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 			}
 			else {
 				difa <- rowSums(y[c(T,F)] - y[c(F,T)])
@@ -89,7 +87,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 				else difm <- mean(difa)
 				p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = length(difa) - 1)
 			} 
-			is.uniquepm[[length(is.uniquepm)+1]] <<- temp1n #cache me outside 
+			is.uniquepm[[length(is.uniquepm)+1]] <<- temp1 #cache me outside 
 			unique.difsd[[length(unique.difsd)+1]] <<- difsd
 			unique.difm[[length(unique.difm)+1]] <<- difm
 			unique.df[[length(unique.df)+1]] <<- length(difa) - 1 #1 for degrees of freedom
@@ -103,7 +101,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			difsd <- as.numeric(unique.difsd[[index]])
 			difdf <- as.numeric(unique.df[[index]])
 			if(absolutevalue) { 
-				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ^p2) - difm) / difsd, df = difdf, lower.tail = FALSE) #one-tail for absolute value model
+				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2) - difm) / difsd, df = difdf, lower.tail = FALSE) #one-tail for absolute value model
 			}
 			else {
 

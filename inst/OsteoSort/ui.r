@@ -103,8 +103,8 @@ shinyUI(
 											numericInput(inputId = 'hufr61', label = 'Fem_02', value = ''),
 											numericInput(inputId = 'hufr62', label = 'Fem_03', value = ''),
 											numericInput(inputId = 'hufr63', label = 'Fem_04', value = ''),
-											numericInput(inputId = 'hufr64', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'hufr65', label = 'Fem_05', value = ''),
+											numericInput(inputId = 'hufr64', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'hufr66', label = 'Fem_07', value = '')
 											#numericInput(inputId = 'hufr67', label = 'Fem_08', value = ''),
 											#numericInput(inputId = 'hufr68', label = '68', value = '')
@@ -143,7 +143,7 @@ shinyUI(
 											column(4,
 											h4("Humerus"),
 											selectInput("hufirside1", "Side", c(Left='Left', Right='Right')),
-											numericInput(inputId = 'hufr40', label = 'Hum_01', value = ''),								
+											numericInput(inputId = 'hufir40', label = 'Hum_01', value = ''),								
 											numericInput(inputId = 'hufir41', label = 'Hum_02', value = ''),		
 											numericInput(inputId = 'hufir42', label = 'Hum_03', value = ''),																		
 											numericInput(inputId = 'hufir43', label = 'Hum_04', value = ''),	
@@ -197,8 +197,8 @@ shinyUI(
 											numericInput(inputId = 'ulfr61', label = 'Fem_02', value = ''),
 											numericInput(inputId = 'ulfr62', label = 'Fem_03', value = ''),
 											numericInput(inputId = 'ulfr63', label = 'Fem_04', value = ''),
-											numericInput(inputId = 'ulfr64', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'ulfr65', label = 'Fem_05', value = ''),
+											numericInput(inputId = 'ulfr64', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'ulfr66', label = 'Fem_07', value = '')
 											#numericInput(inputId = 'ulfr67', label = 'Fem_08', value = ''),
 											#numericInput(inputId = 'ulfr68', label = '68', value = '')
@@ -269,8 +269,8 @@ shinyUI(
 											numericInput(inputId = 'rafr61', label = 'Fem_02', value = ''),
 											numericInput(inputId = 'rafr62', label = 'Fem_03', value = ''),
 											numericInput(inputId = 'rafr63', label = 'Fem_04', value = ''),
-											numericInput(inputId = 'rafr64', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'rafr65', label = 'Fem_05', value = ''),
+											numericInput(inputId = 'rafr64', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'rafr66', label = 'Fem_07', value = '')
 											#numericInput(inputId = 'rafr67', label = 'Fem_08', value = ''),
 											#numericInput(inputId = 'rafr68', label = '68', value = '')
@@ -329,8 +329,8 @@ shinyUI(
 											numericInput(inputId = 'fetr61', label = 'Fem_02', value = ''),
 											numericInput(inputId = 'fetr62', label = 'Fem_03', value = ''),
 											numericInput(inputId = 'fetr63', label = 'Fem_04', value = ''),
-											numericInput(inputId = 'fetr64', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'fetr65', label = 'Fem_05', value = ''),
+											numericInput(inputId = 'fetr64', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'fetr66', label = 'Fem_07', value = '')
 											#numericInput(inputId = 'fetr67', label = 'Fem_08', value = '')
 										),
@@ -355,8 +355,8 @@ shinyUI(
 											numericInput(inputId = 'fefir61', label = 'Fem_02', value = ''),
 											numericInput(inputId = 'fefir62', label = 'Fem_03', value = ''),
 											numericInput(inputId = 'fefir63', label = 'Fem_04', value = ''),
-											numericInput(inputId = 'fefir64', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'fefir65', label = 'Fem_05', value = ''),
+											numericInput(inputId = 'fefir64', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'fefir66', label = 'Fem_07', value = '')
 											#numericInput(inputId = 'fefir67', label = 'Fem_08', value = '')
 										),
@@ -464,8 +464,8 @@ shinyUI(
 											numericInput(inputId = 'a611', label = 'Fem_02', value = ''),
 											numericInput(inputId = 'a621', label = 'Fem_03', value = ''),
 											numericInput(inputId = 'a631', label = 'Fem_04', value = ''),
-											numericInput(inputId = 'a641', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'a651', label = 'Fem_05', value = ''),
+											numericInput(inputId = 'a641', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'a661', label = 'Fem_07', value = '')
 											#numericInput(inputId = 'a671', label = 'Fem_08', value = ''),
 											#numericInput(inputId = 'a681', label = '68', value = '')														
@@ -476,8 +476,8 @@ shinyUI(
 											numericInput(inputId = 'a612', label = 'Fem_02', value = ''),
 											numericInput(inputId = 'a622', label = 'Fem_03', value = ''),
 											numericInput(inputId = 'a632', label = 'Fem_04', value = ''),
-											numericInput(inputId = 'a642', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'a652', label = 'Fem_05', value = ''),
+											numericInput(inputId = 'a642', label = 'Fem_06', value = ''),
 											numericInput(inputId = 'a662', label = 'Fem_07', value = '')
 											#numericInput(inputId = 'a672', label = 'Fem_08', value = ''),
 											#numericInput(inputId = 'a682', label = '68', value = '')		
@@ -1161,7 +1161,7 @@ shinyUI(
 								fluidRow(
 								h4("Femur_Tibia"),
 									column(4,
-										numericInput(inputId = 'b631', label = 'Fem_04', value = '')								
+										numericInput(inputId = 'b631', label = 'Fem_03', value = '')								
 									),
 									column(4,							
 										numericInput(inputId = 'b701', label = 'Tib_02', value = '')	

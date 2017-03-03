@@ -71,18 +71,18 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 			ycol <- ncol(refdata)
 			yrow <- nrow(refdata)
 			if(absolutevalue) {
-				difa <- ( abs(refdata[c(T,F)] - refdata[c(F,T)]) + p1 ) ^ p2
+				difa <- (( rowSums(abs(refdata[c(T,F)] - refdata[c(F,T)])) + p1 ) ** p2)
 				difsd <- sd(difa)
 				if(testagainst) {difm <- 0} 
 				else difm <- mean(difa)
-				p.value <- pt(((abs(as.numeric(X[7]) - as.numeric(X[8])) + p1) ^ p2 - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
+				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2) - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 			}
 			else {
-				difa <- refdata[c(T,F)] - refdata[c(F,T)]
+				difa <- rowSums(refdata[c(T,F)] - refdata[c(F,T)])
 				difsd <- sd(difa)
 				if(testagainst) {difm <- 0} 
 				else difm <- mean(difa)
-				p.value <- 2 * pt(-abs(( (as.numeric(X[7]) - as.numeric(X[8])) - difm) / difsd), df = length(difa) - 1)
+				p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = length(difa) - 1)
 			}
 
 			is.uniqueart[[length(is.uniqueart)+1]] <<- Xname #cache me outside 
@@ -99,10 +99,10 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 			difsd <- as.numeric(unique.difsd2[[index]])
 			difdf <- as.numeric(unique.df2[[index]])
 			if(absolutevalue) {
-				p.value <- pt(((abs(X[7] - X[8]) + p1) ^ p2 - difm) / difsd, df = difdf, lower.tail = FALSE) #one-tail for absolute value model
+				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2) - difm) / difsd, df = difdf, lower.tail = FALSE) #one-tail for absolute value model
 			}
 			else {
-				p.value <- 2 * pt(-abs(( (X[7] - X[8]) - difm) / difsd), df = difdf)
+				p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = difdf)
 			}
 
 		}

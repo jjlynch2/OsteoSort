@@ -12,16 +12,15 @@ plotme <- function (refdata = NULL, sortdata = NULL, power = TRUE, absolutevalue
 	library(CCA)
 	if(power) {p1 <- 0.00005; p2 <- 0.33} #half normal transformation
 	if(!power) {p1 <- 0; p2 <- 1} #used to prevent writing new code inside loop. This transformation doesn't change the data
-	
+
      if(ttype == "pm") {
-     	X <- data.frame(sortdata)
-		temp1 <- names(as.data.frame(X)[-c(1:6)])
-		temp1 <- temp1[seq(1,length(temp1),2)]
+		X <- sortdata[[1]]
+		temp1 <- names(X[-c(1:6)][c(T,F)])
 		temp1 <- sort(c(temp1, paste(temp1,"R",sep="")))
-		y <- as.data.frame(refdata)[temp1]
+		y <- refdata[temp1]
 		if(absolutevalue) { 
-			difa <- ( rowSums(abs((y[c(T,F)] - y[c(F,T)]))) + p1 ) ^ p2
-			difa1 <- (sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ^p2
+			difa <- (( rowSums(abs((y[c(T,F)] - y[c(F,T)]))) + p1 ) ** p2)
+			difa1 <- ((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2)
 		}
 		if(!absolutevalue) {
 			difa <- rowSums(y[c(T,F)] - y[c(F,T)])
@@ -37,10 +36,9 @@ plotme <- function (refdata = NULL, sortdata = NULL, power = TRUE, absolutevalue
 	}
 	
 	if(ttype == "art") {
-		y <- data.frame(sortdata)
 		if(absolutevalue) { 
-			difa <- ( abs(refdata[,1] - refdata[,2]) + p1 ) ^ p2
-			difa1 <- (abs(as.numeric(y[7]) - as.numeric(y[8])) + p1) ^ p2
+			difa <- (( abs(refdata[,1] - refdata[,2]) + p1 ) ** p2)
+			difa1 <- ((abs(as.numeric(y[7]) - as.numeric(y[8])) + p1) ** p2)
 		}
 		if(!absolutevalue) {
 			difa <- refdata[,1] - refdata[,2]
@@ -50,7 +48,7 @@ plotme <- function (refdata = NULL, sortdata = NULL, power = TRUE, absolutevalue
 		jpeg(paste("graph",".jpeg",sep=''),height = 800, width = 800)
 		dev.control('enable')	
 		hist(x = difa, xlab = "", main = NULL)
-		abline(v = difa1, lty = 2, col="darkred")
+		abline(v = difa1, lty = 2, lwd = 2, col="darkred")
 		plotted <- recordPlot()
 		dev.off()
 	}

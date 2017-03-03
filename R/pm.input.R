@@ -164,5 +164,6 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	if(length(recombined) == 0) {recombined <- NA}
      print("Import and reference generation completed.")
 	gc()
+
 	return(list(recombined,reff))
 }
