@@ -22,8 +22,8 @@
 #' art.input()
 
 art.input <- function (bone = NULL, sort = NULL) {
-	library(data.table)
-	library(plyr)
+	suppressMessages(library(data.table))
+	suppressMessages(library(plyr))
 	options(as.is = TRUE)
 	options(warn = -1)
 	if(is.null(bone) || is.null(sort)){return(NULL)}

@@ -22,10 +22,10 @@
 
 art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, no_cores = 1, alphalevel = 0.1, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), power = TRUE, plotme = FALSE) {
      print("Statistical articulation comparisons have started.")
-	library(parallel)
-	library(doSNOW)
-	library(compiler)
-	library(data.table)
+	suppressMessages(library(parallel))
+	suppressMessages(library(doSNOW))
+	suppressMessages(library(compiler))
+	suppressMessages(library(data.table))
 	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
@@ -34,7 +34,7 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	if(is.na(refdata) || is.null(refdata)) {return(NULL)} #input san
 	
 	if(power) {p1 <- 0.00005; p2 <- 0.33} #half normal transformation
-	if(!power) {p1 <- 0; p2 <- 1} #used to prevent writing new code inside loop. This transformation doesn't change the data
+	else {p1 <- 0; p2 <- 1} #used to prevent writing new code inside loop. This transformation doesn't change the data
 	
 	workingdir = getwd()
 
@@ -135,7 +135,7 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	if(!stdout) {
      	print("File generation has started.")
 		if(oo[2]) {
-			library(foreach)
+			suppressMessages(library(foreach))
 			not_excluded <- hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,]
 		
 			temp1 <- unique(not_excluded[,1])

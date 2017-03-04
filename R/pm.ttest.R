@@ -22,10 +22,10 @@
 
 pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1, plotme = FALSE) {
      print("Statistical pair match comparisons have started.")
-	library(parallel)
-	library(doSNOW)
-	library(compiler)
-	library(data.table)
+	suppressMessages(library(parallel))
+	suppressMessages(library(doSNOW))
+	suppressMessages(library(compiler))
+	suppressMessages(library(data.table))
 	enableJIT(3)
 
 	options(warn = -1) #disables warnings
@@ -136,7 +136,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	if(!stdout) {	
      	print("File generation has started.")	
 		if(oo[2]) {
-			library(foreach)
+			suppressMessages(library(foreach))
 			not_excluded <- hera1[hera1$p.value > alphalevel,]
 			temp1 <- unique(not_excluded[,1])
 			temp2 <- unique(not_excluded[,4])

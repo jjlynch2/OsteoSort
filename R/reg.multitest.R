@@ -8,11 +8,11 @@
 
 reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), plotme = FALSE, no_cores = 1) {	    
      print("Statistical association comparisons have started.")
-	library(parallel)
-	library(doSNOW)
-	require(compiler)
-	library(CCA)
-     library(data.table)
+	suppressMessages(library(parallel))
+	suppressMessages(library(doSNOW))
+	suppressMessages(library(compiler))
+	suppressMessages(library(CCA))
+    	suppressMessages(library(data.table))
 	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
@@ -156,7 +156,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	if(!stdout) {
     	 print("File generation has started.")
 		if(oo[2]) {
-			library(foreach)
+			suppressMessages(library(foreach))
 			not_excluded <- hera1[hera1$Result == "Cannot Exclude",][,-8]
 			temp1 <- unique(as.character(not_excluded[,1]))
 			temp2 <- unique(as.character(not_excluded[,4]))
