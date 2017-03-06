@@ -122,7 +122,7 @@ art.input <- function (bone = NULL, sort = NULL) {
 	
 	colnames(sortdata) <- c("ID","ID","Side","Side","Element","Element",measurements[1],measurements[2])
      print("Import completed...Calling statistical function")
-     globalbefore <<- sortdata
+
      sortdata <- split(sortdata, seq(nrow(sortdata)))
 
      

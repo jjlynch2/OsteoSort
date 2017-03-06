@@ -356,7 +356,7 @@
 			if(all(is.na(dft[,7:length(dft)]))) {removeModal(); return(NULL)}###stops crashing if empty
 				dft <- data.frame(dft)
 				wtf <- art.input(bone=toString(input$zz), sort=dft)
-				direc2 <- art.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp = sessiontemp, alphalevel = input$alphalevels, absolutevalue = input$absolutevalues, testagainst = input$testagainstsingle, oo = c(input$fileoutput3, input$fileoutput4), plotme = TRUE)           
+				direc2 <- art.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp = sessiontemp, alphalevel = input$alphalevels, absolutevalue = input$absolutevalues, testagainst = input$testagainstsingle, oo = c(input$fileoutput3, input$fileoutput4), power = input$power1, plotme = TRUE)           
 				
 				tempDF <- rbind(direc2[[2]], direc2[[3]]) #combines both dataframes into a single one. Both are needed for multiple but only 1 for single.
 				

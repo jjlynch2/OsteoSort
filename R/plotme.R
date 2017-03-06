@@ -36,6 +36,7 @@ plotme <- function (refdata = NULL, sortdata = NULL, power = TRUE, absolutevalue
 	}
 	
 	if(ttype == "art") {
+		y <- sortdata[[1]]
 		if(absolutevalue) { 
 			difa <- (( abs(refdata[,1] - refdata[,2]) + p1 ) ** p2)
 			difa1 <- ((abs(as.numeric(y[7]) - as.numeric(y[8])) + p1) ** p2)

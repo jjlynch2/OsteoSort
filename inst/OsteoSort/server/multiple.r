@@ -242,7 +242,8 @@
 		if(input$bone == 'hu' | input$bone == 'hr' | input$bone == 'hs' | input$bone == "hss" | input$bone == 'fi' | input$bone == 'ft' | input$bone == 'ftt') {
 			wtf <- art.input(bone=toString(input$bone), sort=tempdata1)
 			direc2 <- art.ttest(power = input$power2, refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore)   
-			ll <- nrow(wtf[[1]])                       
+			#ll <- nrow(wtf[[1]])   
+			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])                    
 		}      
 	}
 		if(input$testtype2 == 'Regression_match') {
