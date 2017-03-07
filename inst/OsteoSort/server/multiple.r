@@ -296,7 +296,7 @@
 				if(is.null(threshold2)) {threshold2 <- 1}             
 			}
 			wtf <- reg.input(tresh=c(threshold, threshold2),sort = tempdata1, bone1 = input$assbone1, side1 = input$assside1, bone2 = input$assbone2, side2 = input$assside2, template = input$standard, measurements1 = measurements, measurements2 = measurements2)
-			direc2 <- reg.multitest(sort = wtf[[1]], ref = wtf[[2]], splitn = wtf[[3]], predlevel = input$asspredlevel, stdout = FALSE, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore)
+			direc2 <- reg.multitest(sort = wtf[[1]], ref = wtf[[2]], splitn = wtf[[3]], predlevel = input$asspredlevel, stdout = FALSE, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore, testtype = input$regtesttypem)
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])
 		}
 		#changes results to 0 if no possible combinations
@@ -356,7 +356,7 @@
 			TN <- co
 
 		
-			co <- paste("True Positive: ", TP, "<br/>", "False Positive: ", FP, "<br/>", "False Negative: ", FN, "<br/>", "True Negative: ", TN, "<br/>", "Sensitivity: ", round(TP/(TP+FN), digits = 3), "<br/>", "Specificity: ", round(TN/(TN+FP), digits = 3),"<br/>",  "Positive Predictive Value: ", round(TP/(TP+FP), digits = 3), "<br/>", "Negative Predictive Value: ", round(TN/(TN+FN), digits = 3),"<br/>", "False Discovery Rate: ", round(FP/(FP+FN), digits = 3), "<br/>","Efficiency: ", round((TP+TN) / (TP+TN+FN+TN), digits = 3), "<br/>", sep = "")
+			co <- paste("True Positive: ", TP, "<br/>", "False Positive: ", FP, "<br/>", "False Negative: ", FN, "<br/>", "True Negative: ", TN, "<br/>", "FPR: ", 1 - round(TN/(TN+FP), digits = 3) ,"<br/>", "Sensitivity: ", round(TP/(TP+FN), digits = 3), "<br/>", "Specificity: ", round(TN/(TN+FP), digits = 3),"<br/>",  "Positive Predictive Value: ", round(TP/(TP+FP), digits = 3), "<br/>", "Negative Predictive Value: ", round(TN/(TN+FN), digits = 3),"<br/>", "False Discovery Rate: ", round(FP/(FP+FN), digits = 3), "<br/>","Efficiency: ", round((TP+TN) / (TP+TN+FN+TN), digits = 3), "<br/>", sep = "")
 			 
 			 
 		}

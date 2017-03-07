@@ -1211,6 +1211,7 @@ shinyUI(
 								checkboxInput(inputId = "fileoutput4", label = "Output to individual specimen files (takes longer to run)", value = FALSE)
 					 		),
 					 		tabPanel("Statistical Parameters",
+								checkboxInput(inputId = "regtesttypes", label = "PCA-CCA-Regression (Uncheck for simple regression)", value = TRUE),
 								sliderInput(inputId = "alphalevels2", label = "Prediction Interval Level", min=0.01, max=1, value=0.9, step = 0.01),
 								sliderInput(inputId = "alphalevels", label = "Alpha Level", min=0.01, max=1, value=0.05, step = 0.01),
 								checkboxInput(inputId = "absolutevalues", label = "Absolute D-value |a-b|", value = TRUE),
@@ -1425,6 +1426,7 @@ shinyUI(
 									
 								),
 								tabPanel("Statistical Parameters",
+									checkboxInput(inputId = "regtesttypem", label = "PCA-CCA-Regression (Uncheck for simple regression)", value = TRUE),
 									sliderInput(inputId = "asspredlevel", label = "Prediction Interval Level", min=0.01, max=1, value=0.9, step=0.01),
 									sliderInput(inputId = "alphalevel", label = "Alpha Level", min=0.01, max=1, value=0.05, step = 0.01),
 									checkboxInput(inputId = "absolutevalue", label = "Absolute D-value |a-b|", value = TRUE),

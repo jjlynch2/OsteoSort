@@ -324,7 +324,7 @@
 				#sort2 <- reguln
 				sortreg <- rbind.fill(as.data.frame(sort1),as.data.frame(sort2))
 				outputtemp1 <- reg.input(sort = sortreg, bone1 = sort1[3], side1 = sort1[2], bone2 = sort2[3], side2 = sort2[2], template = input$a)
-				direc2 <- reg.multitest(sort = outputtemp1[[1]], ref = outputtemp1[[2]], splitn = outputtemp1[[3]], predlevel = input$alphalevels2, sessiontempdir = sessiontemp, oo = c(input$fileoutput3, input$fileoutput4), plotme = TRUE)		
+				direc2 <- reg.multitest(sort = outputtemp1[[1]], ref = outputtemp1[[2]], splitn = outputtemp1[[3]], predlevel = input$alphalevels2, sessiontempdir = sessiontemp, oo = c(input$fileoutput3, input$fileoutput4), plotme = TRUE, testtype = input$regtesttypes)		
 				
 				direc2tab <- rbind(direc2[[2]], direc2[[3]]) #combine exlcuded and not excluded for table display
 				
