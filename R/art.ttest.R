@@ -61,6 +61,7 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	unique.yrow2 <<- list()
 
 	myfun<-function(X){
+
 		Xname <- names(X[-c(1:6)])
 		output1 <- lapply(is.uniqueart, function(zz) { 
 			ident <- identical(zz, Xname)
@@ -114,6 +115,7 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	
 	op <- system.time( hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE) )
 	print(op) 
+
 	hera1 = as.data.frame(data.table::rbindlist(hera1))
 
 	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size")
