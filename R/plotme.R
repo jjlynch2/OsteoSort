@@ -54,7 +54,9 @@ plotme <- function (refdata = NULL, sortdata = NULL, power = TRUE, absolutevalue
 		dev.off()
 	}
 	if(ttype == "reg" && testtype == FALSE) {
-		splitng <<- splitn
+		x <- sortdata
+		ref <- refdata
+
 		temp1 <- x[seq(from = splitn[1]+1, to = splitn[2])]
 		temp1 <- temp1[ , colSums(is.na(temp1)) == 0]
 		temp1n <- names(temp1[-1][-1][-1]) #captures measurement names

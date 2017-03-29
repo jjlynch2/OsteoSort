@@ -6,7 +6,7 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), plotme = FALSE, no_cores = 1, testtype = TRUE) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), plotme = FALSE, no_cores = 1, testtype = TRUE, alphatest = TRUE, alphalevel = 0.05) {	    
      print("Statistical association comparisons have started.")
 	suppressMessages(library(parallel))
 	suppressMessages(library(doSNOW))
@@ -75,8 +75,8 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 				B2PCA <- B2PCAt$x #PC scores
 			
 				cmodel1 <- cc(B1PCA, B2PCA) #CCA model
-				score1 <- cmodel1$scores$xscores[,1] #takes first variate
-				score2 <- cmodel1$scores$yscores[,1] #takes first variate
+				score1 <- cmodel1$scores$xscores[,1] #takes first variate y 
+				score2 <- cmodel1$scores$yscores[,1] #takes first variate x
 
 				model1 <- lm(score2~score1) #linear model
 			
@@ -122,14 +122,27 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			}
 		
 			pm1 <- predict(model1, newdata = data.frame(score1 = as.numeric(df1)), interval = "prediction", level = predlevel)
-		
-		
-			if(df2 <= pm1[3] && df2 >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
-				within <- "Cannot Exclude"
-			}
-			else within <- "Excluded"
 
-			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],round(rsqr1, digits = 3),t1r,within, stringsAsFactors=FALSE))
+
+			#tt <- abs(pm1[1] - as.numeric(df2)) / ( sqrt(diag(vcov(model1)))[2] * sqrt( 1+(1/t1r) + ((as.numeric(df1) - mean(as.numeric(cmodel1$scores$xscores[,1])))^2) / (t1r * sd(as.numeric(cmodel1$scores$xscores[,1]))^2) ) )
+			#pp <- 2 * pt(-abs(tt), df = t1r - 1)
+
+			#if(alphatest) {
+			#	if(pp > alphalevel) { #checks if predicted falls within prediction interval for the predictors
+			#		within <- "Cannot Exclude"
+			#	}
+			#	else within <- "Excluded"
+			#}
+			#if(!alphatest) {
+				if(df2 <= pm1[3] && df2 >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
+					within <- "Cannot Exclude"
+				}
+				else within <- "Excluded"
+			#}
+
+
+
+			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],round(rsqr1, digits = 3),t1r,NA,within, stringsAsFactors=FALSE))
 
 		}
 	
@@ -169,10 +182,11 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			})
 
 			index <- match(TRUE,output1) #index of model if exists
-
+				t1 <- log(rowSums(ref[temp1n]))# reference
+				t2 <- log(rowSums(ref[temp2n]))
 			if(is.na(index)) {
-				t1 <- rowSums(ref[temp1n])# reference
-				t2 <- rowSums(ref[temp2n])
+				#t1 <- log(rowSums(ref[temp1n]))# reference
+				#t2 <- log(rowSums(ref[temp2n]))
 				t1r <- length(t1)
 
 				model1 <- lm(t2~t1) #linear model
@@ -188,19 +202,27 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			
 			rsqr1 <- summary(model1)$r.squared
 
-			temp2p <- rowSums(data.frame(t(as.numeric(as.matrix(temp2[-1][-1][-1])))))
-			temp1p <- rowSums(data.frame(t(as.numeric(as.matrix(temp1[-1][-1][-1])))))	
-		
-		
-			pm1 <- predict(model1, newdata = data.frame(t1 = as.numeric(temp1p)), interval = "prediction", level = predlevel)
-		
-		
-			if(temp2p <= pm1[3] && temp2p >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
-				within <- "Cannot Exclude"
-			}
-			else within <- "Excluded"
+			temp2p <- log(rowSums(data.frame(t(as.numeric(as.matrix(temp2[-1][-1][-1]))))))
+			temp1p <- log(rowSums(data.frame(t(as.numeric(as.matrix(temp1[-1][-1][-1]))))))
 
-			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],round(rsqr1, digits = 3),t1r,within, stringsAsFactors=FALSE))
+			pm1 <- predict(model1, newdata = data.frame(t1 = as.numeric(temp1p)), interval = "prediction", level = predlevel)
+			tt <- abs(pm1[1] - temp2p) / ( sqrt(diag(vcov(model1)))[2] * sqrt( 1+(1/t1r) + ((temp1p - mean(t1))^2) / (t1r * sd(t1)^2) ) )
+			pp <- 2 * pt(-abs(tt), df = t1r - 1)
+
+			if(alphatest) {
+
+				if(pp > alphalevel) { #checks if predicted falls within prediction interval for the predictors
+					within <- "Cannot Exclude"
+				}
+				else within <- "Excluded"
+			}
+			if(!alphatest) {
+				if(temp2p <= pm1[3] && temp2p >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
+					within <- "Cannot Exclude"
+				}
+				else within <- "Excluded"
+			}
+			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],round(rsqr1, digits = 3),t1r,format(pp, scientific = F),within,stringsAsFactors=FALSE))
 
 		}
 	
@@ -218,7 +240,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	}
 
      print("Statistical association comparisons completed.")
-	names(hera1) <- c("ID","Side","Element","ID","Side","Element","RSquared", "Sample","Result")
+	names(hera1) <- c("ID","Side","Element","ID","Side","Element","RSquared", "Sample","p-value","Result")
 	
 	if(plotme) {
 		plotres <- plotme(sortdata = sort, refdata = ref, splitn = splitn, predlevel = predlevel, ttype = "reg", testtype = testtype)
@@ -229,7 +251,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
     	 print("File generation has started.")
 		if(oo[2]) {
 			suppressMessages(library(foreach))
-			not_excluded <- hera1[hera1$Result == "Cannot Exclude",][,-8]
+			not_excluded <- hera1[hera1$Result == "Cannot Exclude",][,-9]
 			temp1 <- unique(as.character(not_excluded[,1]))
 			temp2 <- unique(as.character(not_excluded[,4]))
 			unique_IDs <- unique(c(temp1,temp2))
@@ -254,8 +276,8 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 		}
 
 		if(oo[1]) {
-			write.csv(hera1[hera1$Result == "Cannot Exclude",][,-8], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
-			write.csv(hera1[hera1$Result == "Excluded",][,-8], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+			write.csv(hera1[hera1$Result == "Cannot Exclude",][,-9], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
+			write.csv(hera1[hera1$Result == "Excluded",][,-9], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
 	}
 	gc()
@@ -266,5 +288,5 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	if(nrow(hera1) == 1) {
 		return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",], plotres))
 	}
-	else return(list(direc,hera1[hera1$Result == "Cannot Exclude",][,-8], hera1[hera1$Result == "Excluded",][,-8], plotres))
+	else return(list(direc,hera1[hera1$Result == "Cannot Exclude",][,-9], hera1[hera1$Result == "Excluded",][,-9], plotres))
 }

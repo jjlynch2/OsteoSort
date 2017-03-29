@@ -296,7 +296,7 @@
 				if(is.null(threshold2)) {threshold2 <- 1}             
 			}
 			wtf <- reg.input(tresh=c(threshold, threshold2),sort = tempdata1, bone1 = input$assbone1, side1 = input$assside1, bone2 = input$assbone2, side2 = input$assside2, template = input$standard, measurements1 = measurements, measurements2 = measurements2)
-			direc2 <- reg.multitest(sort = wtf[[1]], ref = wtf[[2]], splitn = wtf[[3]], predlevel = input$asspredlevel, stdout = FALSE, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore, testtype = input$regtesttypem)
+			direc2 <- reg.multitest(sort = wtf[[1]], ref = wtf[[2]], splitn = wtf[[3]], predlevel = input$asspredlevel, alphatest = input$alphapred2, stdout = FALSE, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore, testtype = input$regtesttypem, alphalevel = input$alphalevel)
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])
 		}
 		#changes results to 0 if no possible combinations
