@@ -370,7 +370,7 @@
 				output$plotsingle <- renderPlot({direc2[[4]]})
 		 }
 
-
+		for(i in 10) { gc() } #clean up 
 		removeModal()
 		if(testt != "start" && any(oo=c(input$fileoutput3, input$fileoutput4))) {                       
 			#Zip and download handler

@@ -358,7 +358,6 @@
 		
 			co <- paste("True Positive: ", TP, "<br/>", "False Positive: ", FP, "<br/>", "False Negative: ", FN, "<br/>", "True Negative: ", TN, "<br/>", "FPR: ", 1 - round(TN/(TN+FP), digits = 3) ,"<br/>", "Sensitivity: ", round(TP/(TP+FN), digits = 3), "<br/>", "Specificity: ", round(TN/(TN+FP), digits = 3),"<br/>",  "Positive Predictive Value: ", round(TP/(TP+FP), digits = 3), "<br/>", "Negative Predictive Value: ", round(TN/(TN+FN), digits = 3),"<br/>", "False Discovery Rate: ", round(FP/(FP+FN), digits = 3), "<br/>","Efficiency: ", round((TP+TN) / (TP+TN+FN+TN), digits = 3), "<br/>", sep = "")
 			 
-			 
 		}
 		
 		#
@@ -410,7 +409,7 @@
 			)
 			setwd(sessiontemp)
 
-
+			for(i in 10) { gc() } #clean up 
 			removeModal()                             	
 		})
 		     

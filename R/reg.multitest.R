@@ -124,23 +124,10 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			pm1 <- predict(model1, newdata = data.frame(score1 = as.numeric(df1)), interval = "prediction", level = predlevel)
 
 
-			#tt <- abs(pm1[1] - as.numeric(df2)) / ( sqrt(diag(vcov(model1)))[2] * sqrt( 1+(1/t1r) + ((as.numeric(df1) - mean(as.numeric(cmodel1$scores$xscores[,1])))^2) / (t1r * sd(as.numeric(cmodel1$scores$xscores[,1]))^2) ) )
-			#pp <- 2 * pt(-abs(tt), df = t1r - 1)
-
-			#if(alphatest) {
-			#	if(pp > alphalevel) { #checks if predicted falls within prediction interval for the predictors
-			#		within <- "Cannot Exclude"
-			#	}
-			#	else within <- "Excluded"
-			#}
-			#if(!alphatest) {
 				if(df2 <= pm1[3] && df2 >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
 					within <- "Cannot Exclude"
 				}
 				else within <- "Excluded"
-			#}
-
-
 
 			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],round(rsqr1, digits = 3),t1r,NA,within, stringsAsFactors=FALSE))
 
@@ -185,8 +172,8 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 				t1 <- log(rowSums(ref[temp1n]))# reference
 				t2 <- log(rowSums(ref[temp2n]))
 			if(is.na(index)) {
-				#t1 <- log(rowSums(ref[temp1n]))# reference
-				#t2 <- log(rowSums(ref[temp2n]))
+
+
 				t1r <- length(t1)
 
 				model1 <- lm(t2~t1) #linear model
@@ -207,7 +194,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 
 			pm1 <- predict(model1, newdata = data.frame(t1 = as.numeric(temp1p)), interval = "prediction", level = predlevel)
 			tt <- abs(pm1[1] - temp2p) / ( sqrt(diag(vcov(model1)))[2] * sqrt( 1+(1/t1r) + ((temp1p - mean(t1))^2) / (t1r * sd(t1)^2) ) )
-			pp <- 2 * pt(-abs(tt), df = t1r - 1)
+			pp <- 2 * pt(-abs(tt), df = t1r - 2)
 
 			if(alphatest) {
 
