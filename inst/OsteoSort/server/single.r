@@ -63,23 +63,23 @@
 				testt <- 'reg'
 			}
 			if(input$zz == 'ulrr') {
-				reghum <- cbind(ID=input$ID1, Side=input$ulrrside1, Element="radius", Rad_01=input$ulrr45, Rad_05=input$ulrr46, Rad_06=input$ulrr47)
-				reguln <- cbind(ID=input$ID2, Side=input$ulrrside2, Element="ulna", Uln_01=input$ulrr48, Uln_04=input$ulrr49, Uln_05=input$ulrr50, Uln_06=input$ulrr51)
+				reguln <- cbind(ID=input$ID2, Side=input$ulrrside2, Element="radius", Rad_01=input$ulrr45, Rad_05=input$ulrr46, Rad_06=input$ulrr47)
+				reghum <- cbind(ID=input$ID1, Side=input$ulrrside1, Element="ulna", Uln_01=input$ulrr48, Uln_04=input$ulrr49, Uln_05=input$ulrr50, Uln_06=input$ulrr51)
 				testt <- 'reg'
 			}
 			if(input$zz == 'ulfr') {
-				reghum <- cbind(ID=input$ID1, Side=input$ulfrside1, Element="femur", Fem_01=input$ulfr60,Fem_02=input$ulfr61,Fem_03=input$ulfr62,Fem_04=input$ulfr63,Fem_06=input$ulfr64,Fem_05=input$ulfr65,Fem_07=input$ulfr66)
-				reguln <- cbind(ID=input$ID2, Side=input$ulfrside2, Element="ulna", Uln_01=input$huur48, Uln_04=input$huur49, Uln_05=input$ultr50, Uln_06=input$ultr51)
+				reguln <- cbind(ID=input$ID2, Side=input$ulfrside2, Element="femur", Fem_01=input$ulfr60,Fem_02=input$ulfr61,Fem_03=input$ulfr62,Fem_04=input$ulfr63,Fem_06=input$ulfr64,Fem_05=input$ulfr65,Fem_07=input$ulfr66)
+				reghum <- cbind(ID=input$ID1, Side=input$ulfrside1, Element="ulna", Uln_01=input$ulfr48, Uln_04=input$ulfr49, Uln_05=input$ulfr50, Uln_06=input$ulfr51)
 				testt <- 'reg'
 			}
 			if(input$zz == 'ultr') {
-				reghum <- cbind(ID=input$ID1, Side=input$ultrside1, Element="tibia", Tib_01=input$ultr69, Tib_02=input$ultr70,Tib_03=input$ultr71,Tib_04=input$ultr72,Tib_05=input$ultr73)
-				reguln <- cbind(ID=input$ID2, Side=input$ultrside2, Element="ulna", Uln_01=input$ultr48, Uln_04=input$ultr49, Uln_05=input$ultr50, Uln_06=input$ultr51)
+				reguln <- cbind(ID=input$ID2, Side=input$ultrside2, Element="tibia", Tib_01=input$ultr69, Tib_02=input$ultr70,Tib_03=input$ultr71,Tib_04=input$ultr72,Tib_05=input$ultr73)
+				reghum <- cbind(ID=input$ID1, Side=input$ultrside1, Element="ulna", Uln_01=input$ultr48, Uln_04=input$ultr49, Uln_05=input$ultr50, Uln_06=input$ultr51)
 				testt <- 'reg'
 			}
 			if(input$zz == 'ulfir') {
-				reghum <- cbind(ID=input$ID1, Side=input$ulfirside1, Element="fibula", Fib_01=input$ulfir75, Fib_02=input$ulfir76)
-				reguln <- cbind(ID=input$ID2, Side=input$ulfirside2, Element="ulna", Uln_01=input$ulfir48, Uln_04=input$ulfir49, Uln_05=input$ulfir50, Uln_06=input$ulfir51)
+				reguln <- cbind(ID=input$ID2, Side=input$ulfirside2, Element="fibula", Fib_01=input$ulfir75, Fib_02=input$ulfir76)
+				reghum <- cbind(ID=input$ID1, Side=input$ulfirside1, Element="ulna", Uln_01=input$ulfir48, Uln_04=input$ulfir49, Uln_05=input$ulfir50, Uln_06=input$ulfir51)
 				testt <- 'reg'
 			}	
 			if(input$zz == 'rafr') {
@@ -230,23 +230,23 @@
 				testt <- 'reg'
 			}
 			if(input$zz == 'ulrr') {
-				reghum <- cbind(ID=input$ID1, Side=input$sulrrside1, Element="radius", Rad_07=input$sulrr47A, Rad_08=input$sulrr47B, Rad_09=input$sulrr47C, Rad_04=input$sulrr47D, Rad_10=input$sulrr47E)
-				reguln <- cbind(ID=input$ID2,Side= input$sulrrside2, Element="ulna", Uln_09=input$sulrr51A, Uln_10=input$sulrr51B, Uln_11=input$sulrr51C)
+				reghum <- cbind(ID=input$ID1,Side= input$sulrrside1, Element="ulna", Uln_09=input$sulrr51A, Uln_10=input$sulrr51B, Uln_11=input$sulrr51C)
+				reguln <- cbind(ID=input$ID2, Side=input$sulrrside2, Element="radius", Rad_07=input$sulrr47A, Rad_08=input$sulrr47B, Rad_09=input$sulrr47C, Rad_04=input$sulrr47D, Rad_10=input$sulrr47E)
 				testt <- 'reg'
 			}
 			if(input$zz == 'ulfr') {
-				reghum <- cbind(ID=input$ID1, Side=input$sulfrside1,Element= "femur", Fem_14=input$sulfr68A,Fem_15=input$sulfr68B,Fem_16=input$sulfr68D,Fem_18=input$sulfr68E)
-				reguln <- cbind(ID=input$ID2, Side=input$sulfrside2, Element="ulna", Uln_09=input$huur51A, Uln_10=input$huur51B, Uln_11=input$ultr51C)
+				reguln <- cbind(ID=input$ID2, Side=input$sulfrside2,Element= "femur", Fem_14=input$sulfr68A,Fem_15=input$sulfr68B,Fem_16=input$sulfr68D,Fem_18=input$sulfr68E)
+				reghum <- cbind(ID=input$ID1, Side=input$sulfrside1, Element="ulna", Uln_09=input$sulfr51A, Uln_10=input$sulfr51B, Uln_11=input$sulfr51C)
 				testt <- 'reg'
 			}
 			if(input$zz == 'ultr') {
-				reghum <- cbind(ID=input$ID1, Side=input$sultrside1,Element= "tibia", Tib_10=input$sultr74A, Tib_11=input$sultr74B,Tib_12=input$sultr74F)
-				reguln <- cbind(ID=input$ID2, Side=input$sultrside2, Element="ulna", Uln_09=input$sultr51A, Uln_10=input$sultr51B, Uln_11=input$sultr51C)
+				reguln <- cbind(ID=input$ID2, Side=input$sultrside2,Element= "tibia", Tib_10=input$sultr74A, Tib_11=input$sultr74B,Tib_12=input$sultr74F)
+				reghum <- cbind(ID=input$ID1, Side=input$sultrside1, Element="ulna", Uln_09=input$sultr51A, Uln_10=input$sultr51B, Uln_11=input$sultr51C)
 				testt <- 'reg'
 			}
 			if(input$zz == 'ulfir') {
-				reghum <- cbind(ID=input$ID1, Side=input$sulfirside1, Element="fibula", Fib_03=input$sulfir76A, Fib_04=input$sulfir76B, Fib_05=input$sulfir76C)
-				reguln <- cbind(ID=input$ID2, Side=input$sulfirside2, Element="ulna", Uln_09=input$sulfir51A, Uln_10=input$sulfir51B, Uln_11=input$sulfir51C)
+				reguln <- cbind(ID=input$ID2, Side=input$sulfirside2, Element="fibula", Fib_03=input$sulfir76A, Fib_04=input$sulfir76B, Fib_05=input$sulfir76C)
+				reghum <- cbind(ID=input$ID1, Side=input$sulfirside1, Element="ulna", Uln_09=input$sulfir51A, Uln_10=input$sulfir51B, Uln_11=input$sulfir51C)
 				testt <- 'reg'
 			}	
 			if(input$zz == 'rafr') {

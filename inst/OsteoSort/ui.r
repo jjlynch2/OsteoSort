@@ -48,7 +48,7 @@ shinyUI(
 											numericInput(inputId = 'huur41', label = 'Hum_02', value = ''),		
 											numericInput(inputId = 'huur42', label = 'Hum_03', value = ''),																		
 											numericInput(inputId = 'huur43', label = 'Hum_04', value = ''),	
-											numericInput(inputId = 'huur44', label = 'Hum_05', value = '')																								
+											numericInput(inputId = 'huur44', label = 'Hum_05', value =  '')																								
 										),
 										column(4,
 											h4("Ulna"),
@@ -72,7 +72,7 @@ shinyUI(
 											numericInput(inputId = 'hurr41', label = 'Hum_02', value = ''),		
 											numericInput(inputId = 'hurr42', label = 'Hum_03', value = ''),																		
 											numericInput(inputId = 'hurr43', label = 'Hum_04', value = ''),	
-											numericInput(inputId = 'hurr44', label = 'Hum_05', value = '')																								
+											numericInput(inputId = 'hurr44', label = 'Hum_05', value =  '')																								
 										),
 										column(4,
 											h4("Radius"),
@@ -94,7 +94,7 @@ shinyUI(
 											numericInput(inputId = 'hufr41', label = 'Hum_02', value = ''),		
 											numericInput(inputId = 'hufr42', label = 'Hum_03', value = ''),																		
 											numericInput(inputId = 'hufr43', label = 'Hum_04', value = ''),	
-											numericInput(inputId = 'hufr44', label = 'Hum_05', value = '')																								
+											numericInput(inputId = 'hufr44', label = 'Hum_05', value =  '')																								
 										),
 										column(4,
 											h4("Femur"),
@@ -122,7 +122,7 @@ shinyUI(
 											numericInput(inputId = 'hutr41', label = 'Hum_02', value = ''),		
 											numericInput(inputId = 'hutr42', label = 'Hum_03', value = ''),																		
 											numericInput(inputId = 'hutr43', label = 'Hum_04', value = ''),	
-											numericInput(inputId = 'hutr44', label = 'Hum_05', value = '')																								
+											numericInput(inputId = 'hutr44', label = 'Hum_05', value =  '')																								
 										),
 										column(4,
 											h4("Tibia"),
@@ -147,7 +147,7 @@ shinyUI(
 											numericInput(inputId = 'hufir41', label = 'Hum_02', value = ''),		
 											numericInput(inputId = 'hufir42', label = 'Hum_03', value = ''),																		
 											numericInput(inputId = 'hufir43', label = 'Hum_04', value = ''),	
-											numericInput(inputId = 'hufir44', label = 'Hum_05', value = '')																								
+											numericInput(inputId = 'hufir44', label = 'Hum_05', value =  '')																								
 										),
 										column(4,
 											h4("Fibula"),
