@@ -16,6 +16,9 @@ Depends:
     foreach,
     stargazer,
     shinythemes,
+    pixmap,
+    jpeg,
+    Momocs,
     CCA
 License: GPL-2
 LazyData: false
