@@ -1,10 +1,9 @@
 
 
-match.2d.invariant <- function(specmatrix = NULL, min = 1e+15, iter = 1000, trans = "rigid", threads=8) {
+match.2d.invariant <- function(specmatrix = NULL, min = 1e+15, iter = 1000, trans = "rigid", threads=8, testme = "test") {
 	library(Morpho)
 	library(pracma)
 	library(shapes)
-	library(gromovlab)
 
 	homolog <<- array(NA,c(dim(specmatrix)[1], dim(specmatrix)[2], dim(specmatrix)[3]))
 	namess <- dimnames(specmatrix)[[3]] #capture specimen names
@@ -21,24 +20,24 @@ match.2d.invariant <- function(specmatrix = NULL, min = 1e+15, iter = 1000, tran
 	}
 
 #shifts the landmarks to correspond with first coorespondance from mean
-#		shift <- function(d, k) rbind(tail(d,k), head(d,-k), deparse.level = 0)
-#	for(i in 1:dim(homolog)[3]) {
-#		meann <- apply(homolog, c(1,2), mean) #mean shape
-#		temp <- homolog[,,i]
-#		index <- mcNNindex(target = meann, query = temp, cores = threads, k = 1)
+		shift <- function(d, k) rbind(tail(d,k), head(d,-k), deparse.level = 0)
+	for(i in 1:dim(homolog)[3]) {
+		meann <- apply(homolog, c(1,2), mean) #mean shape
+		temp <- homolog[,,i]
+		index <- mcNNindex(target = meann, query = temp, cores = threads, k = 1)
 
-#		newindex <- match(1,index)
-#		if(newindex != 1) {
-#			newindex <- newindex - 1
-#			temp <- shift(temp, newindex)
-#			homolog[,,i] <- temp
-#		}
-#		if(newindex == 1) {
-#			homolog[,,i] <- temp
-#		}
+		newindex <- match(1,index)
+		if(newindex != 1) {
+			newindex <- newindex - 1
+			temp <- shift(temp, newindex)
+			homolog[,,i] <- temp
+		}
+		if(newindex == 1) {
+			homolog[,,i] <- temp
+		}
 
-#
-#	}
+
+	}
 
 	dimnames(homolog)[[3]] <- namess #set specimen names again
 
@@ -56,7 +55,7 @@ match.2d.invariant <- function(specmatrix = NULL, min = 1e+15, iter = 1000, tran
 		for(x in 1:dim(homologtemp)[3]) {
 			#distance <- abs(sqrt(rowSums((homolog[,,z] - homologtemp[,,x])^2)))
 			#distance <- procdist(homolog[,,z], homologtemp[,,x], type = "Riemannian")
-			distance <- half_hausdorff_dist(homolog[,,z], homologtemp[,,x])
+			distance <- half_hausdorff_dist(homolog[,,z], homologtemp[,,x], testme = testme)
 			#dm1 <- distmat(homolog[,,z],homologtemp[,,x]))
 			#dm2 <- dismat(homologtemp[,,x], homolog[,,z])
 			#distance <- gromovdist(d1 = dm1, d2 = NULL, type = "l1", p=NULL)

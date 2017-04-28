@@ -9,6 +9,7 @@ Depends:
     shinyBS,
     plyr,
     Morpho,
+    shapes,
     DT,
     parallel,
     doSNOW,
@@ -19,6 +20,7 @@ Depends:
     pixmap,
     jpeg,
     Momocs,
+    pracma,
     CCA
 License: GPL-2
 LazyData: false
