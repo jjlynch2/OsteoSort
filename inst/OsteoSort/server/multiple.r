@@ -17,7 +17,7 @@
 	observeEvent(input$clearFile1, {
 		   output$table <- renderUI({      HTML(paste(""))}) 
 		   output$tablen <- renderUI({      HTML(paste(""))}) 
-		   output$contents <- renderUI({HTML(paste("Select the parameters and upload the file to begin."))})
+		   output$contents <- renderUI({HTML(paste("Select the parameters and upload the file to begin"))})
 	})
 
 	######standard measurement combinator

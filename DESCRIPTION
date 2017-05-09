@@ -21,7 +21,8 @@ Depends:
     jpeg,
     Momocs,
     pracma,
-    CCA
+    CCA,
+    data.table
 License: GPL-2
 LazyData: false
 Imports:

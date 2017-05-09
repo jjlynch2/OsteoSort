@@ -20,7 +20,7 @@
 		output$tablejustfuckingworkb4 <- renderUI({HTML(paste(""))}) 
 		output$tablejustfuckingworkc4 <- renderUI({HTML(paste(""))}) 
 		output$plotoutlier4 <- renderUI({HTML(paste(""))}) 
-		output$outliercontent4 <- renderUI({HTML(paste("Select the parameters and upload the file to begin.</br></br>"))})
+		output$outliercontent4 <- renderUI({HTML(paste("Select the parameters and upload the file to begin</br></br>"))})
 	})
 	#clears tables when running second stats
 	observeEvent(input$pro4, {

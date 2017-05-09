@@ -24,9 +24,18 @@ match.2d.invariant <- function(specmatrix = NULL, min = 1e+15, iter = 1000, tran
 	for(i in 1:dim(homolog)[3]) {
 		meann <- apply(homolog, c(1,2), mean) #mean shape
 		temp <- homolog[,,i]
-		index <- mcNNindex(target = meann, query = temp, cores = threads, k = 1)
+		index <<- mcNNindex(target = meann, query = temp, cores = threads, k = 1)
 
-		newindex <- match(1,index)
+		newindex <<- match(1,index)
+		
+		itt <<- 2 #start at 2
+		while(is.na(newindex)) {
+			newindex <<- match(itt,index)
+			itt <<- itt + 1
+		}
+		newindex <<- newindex + itt
+
+
 		if(newindex != 1) {
 			newindex <- newindex - 1
 			temp <- shift(temp, newindex)
@@ -55,7 +64,7 @@ match.2d.invariant <- function(specmatrix = NULL, min = 1e+15, iter = 1000, tran
 		for(x in 1:dim(homologtemp)[3]) {
 			#distance <- abs(sqrt(rowSums((homolog[,,z] - homologtemp[,,x])^2)))
 			#distance <- procdist(homolog[,,z], homologtemp[,,x], type = "Riemannian")
-			distance <- half_hausdorff_dist(homolog[,,z], homologtemp[,,x], testme = testme)
+			distance <- segmented_hausdorff_dist(homolog[,,z], homologtemp[,,x], testme = testme)
 			#dm1 <- distmat(homolog[,,z],homologtemp[,,x]))
 			#dm2 <- dismat(homologtemp[,,x], homolog[,,z])
 			#distance <- gromovdist(d1 = dm1, d2 = NULL, type = "l1", p=NULL)

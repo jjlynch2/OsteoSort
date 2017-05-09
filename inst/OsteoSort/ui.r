@@ -1206,17 +1206,17 @@ shinyUI(
 						bsModal("settingssingle", title = "Settings", trigger = "settings2", size = "large", 
 							tabsetPanel(id="tabSelected2",
 					 		
-							tabPanel("Output",
+							tabPanel("Output Parameters",
 								checkboxInput(inputId = "fileoutput3", label = "Output to excel files", value = TRUE),
 								checkboxInput(inputId = "fileoutput4", label = "Output to individual specimen files (takes longer to run)", value = FALSE)
 					 		),
 					 		tabPanel("Statistical Parameters",
-								checkboxInput(inputId = "regtesttypes", label = "PCA-CCA-Regression (Uncheck for simple regression)", value = TRUE),
-								checkboxInput(inputId = "alphapred", label = "Use alpha levels for regression (Uncheck to use prediction intervals. Only apples to simple regression.)", value = TRUE),
+								checkboxInput(inputId = "regtesttypes", label = "PCA-CCA-Regression", value = TRUE),
+								checkboxInput(inputId = "alphapred", label = "Use alpha levels for regression (Only apples to simple regression)", value = FALSE),
 								sliderInput(inputId = "alphalevels2", label = "Prediction Interval Level", min=0.01, max=1, value=0.95, step = 0.01),
 								sliderInput(inputId = "alphalevels", label = "Alpha Level", min=0.01, max=1, value=0.05, step = 0.01),
 								checkboxInput(inputId = "absolutevalues", label = "Absolute D-value |a-b|", value = TRUE),
-								checkboxInput(inputId = "power1", label = "Half-normalization transformation (Absolute models only)", value = TRUE),
+								checkboxInput(inputId = "power1", label = "Half-normalization transformation (Only applies to absolute value models)", value = TRUE),
 								checkboxInput(inputId = "testagainstsingle", label = "Zero reference sample mean", value = FALSE)
 							)
 							)	
@@ -1264,7 +1264,7 @@ shinyUI(
 					 			DT::dataTableOutput('tablen'))),
 					 	bsModal("settings", title = "Settings", trigger = "settings1", size = "large", 
 					 		tabsetPanel(id="tabSelected2",
-					 			tabPanel("Output",
+					 			tabPanel("Output Parameters",
 									checkboxInput(inputId = "fileoutput1", label = "Output to excel files ", value = TRUE),
 									checkboxInput(inputId = "fileoutput2", label = "Output to individual specimen files (takes longer to run)", value = FALSE)
 					 			),
@@ -1427,16 +1427,16 @@ shinyUI(
 									
 								),
 								tabPanel("Statistical Parameters",
-									checkboxInput(inputId = "regtesttypem", label = "PCA-CCA-Regression (Uncheck for simple regression)", value = TRUE),
-									checkboxInput(inputId = "alphapred2", label = "Use alpha levels for regression (Uncheck to use prediction intervals. Only apples to simple regression.)", value = TRUE),
+									checkboxInput(inputId = "regtesttypem", label = "PCA-CCA-Regression", value = TRUE),
+									checkboxInput(inputId = "alphapred2", label = "Use alpha levels for regression (Only apples to simple regression)", value = FALSE),
 									sliderInput(inputId = "asspredlevel", label = "Prediction Interval Level", min=0.01, max=1, value=0.95, step=0.01),
 									sliderInput(inputId = "alphalevel", label = "Alpha Level", min=0.01, max=1, value=0.05, step = 0.01),
 									checkboxInput(inputId = "absolutevalue", label = "Absolute D-value |a-b|", value = TRUE),
-									checkboxInput(inputId = "power2", label = "Half-normalization transformation (Absolute models only)", value = TRUE),
+									checkboxInput(inputId = "power2", label = "Half-normalization transformation (Only applies to absolute value models)", value = TRUE),
 									checkboxInput(inputId = "testagainst", label = "Zero reference sample mean", value = FALSE),
 									checkboxInput(inputId = "research", label = "Calculate research statistics", value = FALSE)
 								),
-								tabPanel("Computational parameters",
+								tabPanel("Computational Parameters",
 									uiOutput('ncores')
 								)
 								

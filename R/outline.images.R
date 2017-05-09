@@ -1,4 +1,4 @@
-outline.images <- function (imagelist, threshold = 0.09, scale = TRUE, mirror = FALSE, npoints = 200) {
+outline.images <- function (imagelist, threshold = 0.09, scale = TRUE, mirror = FALSE, npoints = 200, smooth = 1, nb.h = 400) {
      #modified from open source package blah
 	library(jpeg)
 	library(pixmap)
@@ -9,6 +9,7 @@ outline.images <- function (imagelist, threshold = 0.09, scale = TRUE, mirror = 
 	array3d <- array(NA,c(npoints, 2, nimages))
 
 	for(iii in 1:nimages) {
+print(iii)
 		M <- readJPEG(imagelist[iii])
 		M <- suppressWarnings(pixmapGrey(M))
 
@@ -84,7 +85,7 @@ outline.images <- function (imagelist, threshold = 0.09, scale = TRUE, mirror = 
 			centroidsize <- sqrt(sum((t(t(spec1)-centroid))^2))
 		}
 
-		test1 <- efourier(spec1, smooth.it=1, verbose=FALSE, norm = TRUE, start = FALSE)
+		test1 <- efourier(spec1, smooth.it=smooth, verbose=FALSE, norm = TRUE, start = FALSE, nb.h = nb.h)
 		spec1 <- efourier_i(test1, nb.pts=npoints)
 		spec1 <- as.matrix(data.frame(spec1))
 
