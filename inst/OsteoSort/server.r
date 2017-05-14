@@ -25,7 +25,7 @@ shinyServer(function(input, output, session) {
 
 
 	#defines which modules to include
-	source("../../server/twod.r", local=TRUE) ###imports two D server code
+	#source("../../server/twod.r", local=TRUE) ###imports two D server code
 	source("../../server/multiple.r", local=TRUE) ###imports multiple comparison server code
 	source("../../server/single.r", local=TRUE) ###imports single comparison server code
 	source("../../server/outlier.r", local=TRUE) ###imports outlier comparison server code

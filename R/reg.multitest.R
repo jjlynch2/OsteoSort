@@ -135,8 +135,15 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	
 		sortlist <- split(sort, 1:nrow(sort))
 
-		op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = no_cores, mc.preschedule = TRUE) )
-		print(op)
+
+		if(Sys.info()[['sysname']] == "Windows") {
+			op <- system.time ( hera1 <- lapply(FUN = myfunreg, X = sortlist) )
+			print(op)
+		}
+		else {
+			op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = no_cores, mc.preschedule = TRUE) )
+			print(op)
+		}
 		hera1 = as.data.frame(data.table::rbindlist(hera1))
 	
 		rm(is.unique) #making the environment clean again
@@ -215,8 +222,14 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	
 		sortlist <- split(sort, 1:nrow(sort))
 
-		op <- system.time ( hera1 <- mclapply(FUN = myfunregs, X = sortlist, mc.cores = no_cores, mc.preschedule = TRUE) )
-		print(op)
+		if(Sys.info()[['sysname']] == "Windows") {
+			op <- system.time ( hera1 <- lapply(FUN = myfunreg, X = sortlist) )
+			print(op)
+		}
+		else {
+			op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = no_cores, mc.preschedule = TRUE) )
+			print(op)
+		}
 		hera1 = as.data.frame(data.table::rbindlist(hera1))
 	
 		rm(is.uniques) #making the environment clean again

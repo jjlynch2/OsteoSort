@@ -21,7 +21,7 @@
 #' pm.ttest()
 
 pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1, plotme = FALSE) {
-     print("Statistical pair match comparisons have started.")
+	print("Statistical pair match comparisons have started.")
 	suppressMessages(library(parallel))
 	suppressMessages(library(doSNOW))
 	suppressMessages(library(compiler))
@@ -112,9 +112,15 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 		return(data.frame(X[,1], X[,3],X[,5],X[,2],X[,4],X[,6],toString(temp1n),round(p.value, digits = 4),ycol/2,yrow,round(difm, digits = 4),round(difsd, digits = 4), stringsAsFactors=FALSE)) 
 	} 
 
+	if(Sys.info()[['sysname']] == "Windows") {
+		op <- system.time ( hera1 <- lapply(FUN = myfunpm, X = sortdata) )
+		print(op)
+	}
+	else {
+		op <- system.time ( hera1 <- mclapply(FUN = myfunpm, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE) )
+		print(op)
+	}
 
-	op <- system.time ( hera1 <- mclapply(FUN = myfunpm, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE) )
-	print(op)
 	hera1 <- as.data.frame(data.table::rbindlist(hera1))
 	
      colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd")

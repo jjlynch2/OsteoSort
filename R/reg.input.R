@@ -64,8 +64,8 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 	sort2T <- sort2T[sort2T$Side == side2,]
 	
 	#cuts down sort to only measurements from bone
-	sort1 <- data.frame(NA)
-	sort2 <- data.frame(NA)
+	sort1 <- data.frame(NA, stringsAsFactors = FALSE)
+	sort2 <- data.frame(NA, stringsAsFactors = FALSE)
 	
 	if(is.null(measurements1) || is.null(measurements2)) {
 		measurements <- c("ID","Side","Element",eval(as.symbol(bone1)))
@@ -90,8 +90,8 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 	sort2 <- sort2[,-1]
 	
 	
-	sort1 <- as.data.frame(sort1[rowSums(!is.na(sort1[-1][-1][-1])) > 0,])
-	sort2 <- as.data.frame(sort2[rowSums(!is.na(sort2[-1][-1][-1])) > 0,])
+	sort1 <- as.data.frame(sort1[rowSums(!is.na(sort1[-1][-1][-1])) > 0,], stringsAsFactors = FALSE)
+	sort2 <- as.data.frame(sort2[rowSums(!is.na(sort2[-1][-1][-1])) > 0,], stringsAsFactors = FALSE)
 	
 	#measurement names
 	colnames(sort1) <- measurements
@@ -114,8 +114,8 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 		r2 <- TRUE
 	}
 
-	ref1 <- read.table(system.file("extdata", boneref1, package = "osteosort"), header = TRUE, sep=",")[,c(1,hcol)]
-	ref2 <- read.table(system.file("extdata", boneref2, package = "osteosort"), header = TRUE, sep=",")[,c(1,ucol)]
+	ref1 <- read.table(system.file("extdata", boneref1, package = "osteosort"), header = TRUE, sep=",", stringsAsFactors = FALSE)[,c(1,hcol)]
+	ref2 <- read.table(system.file("extdata", boneref2, package = "osteosort"), header = TRUE, sep=",", stringsAsFactors = FALSE)[,c(1,ucol)]
 
 	#removes R after measurement name from the reference dataset
 	if(r1) {
@@ -176,5 +176,6 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 
      print("Import and reference generation completed.")
 	gc()
+
 	return(list(res, ref, splitn = c(bone1temp, bone2temp+bone1temp)))
 }

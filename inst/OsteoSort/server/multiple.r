@@ -187,7 +187,7 @@
 
 	if(input$testtype2 != 'Regression_match') {
 		#logic for calling input functions
-		if(input$standard == 'Standard' & input$bone != 'altt' & input$bone != 'alttp' & input$bone != 'altta' & input$bone != 'hu' & input$bone != 'hr' & input$bone != 'hs' & input$bone != 'hss' & input$bone != 'fi' & input$bone != 'ft' & input$bone != 'ftt'){
+		if(input$standard == 'Standard' & input$bone != 'hu' & input$bone != 'hr' & input$bone != 'hs' & input$bone != 'hss' & input$bone != 'fi' & input$bone != 'ft' & input$bone != 'ftt'){
 			if(input$bone == 'clavicle') {threshold <- input$clavicle; measurements <- input$MeasurementsUsed1} 
 			if(input$bone == 'scapula') {threshold <- input$scapula; measurements <- input$MeasurementsUsed2}   
 			if(input$bone == 'humerus') {threshold <- input$humerus; measurements <- input$MeasurementsUsed3} 
@@ -203,7 +203,7 @@
 			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore, power = input$power2)
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])       
 		}	
-		if(input$standard == 'Supplemental' & input$bone != 'altt' & input$bone != 'alttp' & input$bone != 'altta' & input$bone != 'hu' & input$bone != 'hr' & input$bone != 'hs' & input$bone != 'hss' & input$bone != 'fi' & input$bone != 'ft' & input$bone != 'ftt'){
+		if(input$standard == 'Supplemental' & input$bone != 'hu' & input$bone != 'hr' & input$bone != 'hs' & input$bone != 'hss' & input$bone != 'fi' & input$bone != 'ft' & input$bone != 'ftt'){
 			if(input$bone == 'clavicle') {threshold <- input$claviclea; measurements <- input$MeasurementsUseda} 
 			if(input$bone == 'scapula') {threshold <- input$scapulab; measurements <- input$MeasurementsUsedb}   
 			if(input$bone == 'humerus') {threshold <- input$humerusc; measurements <- input$MeasurementsUsedc} 
@@ -219,26 +219,6 @@
 			direc2 <- pm.ttest(refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore, power = input$power2)
 			ll <- nrow(direc2[[2]]) + nrow(direc2[[3]])           
 		}
-		if(input$bone == 'altt' || input$bone == 'alttp' || input$bone == 'altta') {
-
-			if(input$standard == "Standard") {
-				treshlist <- c(input$clavicle, input$scapula, input$humerus, input$ulna, input$radius, input$os_coxa, input$femur, input$tibia, input$fibula)
-				mlist <- measurementsglobal$clist
-			}
-			if(input$standard == "Supplemental") {
-				treshlist <- c(input$claviclea, input$scapulab, input$humerusc, input$ulnad, input$radiuse, input$os_coxaf, input$femurg, input$tibiah, input$fibulai)
-				mlist <- measurementsglobal$blist
-			}
-			if(input$bone == 'altt') {test <- "all"}
-			if(input$bone == 'alttp'){test <- "all_pm"}
-			if(input$bone == 'altta'){test <- "all_art"}
-					       		
-			direc2 <- all.ttest(sort = tempdata1, test = test, tresh = treshlist, measurements = mlist, template = input$standard, sessiontemp = sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, stdout = FALSE, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore, power = input$power2)
-			direc <- direc2[[1]]
-			nmatch <- direc2[[3]]
-			ll <- direc2[[4]]
-			direc2 <- direc2[[2]]
-		}                  
 		if(input$bone == 'hu' | input$bone == 'hr' | input$bone == 'hs' | input$bone == "hss" | input$bone == 'fi' | input$bone == 'ft' | input$bone == 'ftt') {
 			wtf <- art.input(bone=toString(input$bone), sort=tempdata1)
 			direc2 <- art.ttest(power = input$power2, refdata = wtf[[2]], sortdata = wtf[[1]], stdout = FALSE, sessiontemp=sessiontemp, alphalevel = input$alphalevel, absolutevalue = input$absolutevalue, testagainst = input$testagainst, oo = c(input$fileoutput1, input$fileoutput2), no_cores = numbercoresglobal$ncore)   
@@ -305,10 +285,8 @@
 		#if combinations exist, produces output
 		if(!all(is.na(direc2[[2]])) || !all(is.na(direc2[[3]])) && any(oo=c(input$fileoutput1, input$fileoutput2))) {
 
-			if (input$bone != 'altt' && input$bone != 'alttp' && input$bone != 'altta'){
-				   direc <- direc2[[1]]
-				   nmatch <- nrow(direc2[[2]])
-			}
+			direc <- direc2[[1]]
+			nmatch <- nrow(direc2[[2]])
 
 			files <- list.files(direc, recursive = TRUE)
 			setwd(direc)
@@ -421,12 +399,12 @@
 			
 			if(input$testtype2 == 'Pair_match') {
 				output$testtype2 <- renderUI({
-					selectInput('bone', 'Elements', c(All_pair_tests = 'alttp', Humerus='humerus', Ulna='ulna', Radius='radius', Femur='femur', Tibia='tibia', Fibula='fibula', Scapula='scapula', Os_coxa='os_coxa', Clavicle='clavicle'),'humerus')
+					selectInput('bone', 'Elements', c(Humerus='humerus', Ulna='ulna', Radius='radius', Femur='femur', Tibia='tibia', Fibula='fibula', Scapula='scapula', Os_coxa='os_coxa', Clavicle='clavicle'),'humerus')
 				})
 			}
 			if(input$testtype2 == 'Articulation_match') {
 				output$testtype2 <- renderUI({
-					selectInput('bone', 'Elements', c(All_articulation_tests = 'altta', Humerus_Ulna='hu',Humerus_Radius='hr', Humerus_Scapula1='hs', Humerus_Scapula2='hss', Femur_Os_coxa='fi', Femur_Tibia='ft', Fibula_Tibia='ftt'),'fi')
+					selectInput('bone', 'Elements', c(Humerus_Ulna='hu',Humerus_Radius='hr', Humerus_Scapula1='hs', Humerus_Scapula2='hss', Femur_Os_coxa='fi', Femur_Tibia='ft', Fibula_Tibia='ftt'),'fi')
 				})
 			}
 			if(input$testtype2 == 'Regression_match') {
@@ -444,11 +422,6 @@
 							selectInput("assbone2", "Element", c(Clavicle="Clavicle", Scapula="Scapula", Humerus="Humerus", Radius="Radius", Ulna="Ulna", Os_coxa="Os_coxa", Femur="Femur", Tibia="Tibia", Fibula="Fibula"))
 						)
 					)
-				})
-			}
-			if(input$testtype2 == 'All_tests') {
-				output$testtype2 <- renderUI({
-					selectInput('bone', 'Elements', c(All_tests='altt'))
 				})
 			}
 

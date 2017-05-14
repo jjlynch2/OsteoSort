@@ -9,7 +9,7 @@ library(shinyBS)
 library(shinythemes)
 #Navigation bar interface
 shinyUI(
-	navbarPage(theme = shinytheme("sandstone"), title=div(img(src="OsteoSort.png", width = "30px"), "OsteoSort v0.9 Beta"),
+	navbarPage(theme = shinytheme("sandstone"), title=div(img(src="OsteoSort.png", width = "30px"), "OsteoSort 1.0"),
 
 
 	
@@ -1458,62 +1458,62 @@ shinyUI(
 
 
 		navbarMenu("Osteoshape sorting",		
-			tabPanel("2D comparison",
-				sidebarLayout(
-					sidebarPanel(
-					
-					    tabsetPanel(id="tabSelected",
-							tabPanel("Digitize",
-					 			
-								uiOutput('resettableInput2d'),
-
-								uiOutput('tpsupload'),	
-								
-
-
-									selectInput('bonelandmarkconfig', 'Elements', c(Humerus='humerus', Ulna='ulna', Radius='radius', Femur='femur', Tibia='tibia', Fibula='fibula', Scapula='scapula', Os_coxa='os_coxa', Clavicle='clavicle',Variable='variable'),'humerus'),
-									conditionalPanel(condition = "input.bonelandmarkconfig == 'variable'",
-										sliderInput(inputId = "variable", label = "Number of Landmarks", min=2, max=300, value=2, step = 1),
-										uiOutput('variablelandmark')
-									),
-									
-									
-									
-									radioButtons('bonelandmarkconfigside', 'Side', c(Left='Left',Right='Right'), 'Left'),
-									conditionalPanel(condition = "input.bonelandmarkconfig == 'humerus'",
-										radioButtons(inputId = 'landmarks', label = 'Landmarks', c('Landmark 1','Landmark 2','Landmark 3','Landmark 4','Landmark 5','Landmark 6','Landmark 7','Landmark 8','Landmark 9','Landmark 10','Scale'), selected = 'Landmark 1')
-									),
-									conditionalPanel(condition = "input.bonelandmarkconfig == 'ulna'",
-										radioButtons(inputId = 'landmarks', label = 'Landmarks', c('Landmark 1','Landmark 2','Landmark 3','Landmark 4','Landmark 5','Landmark 6','Landmark 7','Landmark 8'), selected = 'Landmark 1')
-									),	
-									conditionalPanel(condition = "input.bonelandmarkconfig == 'radius'",
-										radioButtons(inputId = 'landmarks', label = 'Landmarks', c('Landmark 1','Landmark 2','Landmark 3','Landmark 4','Landmark 5','Landmark 6','Landmark 7','Landmark 8','Landmark 9'), selected = 'Landmark 1')
-									),
+			tabPanel("2D comparison"),
+#				sidebarLayout(
+#					sidebarPanel(
+#					
+#					    tabsetPanel(id="tabSelected",
+#							tabPanel("Digitize",
+#					 			
+#								uiOutput('resettableInput2d'),
+#
+#								uiOutput('tpsupload'),	
+#								
+#
+#
+#									selectInput('bonelandmarkconfig', 'Elements', c(Humerus='humerus', Ulna='ulna', Radius='radius', Femur='femur', Tibia='tibia', Fibula='fibula', Scapula='scapula', Os_coxa='os_coxa', Clavicle='clavicle',Variable='variable'),'humerus'),
+#									conditionalPanel(condition = "input.bonelandmarkconfig == 'variable'",
+#										sliderInput(inputId = "variable", label = "Number of Landmarks", min=2, max=300, value=2, step = 1),
+#										uiOutput('variablelandmark')
+#									),
+#									
+#									
+#									
+#									radioButtons('bonelandmarkconfigside', 'Side', c(Left='Left',Right='Right'), 'Left'),
+#									conditionalPanel(condition = "input.bonelandmarkconfig == 'humerus'",
+#										radioButtons(inputId = 'landmarks', label = 'Landmarks', c('Landmark 1','Landmark 2','Landmark 3','Landmark 4','Landmark 5','Landmark 6','Landmark 7','Landmark 8','Landmark 9','Landmark 10','Scale'), selected = 'Landmark 1')
+#									),
+#									conditionalPanel(condition = "input.bonelandmarkconfig == 'ulna'",
+#										radioButtons(inputId = 'landmarks', label = 'Landmarks', c('Landmark 1','Landmark 2','Landmark 3','Landmark 4','Landmark 5','Landmark 6','Landmark 7','Landmark 8'), selected = 'Landmark 1')
+#									),	
+#									conditionalPanel(condition = "input.bonelandmarkconfig == 'radius'",
+#										radioButtons(inputId = 'landmarks', label = 'Landmarks', c('Landmark 1','Landmark 2','Landmark 3','Landmark 4','Landmark 5','Landmark 6','Landmark 7','Landmark 8','Landmark 9'), selected = 'Landmark 1')
+#									),
 																
 								
-								actionButton("clearFile2", "Clear session"),
-								actionButton("previousimage", "Previous"),
-								actionButton("nextimage", "Next"),
-								downloadButton("savetps", "Save TPS"),
-								uiOutput('landmarks'),
-								tableOutput("clickinfo"),
-								uiOutput('scales'),
-								tableOutput("scaleinfo"),
-								tableOutput("sideinfo")
-							   
+#								actionButton("clearFile2", "Clear session"),
+#								actionButton("previousimage", "Previous"),
+#								actionButton("nextimage", "Next"),
+#								downloadButton("savetps", "Save TPS"),
+#								uiOutput('landmarks'),
+#								tableOutput("clickinfo"),
+#								uiOutput('scales'),
+#								tableOutput("scaleinfo"),
+#								tableOutput("sideinfo")
+#							   
 
-							),
-							tabPanel("Pair-match")
-						)
+#							),
+#							tabPanel("Pair-match")
+#						)
 
-					),
-					mainPanel(
-						imageOutput("myimage", click="image_click", width = 1000, height = 1000)
+#					),
+#					mainPanel(
+#						imageOutput("myimage", click="image_click", width = 1000, height = 1000)
 						#uiOutput('landmarks')
-					)
-				)
+#					)
+#				)
 
-			),
+#			),
 			tabPanel("3D comparison")
 			
 			

@@ -22,7 +22,6 @@
 #' art.input()
 
 art.input <- function (bone = NULL, sort = NULL) {
-	suppressMessages(library(data.table))
 	suppressMessages(library(plyr))
 	options(as.is = TRUE)
 	options(warn = -1)
@@ -69,7 +68,7 @@ art.input <- function (bone = NULL, sort = NULL) {
 	refdata <- cbind(reftemp[[measurements[1]]], reftemp[[measurements[2]]])
 	refdata <- na.omit(refdata)
 
-	if(nrow(sort) == 1) {sort[7] <- as.numeric(as.matrix(sort[7])); sort[8] <- as.numeric(as.matrix(sort[8])); return(list(list(data.table(sort)), data.table(refdata)))} #returns if single user input since no sorting required
+	if(nrow(sort) == 1) {sort[7] <- as.numeric(as.matrix(sort[7])); sort[8] <- as.numeric(as.matrix(sort[8])); return(list(list(as.data.frame(sort, stringsAsFactors = FALSE)), as.data.frame(refdata, stringsAsFactors=FALSE)))} #returns if single user input since no sorting required
 
 	cols1 <- c(grep(paste("^","ID","$",sep=""), colnames(sort)), grep("Side", colnames(sort)), grep("Element", colnames(sort)), grep(paste("^",measurements[1],"$",sep=""), colnames(sort))) #greps column name to grab column index 
 	cols2 <- c(grep(paste("^","ID","$",sep=""), colnames(sort)), grep("Side", colnames(sort)), grep("Element", colnames(sort)), grep(paste("^",measurements[2],"$",sep=""), colnames(sort))) #greps column name to grab column index
@@ -127,7 +126,7 @@ art.input <- function (bone = NULL, sort = NULL) {
 
      
 	gc()
-	refdata <- data.table(refdata)
+	refdata <- as.data.frame(refdata, stringsAsFactors=FALSE)
 	return(list(sortdata, refdata))
 
 

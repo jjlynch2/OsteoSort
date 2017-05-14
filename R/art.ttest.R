@@ -112,9 +112,16 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 
 		return(data.frame(X[1],X[3],X[5],X[2],X[4],X[6],toString(Xname),round(p.value, digits = 4),ycol/2,yrow, stringsAsFactors=FALSE)) 
 	}
-	
-	op <- system.time( hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE) )
-	print(op) 
+
+
+	if(Sys.info()[['sysname']] == "Windows") {
+		op <- system.time ( hera1 <- lapply(FUN = myfun, X = sortdata) )
+		print(op)
+	}
+	else {
+		op <- system.time ( hera1 <- mclapply(FUN = myfun, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE) )
+		print(op)
+	}
 
 	hera1 = as.data.frame(data.table::rbindlist(hera1))
 

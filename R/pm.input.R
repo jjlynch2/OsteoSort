@@ -90,8 +90,10 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	colnames(sortdata) <- c(c("A", "B", "C",measurements))
 	colnames(refdata) <- namedf
 
-	sortdata <- as.data.frame(sortdata) 
-	reff <- as.data.frame(refdata)
+
+	sortdata <- as.data.frame(sortdata, stringsAsFactors = FALSE)
+	reff <- as.data.frame(refdata, stringsAsFactors = FALSE)
+
 
 	#creates unique combination between left and right elements and reorders them 
 	#so left and right measurements are next to each other similar to the reference data
@@ -107,7 +109,7 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	#Removes rows from sort if there is no corresponding match from left to right
 	###########################################################
 
-c <- col(res)[is.na(res)]
+	c <- col(res)[is.na(res)]
 	r <- row(res)[is.na(res)]
 
 	if(length(c) != 0) {
