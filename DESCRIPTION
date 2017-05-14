@@ -10,6 +10,7 @@ Depends:
     plyr,
     Morpho,
     shapes,
+    data.table,
     DT,
     parallel,
     doSNOW,
@@ -21,8 +22,7 @@ Depends:
     jpeg,
     Momocs,
     pracma,
-    CCA,
-    data.table
+    CCA
 License: GPL-2
 LazyData: false
 Imports:

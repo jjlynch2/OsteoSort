@@ -16,7 +16,6 @@
 #' pm.input()
 
 pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1, measurements = NULL) {
-	suppressMessages(library(data.table))
  	print("Import and reference generation has started.")
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
@@ -91,9 +90,8 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	colnames(sortdata) <- c(c("A", "B", "C",measurements))
 	colnames(refdata) <- namedf
 
-	sortdata <- data.table(sortdata) 
-	reff <- data.table(refdata)
-	
+	sortdata <- as.data.frame(sortdata) 
+	reff <- as.data.frame(refdata)
 
 	#creates unique combination between left and right elements and reorders them 
 	#so left and right measurements are next to each other similar to the reference data
@@ -105,11 +103,13 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	right <- sortdata[sortdata$B == 'right',]
 	res <- cbind(left[indices[,1],], right[indices[,2],])
 	res <- res[,order(names(res))]
-print("108")
+
 	#Removes rows from sort if there is no corresponding match from left to right
 	###########################################################
-	c <- col(res)[is.na(res)]
+
+c <- col(res)[is.na(res)]
 	r <- row(res)[is.na(res)]
+
 	if(length(c) != 0) {
 		d <- ifelse(c %% 2 == 1, c + 1, c - 1)
 
