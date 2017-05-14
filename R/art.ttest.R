@@ -20,7 +20,7 @@
 #' art.ttest()
 
 
-art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, no_cores = 1, alphalevel = 0.1, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), power = TRUE, plotme = FALSE) {
+art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, no_cores = 1, alphalevel = 0.1, absolutevalue = TRUE, testagainst = FALSE, oo = c(TRUE,FALSE), power = TRUE, plotme = FALSE) {
      print("Statistical articulation comparisons have started.")
 	suppressMessages(library(parallel))
 	suppressMessages(library(doSNOW))
@@ -39,18 +39,12 @@ art.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, s
 	workingdir = getwd()
 
 	if(!stdout) { 
-		if(!a) {
-			if (!is.null(sessiontempdir)) {
-				setwd(sessiontempdir)
-			}
-			direc <- randomstring(n = 1, length = 12)
-			dir.create(direc)
-			setwd(direc)
-		}
-		else {
+		if (!is.null(sessiontempdir)) {
 			setwd(sessiontempdir)
-			direc <- NULL
 		}
+		direc <- randomstring(n = 1, length = 12)
+		dir.create(direc)
+		setwd(direc)
 	}
 
 	is.uniqueart <<- list()

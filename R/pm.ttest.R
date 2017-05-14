@@ -20,7 +20,7 @@
 #' @examples
 #' pm.ttest()
 
-pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, a = FALSE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1, plotme = FALSE) {
+pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1, plotme = FALSE) {
 	print("Statistical pair match comparisons have started.")
 	suppressMessages(library(parallel))
 	suppressMessages(library(doSNOW))
@@ -38,18 +38,12 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	workingdir = getwd()
 
 	if(!stdout) { 
-		if(!a) {
-			if (!is.null(sessiontempdir)) {
-				setwd(sessiontempdir)
-			}
-			direc <- randomstring(n = 1, length = 12)
-			dir.create(direc)
-			setwd(direc)
-		}
-		else {
+		if (!is.null(sessiontempdir)) {
 			setwd(sessiontempdir)
-			direc <- NULL
 		}
+		direc <- randomstring(n = 1, length = 12)
+		dir.create(direc)
+		setwd(direc)
 	}
 	
 	is.uniquepm <<- list()

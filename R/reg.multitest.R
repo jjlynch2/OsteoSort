@@ -6,7 +6,7 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, a = FALSE, oo = c(TRUE,FALSE), plotme = FALSE, no_cores = 1, testtype = TRUE, alphatest = TRUE, alphalevel = 0.05) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, oo = c(TRUE,FALSE), plotme = FALSE, no_cores = 1, testtype = TRUE, alphatest = TRUE, alphalevel = 0.05) {	    
      print("Statistical association comparisons have started.")
 	suppressMessages(library(parallel))
 	suppressMessages(library(doSNOW))
@@ -23,18 +23,12 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	workingdir = getwd()
 
 	if(!stdout) { 
-		if(!a) {
-			if (!is.null(sessiontempdir)) {
-				setwd(sessiontempdir)
-			}
-			direc <- randomstring(n = 1, length = 12)
-			dir.create(direc)
-			setwd(direc)
-		}
-		else {
+		if (!is.null(sessiontempdir)) {
 			setwd(sessiontempdir)
-			direc <- NULL
 		}
+		direc <- randomstring(n = 1, length = 12)
+		dir.create(direc)
+		setwd(direc)
 	}
 
 	
