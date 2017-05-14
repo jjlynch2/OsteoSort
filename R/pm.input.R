@@ -105,7 +105,7 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	right <- sortdata[sortdata$B == 'right',]
 	res <- cbind(left[indices[,1],], right[indices[,2],])
 	res <- res[,order(names(res))]
-
+print("108")
 	#Removes rows from sort if there is no corresponding match from left to right
 	###########################################################
 	c <- col(res)[is.na(res)]
