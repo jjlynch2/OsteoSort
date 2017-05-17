@@ -1,7 +1,20 @@
-segmented_hausdorff_dist <- function (P, Q, testme = TRUE) 
+#' segmented hausdorff distance function
+#' 
+#' This function takes input from the user to calculate variations of the hausdorff distance between two two-dimensional shapes
+#' 
+#' @param P First shape configuration
+#' @param Q Second shape configuration
+#' @param testme The type of distance test to be utilized. "Regional", "Half", "Normal" Hausdorff distances
+#' 
+#' Heavily modified from the opensource code in hausdorff_dist() function from the pracma package
+#'
+#' @keywords segmented_hausdorff_dist
+#' @export
+#' @examples
+#' segmented_hausdorff_dist()
+
+segmented_hausdorff_dist <- function (P, Q, testme = "regional") 
 {
-#Modified from the opensource code in hausdorff_dist() function from the
-#pracma package for R
     stopifnot(is.numeric(P), is.numeric(Q))
     if (is.vector(P)) 
         P <- matrix(P, ncol = 1)
@@ -11,12 +24,9 @@ segmented_hausdorff_dist <- function (P, Q, testme = TRUE)
         stop("'P' and 'Q' must have the same number of columns.")
     D <- distmat(P, Q)
 	
-	if(testme == "test") {
+	if(testme == "regional") { #should number of regions be variable?
 		dhd_PQ <- apply(D, 1, min)
 		dhd_QP <- apply(D, 2, min)
-
-		#maxdist1 <- max(dhd_PQ)
-		#maxdist2 <- max(dhd_QP)
 	
 		nums <- (nrow(D)/4)
 	
@@ -35,11 +45,15 @@ segmented_hausdorff_dist <- function (P, Q, testme = TRUE)
 		dhd_PQ <- sum(upper1, half1, half11, lower1)
 		dhd_QP <- sum(upper2, half2, half22, lower2)
 	}
-	if(testme == "half") {
+	if(testme == "half") { 
 		dhd_PQ <- sort(apply(D, 1, min))
 		dhd_QP <- sort(apply(D, 2, min))
 		dhd_PQ <- sum(dhd_PQ[(nrow(D)/2):nrow(D)])
 		dhd_QP <- sum(dhd_QP[(nrow(D)/2):nrow(D)])
+	}
+	if(testme == "normal") {
+		dhd_PQ <- max(apply(D, 1, min))
+		dhd_QP <- max(apply(D, 2, min))
 	}
 
     return(max(dhd_PQ, dhd_QP))

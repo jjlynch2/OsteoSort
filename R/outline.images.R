@@ -1,10 +1,30 @@
-outline.images <- function (imagelist, threshold = 0.09, scale = TRUE, mirror = FALSE, npoints = 200, smooth = 1, nb.h = 400) {
-     #modified from open source package blah
+#' outline.images function
+#' 
+#' This function takes input in the form of list of photograph locations and returns shape coordinates
+#' 
+#' @param imagelist1 The first list of images, left
+#' @param imagelist2 The second list of images, right. This list is mirrored if mirror is set to TRUE. 
+#' @param threshold The color threashold for binarization. When using the lightbox technique, this can be set quite high, default is 0.8 on a scale of 0.0 - 1.0
+#' @param scale If set to true, the coordinates will be scaled to the centroid size relative to the photograph size. Set to false if photographs are of different resolution, distance from object, etc.
+#' @param mirror If true, the imagelist2 will be mirrored. 
+#' @param npoints The number of points each shape configuration should have
+#' @param smooth The number of smoothing iterations to use with Elliptical Fourier Analysis. Default is 1.
+#' @param nb.h The number of ellipises to use with Elliptical Fourier Analysis. Default is 400
+#' 
+#' This is heavily modified from the ...ah package. Trying to locate the original package, cannot find it, Sorry! The tracing algorithm is based on their original code. 
+#'
+#' @keywords outline.images
+#' @export
+#' @examples
+#' outline.images()
+
+outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth = 1, nb.h = 400) {
 	library(jpeg)
 	library(pixmap)
 	library(Momocs)
 	
-	nimages <- length(imagelist)
+	nimages <- length(imagelist1) + length(imagelist2)
+	imagelist <- cbind(imagelist1, imagelist2)
 
 	array3d <- array(NA,c(npoints, 2, nimages))
 
@@ -15,6 +35,7 @@ print(iii)
 
 		M@grey[which(M@grey > threshold)] <- 1#white
 		M@grey[which(M@grey <= threshold)] <- 0#black
+
 
 		start = list(x = NA, y = NA)
 
@@ -75,8 +96,8 @@ print(iii)
 		spec1 <- as.matrix(data.frame(spec1))
 		spec1 <- round(spec1) #round to whole numbers
 
-		if(mirror) {
-			spec1[,1] <- -spec1[,1]
+		if(imagelist[iii] %in% imagelist2) {
+			spec1[,1] <- -spec1[,1] #swap X axis to mirror
 		}
 
 
@@ -103,6 +124,6 @@ print(iii)
 
 # run all EFAs together to produce mean shape thats used in the ICPmat below! 
 
-	return(array3d)
+	return(list(array3d, imagelist1, imagelist2))
 
 }

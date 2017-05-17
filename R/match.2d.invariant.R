@@ -1,14 +1,31 @@
+#' two-dimensional pair-match function
+#' 
+#' This function takes input from the user to be pair-matched 
+#' 
+#' @param outlinedata The output from the outline.images() function
+#' @param min The minmum number of points for matching in iterative closest point. This almost never needs to change
+#' @param iter The number of iterations for iterative closest point
+#' @param trans The type of transformation for iterative closest point. "Rigid", "Similarity", "Affine". If you need to remove size, use Similarity. Rigid is default 
+#' @param threads The number of threads to use for processing. Default is 1
+#' @param meanit The number of iterations to use around the mean. Default is 10.
+#' @param testme The type of distance test to be utilized. "Regional", "Half", "Normal" Hausdorff distances
+#' 
+#' @keywords match.2d.invariant
+#' @export
+#' @examples
+#' match.2d.invariant()
 
-
-match.2d.invariant <- function(specmatrix = NULL, min = 1e+15, iter = 1000, trans = "rigid", threads=8, testme = "test") {
+match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, iter = 1000, trans = "rigid", threads=1, meanit = 10, testme = "regional") {
 	library(Morpho)
 	library(pracma)
 	library(shapes)
 
+	specmatrix <- outlinedata[[1]]
+
 	homolog <<- array(NA,c(dim(specmatrix)[1], dim(specmatrix)[2], dim(specmatrix)[3]))
 	namess <- dimnames(specmatrix)[[3]] #capture specimen names
 
-	for(bb in 1:50) { #add a while mean is so far form the new mean instead of number of iterations!
+	for(bb in 1:meanit) { #add a while mean is so far form the new mean instead of number of iterations!
 		if(bb == 1) {mean <- specmatrix[,,1]; homolog <<- specmatrix}
 		for(i in 1:dim(homolog)[3]) {
 			target <<- mean
@@ -59,18 +76,13 @@ match.2d.invariant <- function(specmatrix = NULL, min = 1e+15, iter = 1000, tran
 	tempdistance <<- 9999999999999
 	tempname <<- NA
 		
-	for(z in 1:dim(homolog)[3]) {
-		homologtemp <- homolog[,,-z]
-		for(x in 1:dim(homologtemp)[3]) {
-			#distance <- abs(sqrt(rowSums((homolog[,,z] - homologtemp[,,x])^2)))
-			#distance <- procdist(homolog[,,z], homologtemp[,,x], type = "Riemannian")
-			distance <- segmented_hausdorff_dist(homolog[,,z], homologtemp[,,x], testme = testme)
-			#dm1 <- distmat(homolog[,,z],homologtemp[,,x]))
-			#dm2 <- dismat(homologtemp[,,x], homolog[,,z])
-			#distance <- gromovdist(d1 = dm1, d2 = NULL, type = "l1", p=NULL)
+	for(z in 1:length(outlinedata[[2]])) {
+		#homologtemp <- homolog[,,-z]
+		for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
+			distance <- segmented_hausdorff_dist(homolog[,,z], homolog[,,x], testme = testme)
 			if(distance < tempdistance) {
 				tempdistance <<- distance
-				tempname <<- dimnames(homologtemp)[[3]][x]
+				tempname <<- dimnames(homolog)[[3]][x]
 			}
 
 		}
