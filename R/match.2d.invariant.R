@@ -15,7 +15,7 @@
 #' @examples
 #' match.2d.invariant()
 
-match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, iter = 1000, trans = "rigid", threads=1, meanit = 10, testme = "regional") {
+match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, iter = 1000, trans = "rigid", threads=1, testme = "regional") {
 	library(Morpho)
 	library(pracma)
 	library(shapes)
@@ -25,49 +25,22 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, iter = 1000, tra
 	homolog <<- array(NA,c(dim(specmatrix)[1], dim(specmatrix)[2], dim(specmatrix)[3]))
 	namess <- dimnames(specmatrix)[[3]] #capture specimen names
 
-	for(bb in 1:meanit) { #add a while mean is so far form the new mean instead of number of iterations!
-		if(bb == 1) {mean <- specmatrix[,,1]; homolog <<- specmatrix}
-		for(i in 1:dim(homolog)[3]) {
-			target <<- mean
-			moving <- homolog[,,i]
-			temp <<- icpmat(moving, target, iterations = iter, mindist = min, type = trans, threads=threads)
-			homolog[,,i]  <<- temp
-		}
-		mean <- apply(homolog, c(1,2), mean) #mean shape
-	}
 
-#shifts the landmarks to correspond with first coorespondance from mean
-		shift <- function(d, k) rbind(tail(d,k), head(d,-k), deparse.level = 0)
+
+	mean <- specmatrix[,,1]
+	homolog <<- specmatrix
 	for(i in 1:dim(homolog)[3]) {
-		meann <- apply(homolog, c(1,2), mean) #mean shape
-		temp <- homolog[,,i]
-		index <<- mcNNindex(target = meann, query = temp, cores = threads, k = 1)
-
-		newindex <<- match(1,index)
-		
-		itt <<- 2 #start at 2
-		while(is.na(newindex)) {
-			newindex <<- match(itt,index)
-			itt <<- itt + 1
-		}
-		newindex <<- newindex + itt
-
-
-		if(newindex != 1) {
-			newindex <- newindex - 1
-			temp <- shift(temp, newindex)
-			homolog[,,i] <- temp
-		}
-		if(newindex == 1) {
-			homolog[,,i] <- temp
-		}
-
-
+		target <<- mean
+		moving <- homolog[,,i]
+		temp <<- icpmat(moving, target, iterations = iter, mindist = min, type = trans, threads=threads)
+		homolog[,,i]  <<- temp
 	}
+
+
 
 	dimnames(homolog)[[3]] <- namess #set specimen names again
 
-	plot(apply(homolog, c(1,2), mean))
+	plot(homolog[,,1], col="white")
 	for(a in 1:dim(homolog)[3]) {
 		points(homolog[,,a], col=a)	
 	}
