@@ -13,7 +13,7 @@
 #' @examples
 #' segmented_hausdorff_dist()
 
-segmented_hausdorff_dist <- function (P, Q, testme = "regional") 
+segmented_hausdorff_dist <- function (P, Q, testme = "segmented") 
 {
     stopifnot(is.numeric(P), is.numeric(Q))
     if (is.vector(P)) 
@@ -24,7 +24,7 @@ segmented_hausdorff_dist <- function (P, Q, testme = "regional")
         stop("'P' and 'Q' must have the same number of columns.")
     D <- distmat(P, Q)
 	
-	if(testme == "regional") { #should number of regions be variable?
+	if(testme == "segmented") { #should number of regions be variable?
 		dhd_PQ <- apply(D, 1, min)
 		dhd_QP <- apply(D, 2, min)
 	

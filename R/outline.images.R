@@ -95,11 +95,12 @@ print(iii)
 		spec1 <- list(X = (Y[-1]), Y = ((dim(I)[1] - X))[-1])
 		spec1 <- as.matrix(data.frame(spec1))
 		spec1 <- round(spec1) #round to whole numbers
-
-		if(imagelist[iii] %in% imagelist2) {
-			spec1[,1] <- -spec1[,1] #swap X axis to mirror
+	
+		if(mirror) {
+			if(imagelist[iii] %in% imagelist2) {
+				spec1[,1] <- -spec1[,1] #swap X axis to mirror
+			}
 		}
-
 
 		if(scale) { #scale comes after EFA duh! 
 			centroid <- apply(spec1,2,mean)

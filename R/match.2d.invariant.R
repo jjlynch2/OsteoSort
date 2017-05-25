@@ -15,7 +15,7 @@
 #' @examples
 #' match.2d.invariant()
 
-match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, iter = 1000, trans = "rigid", threads=1, testme = "regional") {
+match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, iter = 10, trans = "rigid", threads=1, testme = "segmented", mspec = 1, meanit = 5) {
 	library(Morpho)
 	library(pracma)
 	library(shapes)
@@ -24,33 +24,43 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, iter = 1000, tra
 
 	homolog <<- array(NA,c(dim(specmatrix)[1], dim(specmatrix)[2], dim(specmatrix)[3]))
 	namess <- dimnames(specmatrix)[[3]] #capture specimen names
-
-
-
-	mean <- specmatrix[,,1]
+	
+	meann <<- specmatrix[,,mspec]
 	homolog <<- specmatrix
-	for(i in 1:dim(homolog)[3]) {
-		target <<- mean
-		moving <- homolog[,,i]
-		temp <<- icpmat(moving, target, iterations = iter, mindist = min, type = trans, threads=threads)
-		homolog[,,i]  <<- temp
+
+
+	for(b in 1:meanit) {
+		target <<- meann
+		for(i in 1:dim(homolog)[3]) {
+			moving <<- homolog[,,i]
+			temp <<- icpmat(moving, target, iterations = iter, mindist = min, type = trans, threads=threads)
+			homolog[,,i] <<- shiftmatrices(shape1 = temp, target = target, threads) #shifts matrices to match
+			print(dimnames(homolog)[[3]][i])
+		}
+
+		plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)))
+		for(a in 1:dim(homolog)[3]) {
+			points(homolog[,,a], col=a)	
+		}
+		points(meann, col="black", bg="blue", pch=23)
+		
+		meann <<- apply(homolog, c(1,2), mean)
 	}
 
 
 
+	
 	dimnames(homolog)[[3]] <- namess #set specimen names again
 
-	plot(homolog[,,1], col="white")
-	for(a in 1:dim(homolog)[3]) {
-		points(homolog[,,a], col=a)	
-	}
 #do these need to be global?
 	matches <<- array(NA,c(dim(homolog)[3], 3))
 	tempdistance <<- 9999999999999
 	tempname <<- NA
 		
+#this isnt quite right since if left or right has a smaller number of specimens will leave off
+#other specimens as a potential match
+#need to switch it up hmmmm
 	for(z in 1:length(outlinedata[[2]])) {
-		#homologtemp <- homolog[,,-z]
 		for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
 			distance <- segmented_hausdorff_dist(homolog[,,z], homolog[,,x], testme = testme)
 			if(distance < tempdistance) {
@@ -64,6 +74,19 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, iter = 1000, tra
 		tempname <<- NA
 	}
 
+	for(z in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
+		for(x in 1:length(outlinedata[[2]])) {
+			distance <- segmented_hausdorff_dist(homolog[,,z], homolog[,,x], testme = testme)
+			if(distance < tempdistance) {
+				tempdistance <<- distance
+				tempname <<- dimnames(homolog)[[3]][x]
+			}
+
+		}
+		matches[z,] <- c(dimnames(homolog)[[3]][z], tempname, tempdistance)
+		tempdistance <<- 9999999999999
+		tempname <<- NA
+	}
 	return(list(homolog,matches))
 
 }
