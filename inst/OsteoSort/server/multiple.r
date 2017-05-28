@@ -8,16 +8,14 @@
 	
 	#file upload render for multiple comparison
 	output$resettableInput <- renderUI({
-		            input$clearFile1
-		            input$uploadFormat
-		            fileInput('file1', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+		input$clearFile1
+		input$uploadFormat
+		fileInput('file1', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 	})
 
 	#clears session for multiple comparison
 	observeEvent(input$clearFile1, {
-		   output$table <- renderUI({      HTML(paste(""))}) 
-		   output$tablen <- renderUI({      HTML(paste(""))}) 
-		   output$contents <- renderUI({HTML(paste("Select the parameters and upload the file to begin"))})
+		fileInput('file1', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 	})
 
 	######standard measurement combinator

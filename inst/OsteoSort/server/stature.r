@@ -5,9 +5,9 @@
 	
 	#upload GUI for resettable input
 	output$resettableInput4 <- renderUI({
-		            input$clearFile4
-		            input$uploadFormat
-		            fileInput('file4', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+		input$clearFile4
+		input$uploadFormat
+		fileInput('file4', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 	})
 	
 	output$outliercontent4 <- renderUI({
@@ -16,20 +16,9 @@
 	
 	#clears session for multiple comparison
 	observeEvent(input$clearFile4, {
-		output$tablejustfuckingworka4 <- renderUI({HTML(paste(""))}) 
-		output$tablejustfuckingworkb4 <- renderUI({HTML(paste(""))}) 
-		output$tablejustfuckingworkc4 <- renderUI({HTML(paste(""))}) 
-		output$plotoutlier4 <- renderUI({HTML(paste(""))}) 
-		output$outliercontent4 <- renderUI({HTML(paste("Select the parameters and upload the file to begin</br></br>"))})
+		fileInput('file4', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 	})
-	#clears tables when running second stats
-	observeEvent(input$pro4, {
-		output$tablejustfuckingworka4 <- renderUI({HTML(paste(""))}) 
-		output$tablejustfuckingworkd4 <- renderUI({HTML(paste(""))}) 
-		output$tablejustfuckingworkc4 <- renderUI({HTML(paste(""))}) 
-		output$plotoutlier4 <- renderUI({HTML(paste(""))}) 
-		output$outliercontent4 <- renderUI({HTML(paste("Select the parameters and upload the file to begin.</br></br>"))})
-	})
+
 
 	observeEvent(input$pro4, {
 		showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))

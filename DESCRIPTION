@@ -22,7 +22,9 @@ Depends:
     Momocs,
     pracma,
     CCA,
-    data.table
+    data.table,
+    shinyRGL,
+    rgl
 License: GPL-2
 LazyData: false
 Imports:

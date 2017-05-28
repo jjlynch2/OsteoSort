@@ -120,7 +120,7 @@ print(iii)
 	}
 
 
-	dimnames(array3d)[[3]] <- imagelist
+	dimnames(array3d)[[3]] <- paste(gsub(".*/\\s*|.JPG.*","",imagelist), ".JPG", sep="")
 
 
 # run all EFAs together to produce mean shape thats used in the ICPmat below! 

@@ -11,25 +11,14 @@
 	})
 	
 	output$outliercontent <- renderUI({
-	   HTML(paste("Select the parameters and upload the file to begin.</br></br>"))
+		HTML(paste("Select the parameters and upload the file to begin.</br></br>"))
 	})	
 	
 	#clears session for multiple comparison
 	observeEvent(input$clearFile3, {
-		output$tablejustfuckingworka <- renderUI({HTML(paste(""))}) 
-		output$tablejustfuckingworkb <- renderUI({HTML(paste(""))}) 
-		output$tablejustfuckingworkc <- renderUI({HTML(paste(""))}) 
-		output$plotoutlier <- renderUI({HTML(paste(""))}) 
-		output$outliercontent <- renderUI({HTML(paste("Select the parameters and upload the file to begin</br></br>"))})
+		fileInput('file3', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 	})
-	#clears tables when running second stats
-	observeEvent(input$pro3, {
-		output$tablejustfuckingworka <- renderUI({HTML(paste(""))}) 
-		output$tablejustfuckingworkd <- renderUI({HTML(paste(""))}) 
-		output$tablejustfuckingworkc <- renderUI({HTML(paste(""))}) 
-		output$plotoutlier <- renderUI({HTML(paste(""))}) 
-		output$outliercontent <- renderUI({HTML(paste("Select the parameters and upload the file to begin.</br></br>"))})
-	})
+
 
 	observeEvent(input$pro3, {
 		showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))

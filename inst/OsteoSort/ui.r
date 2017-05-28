@@ -7,11 +7,11 @@ options(warn = -1)
 library(shiny)
 library(shinyBS)
 library(shinythemes)
+library(shinyRGL)
+library(rgl)
 #Navigation bar interface
 shinyUI(
-	navbarPage(theme = shinytheme("sandstone"), title=div(img(src="OsteoSort.png", width = "30px"), "OsteoSort 1.0"),
-
-
+	navbarPage(theme = shinytheme("flatly"), title=div(img(src="OsteoSort.png", width = "30px"), "OsteoSort 1.0"),
 	
 	
 		tabPanel("Help",
@@ -1192,7 +1192,8 @@ shinyUI(
 
 							actionButton("proc","Process"),
 							actionButton("settings2","Settings"),
-							downloadButton("downloadData2", "Save results")
+							downloadButton("downloadData2", "Save results"),
+							width=2
 						
 					),
 					
@@ -1248,10 +1249,11 @@ shinyUI(
 								selectInput('standard', 'Measurements', c(Standard='Standard', Supplemental='Supplemental'),'Standard')		
 							),		
 							uiOutput('resettableInput'),	
-							actionButton("clearFile1", "Clear session"),
+							actionButton("clearFile1", "Clear Data"),
 							actionButton("pro","Process"),
 							actionButton("settings1","Settings"),
-							downloadButton("downloadData", "Save results")
+							downloadButton("downloadData", "Save results"),
+							width=2
 					),
 					mainPanel(
 						htmlOutput('contents'),
@@ -1457,64 +1459,69 @@ shinyUI(
 
 
 
-		navbarMenu("Osteoshape sorting",		
-			tabPanel("2D comparison"),
-#				sidebarLayout(
-#					sidebarPanel(
-#					
-#					    tabsetPanel(id="tabSelected",
-#							tabPanel("Digitize",
-#					 			
-#								uiOutput('resettableInput2d'),
-#
-#								uiOutput('tpsupload'),	
-#								
-#
-#
-#									selectInput('bonelandmarkconfig', 'Elements', c(Humerus='humerus', Ulna='ulna', Radius='radius', Femur='femur', Tibia='tibia', Fibula='fibula', Scapula='scapula', Os_coxa='os_coxa', Clavicle='clavicle',Variable='variable'),'humerus'),
-#									conditionalPanel(condition = "input.bonelandmarkconfig == 'variable'",
-#										sliderInput(inputId = "variable", label = "Number of Landmarks", min=2, max=300, value=2, step = 1),
-#										uiOutput('variablelandmark')
-#									),
-#									
-#									
-#									
-#									radioButtons('bonelandmarkconfigside', 'Side', c(Left='Left',Right='Right'), 'Left'),
-#									conditionalPanel(condition = "input.bonelandmarkconfig == 'humerus'",
-#										radioButtons(inputId = 'landmarks', label = 'Landmarks', c('Landmark 1','Landmark 2','Landmark 3','Landmark 4','Landmark 5','Landmark 6','Landmark 7','Landmark 8','Landmark 9','Landmark 10','Scale'), selected = 'Landmark 1')
-#									),
-#									conditionalPanel(condition = "input.bonelandmarkconfig == 'ulna'",
-#										radioButtons(inputId = 'landmarks', label = 'Landmarks', c('Landmark 1','Landmark 2','Landmark 3','Landmark 4','Landmark 5','Landmark 6','Landmark 7','Landmark 8'), selected = 'Landmark 1')
-#									),	
-#									conditionalPanel(condition = "input.bonelandmarkconfig == 'radius'",
-#										radioButtons(inputId = 'landmarks', label = 'Landmarks', c('Landmark 1','Landmark 2','Landmark 3','Landmark 4','Landmark 5','Landmark 6','Landmark 7','Landmark 8','Landmark 9'), selected = 'Landmark 1')
-#									),
-																
-								
-#								actionButton("clearFile2", "Clear session"),
-#								actionButton("previousimage", "Previous"),
-#								actionButton("nextimage", "Next"),
-#								downloadButton("savetps", "Save TPS"),
-#								uiOutput('landmarks'),
-#								tableOutput("clickinfo"),
-#								uiOutput('scales'),
-#								tableOutput("scaleinfo"),
-#								tableOutput("sideinfo")
-#							   
+	navbarMenu("Osteoshape sorting",		
+			tabPanel("2D comparison",
 
-#							),
-#							tabPanel("Pair-match")
-#						)
+				titlePanel("2D pairwise comparison"),
+					sidebarLayout(
+						sidebarPanel(
+							uiOutput('resettableInput2D'),	
+							uiOutput('resettableInput2DD'),	
+							uiOutput('mspec'),
+							actionButton("clearFile2D", "Clear Data"),
+							actionButton("settings2D","Settings"),
+							actionButton("pro2D","Process"),
+							width = 2
+						),
+						mainPanel(
+							tabsetPanel(id="tabSelected",
+								tabPanel("Starting Mean",
+									uiOutput("contents2D"),
+									imageOutput('meanImage')
+								),
+								tabPanel("Registered Graph",
+									plotOutput("regplot", height = 1200, width = 1200)
+								),
+								tabPanel("Results",
+					 				DT::dataTableOutput('table2D')
+								)
+							),
+			
 
-#					),
-#					mainPanel(
-#						imageOutput("myimage", click="image_click", width = 1000, height = 1000)
-						#uiOutput('landmarks')
-#					)
-#				)
+							bsModal("settings2DD", title = "Settings", trigger = "settings2D", size = "large", 
+								tabsetPanel(id="tabSelected2",
+									tabPanel("Output Parameters",
+										checkboxInput(inputId = "fileoutput2D", label = "Output to excel files ", value = TRUE)
+						 			),
+						 			
+									tabPanel("Statistical Parameters",
+										sliderInput(inputId = "meanit2D", label = "Number of mean iterations", min=1, max=100, value=2, step=1),
+										sliderInput(inputId = "icp2D", label = "Number of Iterative Closest Point iterations", min=1, max=1000, value=10, step=1),
+										sliderInput(inputId = "efaH2D", label = "Number of Elliptical Fourier Analysis Harmonics", min=1, max=1000, value=400, step=1),
+										sliderInput(inputId = "npoints2D", label = "Number of landmarks during inverse Elliptical Fourier Analysis transformation", min=1, max=1000, value=200, step=1),
+										sliderInput(inputId = "nsmooth2D", label = "Number of smoothing iterations in Elliptical Fourier Analysis", min=1, max=100, value=1, step=1),
+										sliderInput(inputId = "nthreshold", label = "Black and white threshold level for converting images to binary matrices", min=0.01, max=1, value=0.8, step=0.01),
+										checkboxInput(inputId = "mirror2D", label = "Mirror left images to right", value = TRUE),
+										checkboxInput(inputId = "scale2D", label = "Scale to centroid size after inverse Elliptical Fourier Analysis transformation", value = TRUE),
+										checkboxInput(inputId = "research2D", label = "Calculate research statistics", value = FALSE),
+										radioButtons(inputId = "trans2D", label = "Transformation type:", choices = c("rigid", "similarity", "affine"), selected = "rigid"),
+										radioButtons(inputId = "distance2D", label = "Distance calculation:", choices = c("Segmented-Hausdorff",  "Hausdorff"), selected = "Segmented-Hausdorff")
+									),
+									tabPanel("Computational Parameters",
+										uiOutput('ncores2D')
+									)
+								)		
+							)
+						)
+					)
+			),
+			tabPanel("3D comparison",
+				sidebarLayout(
+					sidebarPanel(width=2),
+					mainPanel(webGLOutput("myWebGL"))
+				)
 
-#			),
-			tabPanel("3D comparison")
+			)
 			
 			
 			
@@ -1532,10 +1539,11 @@ shinyUI(
 							uiOutput("testtype3"),
 							selectInput("outlierside", "Side", c(Left='Left', Right='Right', Both='Both'), 'Both'),
 							uiOutput('resettableInput3'),	
-							actionButton("clearFile3", "Clear session"),
+							actionButton("clearFile3", "Clear Data"),
 							actionButton("pro3","Process"),
 							actionButton("settings3","Settings"),
-							downloadButton("outlierdownload", "Save results")
+							downloadButton("outlierdownload", "Save results"),
+							width=2
 					),
 					mainPanel(
 					
@@ -1635,10 +1643,11 @@ shinyUI(
 							),
 							
 							uiOutput('resettableInput4'),	
-							actionButton("clearFile4", "Clear session"),
+							actionButton("clearFile4", "Clear Data"),
 							actionButton("pro4","Process"),
 							actionButton("settings4","Settings"),
-							downloadButton("outlierdownload4", "Save results")
+							downloadButton("outlierdownload4", "Save results"),
+							width=2
 					),
 					mainPanel(
 					
