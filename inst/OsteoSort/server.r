@@ -62,10 +62,10 @@ shinyServer(function(input, output, session) {
 			
 	output$coraguide <- downloadHandler(
 		filename <- function() {
-			"Cora_guide.pdf"
+			"OsteoSort_User_Manual_v1.pdf"
 		},
 		content <- function(file) {
-			file.copy(system.file("extdata", 'Cora_guide.pdf', package = "osteosort"), file)                  
+			file.copy(system.file("extdata", 'OsteoSort_User_Manual_v1.pdf', package = "osteosort"), file)                  
 		},
 	)  			
 			

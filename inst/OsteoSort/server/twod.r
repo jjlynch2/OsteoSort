@@ -6,18 +6,18 @@
 	output$resettableInput2D <- renderUI({
 		input$clearFile2D
 		input$uploadFormat
-		fileInput('leftimages', 'Upload left images', accept=c('jpeg', "jpg"), multiple = TRUE)
+		fileInput('leftimages', 'Upload first image set', accept=c('jpeg', "jpg"), multiple = TRUE)
 	})
 
 	output$resettableInput2DD <- renderUI({
 		input$clearFile2D
 		input$uploadFormat
-		fileInput('rightimages', 'Upload left images', accept=c('jpeg', "jpg"), multiple = TRUE)
+		fileInput('rightimages', 'Upload second image set', accept=c('jpeg', "jpg"), multiple = TRUE)
 	})
 
 	observeEvent(input$clearFile2D, {
-		fileInput('leftimages', 'Upload left images', accept=c('jpeg', "jpg"), multiple = TRUE)
-		fileInput('rightimages', 'Upload left images', accept=c('jpeg', "jpg"), multiple = TRUE)
+		fileInput('leftimages', 'Upload first image set', accept=c('jpeg', "jpg"), multiple = TRUE)
+		fileInput('rightimages', 'Upload second image set', accept=c('jpeg', "jpg"), multiple = TRUE)
 	})
 
 	
