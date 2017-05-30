@@ -24,7 +24,7 @@ outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRU
 	library(Momocs)
 	
 	nimages <- length(imagelist1) + length(imagelist2)
-	imagelist <- cbind(imagelist1, imagelist2)
+	imagelist <- c(imagelist1, imagelist2)
 
 	array3d <- array(NA,c(npoints, 2, nimages))
 
@@ -123,7 +123,6 @@ print(iii)
 	dimnames(array3d)[[3]] <- paste(gsub(".*/\\s*|.JPG.*","",imagelist), ".JPG", sep="")
 
 
-# run all EFAs together to produce mean shape thats used in the ICPmat below! 
 
 	return(list(array3d, imagelist1, imagelist2))
 

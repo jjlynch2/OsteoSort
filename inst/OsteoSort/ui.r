@@ -1471,6 +1471,7 @@ shinyUI(
 							actionButton("clearFile2D", "Clear Data"),
 							actionButton("settings2D","Settings"),
 							actionButton("pro2D","Process"),
+							downloadButton("downloadData2D", "Save results"),
 							width = 2
 						),
 						mainPanel(

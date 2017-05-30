@@ -15,10 +15,25 @@
 #' @examples
 #' match.2d.invariant()
 
-match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, iter = 10, trans = "rigid", threads=1, testme = "Segmented-Hausdorff", mspec = 1, meanit = 5, plotall = FALSE) {
+match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, sessiontempdir = NULL, oo = FALSE, iter = 10, trans = "rigid", threads=1, testme = "Segmented-Hausdorff", mspec = 1, meanit = 5, plotall = FALSE) {
+	print("Two-dimensional pair match comparisons have started.")	
 	library(Morpho)
 	library(pracma)
 	library(shapes)
+	suppressMessages(library(compiler))
+	enableJIT(3)
+
+	workingdir = getwd()
+
+	if(!stdout) { 
+		if (!is.null(sessiontempdir)) {
+			setwd(sessiontempdir)
+		}
+		direc <- randomstring(n = 1, length = 12)
+		dir.create(direc)
+		setwd(direc)
+	}
+
 
 	specmatrix <- outlinedata[[1]]
 
@@ -96,6 +111,22 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, iter = 10, trans
 		points(meann, col="black", bg="blue", pch=23)
 	}
 
-	return(list(homolog,matches))
+	colnames(matches) <- c("ID", "Match-ID", "Distance")
+	print("Two-dimensional pair match comparisons have completed.")	
+
+	if(oo) {
+		write.csv(matches, file = "potential-matches.csv", row.names=FALSE, col.names=TRUE)
+		png(filename="registration.png")
+		plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)))
+		for(a in 1:dim(homolog)[3]) {
+			points(homolog[,,a], col=a)	
+		}
+		points(meann, col="black", bg="blue", pch=23)
+		dev.off()
+	}
+	gc()
+	setwd(workingdir)
+	enableJIT(0)
+	return(list(homolog,matches,direc))
 
 }
