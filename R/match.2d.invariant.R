@@ -15,7 +15,7 @@
 #' @examples
 #' match.2d.invariant()
 
-match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, sessiontempdir = NULL, oo = FALSE, iter = 10, trans = "rigid", threads=1, testme = "Segmented-Hausdorff", mspec = 1, meanit = 5, plotall = FALSE) {
+match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, sessiontempdir = NULL, oo = FALSE, iter = 10, trans = "rigid", threads=1, testme = "Segmented-Hausdorff", mspec = 1, meanit = 5, plotall = FALSE, nld = 1) {
 	print("Two-dimensional pair match comparisons have started.")	
 	library(Morpho)
 	library(pracma)
@@ -69,55 +69,50 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 	dimnames(homolog)[[3]] <- namess #set specimen names again
 
 #do these need to be global?
-	matches <<- array(NA,c(dim(homolog)[3], 3))
-	tempdistance <<- 9999999999999
-	tempname <<- NA
-		
+	matches <<- array(NA,c(dim(homolog)[3]*dim(homolog)[3], 3))
+	nz <<- 1
 
 	for(z in 1:length(outlinedata[[2]])) {
 		for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
 			distance <- segmented_hausdorff_dist(homolog[,,z], homolog[,,x], testme = testme)
-			if(distance < tempdistance) {
-				tempdistance <<- distance
-				tempname <<- dimnames(homolog)[[3]][x]
-			}
+			matches[nz,] <- c(dimnames(homolog)[[3]][z], dimnames(homolog)[[3]][x], distance)
 			print(distance)
-
+			nz <<- nz + 1
 		}
-		matches[z,] <- c(dimnames(homolog)[[3]][z], tempname, tempdistance)
-		tempdistance <<- 9999999999999
-		tempname <<- NA
 	}
 
 	for(z in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
 		for(x in 1:length(outlinedata[[2]])) {
 			distance <- segmented_hausdorff_dist(homolog[,,z], homolog[,,x], testme = testme)
-			if(distance < tempdistance) {
-				tempdistance <<- distance
-				tempname <<- dimnames(homolog)[[3]][x]
-			}
+			matches[nz,] <- c(dimnames(homolog)[[3]][z], dimnames(homolog)[[3]][x], distance)
 			print(distance)
+			nz <<- nz + 1
 		}
-		matches[z,] <- c(dimnames(homolog)[[3]][z], tempname, tempdistance)
-		tempdistance <<- 9999999999999
-		tempname <<- NA
 	}
 
+	resmatches <- array()
+	for(a in dimnames(homolog)[[3]]) {
+		m <- matches[matches[,1] == a,]
+		resmatches <- rbind(resmatches, m[order(m[,3], decreasing=FALSE),][1:nld,])
+		
+	}
+	resmatches <- resmatches[-1,]
+
 	if(plotall) {
-		plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)))
+		plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)), xlab="", ylab="")
 		for(a in 1:dim(homolog)[3]) {
 			points(homolog[,,a], col=a)	
 		}
 		points(meann, col="black", bg="blue", pch=23)
 	}
 
-	colnames(matches) <- c("ID", "Match-ID", "Distance")
+	colnames(resmatches) <- c("ID", "Match-ID", "Distance")
 	print("Two-dimensional pair match comparisons have completed.")	
 
 	if(oo) {
 		write.csv(matches, file = "potential-matches.csv", row.names=FALSE, col.names=TRUE)
 		png(filename="registration.png")
-		plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)))
+		plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)), xlab="", ylab="")
 		for(a in 1:dim(homolog)[3]) {
 			points(homolog[,,a], col=a)	
 		}
@@ -127,6 +122,6 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 	gc()
 	setwd(workingdir)
 	enableJIT(0)
-	return(list(homolog,matches,direc))
+	return(list(homolog,resmatches,direc))
 
 }

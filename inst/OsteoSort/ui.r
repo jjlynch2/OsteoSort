@@ -11,7 +11,7 @@ library(shinyRGL)
 library(rgl)
 #Navigation bar interface
 shinyUI(
-	navbarPage(theme = shinytheme("flatly"), title=div(img(src="OsteoSort.png", width = "30px"), "OsteoSort 1.0"),
+	navbarPage(theme = shinytheme("flatly"), title=div(img(src="OsteoSort.png", width = "30px"), "OsteoSort 1.0.1"),
 	
 	
 		tabPanel("Help",
@@ -1506,7 +1506,8 @@ shinyUI(
 										checkboxInput(inputId = "scale2D", label = "Scale to centroid size after inverse Elliptical Fourier Analysis transformation", value = TRUE),
 										checkboxInput(inputId = "research2D", label = "Calculate research statistics", value = FALSE),
 										radioButtons(inputId = "trans2D", label = "Transformation type:", choices = c("rigid", "similarity", "affine"), selected = "rigid"),
-										radioButtons(inputId = "distance2D", label = "Distance calculation:", choices = c("Segmented-Hausdorff",  "Hausdorff"), selected = "Segmented-Hausdorff")
+										radioButtons(inputId = "distance2D", label = "Distance calculation:", choices = c("Segmented-Hausdorff",  "Hausdorff"), selected = "Segmented-Hausdorff"),
+										sliderInput(inputId = "shortlistn", label = "Number of shorest distance matches", min = 1, max = 100, value = 2, step = 1)
 									),
 									tabPanel("Computational Parameters",
 										uiOutput('ncores2D')

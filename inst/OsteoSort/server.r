@@ -49,7 +49,8 @@ shinyServer(function(input, output, session) {
 		unlink(sessiontemp, recursive = TRUE)    
 	})
 	
-	
+
+
 	#download handlers for files on the help page
 	output$standardtemplate <- downloadHandler(
 		filename <- function() {
