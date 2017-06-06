@@ -1,1 +1,0 @@
-R -e 'require(devtools);temp <- require(osteosort);if(!temp) {install_github("osteosort","jjlynch2");temp <- require(osteosort)};if(temp){OsteoSort()}'
