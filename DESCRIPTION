@@ -1,4 +1,4 @@
-Package: osteosort
+Package: OsteoSort
 Title: Osteo Sorting of Commingled Human Remains
 Version: 1.0.1
 Authors@R: person("Jeff", "Lynch", email = "jjlynch@bioarch.net", role = c("aut","cre"))
@@ -26,4 +26,4 @@ License: GPL-2
 LazyData: false
 Imports:
 	plyr
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 6.0.1

@@ -7,17 +7,14 @@
 randomstring(n = 1, length = 12)
 }
 \arguments{
-\item{n}{how many}
+\item{n}{The number of strings to return}
 
-\item{length}{length of string}
+\item{length}{The length of the strings to return}
 }
 \description{
-This function allows you to generate a random string of length 12 for 
-generating temporary directories and files. It's used to create the temporary local 
-environments for saving and zipping results
+A Random String Function
 }
 \examples{
 randomstring()
 }
 \keyword{random}
-

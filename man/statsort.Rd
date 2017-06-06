@@ -4,13 +4,29 @@
 \alias{statsort}
 \title{A function estimate and sort by stature}
 \usage{
-statsort(file, bone = "femur", side = "both", population = "trotter-any",
-  outfile = NULL, method = "sd")
+statsort(sort, bone = "femur", side = "both",
+  population = "trotter-any-male", method = "Quartiles",
+  measurements = NULL, sessiontempdir = NULL, stdout = FALSE,
+  cutoff = 1.5)
 }
 \arguments{
-\item{file}{test}
+\item{sort}{Sorted data for comparison}
 
-\item{population}{teast}
+\item{bone}{Specifies the bone type ("left", "right", "both")}
+
+\item{side}{The bone type side}
+
+\item{population}{The reference sample for stature estimation}
+
+\item{method}{The outlier method ("quartiles" or "standard deviations")}
+
+\item{measurements}{The measurement types to be used}
+
+\item{sessiontempdir}{Specifies temporary directory for analytical session if stdout is false}
+
+\item{stdout}{If true, output will be data.frames only}
+
+\item{cutoff}{The outlier cutoff value for either quartiles or standard deviations}
 }
 \description{
 Equation reference from the Forensic Data Bank
@@ -19,4 +35,3 @@ Equation reference from the Forensic Data Bank
 statsort()
 }
 \keyword{random}
-

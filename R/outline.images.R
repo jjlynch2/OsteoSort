@@ -1,24 +1,20 @@
 #' outline.images function
 #' 
-#' This function takes input in the form of list of photograph locations and returns shape coordinates
+#' @param imagelist1 List of image locations for first set
+#' @param imagelist2 List of image locations for second set
+#' @param threshold Threshold value between white(1) and black(0)
+#' @param scale Sets if a scale should be extracted from pixel dimensions
+#' @param mirror If true mirrors imagelist2 to imagelist2
+#' @param npoints The number of points in the inverse elliptical fourier analysis transformation
+#' @param smooth_iterations The number of smoothing iterations in the elliptical fourier analysis
+#' @param nharmonics The number of harmonics in elliptical fourier analysis
 #' 
-#' @param imagelist1 The first list of images, left
-#' @param imagelist2 The second list of images, right. This list is mirrored if mirror is set to TRUE. 
-#' @param threshold The color threashold for binarization. When using the lightbox technique, this can be set quite high, default is 0.8 on a scale of 0.0 - 1.0
-#' @param scale If set to true, the coordinates will be scaled to the centroid size relative to the photograph size. Set to false if photographs are of different resolution, distance from object, etc.
-#' @param mirror If true, the imagelist2 will be mirrored. 
-#' @param npoints The number of points each shape configuration should have
-#' @param smooth The number of smoothing iterations to use with Elliptical Fourier Analysis. Default is 1.
-#' @param nb.h The number of ellipises to use with Elliptical Fourier Analysis. Default is 400
-#' 
-#' This is heavily modified from the ...ah package. Trying to locate the original package, cannot find it, Sorry! The tracing algorithm is based on their original code. 
-#'
 #' @keywords outline.images
 #' @export
 #' @examples
 #' outline.images()
 
-outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth = 1, nb.h = 400) {
+outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400) {
 	library(jpeg)
 	library(pixmap)
 	library(Momocs)
@@ -107,7 +103,7 @@ print(iii)
 			centroidsize <- sqrt(sum((t(t(spec1)-centroid))^2))
 		}
 
-		test1 <- efourier(spec1, smooth.it=smooth, verbose=FALSE, norm = TRUE, start = FALSE, nb.h = nb.h)
+		test1 <- efourier(spec1, smooth.it=smooth_iterations, verbose=FALSE, norm = TRUE, start = FALSE, nb.h = nharmonics)
 		spec1 <- efourier_i(test1, nb.pts=npoints)
 		spec1 <- as.matrix(data.frame(spec1))
 

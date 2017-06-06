@@ -1,26 +1,23 @@
 #' Pair-match T.test Function
 #' 
-#' This function takes the combinations and reference data generated from the pm.input() function 
-#' and runs a t.test for each combination. If the results are not statistically significant
-#' the combination is considered a possible match and saved in two formats, a single .tyt file with all matches
-#' and a .csv file with matches. If it's not a match the combination is saved to a .csv file with non-matches
-#'
-#' @param refdata The reference data from pm.input().
-#' @param sortdata The combination data from pm.input().
-#' @param sessiontempdir This creates a temporary session directory. Intended for use with the GUI.
-#' @param stdout TRUE returns the dataframes only. FALSE returns the dataframes and creates the files specified above.
-#' @param alphalevel Sets the alphalevel used in the t.test. 
-#' @param absolutevalue Sets if the absolute value of differences should be used.
-#' @param testagainst Sets if the t.test should be against the reference mean (FALSE) or zero (TRUE).
-#' @param a Intended for use with all.tests() function that runs all bone tests. 
-#' @param oo Defines which files to generate. oo = c(TRUE,FALSE) where oo[1] is excel files and oo[2] is individual specimen files
-#'
+#' @param ref Reference data
+#' @param sort Sorted data for comparison
+#' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
+#' @param stdout If true, output will be data.frames only
+#' @param cores Number of cores for parallel processing
+#' @param alphalevel Specifies alpha level
+#' @param absolutevalue Uses absolute value for D-values if true
+#' @param testagainstzero Uses 0 for mean if true 
+#' @param output_options Uses two true and/or false values to specify output file types. c(TRUE,) uses .txt file per specimen and C(,TRUE) uses .csv output files
+#' @param power If true, uses half-normal distribution power transformation
+#' @param plot Used internally for OsteoShiny, do not call directly!
+#' 
 #' @keywords pm.ttest
-#' @eyport
+#' @export
 #' @examples
 #' pm.ttest()
 
-pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainst = FALSE, oo = c(TRUE,FALSE), no_cores = 1, plotme = FALSE) {
+pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), cores = 1, plot = FALSE) {
 	print("Statistical pair match comparisons have started.")
 	suppressMessages(library(parallel))
 	suppressMessages(library(doSNOW))
@@ -29,8 +26,8 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	enableJIT(3)
 
 	options(warn = -1) #disables warnings
-	if(is.na(sortdata) || is.null(sortdata)) {return(NULL)} #input san
-	if(is.na(refdata) || is.null(refdata)) {return(NULL)} #input san
+	if(is.na(sort) || is.null(sort)) {return(NULL)} #input san
+	if(is.na(ref) || is.null(ref)) {return(NULL)} #input san
 	
 	if(power) {p1 <- 0.00005; p2 <- 0.33} #half normal transformation
 	else {p1 <- 0; p2 <- 1} #used to prevent writing new code inside loop. This transformation doesn't change the data
@@ -64,20 +61,20 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 		index <- match(TRUE,output1) #index of model if exists
 
 		if(is.na(index)) {
-			y <- refdata[temp1]
+			y <- ref[temp1]
 			ycol <- ncol(y)
 			yrow <- nrow(y)
 			if(absolutevalue) { 
 				difa <- ((rowSums(abs(y[c(T,F)] - y[c(F,T)]))+p1) ** p2)
 				difsd <- sd(difa)
-				if(testagainst) {difm <- 0} 
+				if(testagainstzero) {difm <- 0} 
 				else difm <- mean(difa)
 				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2) - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 			}
 			else {
 				difa <- rowSums(y[c(T,F)] - y[c(F,T)])
 				difsd <- sd(difa)
-				if(testagainst) {difm <- 0} 
+				if(testagainstzero) {difm <- 0} 
 				else difm <- mean(difa)
 				p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = length(difa) - 1)
 			} 
@@ -107,11 +104,11 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	} 
 
 	if(Sys.info()[['sysname']] == "Windows") {
-		op <- system.time ( hera1 <- lapply(FUN = myfunpm, X = sortdata) )
+		op <- system.time ( hera1 <- lapply(FUN = myfunpm, X = sort) )
 		print(op)
 	}
 	else {
-		op <- system.time ( hera1 <- mclapply(FUN = myfunpm, X = sortdata, mc.cores = no_cores, mc.preschedule = TRUE) )
+		op <- system.time ( hera1 <- mclapply(FUN = myfunpm, X = sort, mc.cores = cores, mc.preschedule = TRUE) )
 		print(op)
 	}
 
@@ -128,21 +125,21 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	rm(unique.yrow)
 
      #calls plot function for generating single user interface plots
-     if(plotme) {
-		plotres <- plotme(refdata = refdata, sortdata = sortdata, power = power, absolutevalue = absolutevalue, ttype = "pm")
+     if(plot) {
+		plotres <- plotme(refdata = ref, sortdata = sort, power = power, absolutevalue = absolutevalue, ttype = "pm")
      }
-	else plotres <- NULL
-     
+	else plotres <- NULL     
+
 	if(!stdout) {	
      	print("File generation has started.")	
-		if(oo[2]) {
+		if(output_options[2]) {
 			suppressMessages(library(foreach))
 			not_excluded <- hera1[hera1$p.value > alphalevel,]
 			temp1 <- unique(not_excluded[,1])
 			temp2 <- unique(not_excluded[,4])
 			unique_IDs <- unique(c(temp1,temp2))
 
-			cl <- makeCluster(no_cores)
+			cl <- makeCluster(cores)
 			registerDoSNOW(cl)
 			clusterExport(cl, "not_excluded", envir=environment())
 			foreach(i = unique_IDs) %dopar% {
@@ -160,7 +157,7 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 			}
 			stopCluster(cl)
 		}
-		if(oo[1]) {
+		if(output_options[1]) {
 			write.csv(as.matrix(hera1[hera1$p.value > alphalevel,]), file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
 			write.csv(as.matrix(hera1[hera1$p.value <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
@@ -171,4 +168,5 @@ pm.ttest <- function (refdata = NULL, sortdata = NULL, sessiontempdir = NULL, st
 	setwd(workingdir)
 	enableJIT(0)
 	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,],plotres))	
+
 }

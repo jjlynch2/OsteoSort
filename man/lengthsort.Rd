@@ -4,13 +4,26 @@
 \alias{lengthsort}
 \title{A function to sort by bone length}
 \usage{
-lengthsort(file, bone = "femur", side = "both", outfile = NULL,
-  method = "sd")
+lengthsort(sort, bone = "femur", side = "both", method = "Quartiles",
+  measurements = NULL, sessiontempdir = NULL, stdout = FALSE,
+  cutoff = 1.5)
 }
 \arguments{
-\item{file}{test}
+\item{sort}{Sorted data for comparison}
 
-\item{population}{test}
+\item{bone}{Specifies the bone type}
+
+\item{side}{The bone type side ("left", "right", "both")}
+
+\item{method}{The outlier method ("quartiles" or "standard deviations")}
+
+\item{measurements}{The measurement types to be used}
+
+\item{sessiontempdir}{Specifies temporary directory for analytical session if stdout is false}
+
+\item{stdout}{If true, output will be data.frames only}
+
+\item{cutoff}{The outlier cutoff value for either quartiles or standard deviations}
 }
 \description{
 A function to sort by bone length
@@ -18,5 +31,4 @@ A function to sort by bone length
 \examples{
 lengthsort()
 }
-\keyword{random}
-
+\keyword{lengthsort}

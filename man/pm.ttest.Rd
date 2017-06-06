@@ -4,29 +4,38 @@
 \alias{pm.ttest}
 \title{Pair-match T.test Function}
 \usage{
-pm.ttest(refdata = NULL, sortdata = NULL, template = "single",
-  sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1,
-  absolutevalue = TRUE, a = FALSE)
+pm.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = TRUE,
+  alphalevel = 0.1, power = TRUE, absolutevalue = TRUE,
+  testagainstzero = FALSE, output_options = c(TRUE, FALSE), cores = 1,
+  plot = FALSE)
 }
 \arguments{
-\item{refdata}{refdata}
+\item{ref}{Reference data}
 
-\item{sortdata}{sortdata}
+\item{sort}{Sorted data for comparison}
 
-\item{tempplate}{template}
+\item{sessiontempdir}{Specifies temporary directory for analytical session if stdout is false}
 
-\item{alltest}{alltest}
+\item{stdout}{If true, output will be data.frames only}
 
-\item{sessiontemp}{sessiontemp}
+\item{alphalevel}{Specifies alpha level}
+
+\item{power}{If true, uses half-normal distribution power transformation}
+
+\item{absolutevalue}{Uses absolute value for D-values if true}
+
+\item{testagainstzero}{Uses 0 for mean if true}
+
+\item{output_options}{Uses two true and/or false values to specify output file types. c(TRUE,) uses .txt file per specimen and C(,TRUE) uses .csv output files}
+
+\item{cores}{Number of cores for parallel processing}
+
+\item{plot}{Used internally for OsteoShiny, do not call directly!}
 }
 \description{
-This function takes the combinations and reference data generated from the pm.input() function 
-and runs a t.test for each combination. If the results are not statistically significant
-the combination is considered a possible match and saved in two formats, a single .txt file with all matches
-and a .csv file with matches. If it's not a match the combination is saved to a .csv file with non-matches
+Pair-match T.test Function
 }
 \examples{
 pm.ttest()
 }
 \keyword{pm.ttest}
-

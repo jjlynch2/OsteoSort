@@ -2,27 +2,19 @@
 % Please edit documentation in R/art.input.R
 \name{art.input}
 \alias{art.input}
-\title{Articulation-match Input Function}
+\title{Articulation comparison Input Function}
 \usage{
-art.input(bone = NULL, sort = NULL, template = "single")
+art.input(bone = NULL, sort = NULL)
 }
 \arguments{
-\item{bone}{bone}
+\item{bone}{Specifies the bone type}
 
-\item{sort}{sort}
-
-\item{template}{template}
-
-\item{reference}{reference}
+\item{sort}{Data to be sorted}
 }
 \description{
-This function takes input from the user to be articulation-matched and generates
-a reference database for each possible combination based on the
-number of measurements available. It's designed to work as a single user input or
-with the multiple comparison standardized csv format. It accounts for NA values automatically.
+Articulation comparison Input Function
 }
 \examples{
 art.input()
 }
 \keyword{art.input}
-

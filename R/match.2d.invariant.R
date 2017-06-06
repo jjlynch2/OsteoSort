@@ -1,21 +1,25 @@
- #' two-dimensional pair-match function
+#' two-dimensional pair-match function
 #' 
-#' This function takes input from the user to be pair-matched 
-#' 
-#' @param outlinedata The output from the outline.images() function
-#' @param min The minmum number of points for matching in iterative closest point. This almost never needs to change
-#' @param iter The number of iterations for iterative closest point
-#' @param trans The type of transformation for iterative closest point. "Rigid", "Similarity", "Affine". If you need to remove size, use Similarity. Rigid is default 
-#' @param threads The number of threads to use for processing. Default is 1
-#' @param meanit The number of iterations to use around the mean. Default is 10.
-#' @param testme The type of distance test to be utilized. "Regional", "Half", "Normal" Hausdorff distances
-#' 
+#' @param outlinedata The outline data taken from outline.images()
+#' @param min minimum distance for ICP
+#' @param iteration The number of iterations for Iterative Closest Point
+#' @param transformation The type of Iterative Closest Point transformation ("Rigid", "Similarity", "Affine")
+#' @param cores Number of cores for parallel processing
+#' @param mean_iterations The number of mean iterations
+#' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")
+#' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
+#' @param stdout If true, output will be data.frames only
+#' @param hide_distances Hides the distance values in short lists to avoid analytical bias 
+#' @param n_lowest_distances The number of lowest distance matches to return as a potential match
+#' @param plot Plots results
+#' @param temporary_mean_specimen The specimen to be used as the temporary mean
+#'
 #' @keywords match.2d.invariant
 #' @export
 #' @examples
 #' match.2d.invariant()
 
-match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, sessiontempdir = NULL, oo = FALSE, iter = 10, trans = "rigid", threads=1, testme = "Segmented-Hausdorff", mspec = 1, meanit = 5, plotall = FALSE, nld = 1, hidedist = FALSE) {
+match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, sessiontempdir = NULL, oo = FALSE, iteration = 10, transformation = "rigid", cores=1, test = "Segmented-Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, plot = FALSE, n_lowest_distances = 1, hide_distances = FALSE) {
 	print("Two-dimensional pair match comparisons have started.")	
 	library(Morpho)
 	library(pracma)
@@ -40,7 +44,7 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 	homolog <<- array(NA,c(dim(specmatrix)[1], dim(specmatrix)[2], dim(specmatrix)[3]))
 	namess <- dimnames(specmatrix)[[3]] #capture specimen names
 	
-	meann <<- specmatrix[,,mspec]
+	meann <<- specmatrix[,,temporary_mean_specimen]
 	homolog <<- specmatrix
 	
 	#shifts to long axis of specimens#
@@ -51,12 +55,12 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 	meann <<- meann[index,]
 	#shifts to long axis of specimens#
 
-	for(b in 1:meanit) {
+	for(b in 1:mean_iterations) {
 		target <<- meann
 		for(i in 1:dim(homolog)[3]) {
 			moving <<- homolog[,,i]
-			temp <<- icpmat(moving, target, iterations = iter, mindist = min, type = trans, threads=threads)
-			homolog[,,i] <<- shiftmatrices(shape1 = temp, target = target, threads) #shifts matrices to match
+			temp <<- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores)
+			homolog[,,i] <<- shiftmatrices(first_configuration = temp, second_configuration = target, cores) #shifts matrices to match
 			print(dimnames(homolog)[[3]][i])
 		}
 		
@@ -74,7 +78,7 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 
 	for(z in 1:length(outlinedata[[2]])) {
 		for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
-			distance <- segmented_hausdorff_dist(homolog[,,z], homolog[,,x], testme = testme)
+			distance <- segmented_hausdorff_dist(homolog[,,z], homolog[,,x], test = test)
 			matches[nz,] <- c(dimnames(homolog)[[3]][z], dimnames(homolog)[[3]][x], distance)
 			print(distance)
 			nz <<- nz + 1
@@ -83,7 +87,7 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 
 	for(z in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
 		for(x in 1:length(outlinedata[[2]])) {
-			distance <- segmented_hausdorff_dist(homolog[,,z], homolog[,,x], testme = testme)
+			distance <- segmented_hausdorff_dist(homolog[,,z], homolog[,,x], test = test)
 			matches[nz,] <- c(dimnames(homolog)[[3]][z], dimnames(homolog)[[3]][x], distance)
 			print(distance)
 			nz <<- nz + 1
@@ -93,12 +97,12 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 	resmatches <- array()
 	for(a in dimnames(homolog)[[3]]) {
 		m <- matches[matches[,1] == a,]
-		resmatches <- rbind(resmatches, m[order(m[,3], decreasing=FALSE),][1:nld,])
+		resmatches <- rbind(resmatches, m[order(m[,3], decreasing=FALSE),][1:n_lowest_distances,])
 		
 	}
 	resmatches <- resmatches[-1,]
 
-	if(plotall) {
+	if(plot) {
 		plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)), xlab="", ylab="")
 		for(a in 1:dim(homolog)[3]) {
 			points(homolog[,,a], col=a)	
@@ -122,7 +126,7 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 	gc()
 	setwd(workingdir)
 	enableJIT(0)
-	if(hidedist) {resmatches[,3] <- "Hidden"}
+	if(hide_distances) {resmatches[,3] <- "Hidden"}
 	return(list(homolog,resmatches,direc,nz))
 
 }

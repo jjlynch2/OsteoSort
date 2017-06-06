@@ -2,21 +2,35 @@
 % Please edit documentation in R/reg.input.R
 \name{reg.input}
 \alias{reg.input}
-\title{reg.match Input Function
-Function to produce combinations for associating elements with regression}
+\title{reg.match Input Function}
 \usage{
-reg.input(sort1 = NULL, sort2 = NULL, template = "single_standard")
+reg.input(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ulna",
+  side2 = "right", measurement_standard = "standard", threshold = NULL,
+  measurements1 = NULL, measurements2 = NULL)
 }
 \arguments{
-\item{sort}{data to be sorted}
+\item{sort}{Data to be sorted}
+
+\item{bone1}{The first bone type}
+
+\item{side1}{The first bone type side}
+
+\item{bone2}{The second bone type}
+
+\item{side2}{The second bone type side}
+
+\item{measurement_standard}{Specifies the measurement standards to use ("standard" or "supplemental")}
+
+\item{threshold}{Threshold value for number of measurements per comparison}
+
+\item{measurements1}{The first bone types measurement types to be used}
+
+\item{measurements2}{The second bone types measurement types to be used}
 }
 \description{
-reg.match Input Function
 Function to produce combinations for associating elements with regression
 }
 \examples{
-reg.input(sort1 = c("ID1","Left","femur",23,24,25,NA,NA,NA,NA,NA), sort2 = c("ID2","Left","tibia",23,24,25,NA))
 reg.input()
 }
 \keyword{reg.input}
-

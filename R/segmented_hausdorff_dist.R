@@ -1,10 +1,9 @@
 #' segmented hausdorff distance function
 #' 
-#' This function takes input from the user to calculate variations of the hausdorff distance between two two-dimensional shapes
 #' 
-#' @param P First shape configuration
-#' @param Q Second shape configuration
-#' @param testme The type of distance test to be utilized. "Regional", "Half", "Normal" Hausdorff distances
+#' @param first_configuration The first two-dimensional configuration
+#' @param second_configuration The second two-dimensional configuration
+#' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")
 #' 
 #' Heavily modified from the opensource code in hausdorff_dist() function from the pracma package
 #'
@@ -13,18 +12,18 @@
 #' @examples
 #' segmented_hausdorff_dist()
 
-segmented_hausdorff_dist <- function (P, Q, testme = "segmented") 
+segmented_hausdorff_dist <- function (first_configuration, second_configuration, test = "segmented") 
 {
-    stopifnot(is.numeric(P), is.numeric(Q))
-    if (is.vector(P)) 
-        P <- matrix(P, ncol = 1)
-    if (is.vector(Q)) 
-        Q <- matrix(Q, ncol = 1)
-    if (ncol(P) != ncol(Q)) 
-        stop("'P' and 'Q' must have the same number of columns.")
-    D <- distmat(P, Q)
+    stopifnot(is.numeric(first_configuration), is.numeric(second_configuration))
+    if (is.vector(first_configuration)) 
+        first_configuration <- matrix(first_configuration, ncol = 1)
+    if (is.vector(second_configuration)) 
+        second_configuration <- matrix(second_configuration, ncol = 1)
+    if (ncol(first_configuration) != ncol(second_configuration)) 
+        stop("'first_configuration' and 'second_configuration' must have the same number of columns.")
+    D <- distmat(first_configuration, second_configuration)
 	
-	if(testme == "Segmented-Hausdorff") { #should number of regions be variable?
+	if(test == "Segmented-Hausdorff") { #should number of regions be variable?
 		dhd_PQ <- apply(D, 1, min)
 		dhd_QP <- apply(D, 2, min)
 	
@@ -51,7 +50,7 @@ segmented_hausdorff_dist <- function (P, Q, testme = "segmented")
 		dhd_PQ <- sum(upper1, half1, half11, lower1, lower11, lower111)
 		dhd_QP <- sum(upper2, half2, half22, lower2, lower22, lower222)
 	}
-	if(testme == "Hausdorff") {
+	if(test == "Hausdorff") {
 		dhd_PQ <- max(apply(D, 1, min))
 		dhd_QP <- max(apply(D, 2, min))
 	}

@@ -1,20 +1,7 @@
-#' Articulation-match Input Function
-#' 
-#' This function takes input from the user to be articulation-matched and generates
-#' a reference database for each possible combination.
-#' It's designed to work as a single user input or
-#' with the multiple comparison standardized csv format. It accounts for NA values automatically.
+#' Articulation comparison Input Function
 #'
-#' @param bone The bone combinations: 
-#' fi = femur to innominate
-#' hu = humerus to ulna
-#' hr = humerus to radius
-#' hs = humerus to scapula (v42,v39a)
-#' hss = humerus to scapula (v42a,v39b)
-#' ft = femur to tibia
-#' ftt = fibula to tibia
-#'
-#' @param sort This is the data to be sorted. Example: sort <- rbind(c(ID <- "X1", Side <- "Left", Element <- "Humerus", v42 <- 40), c(ID <- "X1", Side <- "Left", Element <- "Ulna", v42 <- 25))
+#' @param bone Specifies the bone type
+#' @param sort Data to be sorted
 #'
 #' @keywords art.input
 #' @export
@@ -64,7 +51,7 @@ art.input <- function (bone = NULL, sort = NULL) {
 	}
 	
 	#reference input
-	reftemp <- read.table(system.file("extdata", 'artmleft.csv', package = "osteosort"), header = TRUE, sep=",")
+	reftemp <- read.table(system.file("extdata", 'artmleft.csv', package = "OsteoSort"), header = TRUE, sep=",")
 	refdata <- cbind(reftemp[[measurements[1]]], reftemp[[measurements[2]]])
 	refdata <- na.omit(refdata)
 

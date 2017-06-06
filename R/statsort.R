@@ -2,15 +2,25 @@
 #' 
 #' Equation reference from the Forensic Data Bank
 #'
-#' @param file test
-#' @param population teast
+#' @param sort Sorted data for comparison
+#' @param bone Specifies the bone type ("left", "right", "both")
+#' @param side The bone type side
+#' @param population The reference sample for stature estimation
+#' @param method The outlier method ("quartiles" or "standard deviations")
+#' @param measurements The measurement types to be used
+#' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
+#' @param stdout If true, output will be data.frames only
+#' @param cutoff The outlier cutoff value for either quartiles or standard deviations
+#'
 #' @keywords random
 #' @export
 #' @examples
 #' statsort()
 
-statsort <- function (file, bone = "femur", side = "both", population = "trotter-any-male", upperfile = "upper.csv", lowerfile = "lower.csv", nonoutliersfile = "non-outliers.csv", method = "Quartiles", measurement = NULL, sessiontempdir = NULL, stdout = FALSE, cutoff = 1.5) {	
-
+statsort <- function (sort, bone = "femur", side = "both", population = "trotter-any-male", method = "Quartiles", measurements = NULL, sessiontempdir = NULL, stdout = FALSE, cutoff = 1.5) {	
+	upperfile = "upper.csv"
+	lowerfile = "lower.csv"
+	nonoutliersfile = "non-outliers.csv"
 	cutoffmax <- cutoff[2]
 	cutoff <- cutoff[1]
 
@@ -32,23 +42,23 @@ statsort <- function (file, bone = "femur", side = "both", population = "trotter
 	}
 
 	
-	sortdata <- array(NA,c(length(file[,1]),4)) 
-	sortdata[,1] <- as.matrix(file[["ID"]]) 
-	sortdata[,2] <- tolower(file[["Side"]]) 
-	sortdata[,3] <- tolower(file[["Element"]])
-	sortdata[,4] <- file[[paste(measurement)]] ### will this work?? it does! 
+	sortdata <- array(NA,c(length(sort[,1]),4)) 
+	sortdata[,1] <- as.matrix(sort[["ID"]]) 
+	sortdata[,2] <- tolower(sort[["Side"]]) 
+	sortdata[,3] <- tolower(sort[["Element"]])
+	sortdata[,4] <- sort[[paste(measurements)]] ### will this work?? it does! 
 
-	file <- sortdata
-	file <- file[file[,3] == bone,]
+	sort <- sortdata
+	sort <- sort[sort[,3] == bone,]
 
 	if(side == "left") {
-		file <- file[file[,2] == "left",]
+		sort <- sort[sort[,2] == "left",]
 	}
 	if(side == "right") {
-		file <- file[file[,2] == "right",]
+		sort <- sort[sort[,2] == "right",]
 	}
 	
-	file <- na.omit(file)
+	sort <- na.omit(sort)
 
 	#is it worth adding all bones and every equation from fordisc? maybe.
 	if(bone == "femur") {
@@ -421,12 +431,12 @@ statsort <- function (file, bone = "femur", side = "both", population = "trotter
 	if(is.null(intercept)) { return(NULL) }
 	
 	#plot point estimates with 1 and 2 standard deviation lines. all pointestimates above 2 STD are grouped. 
-	pointestimate <- array(NA,c(length(file[,1]),4))
-	for(i in 1:length(file[,1])) {
-		pointestimate[i,1] <- file[i,1] #ID name
-		pointestimate[i,2] <- file[i,2] #Side name
-		pointestimate[i,3] <- file[i,3] #Bone name
-		pointestimate[i,4] <- round(as.numeric(file[i,4]) * slope + intercept, digits=2) #PE name
+	pointestimate <- array(NA,c(length(sort[,1]),4))
+	for(i in 1:length(sort[,1])) {
+		pointestimate[i,1] <- sort[i,1] #ID name
+		pointestimate[i,2] <- sort[i,2] #Side name
+		pointestimate[i,3] <- sort[i,3] #Bone name
+		pointestimate[i,4] <- round(as.numeric(sort[i,4]) * slope + intercept, digits=2) #PE name
 	}
 	
 	
@@ -463,11 +473,11 @@ statsort <- function (file, bone = "femur", side = "both", population = "trotter
 	}
 	
 	
-	outlierdfupper <- array(NA,c(length(file[,1]),4))
-	outlierdflower <- array(NA,c(length(file[,1]),4))
-	nonoutliersdf <- array(NA,c(length(file[,1]),4))
+	outlierdfupper <- array(NA,c(length(sort[,1]),4))
+	outlierdflower <- array(NA,c(length(sort[,1]),4))
+	nonoutliersdf <- array(NA,c(length(sort[,1]),4))
 	#shitty forloop
-	for(i in 1:length(file[,1])) {
+	for(i in 1:length(sort[,1])) {
 	
 		if(nocut) {
 

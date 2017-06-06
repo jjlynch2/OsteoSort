@@ -1,15 +1,23 @@
 #' A function to sort by bone length
 #' 
-#' 
-#' @param file test
-#' @param population test
-#' @keywords random
+#' @param sort Sorted data for comparison
+#' @param bone Specifies the bone type
+#' @param side The bone type side ("left", "right", "both")
+#' @param method The outlier method ("quartiles" or "standard deviations")
+#' @param measurements The measurement types to be used
+#' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
+#' @param stdout If true, output will be data.frames only
+#' @param cutoff The outlier cutoff value for either quartiles or standard deviations
+#'
+#' @keywords lengthsort
 #' @export
 #' @examples
 #' lengthsort()
 
-lengthsort <- function (file, bone = "femur", side = "both", upperfile = "upper.csv", lowerfile = "lower.csv", nonoutliersfile = "non-outliers.csv", method = "Quartiles", measurement = NULL, sessiontempdir = NULL, a = FALSE, stdout = FALSE, cutoff = 1.5) {	
-	
+lengthsort <- function (sort, bone = "femur", side = "both", method = "Quartiles", measurements = NULL, sessiontempdir = NULL, stdout = FALSE, cutoff = 1.5) {	
+	upperfile = "upper.csv"
+	lowerfile = "lower.csv"
+	nonoutliersfile = "non-outliers.csv"
 	cutoffmax <- cutoff[2]
 	cutoff <- cutoff[1]
 	
@@ -19,60 +27,54 @@ lengthsort <- function (file, bone = "femur", side = "both", upperfile = "upper.
 	side <- tolower(side)
 	
 	workingdir = getwd()
-	if(!stdout) {
-		if(!a) {
-			if(!is.null(sessiontempdir)) {
-				setwd(sessiontempdir)
-			}
-			direc <- randomstring(n = 1, length = 12)
-			dir.create(direc)
-			setwd(direc)
-		}
-		if(a) {
+	if(!stdout) { 
+		if (!is.null(sessiontempdir)) {
 			setwd(sessiontempdir)
-			direc <- NULL
 		}
+		direc <- randomstring(n = 1, length = 12)
+		dir.create(direc)
+		setwd(direc)
 	}
 	
-	sortdata <- array(NA,c(length(file[,1]),4))
+	sortdata <- array(NA,c(length(sort[,1]),4))
 
-	sortdata[,1] <- as.matrix(file[["ID"]])
-	sortdata[,2] <- tolower(file[["Side"]])
-	sortdata[,3] <- tolower(file[["Element"]])
-	sortdata[,4] <- file[[paste(measurement)]] 
-	file <- sortdata
+	sortdata[,1] <- as.matrix(sort[["ID"]])
+	sortdata[,2] <- tolower(sort[["Side"]])
+	sortdata[,3] <- tolower(sort[["Element"]])
+	sortdata[,4] <- sort[[paste(measurements)]] 
+	sort <- sortdata
 
-	file <- file[file[,3] == bone,]
+	sort <- sort[sort[,3] == bone,]
 
 	if(side == "left") {
-		file <- file[file[,2] == "left",]
+		sort <- sort[sort[,2] == "left",]
 	}
 	if(side == "right") {
-		file <- file[file[,2] == "right",]
+		sort <- sort[sort[,2] == "right",]
 	}
 
-	file <- na.omit(file)
+	sort <- na.omit(sort)
 
 
 
-		s <- sd(as.numeric(file[,4]))
-		m <- mean(as.numeric(file[,4]))
-		me <- mean(as.numeric(file[,4]))
-		IQQ <- quantile(as.numeric(file[,4]))[4] -  quantile(as.numeric(file[,4]))[2]
+		s <- sd(as.numeric(sort[,4]))
+		m <- mean(as.numeric(sort[,4]))
+		me <- mean(as.numeric(sort[,4]))
+		IQQ <- quantile(as.numeric(sort[,4]))[4] -  quantile(as.numeric(sort[,4]))[2]
 		
 	if(method == "Standard_deviation") {
 		#two standard deviations and mean
-		standarddeviation <- sd(as.numeric(file[,4]))
-		meann <- mean(as.numeric(file[,4]))
+		standarddeviation <- sd(as.numeric(sort[,4]))
+		meann <- mean(as.numeric(sort[,4]))
 		upper <- meann + standarddeviation * cutoff
 		lower <- meann - standarddeviation * cutoff
 		uppermax <- meann + standarddeviation * cutoffmax
 		lowermax <- meann - standarddeviation * cutoffmax
-		plotme <- mean(as.numeric(file[,4]))
+		plotme <- mean(as.numeric(sort[,4]))
 	}
 	if(method == "Quartiles") {
-		Q1 <- quantile(as.numeric(file[,4]))[2]
-		Q3 <- quantile(as.numeric(file[,4]))[4]
+		Q1 <- quantile(as.numeric(sort[,4]))[2]
+		Q3 <- quantile(as.numeric(sort[,4]))[4]
 		IQ <- Q3 - Q1
 		
 		upper <- Q3 + IQ * cutoff
@@ -81,44 +83,44 @@ lengthsort <- function (file, bone = "femur", side = "both", upperfile = "upper.
 		uppermax <- Q3 + IQ * cutoffmax
 		lowermax <- Q1 - IQ * cutoffmax	
 			
-		plotme <- median(as.numeric(file[,4]))
+		plotme <- median(as.numeric(sort[,4]))
 	}
 	
 	
-	outlierdfupper <- array(NA,c(length(file[,1]),4))
-	outlierdflower <- array(NA,c(length(file[,1]),4))
-	nonoutliersdf <- array(NA,c(length(file[,1]),4))
+	outlierdfupper <- array(NA,c(length(sort[,1]),4))
+	outlierdflower <- array(NA,c(length(sort[,1]),4))
+	nonoutliersdf <- array(NA,c(length(sort[,1]),4))
 	#shitty forloop
-	for(i in 1:length(file[,1])) {
+	for(i in 1:length(sort[,1])) {
 	
 		if(nocut) {
-			if(as.numeric(file[i,4]) > upper) {
-				outlierdfupper[i,1:4] <- as.matrix(file[i,1:4])
+			if(as.numeric(sort[i,4]) > upper) {
+				outlierdfupper[i,1:4] <- as.matrix(sort[i,1:4])
 			}
-			if(as.numeric(file[i,4]) < lower) {
-				outlierdflower[i,1:4] <- as.matrix(file[i,1:4])
+			if(as.numeric(sort[i,4]) < lower) {
+				outlierdflower[i,1:4] <- as.matrix(sort[i,1:4])
 			}
-			if(as.numeric(file[i,4]) >= lower && as.numeric(file[i,4]) <= upper) {
-				nonoutliersdf[i,1:4] <- as.matrix(file[i,1:4])
+			if(as.numeric(sort[i,4]) >= lower && as.numeric(sort[i,4]) <= upper) {
+				nonoutliersdf[i,1:4] <- as.matrix(sort[i,1:4])
 			}
 		}
 		if(!nocut) {
-			if(as.numeric(file[i,4]) > upper && as.numeric(file[i,4]) < uppermax) {
-				outlierdfupper[i,1:4] <- as.matrix(file[i,1:4])
+			if(as.numeric(sort[i,4]) > upper && as.numeric(sort[i,4]) < uppermax) {
+				outlierdfupper[i,1:4] <- as.matrix(sort[i,1:4])
 			}
-			if(as.numeric(file[i,4]) < lower && as.numeric(file[i,4]) > lowermax) {
-				outlierdflower[i,1:4] <- as.matrix(file[i,1:4])
+			if(as.numeric(sort[i,4]) < lower && as.numeric(sort[i,4]) > lowermax) {
+				outlierdflower[i,1:4] <- as.matrix(sort[i,1:4])
 			}
-			if(as.numeric(file[i,4]) >= lower && as.numeric(file[i,4]) <= upper || as.numeric(file[i,4]) <= lowermax && as.numeric(file[i,4]) >= uppermax) {
-				nonoutliersdf[i,1:4] <- as.matrix(file[i,1:4])
+			if(as.numeric(sort[i,4]) >= lower && as.numeric(sort[i,4]) <= upper || as.numeric(sort[i,4]) <= lowermax && as.numeric(sort[i,4]) >= uppermax) {
+				nonoutliersdf[i,1:4] <- as.matrix(sort[i,1:4])
 			}
 		}
 	}
 
 
-	colnames(nonoutliersdf) <- c("ID", "Side", "Element", "Measurement")
-	colnames(outlierdflower) <- c("ID", "Side", "Element", "Measurement")
-	colnames(outlierdfupper) <- c("ID", "Side", "Element", "Measurement")
+	colnames(nonoutliersdf) <- c("ID", "Side", "Element", "measurements")
+	colnames(outlierdflower) <- c("ID", "Side", "Element", "measurements")
+	colnames(outlierdfupper) <- c("ID", "Side", "Element", "measurements")
 
 
 	
@@ -153,7 +155,7 @@ lengthsort <- function (file, bone = "femur", side = "both", upperfile = "upper.
 	################plotting################
 	jpeg(paste("graph",".jpeg",sep=''),height = 800, width = 800)
 	dev.control('enable')	
-	hist(x = as.numeric(file[,4]), xlab = bone, main = NULL)
+	hist(x = as.numeric(sort[,4]), xlab = bone, main = NULL)
 	abline(v = plotme, lty = 2, col="darkred")
 	abline(v = upper, lty = 2, col="darkblue")
 	abline(v = lower, lty = 2, col="darkblue")

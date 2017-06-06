@@ -2,31 +2,40 @@
 % Please edit documentation in R/art.ttest.R
 \name{art.ttest}
 \alias{art.ttest}
-\title{Articulation-match T.test Function}
+\title{Articulation comparison t-test Function}
 \usage{
-art.ttest(refdata = NULL, sortdata = NULL, template = "single",
-  sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1,
-  absolutevalue = TRUE, a = FALSE)
+art.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = TRUE,
+  cores = 1, alphalevel = 0.1, absolutevalue = TRUE,
+  testagainstzero = FALSE, output_options = c(TRUE, FALSE), power = TRUE,
+  plot = FALSE)
 }
 \arguments{
-\item{refdata}{refdata}
+\item{ref}{Reference data}
 
-\item{sortdata}{sortdata}
+\item{sort}{Sorted data for comparison}
 
-\item{template}{template}
+\item{sessiontempdir}{Specifies temporary directory for analytical session if stdout is false}
 
-\item{alltest}{alltest}
+\item{stdout}{If true, output will be data.frames only}
 
-\item{sessiontemp}{sessiontemp}
+\item{cores}{Number of cores for parallel processing}
+
+\item{alphalevel}{Specifies alpha level}
+
+\item{absolutevalue}{Uses absolute value for D-values if true}
+
+\item{testagainstzero}{Uses 0 for mean if true}
+
+\item{output_options}{Uses two true and/or false values to specify output file types. c(TRUE,) uses .txt file per specimen and C(,TRUE) uses .csv output files}
+
+\item{power}{If true, uses half-normal distribution power transformation}
+
+\item{plot}{Used internally for OsteoShiny, do not call directly!}
 }
 \description{
-This function takes the combinations and reference data generated from the art.input() function 
-and runs a t.test for each combination. If the results are not statistically significant
-the combination is considered a possible match and saved in two formats, a single .txt file with all matches
-and a .csv file with matches. If it's not a match the combination is saved to a .csv file with non-matches
+Articulation comparison t-test Function
 }
 \examples{
 art.ttest()
 }
 \keyword{art.ttest}
-

@@ -7,7 +7,7 @@
 readtps(file)
 }
 \arguments{
-\item{file}{test}
+\item{file}{File path for TPS data}
 }
 \description{
 Modified from the opensource readland.tps function from the Geomorph package for R
@@ -16,4 +16,3 @@ Modified from the opensource readland.tps function from the Geomorph package for
 readtps()
 }
 \keyword{random}
-

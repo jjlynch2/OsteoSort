@@ -1,10 +1,8 @@
 #' A Random String Function
 #' 
-#' This function allows you to generate a random string of length 12 for 
-#' generating temporary directories and files. It's used to create the temporary local 
-#' environments for saving and zipping results
-#' @param n how many
-#' @param length length of string
+#' @param n The number of strings to return
+#' @param length The length of the strings to return
+#'
 #' @keywords random
 #' @export
 #' @examples

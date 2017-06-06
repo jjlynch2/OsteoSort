@@ -1,12 +1,25 @@
 #' reg.test Input Function
 #' Function to produce combinations for associating elements with regression
-#' @param sort data to be sorted 
+#'
+#' @param ref Reference data
+#' @param sort Sorted data for comparison
+#' @param splitn The index location of each bone types measurements. Used internally from reg.input()
+#' @param prediction_interval Specifies the prediction interval 
+#' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
+#' @param stdout If true, output will be data.frames only
+#' @param output_options Uses two true and/or false values to specify output file types. c(TRUE,) uses .txt file per specimen and C(,TRUE) uses .csv output files
+#' @param cores Number of cores for parallel processing
+#' @param test If true, PCA-CCA-Regression, if false, Simple Linear Regression 
+#' @param alphalevel Specifies alpha level
+#' @param alphalevel Specifies alpha level
+#' @param plot Used internally for OsteoShiny, do not call directly!
+#'
 #' @keywords reg.test
 #' @export
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.90, stdout = FALSE, sessiontempdir = NULL, oo = c(TRUE,FALSE), plotme = FALSE, no_cores = 1, testtype = TRUE, alphatest = TRUE, alphalevel = 0.05) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, stdout = FALSE, sessiontempdir = NULL, output_options = c(TRUE,FALSE), cores = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05, plot = FALSE) {	    
      print("Statistical association comparisons have started.")
 	suppressMessages(library(parallel))
 	suppressMessages(library(doSNOW))
@@ -32,7 +45,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 	}
 
 	
-	if(testtype) { #true PCA CCA regression
+	if(test) { #true PCA CCA regression
 		#global stores models. Works for multi-user environment
 		#since reference doesn't change between them.
 		is.unique <<- list() 
@@ -115,7 +128,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 				df2 <- (df2 + p2)
 			}
 		
-			pm1 <- predict(model1, newdata = data.frame(score1 = as.numeric(df1)), interval = "prediction", level = predlevel)
+			pm1 <- predict(model1, newdata = data.frame(score1 = as.numeric(df1)), interval = "prediction", level = prediction_interval)
 
 
 				if(df2 <= pm1[3] && df2 >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
@@ -135,7 +148,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			print(op)
 		}
 		else {
-			op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = no_cores, mc.preschedule = TRUE) )
+			op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = cores, mc.preschedule = TRUE) )
 			print(op)
 		}
 		hera1 = as.data.frame(data.table::rbindlist(hera1))
@@ -148,7 +161,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 		rm(unique.t1l)
 	}
 
-	if(!testtype) { #false simple regression
+	if(!test) { #false simple regression
 		#global stores models. Works for multi-user environment
 		#since reference doesn't change between them.
 		is.uniques <<- list() 
@@ -193,7 +206,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			temp2p <- log(rowSums(data.frame(t(as.numeric(as.matrix(temp2[-1][-1][-1]))))))
 			temp1p <- log(rowSums(data.frame(t(as.numeric(as.matrix(temp1[-1][-1][-1]))))))
 
-			pm1 <- predict(model1, newdata = data.frame(t1 = as.numeric(temp1p)), interval = "prediction", level = predlevel)
+			pm1 <- predict(model1, newdata = data.frame(t1 = as.numeric(temp1p)), interval = "prediction", level = prediction_interval)
 			tt <- abs(pm1[1] - temp2p) / ( sqrt(diag(vcov(model1)))[2] * sqrt( 1+(1/t1r) + ((temp1p - mean(t1))^2) / (t1r * sd(t1)^2) ) )
 			pp <- 2 * pt(-abs(tt), df = t1r - 2)
 
@@ -221,7 +234,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			print(op)
 		}
 		else {
-			op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = no_cores, mc.preschedule = TRUE) )
+			op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = cores, mc.preschedule = TRUE) )
 			print(op)
 		}
 		hera1 = as.data.frame(data.table::rbindlist(hera1))
@@ -236,21 +249,22 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
      print("Statistical association comparisons completed.")
 	names(hera1) <- c("ID","Side","Element","ID","Side","Element","RSquared", "Sample","p-value","Result")
 	
-	if(plotme) {
-		plotres <- plotme(sortdata = sort, refdata = ref, splitn = splitn, predlevel = predlevel, ttype = "reg", testtype = testtype)
+
+	if(plot) {
+		plotres <- plotme(sortdata = sort, refdata = ref, splitn = splitn, predlevel = prediction_interval, ttype = "reg", testtype = test)
 	}
 	else plotres <- NULL
 
 	if(!stdout) {
     	 print("File generation has started.")
-		if(oo[2]) {
+		if(output_options[2]) {
 			suppressMessages(library(foreach))
 			not_excluded <- hera1[hera1$Result == "Cannot Exclude",][,-9]
 			temp1 <- unique(as.character(not_excluded[,1]))
 			temp2 <- unique(as.character(not_excluded[,4]))
 			unique_IDs <- unique(c(temp1,temp2))
 
-			cl <- makeCluster(no_cores)
+			cl <- makeCluster(cores)
 			registerDoSNOW(cl)
 			clusterExport(cl, "not_excluded", envir=environment())
 			foreach(i = unique_IDs) %dopar% {
@@ -269,7 +283,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, predlevel = 0.
 			stopCluster(cl)
 		}
 
-		if(oo[1]) {
+		if(output_options[1]) {
 			write.csv(hera1[hera1$Result == "Cannot Exclude",][,-9], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
 			write.csv(hera1[hera1$Result == "Excluded",][,-9], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}

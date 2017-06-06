@@ -1,30 +1,26 @@
 #' Pair-match Input Function
 #' 
-#' This function takes input from the user to be pair-matched and generates
-#' a reference database for each possible combination based on the
-#' number of measurements available. It's designed to work as a single user input or
-#' with the multiple comparison standardized csv format. It accounts for NA values automatically.
-#' 
-#' @param bone The name of the bone you wish to pairmatch. bone = "humerus".
-#' @param sort The data you wish to pair-match. Example: sort <- rbind(c(ID <- "X1", Side <- "Left", Element <- "Humerus", v42 <- 40), c(ID <- "X1", Side <- "Left", Element <- "Humerus", v42 <- 40))
-#' @param template Defines which measurement standard. Either standard or supplemental.
-#' @param tresh Sets the threshold value for the minimum number of measurements required for a combination.
+#' @param bone Specifies the bone type
+#' @param sort Data to be sorted
+#' @param measurement_standard Specifies the measurement standards to use ("standard" or "supplemental")
+#' @param threshold Threshold value for number of measurements per comparison
+#' @param measurements The measurement types to be used
 #' 
 #' @keywords pm.input
 #' @export
 #' @examples
 #' pm.input()
 
-pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1, measurements = NULL) {
+pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard', threshold = 1, measurements = NULL) {
  	print("Import and reference generation has started.")
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
 	if(is.na(bone) || is.null(sort)) {return(NULL)} #input san
 	if(is.na(bone) || is.null(sort)) {return(NULL)} #input san
-	if(template != 'standard' && template != 'supplemental') {return(NULL)} #input san
-	if(!is.numeric(tresh)) {return(NULL)} #input san
+	if(measurement_standard != 'standard' && measurement_standard != 'supplemental') {return(NULL)} #input san
+	if(!is.numeric(threshold)) {return(NULL)} #input san
 
-	if(template == "standard") {
+	if(measurement_standard == "standard") {
 		filename_bone <- bone
 		scapula <- c("Sca_01","Sca_02")
 		clavicle <- c("Cla_01","Cla_04","Cla_05")
@@ -36,7 +32,7 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 		tibia <- c("Tib_01","Tib_02","Tib_03","Tib_04","Tib_05") #74 removed
 		fibula <- c("Fib_01","Fib_02")
 	}
-	if(template == "supplemental") {
+	if(measurement_standard == "supplemental") {
 		filename_bone <- paste(bone,"sup",sep="")
 		scapula <- c("Sca_03","Sca_04","Sca_05")
 		clavicle <- c("Cla_06","Cla_07","Cla_08","Cla_09")
@@ -72,7 +68,7 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	}
 
 
-	reftemp <- read.table(system.file("extdata", filename_bone, package = "osteosort"), header = TRUE, sep=",")
+	reftemp <- read.table(system.file("extdata", filename_bone, package = "OsteoSort"), header = TRUE, sep=",")
 	refdata <- array(NA,c(nrow(reftemp),length(measurements)*2)) #times two for left and right but doesnt create one for ID since it's not needed for reference
 	x <- 1
 
@@ -139,17 +135,17 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	###########################################################
 
 	###################treshold
-	if(tresh == 1){tresh2 <- 1}
-	if(tresh == 2){tresh2 <- 2}
-	if(tresh == 3){tresh2 <- 4}
-	if(tresh == 4){tresh2 <- 6}
-	if(tresh == 5){tresh2 <- 8}
-	if(tresh == 6){tresh2 <- 10}
-	if(tresh == 7){tresh2 <- 12}
-	if(tresh == 8){tresh2 <- 14}
-	if(tresh == 9){tresh2 <- 16}
-	if(tresh == 10){tresh2 <- 18}
-	if(tresh == 11){tresh2 <- 20}
+	if(threshold == 1){threshold2 <- 1}
+	if(threshold == 2){threshold2 <- 2}
+	if(threshold == 3){threshold2 <- 4}
+	if(threshold == 4){threshold2 <- 6}
+	if(threshold == 5){threshold2 <- 8}
+	if(threshold == 6){threshold2 <- 10}
+	if(threshold == 7){threshold2 <- 12}
+	if(threshold == 8){threshold2 <- 14}
+	if(threshold == 9){threshold2 <- 16}
+	if(threshold == 10){threshold2 <- 18}
+	if(threshold == 11){threshold2 <- 20}
 	###################treshold
 
 	#fix for if full measurements are available convert to list of dataframes
@@ -157,9 +153,9 @@ pm.input <- function (bone = NULL, sort = NULL, template = 'standard', tresh = 1
 	{
 		recombined <- split(recombined, 1:nrow(recombined))
 	}
-	recombined <- recombined[sapply(recombined, ncol) > (tresh2+6)] 
+	recombined <- recombined[sapply(recombined, ncol) > (threshold2+6)] 
 
-	#nottested <- recombined[sapply(recombined, ncol) < (tresh2+6)] 
+	#nottested <- recombined[sapply(recombined, ncol) < (threshold2+6)] 
 	
 	#returns reff being the reference and recombined being the test combinations
 	###########################################################

@@ -4,28 +4,24 @@
 \alias{pm.input}
 \title{Pair-match Input Function}
 \usage{
-pm.input(bone = NULL, sort = NULL, template = "single_standard",
-  tresh = 2, measurements = NULL)
+pm.input(bone = NULL, sort = NULL, measurement_standard = "standard",
+  threshold = 1, measurements = NULL)
 }
 \arguments{
-\item{bone}{bone name}
+\item{bone}{Specifies the bone type}
 
-\item{sort}{data to be sorted}
+\item{sort}{Data to be sorted}
 
-\item{template}{single of multiple}
+\item{measurement_standard}{Specifies the measurement standards to use ("standard" or "supplemental")}
 
-\item{tresh}{treshhold value}
+\item{threshold}{Threshold value for number of measurements per comparison}
 
-\item{reference}{reference data}
+\item{measurements}{The measurement types to be used}
 }
 \description{
-This function takes input from the user to be pair-matched and generates
-a reference database for each possible combination based on the
-number of measurements available. It's designed to work as a single user input or
-with the multiple comparison standardized csv format. It accounts for NA values automatically.
+Pair-match Input Function
 }
 \examples{
 pm.input()
 }
 \keyword{pm.input}
-

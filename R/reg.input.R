@@ -1,12 +1,23 @@
 #' reg.match Input Function
+#'
 #' Function to produce combinations for associating elements with regression
-#' @param sort data to be sorted 
+#'
+#' @param sort Data to be sorted
+#' @param bone1 The first bone type
+#' @param bone2 The second bone type
+#' @param side1 The first bone type side
+#' @param side2 The second bone type side
+#' @param measurement_standard Specifies the measurement standards to use ("standard" or "supplemental")
+#' @param threshold Threshold value for number of measurements per comparison
+#' @param measurements1 The first bone types measurement types to be used
+#' @param measurements2 The second bone types measurement types to be used
+#'
 #' @keywords reg.input
 #' @export
 #' @examples 
 #' reg.input()
 
-reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ulna", side2 = "right", template = 'standard', tresh = NULL, measurements1 = NULL, measurements2 = NULL) {
+reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ulna", side2 = "right", measurement_standard = 'standard', threshold = NULL, measurements1 = NULL, measurements2 = NULL) {
      print("Import and reference generation has started.")
 
 	r1 <- FALSE
@@ -25,10 +36,10 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 	sort$Element <- tolower(sort$Element)
 	bone1 <- tolower(bone1)
 	bone2 <- tolower(bone2)
-	template <- tolower(template)
+	measurement_standard <- tolower(measurement_standard)
 	
 	#define file name for standard and supplemental
-	if(template == "supplemental" || template == "single_supplemental") {
+	if(measurement_standard == "supplemental" || measurement_standard == "single_supplemental") {
 		boneref1 <- paste(bone1,"sup",sep="")
 		boneref2 <- paste(bone2,"sup",sep="")
 		
@@ -42,7 +53,7 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 		tibia <- c("Tib_10","Tib_11","Tib_12")
 		fibula <- c("Fib_03","Fib_04","Fib_05")
 	}
-	if(template == "standard" || template == "single_standard") {
+	if(measurement_standard == "standard" || measurement_standard == "single_standard") {
 		boneref1 <- bone1
 		boneref2 <- bone2
 		
@@ -114,8 +125,8 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 		r2 <- TRUE
 	}
 
-	ref1 <- read.table(system.file("extdata", boneref1, package = "osteosort"), header = TRUE, sep=",", stringsAsFactors = FALSE)[,c(1,hcol)]
-	ref2 <- read.table(system.file("extdata", boneref2, package = "osteosort"), header = TRUE, sep=",", stringsAsFactors = FALSE)[,c(1,ucol)]
+	ref1 <- read.table(system.file("extdata", boneref1, package = "OsteoSort"), header = TRUE, sep=",", stringsAsFactors = FALSE)[,c(1,hcol)]
+	ref2 <- read.table(system.file("extdata", boneref2, package = "OsteoSort"), header = TRUE, sep=",", stringsAsFactors = FALSE)[,c(1,ucol)]
 
 	#removes R after measurement name from the reference dataset
 	if(r1) {
@@ -142,25 +153,25 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 	}
 	ref <- test[-1,]
 
-	if(!is.null(tresh)) {
-		tresh[1] <- as.numeric(tresh[1])
-		tresh[2] <- as.numeric(tresh[2])
+	if(!is.null(threshold)) {
+		threshold[1] <- as.numeric(threshold[1])
+		threshold[2] <- as.numeric(threshold[2])
 	
 		###################treshold
-		if(tresh[1] == 1 || tresh[2] == 1){tresh2 <- 4; tresh3 <- 4}
-		if(tresh[1] == 2 || tresh[2] == 2){tresh2 <- 4; tresh3 <- 4}
-		if(tresh[1] == 3 || tresh[2] == 3){tresh2 <- 5; tresh3 <- 5}
-		if(tresh[1] == 4 || tresh[2] == 4){tresh2 <- 6; tresh3 <- 6}
-		if(tresh[1] == 5 || tresh[2] == 5){tresh2 <- 7; tresh3 <- 7}
-		if(tresh[1] == 6 || tresh[2] == 6){tresh2 <- 8; tresh3 <- 8}
-		if(tresh[1] == 7 || tresh[2] == 7){tresh2 <- 9; tresh3 <- 9}
-		if(tresh[1] == 8 || tresh[2] == 8){tresh2 <- 10; tresh3 <- 10}
-		if(tresh[1] == 9 || tresh[2] == 9){tresh2 <- 11; tresh3 <- 11}
-		if(tresh[1] == 10 || tresh[2] == 10){tresh2 <- 12; tresh3 <- 12}
-		if(tresh[1] == 11 || tresh[2] == 11){tresh2 <- 13; tresh3 <- 13}
+		if(threshold[1] == 1 || threshold[2] == 1){threshold2 <- 4; threshold3 <- 4}
+		if(threshold[1] == 2 || threshold[2] == 2){threshold2 <- 4; threshold3 <- 4}
+		if(threshold[1] == 3 || threshold[2] == 3){threshold2 <- 5; threshold3 <- 5}
+		if(threshold[1] == 4 || threshold[2] == 4){threshold2 <- 6; threshold3 <- 6}
+		if(threshold[1] == 5 || threshold[2] == 5){threshold2 <- 7; threshold3 <- 7}
+		if(threshold[1] == 6 || threshold[2] == 6){threshold2 <- 8; threshold3 <- 8}
+		if(threshold[1] == 7 || threshold[2] == 7){threshold2 <- 9; threshold3 <- 9}
+		if(threshold[1] == 8 || threshold[2] == 8){threshold2 <- 10; threshold3 <- 10}
+		if(threshold[1] == 9 || threshold[2] == 9){threshold2 <- 11; threshold3 <- 11}
+		if(threshold[1] == 10 || threshold[2] == 10){threshold2 <- 12; threshold3 <- 12}
+		if(threshold[1] == 11 || threshold[2] == 11){threshold2 <- 13; threshold3 <- 13}
 		###################treshold
-		sort1 <- sort1[rowSums(!is.na(sort1)) >= tresh2,] #threshold	
-		sort2 <- sort2[rowSums(!is.na(sort2)) >= tresh3,] #threshold
+		sort1 <- sort1[rowSums(!is.na(sort1)) >= threshold2,] #threshold	
+		sort2 <- sort2[rowSums(!is.na(sort2)) >= threshold3,] #threshold
 	}
 	
 

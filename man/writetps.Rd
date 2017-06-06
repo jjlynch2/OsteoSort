@@ -4,10 +4,14 @@
 \alias{writetps}
 \title{A function to export TPS data.}
 \usage{
-writetps(A, file, scale = NULL)
+writetps(shape_matrices, file, scale = NULL)
 }
 \arguments{
-\item{file}{test}
+\item{shape_matrices}{matrices of shape configurations}
+
+\item{file}{File path for saving output}
+
+\item{scale}{Outputs scale if present}
 }
 \description{
 Modified from the opensource writeland.tps function from the Geomorph package for R
@@ -16,4 +20,3 @@ Modified from the opensource writeland.tps function from the Geomorph package fo
 writetps()
 }
 \keyword{random}
-
