@@ -5,8 +5,6 @@ Authors@R: person("Jeff", "Lynch", email = "jjlynch@bioarch.net", role = c("aut"
 Description: This package allows the statistical osteological sorting of commingled
     human skeletal remains using metric, 2D, and 3D data. http://osteosort.net
 Depends:
-    shiny,
-    shinyBS,
     plyr,
     Morpho,
     shapes,
@@ -16,7 +14,6 @@ Depends:
     compiler,
     foreach,
     stargazer,
-    shinythemes,
     pixmap,
     jpeg,
     Momocs,
@@ -28,7 +25,5 @@ Depends:
 License: GPL-2
 LazyData: false
 Imports:
-    shiny,
-    shinyBS,
-    shinythemes
+	plyr
 RoxygenNote: 5.0.1.9000

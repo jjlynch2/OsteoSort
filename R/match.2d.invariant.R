@@ -1,4 +1,4 @@
-#' two-dimensional pair-match function
+ #' two-dimensional pair-match function
 #' 
 #' This function takes input from the user to be pair-matched 
 #' 
@@ -15,7 +15,7 @@
 #' @examples
 #' match.2d.invariant()
 
-match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, sessiontempdir = NULL, oo = FALSE, iter = 10, trans = "rigid", threads=1, testme = "Segmented-Hausdorff", mspec = 1, meanit = 5, plotall = FALSE, nld = 1) {
+match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, sessiontempdir = NULL, oo = FALSE, iter = 10, trans = "rigid", threads=1, testme = "Segmented-Hausdorff", mspec = 1, meanit = 5, plotall = FALSE, nld = 1, hidedist = FALSE) {
 	print("Two-dimensional pair match comparisons have started.")	
 	library(Morpho)
 	library(pracma)
@@ -122,6 +122,7 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 	gc()
 	setwd(workingdir)
 	enableJIT(0)
-	return(list(homolog,resmatches,direc))
+	if(hidedist) {resmatches[,3] <- "Hidden"}
+	return(list(homolog,resmatches,direc,nz))
 
 }
