@@ -36,6 +36,8 @@ match.2d.invariant(outlinedata = NULL, min = 1e+15, stdout = TRUE,
 \item{n_lowest_distances}{The number of lowest distance matches to return as a potential match}
 
 \item{hide_distances}{Hides the distance values in short lists to avoid analytical bias}
+
+\item{output_options}{If true, writes to .csv file}
 }
 \description{
 two-dimensional pair-match function

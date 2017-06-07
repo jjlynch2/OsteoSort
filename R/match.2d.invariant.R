@@ -13,6 +13,7 @@
 #' @param n_lowest_distances The number of lowest distance matches to return as a potential match
 #' @param plot Plots results
 #' @param temporary_mean_specimen The specimen to be used as the temporary mean
+#' @param output_options If true, writes to .csv file
 #'
 #' @keywords match.2d.invariant
 #' @export
