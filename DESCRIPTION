@@ -8,7 +8,6 @@ Depends:
     plyr,
     Morpho,
     shapes,
-    DT,
     parallel,
     doSNOW,
     compiler,
@@ -19,9 +18,7 @@ Depends:
     Momocs,
     pracma,
     CCA,
-    data.table,
-    shinyRGL,
-    rgl
+    data.table
 License: GPL-2
 LazyData: false
 Imports:

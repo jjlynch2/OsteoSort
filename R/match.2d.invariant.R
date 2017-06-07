@@ -19,7 +19,7 @@
 #' @examples
 #' match.2d.invariant()
 
-match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, sessiontempdir = NULL, oo = FALSE, iteration = 10, transformation = "rigid", cores=1, test = "Segmented-Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, plot = FALSE, n_lowest_distances = 1, hide_distances = FALSE) {
+match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, sessiontempdir = NULL, output_options = FALSE, iteration = 10, transformation = "rigid", cores=1, test = "Segmented-Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, plot = FALSE, n_lowest_distances = 1, hide_distances = FALSE) {
 	print("Two-dimensional pair match comparisons have started.")	
 	library(Morpho)
 	library(pracma)
@@ -38,7 +38,7 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 		setwd(direc)
 	}
 
-
+	
 	specmatrix <- outlinedata[[1]]
 
 	homolog <<- array(NA,c(dim(specmatrix)[1], dim(specmatrix)[2], dim(specmatrix)[3]))
@@ -113,7 +113,7 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 	colnames(resmatches) <- c("ID", "Match-ID", "Distance")
 	print("Two-dimensional pair match comparisons have completed.")	
 
-	if(oo) {
+	if(output_options) {
 		write.csv(matches, file = "potential-matches.csv", row.names=FALSE, col.names=TRUE)
 		png(filename="registration.png")
 		plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)), xlab="", ylab="")
