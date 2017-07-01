@@ -4,7 +4,9 @@
 #' @param first_configuration The first two-dimensional configuration
 #' @param second_configuration The second two-dimensional configuration
 #' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")
-#' 
+#' @param n_regions Specifies the number of regions for Segmented-Hausdorff
+#' @param dist Specifies distance per region, either maximum or average distance
+#'
 #' Heavily modified from the opensource code in hausdorff_dist() function from the pracma package
 #'
 #' @keywords segmented_hausdorff_dist
@@ -12,48 +14,62 @@
 #' @examples
 #' segmented_hausdorff_dist()
 
-segmented_hausdorff_dist <- function (first_configuration, second_configuration, test = "segmented") 
-{
-    stopifnot(is.numeric(first_configuration), is.numeric(second_configuration))
-    if (is.vector(first_configuration)) 
-        first_configuration <- matrix(first_configuration, ncol = 1)
-    if (is.vector(second_configuration)) 
-        second_configuration <- matrix(second_configuration, ncol = 1)
-    if (ncol(first_configuration) != ncol(second_configuration)) 
-        stop("'first_configuration' and 'second_configuration' must have the same number of columns.")
-    D <- distmat(first_configuration, second_configuration)
+segmented_hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = NULL, dist = "maximum") {
+	if(n_regions == 1) {test="Hausdorff"}
+
+	stopifnot(is.numeric(first_configuration), is.numeric(second_configuration))
+	if (is.vector(first_configuration)) 
+		first_configuration <- matrix(first_configuration, ncol = 1)
+	if (is.vector(second_configuration)) 
+		second_configuration <- matrix(second_configuration, ncol = 1)
+	if (ncol(first_configuration) != ncol(second_configuration)) 
+		stop("'first_configuration' and 'second_configuration' must have the same number of columns.")
+	D <- distmat(first_configuration, second_configuration)
 	
-	if(test == "Segmented-Hausdorff") { #should number of regions be variable?
+	if(test == "Segmented-Hausdorff") {
 		dhd_PQ <- apply(D, 1, min)
 		dhd_QP <- apply(D, 2, min)
-	
-		nums <- (nrow(D)/6)
-	
-		upper1 <- max(dhd_PQ[1:nums])
-		upper2 <- max(dhd_QP[1:nums])
+		nums <- round(nrow(D)/n_regions)
+		dhd_PQsum <- 0
+		dhd_QPsum <- 0
+		n1 <- 1
+		n2 <- nums
+		for(i in 1:n_regions) {
+			if(n2 > nrow(D)) {
+				rr <- n2-nrow(D)
+				n1 <- n1-rr
+				n2 <- n2-rr
+			}
+			if(dist == "average"){
+				dhd_PQsum <- sum(dhd_PQsum, mean(dhd_PQ[n1:n2]))
+				dhd_QPsum <- sum(dhd_QPsum, mean(dhd_QP[n1:n2]))
+			}
+			if(dist == "maximum"){
+				dhd_PQsum <- sum(dhd_PQsum, max(dhd_PQ[n1:n2]))
+				dhd_QPsum <- sum(dhd_QPsum, max(dhd_QP[n1:n2]))
+			}
 
-		half1 <- max(dhd_PQ[(nums):(nums*2)])
-		half2 <- max(dhd_QP[(nums):(nums*2)])
-
-		half11 <- max(dhd_PQ[(nums*2):(nums*3)])
-		half22 <- max(dhd_QP[(nums*2):(nums*3)])
-
-		lower1 <- max(dhd_PQ[(nums*3):(nums*4)])
-		lower2 <- max(dhd_QP[(nums*3):(nums*4)])
-
-		lower11 <- max(dhd_PQ[(nums*4):(nums*5)])
-		lower22 <- max(dhd_QP[(nums*4):(nums*5)])
-
-		lower111 <- max(dhd_PQ[(nums*5):(nums*6)])
-		lower222 <- max(dhd_QP[(nums*5):(nums*6)])
-
-		dhd_PQ <- sum(upper1, half1, half11, lower1, lower11, lower111)
-		dhd_QP <- sum(upper2, half2, half22, lower2, lower22, lower222)
+			n1 <- n2
+			n2 <- n2 + nums
+		}
+		distance_results <- max(dhd_PQsum, dhd_QPsum)
 	}
 	if(test == "Hausdorff") {
-		dhd_PQ <- max(apply(D, 1, min))
-		dhd_QP <- max(apply(D, 2, min))
+		if(dist == "average"){
+			dhd_PQsum <- mean(apply(D, 1, min))
+			dhd_QPsum <- mean(apply(D, 2, min))
+			distance_results <- mean(dhd_PQsum, dhd_QPsum)
+		}
+		if(dist == "maximum"){
+			dhd_PQsum <- max(apply(D, 1, min))
+			dhd_QPsum <- max(apply(D, 2, min))
+			distance_results <- max(dhd_PQsum, dhd_QPsum)
+		}
+	}
+	if(test == "Procrustes") {
+		distance_results <- procdist(first_configuration, second_configuration)
 	}
 
-    return(max(dhd_PQ, dhd_QP))
+    return(distance_results)
 }
+

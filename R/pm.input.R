@@ -11,8 +11,9 @@
 #' @examples
 #' pm.input()
 
-pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard', threshold = 1, measurements = NULL) {
- 	print("Import and reference generation has started.")
+pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard', threshold = 1, measurements = NULL) {	
+
+	print("Import and reference generation has started.")
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
 	if(is.na(bone) || is.null(sort)) {return(NULL)} #input san

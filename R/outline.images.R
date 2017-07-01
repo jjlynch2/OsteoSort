@@ -8,13 +8,14 @@
 #' @param npoints The number of points in the inverse elliptical fourier analysis transformation
 #' @param smooth_iterations The number of smoothing iterations in the elliptical fourier analysis
 #' @param nharmonics The number of harmonics in elliptical fourier analysis
-#' 
+#' @param fragment Currently under development 
+#'
 #' @keywords outline.images
 #' @export
 #' @examples
 #' outline.images()
 
-outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400) {
+outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400, fragment = FALSE) {
 	library(jpeg)
 	library(pixmap)
 	library(Momocs)
@@ -32,6 +33,16 @@ print(iii)
 		M@grey[which(M@grey > threshold)] <- 1#white
 		M@grey[which(M@grey <= threshold)] <- 0#black
 
+		if(fragment) {
+			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
+			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
+			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
+			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
+			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
+			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
+			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
+			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
+		}
 
 		start = list(x = NA, y = NA)
 
