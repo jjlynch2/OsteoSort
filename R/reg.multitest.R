@@ -223,18 +223,18 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				}
 				else within <- "Excluded"
 			}
-			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],round(rsqr1, digits = 3),t1r,format(pp, scientific = F),within,stringsAsFactors=FALSE))
+			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],round(rsqr1, digits = 3),t1r,round(pp, digits=5),within,stringsAsFactors=FALSE))
 
 		}
 	
 		sortlist <- split(sort, 1:nrow(sort))
 
 		if(Sys.info()[['sysname']] == "Windows") {
-			op <- system.time ( hera1 <- lapply(FUN = myfunreg, X = sortlist) )
+			op <- system.time ( hera1 <- lapply(FUN = myfunregs, X = sortlist) )
 			print(op)
 		}
 		else {
-			op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = cores, mc.preschedule = TRUE) )
+			op <- system.time ( hera1 <- mclapply(FUN = myfunregs, X = sortlist, mc.cores = cores, mc.preschedule = TRUE) )
 			print(op)
 		}
 		hera1 = as.data.frame(data.table::rbindlist(hera1))
