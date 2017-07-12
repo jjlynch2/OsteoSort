@@ -19,7 +19,7 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, stdout = FALSE, sessiontempdir = NULL, output_options = c(TRUE,FALSE), cores = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05, plot = FALSE) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, stdout = FALSE, sessiontempdir = NULL, output_options = TRUE, cores = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05, plot = FALSE) {	    
      print("Statistical association comparisons have started.")
 	suppressMessages(library(parallel))
 	suppressMessages(library(doSNOW))
@@ -257,33 +257,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
 	if(!stdout) {
     	 print("File generation has started.")
-		if(output_options[2]) {
-			suppressMessages(library(foreach))
-			not_excluded <- hera1[hera1$Result == "Cannot Exclude",][,-9]
-			temp1 <- unique(as.character(not_excluded[,1]))
-			temp2 <- unique(as.character(not_excluded[,4]))
-			unique_IDs <- unique(c(temp1,temp2))
-
-			cl <- makeCluster(cores)
-			registerDoSNOW(cl)
-			clusterExport(cl, "not_excluded", envir=environment())
-			foreach(i = unique_IDs) %dopar% {
-				library(stargazer) #ugh
-				if(any(as.character(not_excluded[,1]) == i)) {
-					stargazer(not_excluded[as.character(not_excluded[,1]) == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential associations not excluded with specimen: ", i, sep=""))
-				}
-				if(any(as.character(not_excluded[,4]) == i)) {
-					stargazer(not_excluded[as.character(not_excluded[,4]) == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential associations not excluded with specimen: ", i, sep=""))
-				}
-				sink(as.character(i), append = TRUE, split = FALSE)
-				cat('\nDate: ', strftime(Sys.time(), "%Y-%m-%d %H:%M:%S"), 'Analyst___________', ' Initials___________') 
-				cat('\nFor Official Use Only') 
-				sink()	
-			}
-			stopCluster(cl)
-		}
-
-		if(output_options[1]) {
+		if(output_options) {
 			write.csv(hera1[hera1$Result == "Cannot Exclude",][,-9], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
 			write.csv(hera1[hera1$Result == "Excluded",][,-9], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}

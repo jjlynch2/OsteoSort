@@ -17,7 +17,7 @@
 #' @examples
 #' pm.ttest()
 
-pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), cores = 1, plot = FALSE) {
+pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainstzero = FALSE, output_options = TRUE, cores = 1, plot = FALSE) {
 	print("Statistical pair match comparisons have started.")
 	suppressMessages(library(parallel))
 	suppressMessages(library(doSNOW))
@@ -132,32 +132,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = T
 
 	if(!stdout) {	
      	print("File generation has started.")	
-		if(output_options[2]) {
-			suppressMessages(library(foreach))
-			not_excluded <- hera1[hera1$p.value > alphalevel,]
-			temp1 <- unique(not_excluded[,1])
-			temp2 <- unique(not_excluded[,4])
-			unique_IDs <- unique(c(temp1,temp2))
-
-			cl <- makeCluster(cores)
-			registerDoSNOW(cl)
-			clusterExport(cl, "not_excluded", envir=environment())
-			foreach(i = unique_IDs) %dopar% {
-				library(stargazer) #ugh
-				if(any(not_excluded[,1] == i)) {
-					stargazer(not_excluded[not_excluded[,1] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential pair matches not excluded with specimen: ", i, sep=""))
-				}
-				if(any(not_excluded[,4] == i)) {
-					stargazer(not_excluded[not_excluded[,4] == i,], type = 'text', out = i, summary = FALSE, rownames = FALSE, title = paste("Potential pair matches not excluded with specimen: ", i, sep=""))
-				}
-				sink(as.character(i), append = TRUE, split = FALSE)
-				cat('\nDate: ', strftime(Sys.time(), "%Y-%m-%d %H:%M:%S"), 'Analyst___________', ' Initials___________') 
-				cat('\nFor Official Use Only') 
-				sink()	
-			}
-			stopCluster(cl)
-		}
-		if(output_options[1]) {
+		if(output_options) {
 			write.csv(as.matrix(hera1[hera1$p.value > alphalevel,]), file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
 			write.csv(as.matrix(hera1[hera1$p.value <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
