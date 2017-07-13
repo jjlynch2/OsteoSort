@@ -100,9 +100,10 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = 
 
 		}
 
+		if(round(p.value, digits = 4) > alphalevel) {result1 <- "Cannot Excluded"}
+		if(round(p.value, digits = 4) <= alphalevel) {result1 <- "Excluded"}
 
-
-		return(data.frame(X[1],X[3],X[5],X[2],X[4],X[6],toString(Xname),round(p.value, digits = 4),ycol/2,yrow, stringsAsFactors=FALSE)) 
+		return(data.frame(X[1],X[3],X[5],X[2],X[4],X[6],toString(Xname),ycol,round(p.value, digits = 4),yrow,round(difm, digits = 4),round(difsd, digits = 4),result1, stringsAsFactors=FALSE)) 
 	}
 
 
@@ -117,7 +118,7 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = 
 
 	hera1 = as.data.frame(data.table::rbindlist(hera1))
 
-	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size")
+	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","# of measurements","p.value","Sample size","mean","sd","Result")
      print("Statistical articulation comparisons completed.")
 
 	rm(is.uniqueart) #making the environment clean again

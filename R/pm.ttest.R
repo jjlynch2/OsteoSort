@@ -100,7 +100,11 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = T
 			} 
 		}
 		
-		return(data.frame(X[,1], X[,3],X[,5],X[,2],X[,4],X[,6],toString(temp1n),round(p.value, digits = 4),ycol/2,yrow,round(difm, digits = 4),round(difsd, digits = 4), stringsAsFactors=FALSE)) 
+		if(round(p.value, digits = 4) > alphalevel) {result1 <- "Cannot Excluded"}
+		if(round(p.value, digits = 4) <= alphalevel) {result1 <- "Excluded"}
+
+		
+		return(data.frame(X[,1], X[,3],X[,5],X[,2],X[,4],X[,6],toString(temp1n),round(p.value, digits = 4),ycol/2,yrow,round(difm, digits = 4),round(difsd, digits = 4),result1, stringsAsFactors=FALSE)) 
 	} 
 
 	if(Sys.info()[['sysname']] == "Windows") {
@@ -114,7 +118,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = T
 
 	hera1 <- as.data.frame(data.table::rbindlist(hera1))
 	
-     colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd")
+     colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd","Result")
      print("Statistical pair match comparisons completed.")
      
 	rm(is.uniquepm) #making the environment clean again

@@ -136,7 +136,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				}
 				else within <- "Excluded"
 
-			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],round(rsqr1, digits = 3),t1r,NA,within, stringsAsFactors=FALSE))
+			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],paste(c(temp1n, temp2n), collapse = " "),length(c(temp1n, temp2n)),round(rsqr1, digits = 3),t1r,NA,within, stringsAsFactors=FALSE))
 
 		}
 	
@@ -223,7 +223,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				}
 				else within <- "Excluded"
 			}
-			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],round(rsqr1, digits = 3),t1r,round(pp, digits=5),within,stringsAsFactors=FALSE))
+			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],paste(c(temp1n, temp2n), collapse = " "),length(c(temp1n, temp2n)),round(rsqr1, digits = 3),t1r,round(pp, digits=5),within,stringsAsFactors=FALSE))
 
 		}
 	
@@ -247,7 +247,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 	}
 
      print("Statistical association comparisons completed.")
-	names(hera1) <- c("ID","Side","Element","ID","Side","Element","RSquared", "Sample","p-value","Result")
+	names(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","# of measurements","RSquared", "Sample","p-value","Result")
 	
 
 	if(plot) {
@@ -258,8 +258,8 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 	if(!stdout) {
     	 print("File generation has started.")
 		if(output_options) {
-			write.csv(hera1[hera1$Result == "Cannot Exclude",][,-9], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
-			write.csv(hera1[hera1$Result == "Excluded",][,-9], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+			write.csv(hera1[hera1$Result == "Cannot Exclude",], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
+			write.csv(hera1[hera1$Result == "Excluded",], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 		}
 	}
 	gc()
@@ -270,5 +270,5 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 	if(nrow(hera1) == 1) {
 		return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",], plotres))
 	}
-	else return(list(direc,hera1[hera1$Result == "Cannot Exclude",][,-9], hera1[hera1$Result == "Excluded",][,-9], plotres))
+	else return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",], plotres))
 }
