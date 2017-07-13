@@ -11,13 +11,15 @@
 #' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
 #' @param stdout If true, output will be data.frames only
 #' @param cutoff The outlier cutoff value for either quartiles or standard deviations
+#' @param plot Generates plot of distribution
+#' @param output_options if true outputs to excel files; will be expanded in future versions
 #'
 #' @keywords random
 #' @export
 #' @examples
 #' statsort()
 
-statsort <- function (sort, bone = "femur", side = "both", population = "trotter-any-male", method = "Quartiles", measurements = NULL, sessiontempdir = NULL, stdout = FALSE, cutoff = 1.5) {	
+statsort <- function (sort, bone = "femur", side = "both", population = "trotter-any-male", method = "Quartiles", measurements = NULL, sessiontempdir = NULL, stdout = FALSE, cutoff = 1.5, output_options = TRUE, plot = TRUE) {	
 	upperfile = "upper.csv"
 	lowerfile = "lower.csv"
 	nonoutliersfile = "non-outliers.csv"
@@ -519,39 +521,46 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 	if(!is.null(upperfile)) {
 		if(!all(is.null(outlierdfupper))) { #skips if all NA (no outliers)
 			outlierdfupper <- na.omit(outlierdfupper)
-			write.csv(outlierdfupper, file = upperfile)
+			if(output_options && nrow(outlierdfupper) > 0) {
+				write.csv(outlierdfupper, file = upperfile)
+			}
 		}
 	}
 	if(!is.null(lowerfile)) {
 		if(!all(is.null(outlierdflower))) {
 			outlierdflower <- na.omit(outlierdflower)
-			write.csv(outlierdflower, file = lowerfile, row.names = FALSE)
+			if(output_options && nrow(outlierdflower) > 0) {
+				write.csv(outlierdflower, file = lowerfile, row.names = FALSE)
+			}
 		}
 	}
 	if(!is.null(nonoutliersfile)) {
 		if(!all(is.null(nonoutliersdf))) {
 			nonoutliersdf <- na.omit(nonoutliersdf)
-			write.csv(nonoutliersdf, file = nonoutliersfile, row.names = FALSE)
+			if(output_options && nrow(nonoutliersdf) > 0) {
+				write.csv(nonoutliersdf, file = nonoutliersfile, row.names = FALSE)
+			}
 		}
 	}	
 
 	
+	if(plot) {
+		################plotting################
+		jpeg(paste("graph",".jpeg",sep=''),height = 800, width = 800)
+		dev.control('enable')	
+		hist(x = as.numeric(pointestimate[,4]), xlab = bone, main = NULL)
+		abline(v = plotme, lty = 2, col="darkred")
+		abline(v = upper, lty = 2, col="darkblue")
+		abline(v = lower, lty = 2, col="darkblue")
+		if(!nocut) {
+			abline(v = lowermax, lty = 2, col="black")
+			abline(v = uppermax, lty = 2, col="black")
+		}
 	
-	################plotting################
-	jpeg(paste("graph",".jpeg",sep=''),height = 800, width = 800)
-	dev.control('enable')	
-	hist(x = as.numeric(pointestimate[,4]), xlab = bone, main = NULL)
-	abline(v = plotme, lty = 2, col="darkred")
-	abline(v = upper, lty = 2, col="darkblue")
-	abline(v = lower, lty = 2, col="darkblue")
-	if(!nocut) {
-		abline(v = lowermax, lty = 2, col="black")
-		abline(v = uppermax, lty = 2, col="black")
+		p1 <- recordPlot()
+		dev.off()
 	}
-	
-	p1 <- recordPlot()
-	dev.off()
-	
+	else p1 <- NULL
 	if(stdout) {p1}
 	
 	setwd(workingdir)
