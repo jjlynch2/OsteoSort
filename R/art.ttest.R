@@ -138,8 +138,12 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = 
 	if(!stdout) {
      	print("File generation has started.")
 		if(output_options) {
-			write.csv(as.matrix(hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,]), file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
-			write.csv(as.matrix(hera1[as.numeric(as.character(hera1$p.value)) <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+			if(nrow(as.matrix(hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,])) > 0) {
+				write.csv(as.matrix(hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,]), file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
+			}
+			if(nrow(as.matrix(hera1[as.numeric(as.character(hera1$p.value)) <= alphalevel,])) > 0) {
+				write.csv(as.matrix(hera1[as.numeric(as.character(hera1$p.value)) <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+			}
 		}
      	print("File generation has completed.")
 	}

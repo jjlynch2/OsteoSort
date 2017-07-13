@@ -258,8 +258,12 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 	if(!stdout) {
     	 print("File generation has started.")
 		if(output_options) {
-			write.csv(hera1[hera1$Result == "Cannot Exclude",], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
-			write.csv(hera1[hera1$Result == "Excluded",], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+			if(nrow(hera1[hera1$Result == "Cannot Exclude",]) > 0) {
+				write.csv(hera1[hera1$Result == "Cannot Exclude",], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
+			}
+			if(nrow(hera1[hera1$Result == "Excluded",]) > 0) {
+				write.csv(hera1[hera1$Result == "Excluded",], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+			}
 		}
 	}
 	gc()
