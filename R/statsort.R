@@ -193,6 +193,12 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 		if(population == "trotter-white-male") {
 			intercept <- 31.01
 			slope <- 0.09410
+			#intercept <- 78.62
+			#slope <- 2.52
+			#intercept <- 70.81
+			#slope <- 2.79
+			#intercept <- 78.10
+			#slope <- 2.60
 		}
 	}
 	if(bone == "fibula") {
@@ -438,7 +444,7 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 		pointestimate[i,1] <- sort[i,1] #ID name
 		pointestimate[i,2] <- sort[i,2] #Side name
 		pointestimate[i,3] <- sort[i,3] #Bone name
-		pointestimate[i,4] <- round(as.numeric(sort[i,4]) * slope + intercept, digits=2) #PE name
+		pointestimate[i,4] <- round( as.numeric(sort[i,4]) * slope + intercept, digits=2) #PE name #add *0.1 for trotter shit when testing
 	}
 	
 	

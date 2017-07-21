@@ -15,7 +15,7 @@
 #' @examples
 #' outline.images()
 
-outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400, fragment = FALSE) {
+outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400) {
 	library(jpeg)
 	library(pixmap)
 	library(Momocs)
@@ -32,17 +32,6 @@ print(iii)
 
 		M@grey[which(M@grey > threshold)] <- 1#white
 		M@grey[which(M@grey <= threshold)] <- 0#black
-
-		if(fragment) {
-			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
-			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
-			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
-			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
-			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
-			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
-			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
-			M@grey <- rbind(rbind(rep(1,ncol(M@grey)), rep(1,ncol(M@grey))), M@grey)
-		}
 
 		start = list(x = NA, y = NA)
 
@@ -102,7 +91,7 @@ print(iii)
 		spec1 <- list(X = (Y[-1]), Y = ((dim(I)[1] - X))[-1])
 		spec1 <- as.matrix(data.frame(spec1))
 		spec1 <- round(spec1) #round to whole numbers
-	
+
 		if(mirror) {
 			if(imagelist[iii] %in% imagelist2) {
 				spec1[,1] <- -spec1[,1] #swap X axis to mirror
