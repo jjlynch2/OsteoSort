@@ -7,11 +7,9 @@
 #' @param cores Number of cores for parallel processing
 #' @param mean_iterations The number of mean iterations
 #' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")
-#' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
-#' @param stdout If true, output will be data.frames only
+#' @param sessiontempdir Specifies temporary directory for analytical session
 #' @param hide_distances Hides the distance values in short lists to avoid analytical bias 
 #' @param n_lowest_distances The number of lowest distance matches to return as a potential match
-#' @param plot Plots results
 #' @param temporary_mean_specimen The specimen to be used as the temporary mean
 #' @param output_options If true, writes to .csv file
 #' @param dist Specifies distance per region, either maximum or average distance
@@ -22,7 +20,10 @@
 #' @examples
 #' match.2d.invariant()
 
-match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, sessiontempdir = NULL, output_options = c(FALSE,FALSE,FALSE), iteration = 10, transformation = "rigid", cores=1, test = "Segmented-Hausdorff", temporary_mean_specimen = 1, mean_iterations = 20, plot = FALSE, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
+match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, output_options = c(TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", cores=1, test = "Segmented-Hausdorff", temporary_mean_specimen = 1, mean_iterations = 20, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
+	if(is.null(dist)) {dist <- "average"}
+	if(is.null(n_regions)) {n_regions <- 6}
+
 	print("Two-dimensional pair match comparisons have started.")	
 	library(Morpho)
 	library(pracma)
@@ -30,16 +31,13 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 	suppressMessages(library(compiler))
 	enableJIT(3)
 
+	dist <- tolower(dist)
+	transformation <- tolower(transformation)
+
 	workingdir = getwd()
 
-	if(!stdout) { 
-		if (!is.null(sessiontempdir)) {
-			setwd(sessiontempdir)
-		}
-		direc <- randomstring(n = 1, length = 12)
-		dir.create(direc)
-		setwd(direc)
-	}
+	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
+
 
 	
 	specmatrix <- outlinedata[[1]]
@@ -142,14 +140,6 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 		apply(sapply(col, col2rgb)/255, 2, function(x) rgb(x[1],x[2],x[3], alpha=alpha))
 	}
 
-	if(plot) {
-		plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)), xlab="", ylab="")
-		for(a in 1:dim(homolog)[3]) {
-			points(homolog[,,a], col=add.alpha(a,0.3))	
-		}
-		points(meann, col="black", bg="blue", pch=23)
-	}
-
 	colnames(resmatches) <- c("ID", "Match-ID", "Distance")
 	print("Two-dimensional pair match comparisons have completed.")	
 
@@ -161,7 +151,7 @@ match.2d.invariant <- function(outlinedata = NULL, min = 1e+15, stdout = TRUE, s
 		write.csv(resmatches, file = "potential-matches.csv", row.names=FALSE, col.names=TRUE)
 	}
 	if(output_options[2]) {
-		png(filename="registration.png")
+		png(filename="registration.png", width = 800, height = 800)
 		plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)), xlab="", ylab="")
 		for(a in 1:dim(homolog)[3]) {
 			points(homolog[,,a], col=add.alpha(a,0.3))	

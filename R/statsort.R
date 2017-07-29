@@ -8,18 +8,16 @@
 #' @param population The reference sample for stature estimation
 #' @param method The outlier method ("quartiles" or "standard deviations")
 #' @param measurements The measurement types to be used
-#' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
-#' @param stdout If true, output will be data.frames only
+#' @param sessiontempdir Specifies temporary directory for analytical session
 #' @param cutoff The outlier cutoff value for either quartiles or standard deviations
-#' @param plot Generates plot of distribution
-#' @param output_options if true outputs to excel files; will be expanded in future versions
+#' @param output_options First index TRUE outputs to excel, second index TRUE outputs plot
 #'
 #' @keywords random
 #' @export
 #' @examples
 #' statsort()
 
-statsort <- function (sort, bone = "femur", side = "both", population = "trotter-any-male", method = "Quartiles", measurements = NULL, sessiontempdir = NULL, stdout = FALSE, cutoff = 1.5, output_options = TRUE, plot = TRUE) {	
+statsort <- function (sort, bone = "femur", side = "both", population = "trotter-any-male", method = "Quartiles", measurements = NULL, sessiontempdir = NULL, cutoff = 1.5, output_options = c(TRUE,TRUE)) {	
 	upperfile = "upper.csv"
 	lowerfile = "lower.csv"
 	nonoutliersfile = "non-outliers.csv"
@@ -34,14 +32,8 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 	population <- tolower(population)
 	
 	workingdir = getwd()
-	if(!stdout) {
-			if(!is.null(sessiontempdir)) {
-				setwd(sessiontempdir)
-			}
-			direc <- randomstring(n = 1, length = 12)
-			dir.create(direc)
-			setwd(direc)
-	}
+
+	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
 	
 	sortdata <- array(NA,c(length(sort[,1]),4)) 
@@ -527,7 +519,7 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 	if(!is.null(upperfile)) {
 		if(!all(is.null(outlierdfupper))) { #skips if all NA (no outliers)
 			outlierdfupper <- na.omit(outlierdfupper)
-			if(output_options && nrow(outlierdfupper) > 0) {
+			if(output_options[1] && nrow(outlierdfupper) > 0) {
 				write.csv(outlierdfupper, file = upperfile)
 			}
 		}
@@ -535,7 +527,7 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 	if(!is.null(lowerfile)) {
 		if(!all(is.null(outlierdflower))) {
 			outlierdflower <- na.omit(outlierdflower)
-			if(output_options && nrow(outlierdflower) > 0) {
+			if(output_options[1] && nrow(outlierdflower) > 0) {
 				write.csv(outlierdflower, file = lowerfile, row.names = FALSE)
 			}
 		}
@@ -543,14 +535,14 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 	if(!is.null(nonoutliersfile)) {
 		if(!all(is.null(nonoutliersdf))) {
 			nonoutliersdf <- na.omit(nonoutliersdf)
-			if(output_options && nrow(nonoutliersdf) > 0) {
+			if(output_options[1] && nrow(nonoutliersdf) > 0) {
 				write.csv(nonoutliersdf, file = nonoutliersfile, row.names = FALSE)
 			}
 		}
 	}	
 
 	
-	if(plot) {
+	if(output_options[2]) {
 		################plotting################
 		jpeg(paste("graph",".jpeg",sep=''),height = 800, width = 800)
 		dev.control('enable')	
@@ -567,7 +559,6 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 		dev.off()
 	}
 	else p1 <- NULL
-	if(stdout) {p1}
 	
 	setwd(workingdir)
 	return(list(direc,outlierdflower,outlierdfupper,nonoutliersdf,p1,round(m, digits = 2),round(s, digits=2),round(me, digits=2),round(IQQ, digits=2)))

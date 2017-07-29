@@ -5,27 +5,20 @@
 #' @param sort Sorted data for comparison
 #' @param splitn The index location of each bone types measurements. Used internally from reg.input()
 #' @param prediction_interval Specifies the prediction interval 
-#' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
-#' @param stdout If true, output will be data.frames only
-#' @param output_options Uses two true and/or false values to specify output file types. c(TRUE,) uses .txt file per specimen and C(,TRUE) uses .csv output files
+#' @param sessiontempdir Specifies temporary directory for analytical session 
+#' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
 #' @param cores Number of cores for parallel processing
 #' @param test If true, PCA-CCA-Regression, if false, Simple Linear Regression 
 #' @param alphalevel Specifies alpha level
 #' @param alphalevel Specifies alpha level
-#' @param plot Used internally for OsteoShiny, do not call directly!
 #'
 #' @keywords reg.test
 #' @export
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, stdout = FALSE, sessiontempdir = NULL, output_options = TRUE, cores = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05, plot = FALSE) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, sessiontempdir = NULL, output_options = c(TRUE,FALSE), cores = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05) {	    
      print("Statistical association comparisons have started.")
-	suppressMessages(library(parallel))
-	suppressMessages(library(doSNOW))
-	suppressMessages(library(compiler))
-	suppressMessages(library(CCA))
-    	suppressMessages(library(data.table))
 	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
@@ -35,14 +28,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 	
 	workingdir = getwd()
 
-	if(!stdout) { 
-		if (!is.null(sessiontempdir)) {
-			setwd(sessiontempdir)
-		}
-		direc <- randomstring(n = 1, length = 12)
-		dir.create(direc)
-		setwd(direc)
-	}
+	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
 	
 	if(test) { #true PCA CCA regression
@@ -136,6 +122,25 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				}
 				else within <- "Excluded"
 
+			if(output_options[2]) {
+				jpeg(paste("graph",temp1[1],"-",temp2[1],".jpg",sep=''),height = 800, width = 800)
+				dev.control('enable')
+				score1 <- cmodel1$scores$xscores[,1] #takes first variate y 
+				score2 <- cmodel1$scores$yscores[,1] #takes first variate x
+				plot(score1,score2, xlab = "", ylab = "")
+	
+				points(df2,df1,col="blue",pch=16)
+	
+				lmp1 <- predict(model1, interval = "prediction", level = prediction_interval)
+
+				matlines(lmp1[,1], score1, col=c("red"))
+				matlines(lmp1[,2], score1, col=c("blue"), lty = 4)
+				matlines(lmp1[,3], score1, col=c("blue"), lty = 4)
+				dev.off()
+			}
+
+
+
 			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],paste(c(temp1n, temp2n), collapse = " "),length(c(temp1n, temp2n)),round(rsqr1, digits = 3),t1r,NA,within, stringsAsFactors=FALSE))
 
 		}
@@ -223,6 +228,24 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				}
 				else within <- "Excluded"
 			}
+			
+			if(output_options[2]) {
+				jpeg(paste("graph",temp1[1],"-",temp2[1],".jpg",sep=''),height = 800, width = 800)
+				dev.control('enable')
+		
+				plot(t2,t1, xlab = "", ylab = "")
+	
+				points(temp2p,temp1p,col="blue",pch=16)
+	
+				lmp1 <- predict(model1, interval = "prediction", level = prediction_interval)
+
+				matlines(lmp1[,1], t1, col=c("red"))
+				matlines(lmp1[,2], t1, col=c("blue"), lty = 4)
+				matlines(lmp1[,3], t1, col=c("blue"), lty = 4)
+				dev.off()
+			}
+
+
 			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],paste(c(temp1n, temp2n), collapse = " "),length(c(temp1n, temp2n)),round(rsqr1, digits = 3),t1r,round(pp, digits=5),within,stringsAsFactors=FALSE))
 
 		}
@@ -248,31 +271,20 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
      print("Statistical association comparisons completed.")
 	names(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","# of measurements","RSquared", "Sample","p-value","Result")
-	
 
-	if(plot) {
-		plotres <- plotme(sortdata = sort, refdata = ref, splitn = splitn, predlevel = prediction_interval, ttype = "reg", testtype = test)
-	}
-	else plotres <- NULL
 
-	if(!stdout) {
     	 print("File generation has started.")
-		if(output_options) {
-			if(nrow(hera1[hera1$Result == "Cannot Exclude",]) > 0) {
-				write.csv(hera1[hera1$Result == "Cannot Exclude",], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
-			}
-			if(nrow(hera1[hera1$Result == "Excluded",]) > 0) {
-				write.csv(hera1[hera1$Result == "Excluded",], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
-			}
-		}
+	if(output_options[1]) {
+		no_return_value <- OsteoSort:::output_function(hera1)
 	}
+
 	gc()
 	setwd(workingdir)
      print("File generation has completed.")
 	enableJIT(0)
 
 	if(nrow(hera1) == 1) {
-		return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",], plotres))
+		return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",]))
 	}
-	else return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",], plotres))
+	else return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",]))
 }

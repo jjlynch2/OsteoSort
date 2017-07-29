@@ -2,12 +2,11 @@
 
 export(art.input)
 export(art.ttest)
-export(lengthsort)
+export(metricsort)
 export(match.2d.invariant)
 export(outline.images)
 export(pm.input)
 export(pm.ttest)
-export(randomstring)
 export(readtps)
 export(reg.input)
 export(reg.multitest)

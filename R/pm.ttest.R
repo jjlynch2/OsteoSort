@@ -2,27 +2,21 @@
 #' 
 #' @param ref Reference data
 #' @param sort Sorted data for comparison
-#' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
-#' @param stdout If true, output will be data.frames only
+#' @param sessiontempdir Specifies temporary directory for analytical session
 #' @param cores Number of cores for parallel processing
 #' @param alphalevel Specifies alpha level
 #' @param absolutevalue Uses absolute value for D-values if true
 #' @param testagainstzero Uses 0 for mean if true 
-#' @param output_options Uses two true and/or false values to specify output file types. c(TRUE,) uses .txt file per specimen and C(,TRUE) uses .csv output files
+#' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
 #' @param power If true, uses half-normal distribution power transformation
-#' @param plot Used internally for OsteoShiny, do not call directly!
 #' 
 #' @keywords pm.ttest
 #' @export
 #' @examples
 #' pm.ttest()
 
-pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = TRUE, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainstzero = FALSE, output_options = TRUE, cores = 1, plot = FALSE) {
+pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE, FALSE), cores = 1) {
 	print("Statistical pair match comparisons have started.")
-	suppressMessages(library(parallel))
-	suppressMessages(library(doSNOW))
-	suppressMessages(library(compiler))
-	suppressMessages(library(data.table))
 	enableJIT(3)
 
 	options(warn = -1) #disables warnings
@@ -34,21 +28,16 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = T
 	
 	workingdir = getwd()
 
-	if(!stdout) { 
-		if (!is.null(sessiontempdir)) {
-			setwd(sessiontempdir)
-		}
-		direc <- randomstring(n = 1, length = 12)
-		dir.create(direc)
-		setwd(direc)
-	}
+	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 	
+
 	is.uniquepm <<- list()
 	unique.difsd <<- list()
 	unique.difm <<- list()
 	unique.df <<- list()
 	unique.ycol <<- list()
 	unique.yrow <<- list()
+	unique.difa <<- list()
 
 	myfunpm<-function(X){
 		temp1n <- names(X[-c(1:6)][c(T,F)])
@@ -69,14 +58,18 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = T
 				difsd <- sd(difa)
 				if(testagainstzero) {difm <- 0} 
 				else difm <- mean(difa)
-				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2) - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
+				
+				difa1 <- ((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2)
+				p.value <- pt((difa1 - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
 			}
 			else {
 				difa <- rowSums(y[c(T,F)] - y[c(F,T)])
 				difsd <- sd(difa)
 				if(testagainstzero) {difm <- 0} 
 				else difm <- mean(difa)
-				p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = length(difa) - 1)
+
+				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
+				p.value <- 2 * pt(-abs((difa1 - difm) / difsd), df = length(difa) - 1)
 			} 
 			is.uniquepm[[length(is.uniquepm)+1]] <<- temp1 #cache me outside 
 			unique.difsd[[length(unique.difsd)+1]] <<- difsd
@@ -84,6 +77,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = T
 			unique.df[[length(unique.df)+1]] <<- length(difa) - 1 #1 for degrees of freedom
 			unique.ycol[[length(unique.ycol)+1]] <<- ycol
 			unique.yrow[[length(unique.yrow)+1]] <<- yrow
+			unique.difa[[length(unique.difa)+1]] <<- difa
 		}
 		else {
 			ycol <- as.numeric(unique.ycol[[index]])
@@ -91,19 +85,29 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = T
 			yrow <- as.numeric(unique.yrow[[index]])
 			difsd <- as.numeric(unique.difsd[[index]])
 			difdf <- as.numeric(unique.df[[index]])
+			difa <- as.numeric(unique.difa[[index]])
+
 			if(absolutevalue) { 
-				p.value <- pt((((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2) - difm) / difsd, df = difdf, lower.tail = FALSE) #one-tail for absolute value model
+				difa1 <- ((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2)
+				p.value <- pt((difa1 - difm) / difsd, df = difdf, lower.tail = FALSE) #one-tail for absolute value model
 			}
 			else {
-
-				p.value <- 2 * pt(-abs((sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]) - difm) / difsd), df = difdf)
+				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
+				p.value <- 2 * pt(-abs((difa1 - difm) / difsd), df = difdf)
 			} 
 		}
 		
-		if(round(p.value, digits = 4) > alphalevel) {result1 <- "Cannot Excluded"}
+		if(round(p.value, digits = 4) > alphalevel) {result1 <- "Cannot Exclude"}
 		if(round(p.value, digits = 4) <= alphalevel) {result1 <- "Excluded"}
 
-		
+		if(output_options[2]) {
+			jpeg(paste("graph",X[,1],"-",X[,2],".jpg",sep=''),height = 800, width = 800)
+			dev.control('enable')	
+			hist(x = difa, xlab = "", main = NULL)
+			abline(v = difa1, lty = 2, col="darkred")
+			dev.off()
+		}		
+
 		return(data.frame(X[,1], X[,3],X[,5],X[,2],X[,4],X[,6],toString(temp1n),round(p.value, digits = 4),ycol/2,yrow,round(difm, digits = 4),round(difsd, digits = 4),result1, stringsAsFactors=FALSE)) 
 	} 
 
@@ -126,32 +130,19 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = T
 	rm(unique.difm)
 	rm(unique.df)
 	rm(unique.ycol)
-	rm(unique.yrow)
+	rm(unique.yrow) 
+	rm(unique.difa)
 
-     #calls plot function for generating single user interface plots
-     if(plot) {
-		plotres <- plotme(refdata = ref, sortdata = sort, power = power, absolutevalue = absolutevalue, ttype = "pm")
-     }
-	else plotres <- NULL     
-
-	if(!stdout) {	
-     	print("File generation has started.")	
-		if(output_options) {
-			if(nrow(as.matrix(hera1[hera1$p.value > alphalevel,])) > 0) {
-				write.csv(as.matrix(hera1[hera1$p.value > alphalevel,]), file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
-			}
-			if(nrow(as.matrix(hera1[hera1$p.value <= alphalevel,])) > 0) {
-				write.csv(as.matrix(hera1[hera1$p.value <= alphalevel,]), file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
-			}
-
-
-		}
+	print("File generation has started.")	
+	if(output_options[1]) {
+		no_return_value <- OsteoSort:::output_function(hera1)
+	}
 		
 		print("File generation has completed.")
-	}
+
 	gc()
 	setwd(workingdir)
 	enableJIT(0)
-	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,],plotres))	
+	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,]))	
 
 }
