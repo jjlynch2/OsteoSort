@@ -5,14 +5,18 @@
 \title{segmented hausdorff distance function}
 \usage{
 segmented_hausdorff_dist(first_configuration, second_configuration,
-  test = "segmented")
+  test = "Segmented-Hausdorff", n_regions = NULL, dist = "maximum")
 }
 \arguments{
 \item{first_configuration}{The first two-dimensional configuration}
 
 \item{second_configuration}{The second two-dimensional configuration}
 
-\item{test}{Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")
+\item{test}{Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")}
+
+\item{n_regions}{Specifies the number of regions for Segmented-Hausdorff}
+
+\item{dist}{Specifies distance per region, either maximum or average distance
 
 Heavily modified from the opensource code in hausdorff_dist() function from the pracma package}
 }

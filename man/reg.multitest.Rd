@@ -6,9 +6,9 @@
 Function to produce combinations for associating elements with regression}
 \usage{
 reg.multitest(sort = NULL, ref = NULL, splitn = NULL,
-  prediction_interval = 0.9, stdout = FALSE, sessiontempdir = NULL,
+  prediction_interval = 0.9, sessiontempdir = NULL,
   output_options = c(TRUE, FALSE), cores = 1, test = TRUE,
-  alphatest = TRUE, alphalevel = 0.05, plot = FALSE)
+  alphatest = TRUE, alphalevel = 0.05)
 }
 \arguments{
 \item{sort}{Sorted data for comparison}
@@ -19,19 +19,15 @@ reg.multitest(sort = NULL, ref = NULL, splitn = NULL,
 
 \item{prediction_interval}{Specifies the prediction interval}
 
-\item{stdout}{If true, output will be data.frames only}
+\item{sessiontempdir}{Specifies temporary directory for analytical session}
 
-\item{sessiontempdir}{Specifies temporary directory for analytical session if stdout is false}
-
-\item{output_options}{Uses two true and/or false values to specify output file types. c(TRUE,) uses .txt file per specimen and C(,TRUE) uses .csv output files}
+\item{output_options}{C(TRUE,FALSE) First logic specifies excel output, second specifies plot output}
 
 \item{cores}{Number of cores for parallel processing}
 
 \item{test}{If true, PCA-CCA-Regression, if false, Simple Linear Regression}
 
 \item{alphalevel}{Specifies alpha level}
-
-\item{plot}{Used internally for OsteoShiny, do not call directly!}
 
 \item{alphalevel}{Specifies alpha level}
 }

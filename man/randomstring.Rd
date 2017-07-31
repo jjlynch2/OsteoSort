@@ -9,12 +9,10 @@ randomstring(n = 1, length = 12)
 \arguments{
 \item{n}{The number of strings to return}
 
-\item{length}{The length of the strings to return}
+\item{length}{The length of the strings to return
+
+randomstring()}
 }
 \description{
 A Random String Function
 }
-\examples{
-randomstring()
-}
-\keyword{random}

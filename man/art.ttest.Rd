@@ -4,19 +4,16 @@
 \alias{art.ttest}
 \title{Articulation comparison t-test Function}
 \usage{
-art.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = TRUE,
-  cores = 1, alphalevel = 0.1, absolutevalue = TRUE,
-  testagainstzero = FALSE, output_options = c(TRUE, FALSE), power = TRUE,
-  plot = FALSE)
+art.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL, cores = 1,
+  alphalevel = 0.1, absolutevalue = TRUE, testagainstzero = FALSE,
+  output_options = c(TRUE, FALSE), power = TRUE)
 }
 \arguments{
 \item{ref}{Reference data}
 
 \item{sort}{Sorted data for comparison}
 
-\item{sessiontempdir}{Specifies temporary directory for analytical session if stdout is false}
-
-\item{stdout}{If true, output will be data.frames only}
+\item{sessiontempdir}{Specifies temporary directory for analytical session}
 
 \item{cores}{Number of cores for parallel processing}
 
@@ -26,11 +23,9 @@ art.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = TRUE,
 
 \item{testagainstzero}{Uses 0 for mean if true}
 
-\item{output_options}{Uses two true and/or false values to specify output file types. c(TRUE,) uses .txt file per specimen and C(,TRUE) uses .csv output files}
+\item{output_options}{C(TRUE,FALSE) First logic specifies excel output, second specifies plot output}
 
 \item{power}{If true, uses half-normal distribution power transformation}
-
-\item{plot}{Used internally for OsteoShiny, do not call directly!}
 }
 \description{
 Articulation comparison t-test Function

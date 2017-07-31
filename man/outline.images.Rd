@@ -23,6 +23,8 @@ outline.images(imagelist1, imagelist2, threshold = 0.8, scale = TRUE,
 \item{smooth_iterations}{The number of smoothing iterations in the elliptical fourier analysis}
 
 \item{nharmonics}{The number of harmonics in elliptical fourier analysis}
+
+\item{fragment}{Currently under development}
 }
 \description{
 outline.images function

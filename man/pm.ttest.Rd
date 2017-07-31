@@ -4,19 +4,16 @@
 \alias{pm.ttest}
 \title{Pair-match T.test Function}
 \usage{
-pm.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = TRUE,
+pm.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL,
   alphalevel = 0.1, power = TRUE, absolutevalue = TRUE,
-  testagainstzero = FALSE, output_options = c(TRUE, FALSE), cores = 1,
-  plot = FALSE)
+  testagainstzero = FALSE, output_options = c(TRUE, FALSE), cores = 1)
 }
 \arguments{
 \item{ref}{Reference data}
 
 \item{sort}{Sorted data for comparison}
 
-\item{sessiontempdir}{Specifies temporary directory for analytical session if stdout is false}
-
-\item{stdout}{If true, output will be data.frames only}
+\item{sessiontempdir}{Specifies temporary directory for analytical session}
 
 \item{alphalevel}{Specifies alpha level}
 
@@ -26,11 +23,9 @@ pm.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL, stdout = TRUE,
 
 \item{testagainstzero}{Uses 0 for mean if true}
 
-\item{output_options}{Uses two true and/or false values to specify output file types. c(TRUE,) uses .txt file per specimen and C(,TRUE) uses .csv output files}
+\item{output_options}{C(TRUE,FALSE) First logic specifies excel output, second specifies plot output}
 
 \item{cores}{Number of cores for parallel processing}
-
-\item{plot}{Used internally for OsteoShiny, do not call directly!}
 }
 \description{
 Pair-match T.test Function

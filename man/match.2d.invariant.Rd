@@ -4,20 +4,21 @@
 \alias{match.2d.invariant}
 \title{two-dimensional pair-match function}
 \usage{
-match.2d.invariant(outlinedata = NULL, min = 1e+15, stdout = TRUE,
-  sessiontempdir = NULL, oo = FALSE, iteration = 10,
+match.2d.invariant(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL,
+  output_options = c(TRUE, TRUE, TRUE), iteration = 10,
   transformation = "rigid", cores = 1, test = "Segmented-Hausdorff",
-  temporary_mean_specimen = 1, mean_iteration = 5, plot = FALSE,
-  n_lowest_distances = 1, hide_distances = FALSE)
+  temporary_mean_specimen = 1, mean_iterations = 20,
+  n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6,
+  dist = "average")
 }
 \arguments{
 \item{outlinedata}{The outline data taken from outline.images()}
 
 \item{min}{minimum distance for ICP}
 
-\item{stdout}{If true, output will be data.frames only}
+\item{sessiontempdir}{Specifies temporary directory for analytical session}
 
-\item{sessiontempdir}{Specifies temporary directory for analytical session if stdout is false}
+\item{output_options}{If true, writes to .csv file}
 
 \item{iteration}{The number of iterations for Iterative Closest Point}
 
@@ -29,15 +30,15 @@ match.2d.invariant(outlinedata = NULL, min = 1e+15, stdout = TRUE,
 
 \item{temporary_mean_specimen}{The specimen to be used as the temporary mean}
 
-\item{mean_iteration}{The number of mean iterations}
-
-\item{plot}{Plots results}
+\item{mean_iterations}{The number of mean iterations}
 
 \item{n_lowest_distances}{The number of lowest distance matches to return as a potential match}
 
 \item{hide_distances}{Hides the distance values in short lists to avoid analytical bias}
 
-\item{output_options}{If true, writes to .csv file}
+\item{n_regions}{Specifies number of regions per Segmented-Hausdorff}
+
+\item{dist}{Specifies distance per region, either maximum or average distance}
 }
 \description{
 two-dimensional pair-match function
