@@ -79,12 +79,12 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 	sort2 <- data.frame(NA, stringsAsFactors = FALSE)
 	
 	if(is.null(measurements1) || is.null(measurements2)) {
-		measurements <- c("ID","Side","Element",eval(as.symbol(bone1)))
-		measurements2 <- c("ID","Side","Element",eval(as.symbol(bone2)))
+		measurements <- c("id","Side","Element",eval(as.symbol(bone1)))
+		measurements2 <- c("id","Side","Element",eval(as.symbol(bone2)))
 	}
 	if(!is.null(measurements1)) {
-		measurements <- c("ID", "Side", "Element", measurements1)
-		measurements2 <- c("ID", "Side", "Element", measurements2)
+		measurements <- c("id", "Side", "Element", measurements1)
+		measurements2 <- c("id", "Side", "Element", measurements2)
 	}
 	
 	for(i in measurements) {
@@ -130,13 +130,13 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 
 	#removes R after measurement name from the reference dataset
 	if(r1) {
-		colnames(ref1) <- c("ID",substr(names(ref1[-1]), 1, nchar(names(ref1[-1]))-1))
+		colnames(ref1) <- c("id",substr(names(ref1[-1]), 1, nchar(names(ref1[-1]))-1))
 	}
 	if(r2) {
-		colnames(ref2) <- c("ID",substr(names(ref2[-1]), 1, nchar(names(ref2[-1]))-1))
+		colnames(ref2) <- c("id",substr(names(ref2[-1]), 1, nchar(names(ref2[-1]))-1))
 	}
 	
-	#creates reference data for the same ID across two bone types
+	#creates reference data for the same id across two bone types
 	#this works since we are limited to two bones and I have full measurements in data. Not 
 	#limited by missing measurements...
 	ref1[,1] <- as.character(ref1[,1])

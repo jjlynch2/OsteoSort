@@ -122,7 +122,7 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, cores = 1
 
 	hera1 = as.data.frame(data.table::rbindlist(hera1))
 
-	colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","# of measurements","p.value","Sample size","mean","sd","Result")
+	colnames(hera1) <- c("id","Side","Element","id","Side","Element","Measurements","# of measurements","p.value","Sample size","mean","sd","Result")
      print("Statistical articulation comparisons completed.")
 
 	rm(is.uniqueart) #making the environment clean again

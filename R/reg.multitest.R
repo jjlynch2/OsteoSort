@@ -270,7 +270,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 	}
 
      print("Statistical association comparisons completed.")
-	names(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","# of measurements","RSquared", "Sample","p-value","Result")
+	names(hera1) <- c("id","Side","Element","id","Side","Element","Measurements","# of measurements","RSquared", "Sample","p-value","Result")
 
 
     	 print("File generation has started.")

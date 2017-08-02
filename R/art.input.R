@@ -57,8 +57,8 @@ art.input <- function (bone = NULL, sort = NULL) {
 
 	if(nrow(sort) == 1) {sort[7] <- as.numeric(as.matrix(sort[7])); sort[8] <- as.numeric(as.matrix(sort[8])); return(list(list(as.data.frame(sort, stringsAsFactors = FALSE)), as.data.frame(refdata, stringsAsFactors=FALSE)))} #returns if single user input since no sorting required
 
-	cols1 <- c(grep(paste("^","ID","$",sep=""), colnames(sort)), grep("Side", colnames(sort)), grep("Element", colnames(sort)), grep(paste("^",measurements[1],"$",sep=""), colnames(sort))) #greps column name to grab column index 
-	cols2 <- c(grep(paste("^","ID","$",sep=""), colnames(sort)), grep("Side", colnames(sort)), grep("Element", colnames(sort)), grep(paste("^",measurements[2],"$",sep=""), colnames(sort))) #greps column name to grab column index
+	cols1 <- c(grep(paste("^","id","$",sep=""), colnames(sort)), grep("Side", colnames(sort)), grep("Element", colnames(sort)), grep(paste("^",measurements[1],"$",sep=""), colnames(sort))) #greps column name to grab column index 
+	cols2 <- c(grep(paste("^","id","$",sep=""), colnames(sort)), grep("Side", colnames(sort)), grep("Element", colnames(sort)), grep(paste("^",measurements[2],"$",sep=""), colnames(sort))) #greps column name to grab column index
 
 	#uses regex to capture first match in grep but this can be removed eventually. Just some input cleaning due to shitty excel files
 	sortdata <- sort
@@ -106,7 +106,7 @@ art.input <- function (bone = NULL, sort = NULL) {
 	sortdata <- rbind(resleft, resright) #Brings left and rights back together in final combo dataframe
 	sortdata <- na.omit(sortdata)
 	
-	colnames(sortdata) <- c("ID","ID","Side","Side","Element","Element",measurements[1],measurements[2])
+	colnames(sortdata) <- c("id","id","Side","Side","Element","Element",measurements[1],measurements[2])
      print("Import completed...Calling statistical function")
 
      sortdata <- split(sortdata, seq(nrow(sortdata))) #needs to be replaced

@@ -122,7 +122,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 
 	hera1 <- as.data.frame(data.table::rbindlist(hera1))
 	
-     colnames(hera1) <- c("ID","Side","Element","ID","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd","Result")
+     colnames(hera1) <- c("id","Side","Element","id","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd","Result")
      print("Statistical pair match comparisons completed.")
      
 	rm(is.uniquepm) #making the environment clean again

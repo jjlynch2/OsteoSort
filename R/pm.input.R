@@ -56,11 +56,11 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 
 	if(is.null(measurements)) {
 		measurements <- eval(as.symbol(bone))
-		colnames(sort) <- c("ID", "Side", "Element",measurements)
+		colnames(sort) <- c("id", "Side", "Element",measurements)
 	}
 
 	sortdata <- array(NA,c(nrow(sort),length(measurements)+3))
-	sortdata[,1] <- as.character(sort$ID)
+	sortdata[,1] <- as.character(sort$id)
 	sortdata[,2] <- as.character(sort$Side)
 	sortdata[,3] <- as.character(sort$Element)
 
@@ -70,7 +70,7 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 
 
 	reftemp <- read.table(system.file("extdata", filename_bone, package = "OsteoSort"), header = TRUE, sep=",")
-	refdata <- array(NA,c(nrow(reftemp),length(measurements)*2)) #times two for left and right but doesnt create one for ID since it's not needed for reference
+	refdata <- array(NA,c(nrow(reftemp),length(measurements)*2)) #times two for left and right but doesnt create one for id since it's not needed for reference
 	x <- 1
 
 	namedf <- array(NA,c(ncol(refdata), 1))

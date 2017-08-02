@@ -31,7 +31,7 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 	
 	sortdata <- array(NA,c(length(sort[,1]),4))
 
-	sortdata[,1] <- as.matrix(sort[["ID"]])
+	sortdata[,1] <- as.matrix(sort[["id"]])
 	sortdata[,2] <- tolower(sort[["Side"]])
 	sortdata[,3] <- tolower(sort[["Element"]])
 	sortdata[,4] <- sort[[paste(measurements)]] 
@@ -111,9 +111,9 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 	}
 
 
-	colnames(nonoutliersdf) <- c("ID", "Side", "Element", "measurements")
-	colnames(outlierdflower) <- c("ID", "Side", "Element", "measurements")
-	colnames(outlierdfupper) <- c("ID", "Side", "Element", "measurements")
+	colnames(nonoutliersdf) <- c("id", "Side", "Element", "measurements")
+	colnames(outlierdflower) <- c("id", "Side", "Element", "measurements")
+	colnames(outlierdfupper) <- c("id", "Side", "Element", "measurements")
 
 
 	

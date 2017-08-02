@@ -37,7 +37,7 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 
 	
 	sortdata <- array(NA,c(length(sort[,1]),4)) 
-	sortdata[,1] <- as.matrix(sort[["ID"]]) 
+	sortdata[,1] <- as.matrix(sort[["id"]]) 
 	sortdata[,2] <- tolower(sort[["Side"]]) 
 	sortdata[,3] <- tolower(sort[["Element"]])
 	sortdata[,4] <- sort[[paste(measurements)]] ### will this work?? it does! 
@@ -433,7 +433,7 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 	#plot point estimates with 1 and 2 standard deviation lines. all pointestimates above 2 STD are grouped. 
 	pointestimate <- array(NA,c(length(sort[,1]),4))
 	for(i in 1:length(sort[,1])) {
-		pointestimate[i,1] <- sort[i,1] #ID name
+		pointestimate[i,1] <- sort[i,1] #id name
 		pointestimate[i,2] <- sort[i,2] #Side name
 		pointestimate[i,3] <- sort[i,3] #Bone name
 		pointestimate[i,4] <- round( as.numeric(sort[i,4]) * slope + intercept, digits=2) #PE name #add *0.1 for trotter shit when testing
@@ -505,9 +505,9 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 		}
 	}
 	
-	colnames(nonoutliersdf) <- c("ID", "Side", "Element", "Point Estimate")
-	colnames(outlierdflower) <- c("ID", "Side", "Element", "Point Estimate")
-	colnames(outlierdfupper) <- c("ID", "Side", "Element", "Point Estimate")
+	colnames(nonoutliersdf) <- c("id", "Side", "Element", "Point Estimate")
+	colnames(outlierdflower) <- c("id", "Side", "Element", "Point Estimate")
+	colnames(outlierdfupper) <- c("id", "Side", "Element", "Point Estimate")
 	
 	
 	if(all(is.na(nonoutliersdf))) {nonoutliersdf <- NULL}
