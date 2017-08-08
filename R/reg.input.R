@@ -63,7 +63,7 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 		radius <- c("Rad_01","Rad_05","Rad_06")
 		ulna <- c("Uln_01","Uln_04","Uln_05","Uln_06") #52 removed
 		os_coxa <- c("Osc_01","Osc_02")
-		femur <- c("Fem_01","Fem_02","Fem_03","Fem_04","Fem_06","Fem_05","Fem_07") #67 and 68 removed
+		femur <- c("Fem_01","Fem_02","Fem_03","Fem_04","Fem_05","Fem_06","Fem_07") #67 and 68 removed
 		tibia <- c("Tib_01","Tib_02","Tib_03","Tib_04","Tib_05") #74 removed
 		fibula <- c("Fib_01","Fib_02")
 	}	

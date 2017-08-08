@@ -51,7 +51,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
 			#check for cache
 			output1 <- lapply(is.unique, function(x) { 
-				ident <- identical(x, c(temp1n, temp2n))
+				ident <- identical(x, c(temp1n, temp2n, temp1[2], temp2[2]))
 				return(ident) 
 			})
 
@@ -73,7 +73,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
 				model1 <- lm(score2~score1) #linear model
 			
-				is.unique[[length(is.unique)+1]] <<-   c(temp1n,temp2n) #cache me outside 
+				is.unique[[length(is.unique)+1]] <<-   c(temp1n,temp2n, temp1[2], temp2[2]) #cache me outside 
 				unique.model[[length(unique.model)+1]] <<- model1
 				unique.pca1[[length(unique.pca1)+1]] <<- B1PCAt
 				unique.pca2[[length(unique.pca2)+1]] <<- B2PCAt
@@ -183,7 +183,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
 			#check for cache
 			output1 <- lapply(is.uniques, function(x) { 
-				ident <- identical(x, c(temp1n, temp2n))
+				ident <- identical(x, c(temp1n, temp2n, temp1[2], temp2[2]))
 				return(ident) 
 			})
 
@@ -197,7 +197,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
 				model1 <- lm(t2~t1) #linear model
 			
-				is.uniques[[length(is.uniques)+1]] <<-   c(temp1n,temp2n) #cache me outside 
+				is.uniques[[length(is.uniques)+1]] <<-   c(temp1n,temp2n, temp1[2], temp2[2]) #cache me outside 
 				unique.models[[length(unique.models)+1]] <<- model1
 				unique.t1rs[[length(unique.t1rs)+1]] <<- length(t1)
 			}

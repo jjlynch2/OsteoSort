@@ -1,6 +1,7 @@
 #' analytical_temp_space function
 #' 
 #' @param output_options
+#' @param sessiontempdir
 #' 
 #' This is an internal function to deal with temporary analytical directory and session temp
 #'
