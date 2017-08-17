@@ -43,17 +43,17 @@ segmented_hausdorff_dist <- function (first_configuration, second_configuration,
 			if(dist == "average"){
 				dhd_PQsum <- sum(dhd_PQsum, mean(dhd_PQ[n1:n2]))
 				dhd_QPsum <- sum(dhd_QPsum, mean(dhd_QP[n1:n2]))
-				distance_results <- mean(dhd_PQsum, dhd_QPsum)
 			}
 			if(dist == "maximum"){
 				dhd_PQsum <- sum(dhd_PQsum, max(dhd_PQ[n1:n2]))
 				dhd_QPsum <- sum(dhd_QPsum, max(dhd_QP[n1:n2]))
-				distance_results <- max(dhd_PQsum, dhd_QPsum)
 			}
 
 			n1 <- n2
 			n2 <- n2 + nums
 		}
+		if(dist == "maximum"){distance_results <- max(dhd_PQsum, dhd_QPsum)}
+		if(dist == "average"){distance_results <- mean(dhd_PQsum, dhd_QPsum)}
 	}
 	if(test == "Hausdorff") {
 		if(dist == "average"){
