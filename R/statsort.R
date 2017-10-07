@@ -11,13 +11,14 @@
 #' @param sessiontempdir Specifies temporary directory for analytical session
 #' @param cutoff The outlier cutoff value for either quartiles or standard deviations
 #' @param output_options First index TRUE outputs to excel, second index TRUE outputs plot
+#' @param metric Specifies millimeters (mm), centimeters (cm), or inches (in) for stature
 #'
 #' @keywords random
 #' @export
 #' @examples
 #' statsort()
 
-statsort <- function (sort, bone = "femur", side = "both", population = "trotter-any-male", method = "Quartiles", measurements = NULL, sessiontempdir = NULL, cutoff = 1.5, output_options = c(TRUE,TRUE)) {	
+statsort <- function (sort, bone = "femur", side = "both", population = "trotter-any-male", method = "Quartiles", measurements = NULL, sessiontempdir = NULL, cutoff = 1.5, output_options = c(TRUE,TRUE), metric = "mm") {	
 	upperfile = "upper.csv"
 	lowerfile = "lower.csv"
 	nonoutliersfile = "non-outliers.csv"
@@ -57,12 +58,12 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 	#is it worth adding all bones and every equation from fordisc? maybe.
 	if(bone == "femur") {
 		if(population == "genoves-cstat-mexican-female") {
-			intercept <- 49.742
-			slope <- 2.59
+			intercept <- 19.58346
+			slope <- 1.019685
 		}		
 		if(population == "genoves-cstat-mexican-male") {
-			intercept <- 66.379
-			slope <- 2.26
+			intercept <- 26.13346
+			slope <- 0.8897638
 		}		
 		if(population == "19th-cstat-black-female") {
 			intercept <- 22.29
@@ -175,22 +176,16 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 			slope <- 0.10653
 		}
 		if(population == "trotter-any-male") {
-			intercept <- 34.09
-			slope <- 0.08594
+			intercept <- 34.69
+			slope <- 0.086645
 		}
 		if(population == "trotter-black-male") {
-			intercept <- 31.94
-			slope <- 0.08536
+			intercept <- 32.45
+			slope <- 0.086268
 		}
 		if(population == "trotter-white-male") {
-			intercept <- 31.01
-			slope <- 0.09410
-			#intercept <- 78.62
-			#slope <- 2.52
-			#intercept <- 70.81
-			#slope <- 2.79
-			#intercept <- 78.10
-			#slope <- 2.60
+			intercept <- 31.29
+			slope <- 0.095860
 		}
 	}
 	if(bone == "fibula") {
@@ -352,7 +347,7 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 		}
 		if(population == "20th-fstat-any") {
 			intercept <- 25.64
-			slope <- 0.15852
+			slope <- 0.15852#' @param metric Specifies milimeters (mm), centimeters (cm), or inches (in) for stature
 		}	
 		if(population == "trotter-any-male") {
 			intercept <- 34.91
@@ -426,7 +421,16 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 			slope <- 0.14175
 		}
 	}
-	
+
+	if(metric == "cm") {
+		intercept <- intercept * 2.54
+		slope <- slope * 2.54
+	}
+	if(metric == "mm") {
+		intercept <- (intercept * 2.54) * 10
+		slope <- (slope * 2.54) * 10	
+	}
+
 	#return if incorrect population reference
 	if(is.null(intercept)) { return(NULL) }
 	

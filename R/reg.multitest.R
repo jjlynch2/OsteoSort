@@ -212,7 +212,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 			temp1p <- log(rowSums(data.frame(t(as.numeric(as.matrix(temp1[-1][-1][-1]))))))
 
 			pm1 <- predict(model1, newdata = data.frame(t1 = as.numeric(temp1p)), interval = "prediction", level = prediction_interval)
-			tt <- abs(pm1[1] - temp2p) / ( sqrt(diag(vcov(model1)))[2] * sqrt( 1+(1/t1r) + ((temp1p - mean(t1))^2) / (t1r * sd(t1)^2) ) )
+			tt <- abs(pm1[1] - temp2p) / ( summary.lm((model1))$sigma * sqrt( 1+(1/t1r) + ((temp1p - mean(t1))^2) / (t1r * sd(t1)^2) ) )
 			pp <- 2 * pt(-abs(tt), df = t1r - 2)
 
 			if(alphatest) {

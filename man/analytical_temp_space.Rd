@@ -7,7 +7,7 @@
 analytical_temp_space(output_options, sessiontempdir)
 }
 \arguments{
-\item{output_options}{This is an internal function to deal with temporary analytical directory and session temp
+\item{sessiontempdir}{This is an internal function to deal with temporary analytical directory and session temp
 
 analytical_temp_space()}
 }

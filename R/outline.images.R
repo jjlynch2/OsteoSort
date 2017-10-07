@@ -94,7 +94,7 @@ print(iii)
 
 		if(mirror) {
 			if(imagelist[iii] %in% imagelist2) {
-				spec1[,1] <- -spec1[,1] #swap X axis to mirror
+				spec1[,1] <- -spec1[,1] #swap X axis to mirror ### should this by multiply by -1????
 			}
 		}
 
