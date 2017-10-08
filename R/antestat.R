@@ -114,8 +114,13 @@ antestat <- function(antemortem_stature = NULL, postmortem_measurement = NULL, s
 		
 		plot(stature,measurement, xlab = "Stature", ylab = "Measurement")
 	
-		points(pm1[1],postmortem_measurement,col="blue",pch=16)
-	
+		points(pm1[1],postmortem_measurement,col="blue",pch=16, cex=1.5)
+		points(antemortem_stature,postmortem_measurement,col="red",pch=16, cex=1.5)
+		df1 <- rbind(pm1[1], antemortem_stature)
+		df2 <- rbind(postmortem_measurement, postmortem_measurement)
+		matlines(df1, df2, col=c("red"), lty=2)
+
+
 		lmp1 <- predict(lm1, interval = "prediction", level = prediction_interval)
 
 		matlines(lmp1[,1], measurement, col=c("red"))
