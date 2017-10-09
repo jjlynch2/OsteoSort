@@ -275,12 +275,13 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
     	 print("File generation has started.")
 	if(output_options[1]) {
+		print("File generation has started.")
 		no_return_value <- OsteoSort:::output_function(hera1)
+		print("File generation has completed.")
 	}
 
 	gc()
 	setwd(workingdir)
-     print("File generation has completed.")
 	enableJIT(0)
 
 	if(nrow(hera1) == 1) {
