@@ -99,7 +99,7 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, cores = 1
 		if(round(p.value, digits = 4) <= alphalevel) {result1 <- "Excluded"}
 		
 		if(output_options[2]) {
-			jpeg(paste("graph",X[,1],"-",X[,2],".jpg",sep=''),height = 800, width = 800)
+			jpeg(paste("graph",X[,1],"-",X[,2],".jpg",sep=''),height = 400, width = 400)
 			dev.control('enable')	
 			hist(x = difa, xlab = "", main = NULL)
 			abline(v = difa1, lty = 2, lwd = 2, col="darkred")
@@ -133,11 +133,11 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, cores = 1
 	rm(unique.yrow2)
 	rm(unique.difa)
 
-	print("File generation has started.")
 	if(output_options[1]) {
+		print("File generation has started.")
 		no_return_value <- OsteoSort:::output_function(hera1)
+		print("File generation has completed.")
 	}
-	print("File generation has completed.")
 	
 	gc()
 	setwd(workingdir)

@@ -123,7 +123,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				else within <- "Excluded"
 
 			if(output_options[2]) {
-				jpeg(paste("graph",temp1[1],"-",temp2[1],".jpg",sep=''),height = 800, width = 800)
+				jpeg(paste("graph",temp1[1],"-",temp2[1],".jpg",sep=''),height = 400, width = 400)
 				dev.control('enable')
 				score1 <- cmodel1$scores$xscores[,1] #takes first variate y 
 				score2 <- cmodel1$scores$yscores[,1] #takes first variate x
@@ -273,7 +273,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 	names(hera1) <- c("id","Side","Element","id","Side","Element","Measurements","# of measurements","RSquared", "Sample","p-value","Result")
 
 
-    	 print("File generation has started.")
+
 	if(output_options[1]) {
 		print("File generation has started.")
 		no_return_value <- OsteoSort:::output_function(hera1)

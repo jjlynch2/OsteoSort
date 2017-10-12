@@ -13,3 +13,4 @@ Added a new module to test the strength of evidence for an antemortem stature to
 
 Minor changes:
 Added ability to switch output metric between inches, millimeters, and centimeters for the statsort function.
+Adjusted resolution of graphs to 400x400

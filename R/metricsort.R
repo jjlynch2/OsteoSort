@@ -152,7 +152,7 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 
 	if(output_options[2]) {
 		################plotting################
-		jpeg(paste("graph",".jpeg",sep=''),height = 800, width = 800)
+		jpeg(paste("graph",".jpeg",sep=''),height = 400, width = 400)
 		dev.control('enable')	
 		hist(x = as.numeric(sort[,4]), xlab = bone, main = NULL)
 		abline(v = plotme, lty = 2, col="darkred")
