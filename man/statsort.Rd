@@ -7,7 +7,7 @@
 statsort(sort, bone = "femur", side = "both",
   population = "trotter-any-male", method = "Quartiles",
   measurements = NULL, sessiontempdir = NULL, cutoff = 1.5,
-  output_options = c(TRUE, TRUE))
+  output_options = c(TRUE, TRUE), metric = "mm")
 }
 \arguments{
 \item{sort}{Sorted data for comparison}
@@ -27,6 +27,8 @@ statsort(sort, bone = "femur", side = "both",
 \item{cutoff}{The outlier cutoff value for either quartiles or standard deviations}
 
 \item{output_options}{First index TRUE outputs to excel, second index TRUE outputs plot}
+
+\item{metric}{Specifies millimeters (mm), centimeters (cm), or inches (in) for stature}
 }
 \description{
 Equation reference from the Forensic Data Bank
