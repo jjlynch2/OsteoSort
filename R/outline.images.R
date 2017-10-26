@@ -10,6 +10,8 @@
 #' @param nharmonics The number of harmonics in elliptical fourier analysis
 #' @param fragment Currently under development 
 #'
+#' Traicing code modified from Julien Claude (Morphometrics with R 2008)
+#'
 #' @keywords outline.images
 #' @export
 #' @examples
