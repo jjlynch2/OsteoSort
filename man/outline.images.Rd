@@ -24,7 +24,9 @@ outline.images(imagelist1, imagelist2, threshold = 0.8, scale = TRUE,
 
 \item{nharmonics}{The number of harmonics in elliptical fourier analysis}
 
-\item{fragment}{Currently under development}
+\item{fragment}{Currently under development 
+
+Traicing code modified from Julien Claude (Morphometrics with R 2008)}
 }
 \description{
 outline.images function

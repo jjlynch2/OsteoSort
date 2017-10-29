@@ -20,7 +20,6 @@
 outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400) {
 	library(jpeg)
 	library(pixmap)
-	library(Momocs)
 	
 	nimages <- length(imagelist1) + length(imagelist2)
 	imagelist <- c(imagelist1, imagelist2)
@@ -105,8 +104,10 @@ print(iii)
 			centroidsize <- sqrt(sum((t(t(spec1)-centroid))^2))
 		}
 
-		test1 <- efourier(spec1, smooth.it=smooth_iterations, verbose=FALSE, norm = TRUE, start = FALSE, nb.h = nharmonics)
-		spec1 <- efourier_i(test1, nb.pts=npoints)
+		test1 <- efa(spec1, harmonics = nharmonics)
+		spec1 <- i_efa(test1, points = npoints)
+
+
 		spec1 <- as.matrix(data.frame(spec1))
 
 		if(scale) {
