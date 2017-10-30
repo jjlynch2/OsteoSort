@@ -24,7 +24,7 @@ segmented_hausdorff_dist <- function (first_configuration, second_configuration,
 		second_configuration <- matrix(second_configuration, ncol = 1)
 	if (ncol(first_configuration) != ncol(second_configuration)) 
 		stop("'first_configuration' and 'second_configuration' must have the same number of columns.")
-	D <- distmat(first_configuration, second_configuration)
+	D <- e_dist(first_configuration, second_configuration)
 	
 	if(test == "Segmented-Hausdorff") {
 		dhd_PQ <- apply(D, 1, min)

@@ -12,8 +12,8 @@ Modules:
 
 Minor changes:
 
-Replaced EFA from Momocs with modified version for 2D and 3D EFA
-
+Momocs dependency removed: replaced EFA from Momocs with modified version for 2D and 3D EFA.
+Pracma dependency removed: replaced distmat from pracma with modified version.
 
 Bug fixes:
 
