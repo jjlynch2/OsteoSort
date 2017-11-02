@@ -8,7 +8,7 @@
 #' @param npoints The number of points in the inverse elliptical fourier analysis transformation
 #' @param smooth_iterations The number of smoothing iterations in the elliptical fourier analysis
 #' @param nharmonics The number of harmonics in elliptical fourier analysis
-#' @param fragment Currently under development 
+#' @param fragment TRUE FALSE if fragmented specimens are being used
 #'
 #' Traicing code modified from Julien Claude (Morphometrics with R 2008)
 #'
@@ -17,34 +17,43 @@
 #' @examples
 #' outline.images()
 
-outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400) {
+outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400, fragment = FALSE) {
 	library(jpeg)
 	library(pixmap)
 	
 	nimages <- length(imagelist1) + length(imagelist2)
 	imagelist <- c(imagelist1, imagelist2)
 
-	array3d <- array(NA,c(npoints, 2, nimages))
+	if(!fragment) {
+		array3d <- array(NA,c(npoints, 2, nimages))
+	}
+	if(fragment) {
+		speclist <- list()
+	}
 
 	for(iii in 1:nimages) {
-print(iii)
+		
+		print(paste("Tracing specimen: ", paste(gsub(".*/\\s*|.JPG.*","",imagelist[iii]), ".JPG", sep=""), sep=""))
+		
 		M <- readJPEG(imagelist[iii])
 		M <- suppressWarnings(pixmapGrey(M))
 
 		M@grey[which(M@grey > threshold)] <- 1#white
 		M@grey[which(M@grey <= threshold)] <- 0#black
 
-		start = list(x = NA, y = NA)
+		#this is required for tracing purposes adds white border
+		if(fragment) {
+			for(i in 1:10) {
+				M@grey <- cbind(matrix(rep(1, nrow(M@grey))), M@grey, matrix(rep(1, nrow(M@grey)))) #adds column to left and right
+				M@grey <- rbind(rep(1, ncol(M@grey)), M@grey, rep(1, ncol(M@grey))) #adds row to top and bottom
+			}
+			orig_size <- M@size
+		}
 
-		start$x = M@size[2]/2 #middle of image
-		start$y = M@size[1]/2
 
-		x <- c(round(start$x), round(start$y)) #start point
+		temp_matrix <- M@grey
+		x <- t(which(temp_matrix == 0, arr.ind = TRUE, useNames=FALSE)[round(nrow(which(temp_matrix == 0, arr.ind = TRUE)) / 2),]) #locate starting point
 		I <- M@grey #b/w matrix
-
-		x <- rev(x) #reverse X to work backwards
-
-		x[1] <- dim(I)[1] - x[1]
 		while (abs(I[x[1], x[2]] - I[x[1], (x[2] - 1)]) < 0.1) {
 			x[2] <- x[2] - 1
 		}
@@ -93,36 +102,58 @@ print(iii)
 		spec1 <- as.matrix(data.frame(spec1))
 		spec1 <- round(spec1) #round to whole numbers
 
+
+
+
+		if(!fragment) {
+			if(scale) { #scale comes after EFA duh! 
+				centroid <- apply(spec1,2,mean)
+				centroidsize <- sqrt(sum((t(t(spec1)-centroid))^2))
+			}
+
+			test1 <- efa(spec1, harmonics = nharmonics)
+			spec1 <- i_efa(test1, points = npoints)
+
+			spec1 <- as.matrix(data.frame(spec1))
+
+			if(scale) {
+				spec1 <- spec1 / centroidsize
+			}
+		}
+	
+
+		if(fragment) { 
+			#removes any part of the outline that was on the original border! simple
+			spec1 <- spec1[spec1[,2] < orig_size[1],]
+			spec1 <- spec1[spec1[,1] < orig_size[2],] #original is minus 10 already
+			spec1 <- spec1[spec1[,2] > 10,] #10 for added border
+			spec1 <- spec1[spec1[,1] > 10,]
+		}
+
 		if(mirror) {
 			if(imagelist[iii] %in% imagelist2) {
-				spec1[,1] <- -spec1[,1] #swap X axis to mirror ### should this by multiply by -1????
+				spec1[,1] <- -spec1[,1] + min(spec1[,1]) * 2 #swap X axis to mirror ### should this by multiply by -1????
 			}
 		}
 
-		if(scale) { #scale comes after EFA duh! 
-			centroid <- apply(spec1,2,mean)
-			centroidsize <- sqrt(sum((t(t(spec1)-centroid))^2))
+		if(!fragment) {
+			array3d[,1,iii] <- spec1[,1] #save to array since points are equal
+			array3d[,2,iii] <- spec1[,2]
 		}
-
-		test1 <- efa(spec1, harmonics = nharmonics)
-		spec1 <- i_efa(test1, points = npoints)
-
-
-		spec1 <- as.matrix(data.frame(spec1))
-
-		if(scale) {
-			spec1 <- spec1 / centroidsize
+		if(fragment) {
+			speclist[[iii]] <- spec1 #save to list since points are unequal
 		}
-
-		array3d[,1,iii] <- spec1[,1]
-		array3d[,2,iii] <- spec1[,2]
 	}
 
+	if(!fragment) {
+		dimnames(array3d)[[3]] <- paste(gsub(".*/\\s*|.JPG.*","",imagelist), ".JPG", sep="")
+		results <- array3d
+	}
+	if(fragment) {
+		names(speclist) <- paste(gsub(".*/\\s*|.JPG.*","",imagelist), ".JPG", sep="")
+		results <- speclist
+	}
 
-	dimnames(array3d)[[3]] <- paste(gsub(".*/\\s*|.JPG.*","",imagelist), ".JPG", sep="")
-
-
-
-	return(list(array3d, imagelist1, imagelist2))
+	return(list(results, imagelist1, imagelist2))
 
 }
