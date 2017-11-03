@@ -123,20 +123,10 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				else within <- "Excluded"
 
 			if(output_options[2]) {
-				jpeg(paste("graph",temp1[1],"-",temp2[1],".jpg",sep=''),height = 400, width = 400)
-				dev.control('enable')
-				score1 <- cmodel1$scores$xscores[,1] #takes first variate y 
-				score2 <- cmodel1$scores$yscores[,1] #takes first variate x
-				plot(score1,score2, xlab = "", ylab = "")
-	
-				points(df2,df1,col="blue",pch=16)
-	
 				lmp1 <- predict(model1, interval = "prediction", level = prediction_interval)
-
-				matlines(lmp1[,1], score1, col=c("red"))
-				matlines(lmp1[,2], score1, col=c("blue"), lty = 4)
-				matlines(lmp1[,3], score1, col=c("blue"), lty = 4)
-				dev.off()
+				score1 <- cmodel1$scores$xscores[,1]
+				score2 <- cmodel1$scores$yscores[,1]
+				no_return_value <- OsteoSort:::output_function(hera1=list(temp1[1], temp2[1], score1, score2, df2, df1, lmp1), method="exclusion", type="plot2")
 			}
 
 
@@ -230,19 +220,8 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 			}
 			
 			if(output_options[2]) {
-				jpeg(paste("graph",temp1[1],"-",temp2[1],".jpg",sep=''),height = 800, width = 800)
-				dev.control('enable')
-		
-				plot(t2,t1, xlab = "", ylab = "")
-	
-				points(temp2p,temp1p,col="blue",pch=16)
-	
 				lmp1 <- predict(model1, interval = "prediction", level = prediction_interval)
-
-				matlines(lmp1[,1], t1, col=c("red"))
-				matlines(lmp1[,2], t1, col=c("blue"), lty = 4)
-				matlines(lmp1[,3], t1, col=c("blue"), lty = 4)
-				dev.off()
+				no_return_value <- OsteoSort:::output_function(hera1=list(temp1[1], temp2[1], t2, t1, temp2p, temp1p, lmp1), method="exclusion", type="plot2")
 			}
 
 
@@ -275,17 +254,12 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
 
 	if(output_options[1]) {
-		print("File generation has started.")
-		no_return_value <- OsteoSort:::output_function(hera1)
-		print("File generation has completed.")
+		no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="csv")
 	}
 
 	gc()
 	setwd(workingdir)
 	enableJIT(0)
 
-	if(nrow(hera1) == 1) {
-		return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",]))
-	}
-	else return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",]))
+	return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",]))
 }

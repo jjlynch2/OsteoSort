@@ -101,11 +101,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 		if(round(p.value, digits = 4) <= alphalevel) {result1 <- "Excluded"}
 
 		if(output_options[2]) {
-			jpeg(paste("graph",X[,1],"-",X[,2],".jpg",sep=''),height = 400, width = 400)
-			dev.control('enable')	
-			hist(x = difa, xlab = "", main = NULL)
-			abline(v = difa1, lty = 2, col="darkred")
-			dev.off()
+			no_return_value <- OsteoSort:::output_function(hera1 = list(X[,1], X[,2], difa, difa1), method="exclusion", type="plot")
 		}		
 
 		return(data.frame(X[,1], X[,3],X[,5],X[,2],X[,4],X[,6],toString(temp1n),round(p.value, digits = 4),ycol/2,yrow,round(difm, digits = 4),round(difsd, digits = 4),result1, stringsAsFactors=FALSE)) 
@@ -135,9 +131,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 
 
 	if(output_options[1]) {
-		print("File generation has started.")	
-		no_return_value <- OsteoSort:::output_function(hera1)
-		print("File generation has completed.")
+		no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="csv")
 	}
 		
 

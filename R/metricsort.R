@@ -127,7 +127,7 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 		if(!all(is.null(outlierdfupper))) { #skips if all NA (no outliers)
 			outlierdfupper <- na.omit(outlierdfupper)
 			if(output_options[1] && nrow(outlierdfupper) > 0) {
-				write.csv(outlierdfupper, file = upperfile)
+				no <- OsteoSort:::output_function(hera1 = list(outlierdfupper, upperfile), method = "OS", type = "csv")
 			}
 		}
 	}
@@ -135,7 +135,7 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 		if(!all(is.null(outlierdflower))) {
 			outlierdflower <- na.omit(outlierdflower)
 			if(output_options[1] && nrow(outlierdflower) > 0) {
-				write.csv(outlierdflower, file = lowerfile, row.names = FALSE)
+				no <- OsteoSort:::output_function(hera1 = list(outlierdflower, lowerfile), method = "OS", type = "csv")
 			}
 		}
 	}
@@ -143,7 +143,7 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 		if(!all(is.null(nonoutliersdf))) {
 			nonoutliersdf <- na.omit(nonoutliersdf)
 			if(output_options[1] && nrow(nonoutliersdf) > 0) {
-				write.csv(nonoutliersdf, file = nonoutliersfile, row.names = FALSE)
+				no <- OsteoSort:::output_function(hera1 = list(nonoutliersdf, nonoutliersfile), method = "OS", type = "csv")
 			}
 		}
 	}
@@ -151,20 +151,7 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 	
 
 	if(output_options[2]) {
-		################plotting################
-		jpeg(paste("graph",".jpeg",sep=''),height = 400, width = 400)
-		dev.control('enable')	
-		hist(x = as.numeric(sort[,4]), xlab = bone, main = NULL)
-		abline(v = plotme, lty = 2, col="darkred")
-		abline(v = upper, lty = 2, col="darkblue")
-		abline(v = lower, lty = 2, col="darkblue")
-		if(!nocut) {
-			abline(v = lowermax, lty = 2, col="black")
-			abline(v = uppermax, lty = 2, col="black")
-		}
-	
-		p1 <- recordPlot()
-		dev.off()
+		p1 <- OsteoSort:::output_function(hera1 = list(sort[,4], bone, plotme, upper, lower, lowermax, uppermax, nocut), method = "OS", type = "plot")
 	}
 	else p1 <- NULL
 	

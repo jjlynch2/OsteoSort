@@ -32,7 +32,9 @@ Renamed match.2d.invariant() function to match.2d()
 
 Re-wrote the base code for match.2d() to be more efficient with looping for distance calculations.
 
-Re-wrote the base code for write.TPS to use lists with unequal landmarks and 3D matrices with equal landmarks
+Re-wrote the base code for write.TPS to use lists with unequal landmarks and 3D matrices with equal landmarks.
+
+Re-wrote all file output into output_options() including TPS, excel, and plots.
 
 
 

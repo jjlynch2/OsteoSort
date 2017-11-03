@@ -54,19 +54,8 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 		}
 
 		if(output_options[2]) {
-			jpeg(paste("graph",X[1],"-", X[3],".jpg",sep=''),height = 400, width = 400)
-			dev.control('enable')
-			plot(stature,measurement, xlab = "Stature", ylab = "Measurement")
-			points(pm1m[1,1],X[6],col="blue",pch=16, cex=1.5)
-			points(X[2],X[6],col="red",pch=16, cex=1.5)
-			df1 <- rbind(pm1m[1,1], X[2])
-			df2 <- rbind(X[6], X[6])
-			matlines(df1, df2, col=c("red"), lty=2)
 			lmp1 <- predict(lm1, interval = "prediction", level = prediction_interval)
-			matlines(lmp1[,1], measurement, col=c("red"))
-			matlines(lmp1[,2], measurement, col=c("blue"), lty = 4)
-			matlines(lmp1[,3], measurement, col=c("blue"), lty = 4)
-			dev.off()
+			no_return_value <- OsteoSort:::output_function(hera1=list(X[1], X[3], stature, measurement, pm1m[1,1], X[6], X[2], lmp1), method="exclusion", type="plot3")
 		}
 		data.frame(X[1],X[2],X[3],X[4],X[5], X[6], round(tt, digits = 2), round(pp, digits=2), nref, round(pm1m[1,2], digits=2), round(pm1m[1,1], digits=2), round(pm1m[1,3], digits=2), round(summary(lm1)$r.squared, digits = 2), within, stringsAsFactors = FALSE)
 	}
@@ -87,9 +76,7 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 	print("Antemortem stature to postmortem measurement comparisons have completed.")	
 
 	if(output_options[1]) {
-		print("File generation has started.")
-		no_return_value <- OsteoSort:::output_function(hera1m)
-		print("File generation has completed.")
+		no_return_value <- OsteoSort:::output_function(hera1m, method="exclusion", type="csv")
 	}
 
 	gc()

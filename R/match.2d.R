@@ -15,14 +15,13 @@
 #' @param dist Specifies distance per region, either maximum or average distance
 #' @param n_regions Specifies number of regions per Segmented-Hausdorff
 #' @param fragment TRUE FALSE specifies if complete or fragmented registration matching procedure should be conducted
-#' @param nnb Number of nearest neighbors in K-nearest neighbor search. Used for fragmented mean estimation. 
 #'
 #' @keywords match.2d
 #' @export
 #' @examples
 #' match.2d()
 
-match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, nnb = 40, output_options = c(TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", cores=1, test = "Segmented-Hausdorff", temporary_mean_specimen = 1, mean_iterations = 20, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
+match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", cores=1, test = "Segmented-Hausdorff", temporary_mean_specimen = 1, mean_iterations = 20, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
 	print("Two-dimensional pair match comparisons have started.")	
 
 	suppressMessages(library(compiler))
@@ -78,31 +77,21 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				nz <- nz + 1
 			}
 		}
+		coords <- homolog
 		matches <- rbind(matches1, matches2) #combine both directions
 	}#complete
 
 	if(fragment) {
-		mean <- specmatrix[[temporary_mean_specimen]]
-		array3d <- array(NA,c(nrow(mean), 2, length(specmatrix))) #temporary 3D array storage
-		for(i in 1:mean_iterations) {
-			for(x in 1:length(specmatrix)) {
-				print(paste("specimen: ", names(specmatrix)[x], " iteration: ", i, sep=""))
-				specmatrix[[x]] <- icpmat(specmatrix[[x]], mean, iterations = iteration, mindist = min, type = transformation, threads=cores) 
-				index <- mcNNindex(mean, specmatrix[[x]], k = nnb, threads = cores)  #adjusted based on image dimensions
-				temp <- mean 
-				for(n in 1:ncol(index)) {
-					temp[index[,n],] <- specmatrix[[x]] #swaps only the landmark correspondances with the specimens landmarks
-				}
-				array3d[,,x] <- temp
-			}
-			mean <- apply(array3d, c(1,2), mean)
-		}
-
+		pairwise_coords <- list() #saved pairwise registration
+		pwc <- 0
 		for(z in 1:length(outlinedata[[2]])) {
 			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
 
-				target <- specmatrix[[z]]
-				moving <- specmatrix[[x]]	
+				zzz <- 0
+				if(nrow(specmatrix[[z]]) >= nrow(specmatrix[[x]])) {moving <- specmatrix[[x]]; target <- specmatrix[[z]];zzz <- 1}		
+				if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}	
+		
+				moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores) 
 
 				#trims from one spec to the other
 				t1 <- target[target[,1] >= min(moving[,1]), ]
@@ -124,8 +113,16 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
 				print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
 				nz <- nz + 1
+
+				#saves coords for output
+				pairwise_coords[[pwc]] <- moving
+				pairwise_coords[[pwc+1]] <- target
+				if(zzz == 1) {names(pairwise_coords[[pwc+1]]) <- names(specmatrix[[z]]); names(pairwise_coords[[pwc]]) <- names(specmatrix[[x]])}
+				if(zzz == 2) {names(pairwise_coords[[pwc+1]]) <- names(specmatrix[[x]]); names(pairwise_coords[[pwc]]) <- names(specmatrix[[z]])}
+				pwc <- pwc + 2 #skips by 2 since we use two indices
 			}
 		}
+		coords <- pairwise_coords 
 		matches <- rbind(matches1, matches2) #combine both directions
 	}#fragment
 
@@ -148,50 +145,13 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 		}
 	}
 	resmatches <- resmatches[-1,] #remove NA row
-
 	colnames(resmatches) <- c("ID", "Match-ID", "Distance")
-	print("Two-dimensional pair match comparisons have completed.")	
 
-	if(hide_distances) {
-		resmatches[,3] <- "Hidden"
-	}
-
-	if(output_options[1]) {
-		write.csv(resmatches, file = "potential-matches.csv", row.names=FALSE, col.names=TRUE)
-	}
-	#this is really ugly need to clean it up. 
-	if(output_options[2]) {
-		png(filename="registration.png", width = 800, height = 800)
-		if(!fragment) {
-			plot(meann, col="white", xlim=c(min(homolog),max(homolog)), ylim=c(max(homolog),min(homolog)), xlab="", ylab="")
-			for(a in 1:dim(homolog)[3]) {
-				points(homolog[,,a], col=OsteoSort:::add.alpha(a,0.3))	
-			}
-			points(meann, col="black", bg="blue", pch=23)
-		}
-		if(fragment) {
-			max_temp <- 0
-			min_temp <- 999999
-			for(i in 1:length(specmatrix)) {
-				if(max(specmatrix[[i]][,1]) > max_temp){max_temp <- max(specmatrix[[i]])}
-				if(max(specmatrix[[i]][,1]) < min_temp){min_temp <- min(specmatrix[[i]])}
-			}
-			plot(mean, col="white", xlim=c(min_temp ,max_temp), ylim=c(max_temp ,min_temp), xlab="", ylab="")
-			for(i in 1:length(specmatrix)) {
-				points(specmatrix[[i]], col=OsteoSort:::add.alpha(i,0.3))
-			}
-			points(mean, col="black", bg="blue", pch=23)
-		}
-		dev.off()
-	}
-	if(output_options[3]) {
-		if(!fragment){
-			writetps(homolog, file = "Coordinates.tps")
-		}
-		if(fragment) {
-			writetps(specmatrix, file = "Coordinates.tps")
-		}
-	}
+	if(hide_distances) {resmatches[,3] <- "Hidden"}
+	if(output_options[1]) {no <- OsteoSort:::output_function(resmatches, method="2D", type="csv-res")}
+	if(output_options[2]) {no <- OsteoSort:::output_function(matches, method="2D", type="csv-all")}
+	if(output_options[3]) {no <- OsteoSort:::output_function(coords, method="2D", type="plot")}
+	if(output_options[4]) {no <- OsteoSort:::output_function(coords, method="2D", type="coord")}
 
 	gc()
 	setwd(workingdir)
@@ -199,10 +159,8 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 
 	comparisons <- length(outlinedata[[2]]) * length(outlinedata[[3]]) #number of comparisons
 
+	print("Two-dimensional pair match comparisons have completed.")	
 
-	if(fragment) {results <- specmatrix}
-	if(!fragment) {results <- homolog}
-
-	return(list(results,resmatches,direc,comparisons,matches))
+	return(list(coords,resmatches,direc,comparisons,matches))
 
 }
