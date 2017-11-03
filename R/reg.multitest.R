@@ -221,7 +221,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 			
 			if(output_options[2]) {
 				lmp1 <- predict(model1, interval = "prediction", level = prediction_interval)
-				no_return_value <- OsteoSort:::output_function(hera1=list(temp1[1], temp2[1], t2, t1, temp2p, temp1p, lmp1), method="exclusion", type="plot2")
+				no_return_value <- OsteoSort:::output_function(hera1=list(temp1[1], temp2[1], t1, t2, temp2p, temp1p, lmp1), method="exclusion", type="plot2")
 			}
 
 

@@ -53,7 +53,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 		for(b in 1:mean_iterations) {
 			target <- meann
 			for(i in 1:dim(homolog)[3]) {
-				print(paste("specimen: ", dimnames(homolog)[[3]][i], " iteration: ", b, sep=""))
+				print(paste("specimen: ", dimnames(homolog)[[3]][i], " mean iteration: ", b, sep=""))
 				moving <- homolog[,,i]
 				temp <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores)
 				homolog[,,i] <- shiftmatrices(first_configuration = temp, second_configuration = target, cores) #shifts matrices to match
@@ -93,29 +93,26 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 		
 				moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores) 
 				#trims from one spec to the other
-				t1 <- target[target[,1] >= min(moving[,1]), ]
-				t1 <- t1[t1[,2] >= min(moving[,2]), ]
-				t1 <- target[target[,1] <= max(moving[,1]), ]
-				t1 <- t1[t1[,2] <= max(moving[,2]), ]
-				#trims opposite direction
-				t2 <- moving[moving[,1] >= min(target[,1]), ]
-				t2 <- t2[t2[,2] >= min(target[,2]), ]
-				t2 <- moving[moving[,1] <= max(target[,1]), ]
-				t2 <- t2[t2[,2] <= max(target[,2]), ]
+
+				#mutual nearest neighbor!
+				index1 <- mcNNindex(target, moving, k=1, threads = cores)
+				index2 <- mcNNindex(moving, target[index1,], k=1, threads = cores)
+				moving <- moving[index2,]
+				target <- target[index1,]
 
 				#finds smallest fragment among the comparison
-				if(nrow(t1) >= nrow(t2)) {moving <- t1; target <- t2}		
-				if(nrow(t1) <= nrow(t2)) {moving <- t2; target <- t1}	
+				if(nrow(moving) >= nrow(target)) {t1 <- target; t2 <- moving; if(zzz == 1) {zzz <- 2}; if(zzz == 2) {zzz <- 1}}		
+				if(nrow(moving) <= nrow(target)) {t1 <- moving; t2 <- target}	
 
-				distance <- hausdorff_dist(moving, target, test = test, dist = dist)
+				distance <- hausdorff_dist(t1, t2, test = test, dist = dist)
 				matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
 				matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
 				print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
 				nz <- nz + 1
 
 				#saves coords for output
-				pairwise_coords[[pwc]] <- moving
-				pairwise_coords[[pwc+1]] <- target
+				pairwise_coords[[pwc]] <- t1
+				pairwise_coords[[pwc+1]] <- t2
 				if(zzz == 1) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[z]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[x]]}
 				if(zzz == 2) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[x]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[z]]}
 				pwc <- pwc + 2 #skips by 2 since we use two indices

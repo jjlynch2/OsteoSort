@@ -10,7 +10,6 @@
 #' shiftmatrices()
 
 shiftmatrices <- function(first_configuration, second_configuration, cores=1) {
-
 	index <- mcNNindex(first_configuration, second_configuration, k = 1, threads = cores)
 
 	if(sum(diff(index) < 0) > nrow(second_configuration)/2) {A <-2}

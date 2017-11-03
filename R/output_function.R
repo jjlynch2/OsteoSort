@@ -36,7 +36,7 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 			jpeg(paste("graph",hera1[[1]],"-", hera1[[2]],".jpg",sep=''),height = 400, width = 400)
 			dev.control('enable')
 			plot(hera1[[3]],hera1[[4]], xlab = "Stature", ylab = "Measurement")
-			points(hera1[[6]],hera1[[7]],col="blue",pch=16, cex=1.5)
+			points(hera1[[5]],hera1[[6]],col="blue",pch=16, cex=1.5)
 			points(hera1[[7]],hera1[[6]],col="red",pch=16, cex=1.5)
 			df1 <- rbind(hera1[[5]], hera1[[7]])
 			df2 <- rbind(hera1[[6]], hera1[[6]])
@@ -59,7 +59,7 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 		}
 		if(type == "plot") {
 			if(!is.list(hera1)) {
-				jpeg(filename="registration.jpg", width = 800, height = 800)
+				jpeg(filename="registration.jpg", width = 400, height = 400)
 				dev.control('enable')	
 				plot(apply(hera1, c(1,2), mean), col="white", xlim=c(min(hera1),max(hera1)), ylim=c(max(hera1),min(hera1)), xlab="", ylab="")
 				for(a in 1:dim(hera1)[3]) {
@@ -68,7 +68,6 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 				points(apply(hera1, c(1,2), mean), col="black", bg="blue", pch=23)
 				dev.off()
 			}
-globallist1 <<- hera1
 			if(is.list(hera1)) {
 				for(i in seq(from = 2, to = length(hera1), by=2)) {
 					jpeg(filename=paste(names(hera1)[[i]], "-", names(hera1)[[i-1]], ".jpg",sep=""), width = 400, height = 400)
