@@ -151,10 +151,9 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 	
 
 	if(output_options[2]) {
-		p1 <- OsteoSort:::output_function(hera1 = list(sort[,4], bone, plotme, upper, lower, lowermax, uppermax, nocut), method = "OS", type = "plot")
+		no <- OsteoSort:::output_function(hera1 = list(sort[,4], bone, plotme, upper, lower, lowermax, uppermax, nocut), method = "OS", type = "plot")
 	}
-	else p1 <- NULL
 	
 	setwd(workingdir)
-	return(list(direc,outlierdflower,outlierdfupper,nonoutliersdf,p1,m,s,me,IQQ))
+	return(list(direc,outlierdflower,outlierdfupper,nonoutliersdf,round(m, digits=2),round(s, digits=2) ,round(me, digits=2),round(IQQ, digits=2)))
 }

@@ -21,7 +21,7 @@
 #' @examples
 #' match.2d()
 
-match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", cores=1, test = "Segmented-Hausdorff", temporary_mean_specimen = 1, mean_iterations = 20, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
+match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", cores=1, test = "Segmented-Hausdorff", temporary_mean_specimen = 1, mean_iterations = 20, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
 	print("Two-dimensional pair match comparisons have started.")	
 
 	suppressMessages(library(compiler))
@@ -73,7 +73,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				distance <- hausdorff_dist(homolog[,,z], homolog[,,x], test = test, n_regions = n_regions, dist = dist)
 				matches1[nz,] <- c(dimnames(homolog)[[3]][z], dimnames(homolog)[[3]][x], distance)
 				matches2[nz,] <- c(dimnames(homolog)[[3]][x], dimnames(homolog)[[3]][z], distance)
-				print(paste(dimnames(homolog)[[3]][x], "-", dimnames(homolog)[[3]][z], " ", test, " distance:v", distance, sep=""))
+				print(paste(dimnames(homolog)[[3]][x], "-", dimnames(homolog)[[3]][z], " ", test, " distance: ", distance, sep=""))
 				nz <- nz + 1
 			}
 		}
@@ -83,7 +83,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 
 	if(fragment) {
 		pairwise_coords <- list() #saved pairwise registration
-		pwc <- 0
+		pwc <- 1
 		for(z in 1:length(outlinedata[[2]])) {
 			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
 
@@ -92,7 +92,6 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}	
 		
 				moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores) 
-
 				#trims from one spec to the other
 				t1 <- target[target[,1] >= min(moving[,1]), ]
 				t1 <- t1[t1[,2] >= min(moving[,2]), ]
@@ -117,8 +116,8 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				#saves coords for output
 				pairwise_coords[[pwc]] <- moving
 				pairwise_coords[[pwc+1]] <- target
-				if(zzz == 1) {names(pairwise_coords[[pwc+1]]) <- names(specmatrix[[z]]); names(pairwise_coords[[pwc]]) <- names(specmatrix[[x]])}
-				if(zzz == 2) {names(pairwise_coords[[pwc+1]]) <- names(specmatrix[[x]]); names(pairwise_coords[[pwc]]) <- names(specmatrix[[z]])}
+				if(zzz == 1) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[z]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[x]]}
+				if(zzz == 2) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[x]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[z]]}
 				pwc <- pwc + 2 #skips by 2 since we use two indices
 			}
 		}
