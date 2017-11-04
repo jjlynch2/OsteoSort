@@ -125,7 +125,11 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 	resmatches <- array()
 	for(a in unique(matches[,1])) {
 		m <- matches[matches[,1] == a,]
-		ind <- m[order(as.numeric(m[,3]), decreasing=FALSE),][1:n_lowest_distances,] #does as.numeric work for both registrations?
+		
+		if(is.null(nrow(m))) {ind <- m}
+		if(!is.null(nrow(m))) {
+			ind <- m[order(as.numeric(m[,3]), decreasing=FALSE),][1:n_lowest_distances,]
+		}
 		resmatches <- rbind(resmatches, ind) 
 		if(n_lowest_distances > 1) { #removes duplicate match from other direction
 			for(bb in 1:nrow(ind)) {
@@ -141,7 +145,8 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 		}
 	}
 	resmatches <- resmatches[-1,] #remove NA row
-	colnames(resmatches) <- c("ID", "Match-ID", "Distance")
+	if(is.null(nrow(resmatches))) {names(resmatches) <- c("ID", "Match-ID", "Distance")}
+	if(!is.null(nrow(resmatches))) {colnames(resmatches) <- c("ID", "Match-ID", "Distance")}
 
 	if(hide_distances) {resmatches[,3] <- "Hidden"}
 	if(output_options[1]) {no <- OsteoSort:::output_function(resmatches, method="2D", type="csv-res")}
