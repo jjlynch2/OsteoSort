@@ -10,6 +10,10 @@ Modules:
 
 Updated 2D to include fragmentary shape registration and pair-matching
 
+Added pca_align() function to return rotated PCA scores for alignment prior to 3D analysis
+
+Added match.3d() function (currently broken) for 3D pair-matching
+
 
 
 Minor changes:
@@ -24,7 +28,7 @@ Moved code for matching matrices names and alpha color for plots into two intern
 
 
 
-Moderage changes:
+Moderate changes:
 
 Renamed segmented_hausdorff_dist() function to hausdorff_dist()
 
@@ -40,3 +44,4 @@ Re-wrote all file output into output_options() including TPS, excel, and plots.
 
 Bug fixes:
 
+Swapped axes for the antemortem plot (does not change result)

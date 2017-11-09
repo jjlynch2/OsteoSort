@@ -1,4 +1,4 @@
-#' two-dimensional pair-match function
+#' three-dimensional pair-match function
 #' 
 #' @param outlinedata The outline data taken from outline.images()
 #' @param min minimum distance for ICP
@@ -39,87 +39,88 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 	nz <- 1 #comparison counter
 
 
-	if(!fragment){
-		meann <- specmatrix[,,temporary_mean_specimen]
-		homolog <- specmatrix
+	if(!pairwise) {
 
-		#shifts to long axis of specimens#
-		D <- e_dist(meann, meann)
-		index <- apply(as.matrix(apply(D, 2, max)), 2, which.max)
-		shiftm <- function(d, k) rbind(tail(d,k), head(d,-k), deparse.level = 0)
-		index <- shiftm(as.matrix(1:nrow(meann)), -index)
-		meann <- meann[index,]
-		#shifts to long axis of specimens#
+		mean <- specmatrix[[temporary_mean_specimen]]  #start mean with element that has the most landmarks
 
-		for(b in 1:mean_iterations) {
-			target <- meann
-			for(i in 1:dim(homolog)[3]) {
-				print(paste("specimen: ", dimnames(homolog)[[3]][i], " mean iteration: ", b, sep=""))
-				moving <- homolog[,,i]
-				temp <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores)
-				homolog[,,i] <- shiftmatrices(first_configuration = temp, second_configuration = target, cores) #shifts matrices to match
+		#align along principal axes and mirror one side
+		if(pcaalign) {
+			for(z in 1:length(outlinedata[[2]])) {
+				specmatrix[[z]] <- pca_align(specmatrix[[z]], mirror=TRUE)
 			}
-			meann <- apply(homolog, c(1,2), mean)
-			#shifts to long axis of specimens#
-			D <- e_dist(meann, meann)
-			index <- apply(as.matrix(apply(D, 2, max)), 2, which.max)
-			shiftm <- function(d, k) rbind(tail(d,k), head(d,-k), deparse.level = 0)
-			index <- shiftm(as.matrix(1:nrow(meann)), -index)
-			meann <- meann[index,]
-			#shifts to long axis of specimens#
+			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
+				specmatrix[[x]] <- pca_align(specmatrix[[x]], mirror=FALSE)
+			}
+		}
+
+		#register to estimated mean
+		array3d <- array(NA,c(nrow(mean), 3, length(specmatrix))) #temporary 3D array storage
+		for(i in 1:mean_iterations) {
+			for(x in 1:length(specmatrix)) {
+				specmatrix[[x]] <- icpmat(specmatrix[[x]], mean, iterations=iteration, type=transformation, threads = cores) 
+				index1 <- mcNNindex(mean, specmatrix[[x]], k = 1, threads = cores) 
+				index2 <- mcNNindex(specmatrix[[x]], mean[index1,], k = 1, threads = cores) 
+				temp <- mean 
+
+				temp[index1,] <- specmatrix[[x]][index2,]
+				array3d[,,x] <- temp
+			}
+			mean <- apply(array3d, c(1,2), mean)
 		}
 
 		for(z in 1:length(outlinedata[[2]])) {
 			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
-				distance <- hausdorff_dist(homolog[,,z], homolog[,,x], test = test, n_regions = n_regions, dist = dist)
-				matches1[nz,] <- c(dimnames(homolog)[[3]][z], dimnames(homolog)[[3]][x], distance)
-				matches2[nz,] <- c(dimnames(homolog)[[3]][x], dimnames(homolog)[[3]][z], distance)
-				print(paste(dimnames(homolog)[[3]][x], "-", dimnames(homolog)[[3]][z], " ", test, " distance: ", distance, sep=""))
-				nz <- nz + 1
-			}
-		}
-		coords <- homolog
-		matches <- rbind(matches1, matches2) #combine both directions
-	}#complete
-
-	if(fragment) {
-		pairwise_coords <- list() #saved pairwise registration
-		pwc <- 1
-		for(z in 1:length(outlinedata[[2]])) {
-			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
-
-				zzz <- 0
-				if(nrow(specmatrix[[z]]) >= nrow(specmatrix[[x]])) {moving <- specmatrix[[x]]; target <- specmatrix[[z]];zzz <- 1}		
-				if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}	
-	
-				moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores) 
-				#trims from one spec to the other
 
 				#mutual nearest neighbor!
-				index1 <- mcNNindex(target, moving, k=1, threads = cores)
-				index2 <- mcNNindex(moving, target[index1,], k=1, threads = cores)
-				moving <- moving[index2,]
-				target <- target[index1,]
+				index1 <- mcNNindex(specmatrix[[x]], specmatrix[[z]], k=1, threads = cores)
+				index2 <- mcNNindex(specmatrix[[z]], specmatrix[[x]][index1,], k=1, threads = cores)
+				specmatrix[[z]] <- specmatrix[[z]][index2,]
+				specmatrix[[x]] <- specmatrix[[x]][index1,]
 
-				#finds smallest fragment among the comparison
-				if(nrow(moving) >= nrow(target)) {t1 <- target; t2 <- moving; if(zzz == 1) {zzz <- 2}; if(zzz == 2) {zzz <- 1}}		
-				if(nrow(moving) <= nrow(target)) {t1 <- moving; t2 <- target}	
+
 
 				distance <- hausdorff_dist(t1, t2, test = test, dist = dist)
 				matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
 				matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
 				print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
 				nz <- nz + 1
-
-				#saves coords for output
-				pairwise_coords[[pwc]] <- t1
-				pairwise_coords[[pwc+1]] <- t2
-				if(zzz == 1) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[z]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[x]]}
-				if(zzz == 2) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[x]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[z]]}
-				pwc <- pwc + 2 #skips by 2 since we use two indices
 			}
 		}
-		coords <- pairwise_coords 
+		matches <- rbind(matches1, matches2) #combine both directions
+		coords <- specmatrix
+	}
+
+	if(pairwise) {
+		for(z in 1:length(outlinedata[[2]])) {
+			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
+
+
+				if(pcaalign) {
+					moving <- pca_align(specmatrix[[z]])
+					target <- pca_align(specmatrix[[x]])
+				}
+				moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores) 
+				#trims from one spec to the other
+
+				#mutual nearest neighbor!
+				#index1 <- mcNNindex(target, moving, k=1, threads = cores)
+				#index2 <- mcNNindex(moving, target[index1,], k=1, threads = cores)
+
+				#moving <- moving[index2,]
+				#target <- target[index1,]
+
+
+				#distance <- hausdorff_dist(moving, target, test = test, dist = dist)
+				#matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
+				#matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
+				#print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
+				#nz <- nz + 1
+
+				plot3d(moving, aspect="iso")
+				points3d(target, col="red")
+				open3d()
+			}
+		}
 		matches <- rbind(matches1, matches2) #combine both directions
 	}#fragment
 
@@ -154,7 +155,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 	if(hide_distances) {resmatches[,3] <- "Hidden"}
 	if(output_options[1]) {no <- OsteoSort:::output_function(resmatches, method="2D", type="csv-res")}
 	if(output_options[2]) {no <- OsteoSort:::output_function(matches, method="2D", type="csv-all")}
-	if(output_options[3]) {no <- OsteoSort:::output_function(coords, method="2D", type="plot")}
+	#if(output_options[3]) {no <- OsteoSort:::output_function(coords, method="2D", type="plot")}
 	if(output_options[4]) {no <- OsteoSort:::output_function(coords, method="2D", type="coord")}
 
 	gc()
