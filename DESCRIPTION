@@ -12,7 +12,9 @@ Depends:
     pixmap,
     jpeg,
     CCA,
-    data.table
+    data.table,
+    Rcpp,
+    RcppParallel
 License: GPL-2
 LazyData: false
 Imports:
@@ -23,5 +25,10 @@ Imports:
     pixmap,
     jpeg,
     CCA,
-    data.table
+    data.table,
+    Rcpp,
+    RcppParallel
+LinkingTo: 
+	Rcpp (>= 0.12.13),
+	RcppParallel
 RoxygenNote: 6.0.1

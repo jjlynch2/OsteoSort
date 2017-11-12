@@ -6,6 +6,7 @@
 #' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff", "Uni-Hausdorff")
 #' @param n_regions Specifies the number of regions for Segmented-Hausdorff
 #' @param dist Specifies distance per region, either maximum or average distance
+#' @param cores The number of threads/cores to use with RcppParallel
 #'
 #' Heavily modified from the opensource code in hausdorff_dist() function from the pracma package
 #'
@@ -14,66 +15,50 @@
 #' @examples
 #' hausdorff_dist()
 
-hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = 0, dist = "maximum") {
+hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = 0, dist = "maximum", cores = 1) {
 	if(n_regions == 1) {test="Hausdorff"}
-
-	stopifnot(is.numeric(first_configuration), is.numeric(second_configuration))
-	if (is.vector(first_configuration)) 
-		first_configuration <- matrix(first_configuration, ncol = 1)
-	if (is.vector(second_configuration)) 
-		second_configuration <- matrix(second_configuration, ncol = 1)
-	if (ncol(first_configuration) != ncol(second_configuration)) 
-		stop("'first_configuration' and 'second_configuration' must have the same number of columns.")
-	D <- e_dist(first_configuration, second_configuration)
 	
+	setThreadOptions(cores)
+
 	if(test == "Segmented-Hausdorff") {
-		dhd_PQ <- apply(D, 1, min)
-		dhd_QP <- apply(D, 2, min)
-		nums <- round(nrow(D)/n_regions)
-		dhd_PQsum <- 0
-		dhd_QPsum <- 0
+		nums <- round(nrow(first_configuration)/n_regions)
+		distance_results <- 0
 		n1 <- 1
 		n2 <- nums
 		for(i in 1:n_regions) {
-			if(n2 > nrow(D)) {
-				rr <- n2-nrow(D)
+			if(n2 > nrow(first_configuration)) {
+				rr <- n2-nrow(first_configuration)
 				n1 <- n1-rr
 				n2 <- n2-rr
 			}
 			if(dist == "average"){
-				dhd_PQsum <- sum(dhd_PQsum, mean(dhd_PQ[n1:n2]))
-				dhd_QPsum <- sum(dhd_QPsum, mean(dhd_QP[n1:n2]))
+				distance_results <- sum(distance_results, mean(mean_directional_hausdorff_rcpp(first_configuration[n1:n2,], second_configuration[n1:n2,]), mean_directional_hausdorff_rcpp(second_configuration[n1:n2,], first_configuration[n1:n2,])))
 			}
 			if(dist == "maximum"){
-				dhd_PQsum <- sum(dhd_PQsum, max(dhd_PQ[n1:n2]))
-				dhd_QPsum <- sum(dhd_QPsum, max(dhd_QP[n1:n2]))
+				distance_results <- sum(distance_results, mean(max_directional_hausdorff_rcpp(first_configuration[n1:n2,], second_configuration[n1:n2,]), max_directional_hausdorff_rcpp(second_configuration[n1:n2,], first_configuration[n1:n2,])))
 			}
 
 			n1 <- n2
 			n2 <- n2 + nums
 		}
-		if(dist == "maximum"){distance_results <- max(dhd_PQsum, dhd_QPsum)}
-		if(dist == "average"){distance_results <- mean(dhd_PQsum, dhd_QPsum)}
+
+		if(dist == "average"){distance_results <- distance_results / n_regions}
 	}
 	if(test == "Hausdorff") {
 		if(dist == "average"){
-			dhd_PQsum <- mean(apply(D, 1, min))
-			dhd_QPsum <- mean(apply(D, 2, min))
-			distance_results <- mean(dhd_PQsum, dhd_QPsum)
+			distance_results <- mean(mean_directional_hausdorff_rcpp(first_configuration, second_configuration),mean_directional_hausdorff_rcpp(second_configuration, first_configuration))
 		}
 		if(dist == "maximum"){
-			dhd_PQsum <- max(apply(D, 1, min))
-			dhd_QPsum <- max(apply(D, 2, min))
-			distance_results <- max(dhd_PQsum, dhd_QPsum)
+			distance_results <- max(max_directional_hausdorff_rcpp(first_configuration, second_configuration),max_directional_hausdorff_rcpp(second_configuration, first_configuration))
 		}
 	}
 	if(test == "Uni-Hausdorff") {
 		if(dist == "average") {
-			distance_results <- mean(apply(D, 1, min))
+			distance_results <- mean_directional_hausdorff_rcpp(first_configuration, second_configuration)
 		}
 
 		if(dist == "maximum") {
-			distance_results <- max(apply(D, 1, min))
+			distance_results <- max_directional_hausdorff_rcpp(first_configuration, second_configuration)
 		}
 
 	}

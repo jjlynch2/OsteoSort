@@ -21,7 +21,7 @@
 #' @examples
 #' match.2d()
 
-match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", cores=1, test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
+match.3d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", cores=1, test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
 	print("Two-dimensional pair match comparisons have started.")	
 
 	suppressMessages(library(compiler))
@@ -99,26 +99,81 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 					moving <- pca_align(specmatrix[[z]])
 					target <- pca_align(specmatrix[[x]])
 				}
-				moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores) 
+# 8 possible reflections...
+#try centroid size lowest???
+
+a <- 1
+pca1 <- moving
+#max_t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
+max_t <- 66666666
+
+pca1 <- moving
+pca1[,1] <- -pca1[,1]
+pca1[,2] <- -pca1[,2]
+pca1[,3] <- -pca1[,3]
+#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
+if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t; a<-c(1,2,3)}
+
+pca1 <- moving
+pca1[,1] <- -pca1[,1]
+pca1[,2] <- -pca1[,2]
+#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
+if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t; a<-c(1,2)}
+
+pca1 <- moving
+pca1[,1] <- -pca1[,1]
+pca1[,3] <- -pca1[,3]
+#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
+if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t;a<-c(1,3)}
+
+pca1 <- moving
+pca1[,2] <- -pca1[,2]
+pca1[,3] <- -pca1[,3]
+#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
+if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t;a<-c(2,3)}
+
+pca1 <- moving
+pca1[,1] <- -pca1[,1]
+#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
+if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t;a<-c(1)}
+
+pca1 <- moving
+pca1[,2] <- -pca1[,2]
+#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
+if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t;a<-c(2)}
+
+pca1 <- moving
+pca1[,3] <- -pca1[,3]
+#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
+if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t;a<-c(3)}
+
+if(a > 1) {
+	for(aa in a) {
+		moving[,aa] <- -pca1[,aa]
+	}
+}
+
+moving[,1] <- as.numeric(moving[,1])
+moving[,2] <- as.numeric(moving[,2])
+moving[,3] <- as.numeric(moving[,3])
+			#	moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores) 
 				#trims from one spec to the other
 
 				#mutual nearest neighbor!
-				#index1 <- mcNNindex(target, moving, k=1, threads = cores)
-				#index2 <- mcNNindex(moving, target[index1,], k=1, threads = cores)
+			#	index1 <- mcNNindex(target, moving, k=1, threads = cores)
+			#	index2 <- mcNNindex(moving, target[index1,], k=1, threads = cores)
 
-				#moving <- moving[index2,]
-				#target <- target[index1,]
+			#	moving <- moving[index2,]
+			#	target <- target[index1,]
 
 
-				#distance <- hausdorff_dist(moving, target, test = test, dist = dist)
-				#matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
-				#matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
-				#print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
-				#nz <- nz + 1
+			#	distance <- hausdorff_dist(moving, target, test = test, dist = dist)
+			#	matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
+			#	matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
+			#	print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
+			#	nz <- nz + 1
 
-				plot3d(moving, aspect="iso")
-				points3d(target, col="red")
-				open3d()
+	
 			}
 		}
 		matches <- rbind(matches1, matches2) #combine both directions
