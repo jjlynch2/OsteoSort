@@ -9,3 +9,7 @@ max_directional_hausdorff_rcpp <- function(a, b) {
     .Call(`_OsteoSort_max_directional_hausdorff_rcpp`, a, b)
 }
 
+dilated_directional_hausdorff_rcpp <- function(a, b) {
+    .Call(`_OsteoSort_dilated_directional_hausdorff_rcpp`, a, b)
+}
+

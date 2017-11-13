@@ -41,7 +41,9 @@ Re-wrote the base code for write.TPS to use lists with unequal landmarks and 3D 
 Re-wrote all file output into output_options() including TPS, excel, and plots.
 
 Re-wrote the backend for Hausdorff with RcppParallel to use parallel processing for large point clouds.
-max_directional_hausdorff_rcpp() and mean_directional_hausdorff_rcpp()
+max_directional_hausdorff_rcpp(), mean_directional_hausdorff_rcpp(), dilated_directional_hausdorff_rcpp()
+
+
 
 Bug fixes:
 

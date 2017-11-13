@@ -52,3 +52,14 @@ double max_directional_hausdorff_rcpp(Rcpp::NumericMatrix a, Rcpp::NumericMatrix
 	return results;
 }
 
+// [[Rcpp::export]]
+double dilated_directional_hausdorff_rcpp(Rcpp::NumericMatrix a, Rcpp::NumericMatrix b){
+	Rcpp::NumericVector medm(a.nrow());
+	minimum_euclidean_distances minimum_euclidean_distances(a, b, medm);
+	RcppParallel::parallelFor(0, a.nrow(), minimum_euclidean_distances);	
+	double results = Rcpp::sum(medm);
+	double sd = Rcpp::sd(medm);
+	results = results / a.nrow();
+	results = results * sd;
+	return results;
+}

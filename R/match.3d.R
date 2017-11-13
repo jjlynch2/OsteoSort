@@ -100,54 +100,86 @@ match.3d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 					target <- pca_align(specmatrix[[x]])
 				}
 # 8 possible reflections...
-#try centroid size lowest???
 
-a <- 1
+pca2 <- target
+a <- 0
 pca1 <- moving
-#max_t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
-max_t <- 66666666
+index1 <- mcNNindex(pca2, pca1, k=1, threads = cores)
+index2 <- mcNNindex(pca1, pca2[index1,], k=1, threads = cores)
+pca1 <- pca1[index2,]
+pca2 <- pca2[index1,]
+max_t <- sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2)
+
 
 pca1 <- moving
+pca2 <- target
 pca1[,1] <- -pca1[,1]
 pca1[,2] <- -pca1[,2]
 pca1[,3] <- -pca1[,3]
-#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
-if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t; a<-c(1,2,3)}
+index1 <- mcNNindex(pca2, pca1, k=1, threads = cores)
+index2 <- mcNNindex(pca1, pca2[index1,], k=1, threads = cores)
+pca1 <- pca1[index2,]
+pca2 <- pca2[index1,]
+if((sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2)) < max_t) {max_t <- (sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2)); a<-c(1,2,3)}
 
 pca1 <- moving
+pca2 <- target
 pca1[,1] <- -pca1[,1]
 pca1[,2] <- -pca1[,2]
-#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
-if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t; a<-c(1,2)}
+index1 <- mcNNindex(pca2, pca1, k=1, threads = cores)
+index2 <- mcNNindex(pca1, pca2[index1,], k=1, threads = cores)
+pca1 <- pca1[index2,]
+pca2 <- pca2[index1,]
+if((sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2)) < max_t) {max_t <- (sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2)); a<-c(1,2)}
 
 pca1 <- moving
+pca2 <- target
 pca1[,1] <- -pca1[,1]
 pca1[,3] <- -pca1[,3]
-#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
-if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t;a<-c(1,3)}
+index1 <- mcNNindex(pca2, pca1, k=1, threads = cores)
+index2 <- mcNNindex(pca1, pca2[index1,], k=1, threads = cores)
+pca1 <- pca1[index2,]
+pca2 <- pca2[index1,]
+if((sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2)) < max_t) {max_t <- (sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2));a<-c(1,3)}
 
 pca1 <- moving
+pca2 <- target
 pca1[,2] <- -pca1[,2]
 pca1[,3] <- -pca1[,3]
-#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
-if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t;a<-c(2,3)}
+index1 <- mcNNindex(pca2, pca1, k=1, threads = cores)
+index2 <- mcNNindex(pca1, pca2[index1,], k=1, threads = cores)
+pca1 <- pca1[index2,]
+pca2 <- pca2[index1,]
+if((sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2)) < max_t) {max_t <- (sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2));a<-c(2,3)}
 
 pca1 <- moving
+pca2 <- target
 pca1[,1] <- -pca1[,1]
-#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
-if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t;a<-c(1)}
+index1 <- mcNNindex(pca2, pca1, k=1, threads = cores)
+index2 <- mcNNindex(pca1, pca2[index1,], k=1, threads = cores)
+pca1 <- pca1[index2,]
+pca2 <- pca2[index1,]
+if((sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2)) < max_t) {max_t <- (sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2));a<-c(1)}
 
 pca1 <- moving
+pca2 <- target
 pca1[,2] <- -pca1[,2]
-#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
-if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t;a<-c(2)}
+index1 <- mcNNindex(pca2, pca1, k=1, threads = cores)
+index2 <- mcNNindex(pca1, pca2[index1,], k=1, threads = cores)
+pca1 <- pca1[index2,]
+pca2 <- pca2[index1,]
+if((sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2)) < max_t) {max_t <- (sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2));a<-c(2)}
 
 pca1 <- moving
+pca2 <- target
 pca1[,3] <- -pca1[,3]
-#t <- hausdorff_dist(pca1, pca2, test="Hausdorff", dist="average")
-if(sqrt(sum(apply(pca1,2,mean) - t)^2) < max_t) {max_t <- t;a<-c(3)}
+index1 <- mcNNindex(pca2, pca1, k=1, threads = cores)
+index2 <- mcNNindex(pca1, pca2[index1,], k=1, threads = cores)
+pca1 <- pca1[index2,]
+pca2 <- pca2[index1,]
+if((sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2)) < max_t) {max_t <- (sqrt(sum(apply(pca1,2,mean))^2) - sqrt(sum(apply(pca2,2,mean))^2));a<-c(3)}
 
-if(a > 1) {
+if(any(a > 1)) {
 	for(aa in a) {
 		moving[,aa] <- -pca1[,aa]
 	}
@@ -156,22 +188,19 @@ if(a > 1) {
 moving[,1] <- as.numeric(moving[,1])
 moving[,2] <- as.numeric(moving[,2])
 moving[,3] <- as.numeric(moving[,3])
-			#	moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores) 
-				#trims from one spec to the other
 
-				#mutual nearest neighbor!
-			#	index1 <- mcNNindex(target, moving, k=1, threads = cores)
-			#	index2 <- mcNNindex(moving, target[index1,], k=1, threads = cores)
+				index1 <- mcNNindex(target, moving, k=1, threads = cores)
+				index2 <- mcNNindex(moving, target[index1,], k=1, threads = cores)
 
-			#	moving <- moving[index2,]
-			#	target <- target[index1,]
+				moving <- moving[index2,]
+				target <- target[index1,]
 
+				distance <- mean(sqrt(sum(moving - target)^2))
 
-			#	distance <- hausdorff_dist(moving, target, test = test, dist = dist)
-			#	matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
-			#	matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
-			#	print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
-			#	nz <- nz + 1
+				matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
+				matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
+				print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " distance: ", distance, sep=""))
+				nz <- nz + 1
 
 	
 			}
@@ -210,7 +239,7 @@ moving[,3] <- as.numeric(moving[,3])
 	if(hide_distances) {resmatches[,3] <- "Hidden"}
 	if(output_options[1]) {no <- OsteoSort:::output_function(resmatches, method="2D", type="csv-res")}
 	if(output_options[2]) {no <- OsteoSort:::output_function(matches, method="2D", type="csv-all")}
-	#if(output_options[3]) {no <- OsteoSort:::output_function(coords, method="2D", type="plot")}
+
 	if(output_options[4]) {no <- OsteoSort:::output_function(coords, method="2D", type="coord")}
 
 	gc()
