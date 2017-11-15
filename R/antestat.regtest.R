@@ -29,13 +29,13 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 	#reference regression model
      measurement <- ref[,1]
 	stature <- ref[,2]
-	lm1 <- lm(stature~measurement)
-	nref <- length(measurement) #reference size
+	lm1 <- lm(measurement~stature)
+	nref <- length(stature) #reference size
 
 	myfunante <- function(X){
-		pm1m <- predict(lm1, newdata = data.frame(measurement = as.numeric(X[6])), interval = "prediction", level = prediction_interval)
+		pm1m <- predict(lm1, newdata = data.frame(stature = as.numeric(X[2])), interval = "prediction", level = prediction_interval)
 
-		tt <- abs(round(pm1m[1,1], digits=2) - X[2]) / ( summary.lm((lm1))$sigma * sqrt( 1+(1/nref) + ((X[6] - mean(measurement))^2) / (nref * sd(measurement)^2) ) )
+		tt <- abs(round(pm1m[1,1], digits=2) - X[6]) / ( summary.lm((lm1))$sigma * sqrt( 1+(1/nref) + ((X[2] - mean(stature))^2) / (nref * sd(stature)^2) ) )
 		tt <- tt[,1] #wtf why is this required Why a data.frame conversion? 
 
 		pp <- tails * pt(-abs(tt), df = nref - 2)
@@ -47,7 +47,7 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 			else within <- "Excluded"
 		}
 		if(!alphatest) {
-			if(X[2] <= pm1m[1,3] && X[2] >= pm1m[1,2]) { #checks if predicted falls within prediction interval for the predictors
+			if(X[6] <= pm1m[1,3] && X[6] >= pm1m[1,2]) { #checks if predicted falls within prediction interval for the predictors
 				within <- "Cannot Exclude"
 			}
 			else within <- "Excluded"

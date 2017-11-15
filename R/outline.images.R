@@ -135,6 +135,9 @@ outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRU
 				spec1[,1] <- -spec1[,1] + min(spec1[,1]) * 2 #swap X axis to mirror ### should this by multiply by -1????
 			}
 		}
+		
+		#translates to 0,0 centroid
+		spec1 <- scale(spec1, scale=FALSE)
 
 		if(!fragment) {
 			array3d[,1,iii] <- spec1[,1] #save to array since points are equal

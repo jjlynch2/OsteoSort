@@ -15,7 +15,7 @@
 #' @examples
 #' hausdorff_dist()
 
-hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = 0, dist = "maximum", cores = 1) {
+hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = 0, dist = "maximum", cores = 1, indices = NULL) {
 	if(n_regions == 1) {test="Hausdorff"}
 	
 	setThreadOptions(cores)
@@ -32,13 +32,25 @@ hausdorff_dist <- function (first_configuration, second_configuration, test = "S
 				n2 <- n2-rr
 			}
 			if(dist == "average"){
-				distance_results <- sum(distance_results, mean(mean_directional_hausdorff_rcpp(first_configuration[n1:n2,], second_configuration[n1:n2,]), mean_directional_hausdorff_rcpp(second_configuration[n1:n2,], first_configuration[n1:n2,])))
+				if(!is.null(indices)) {
+					res <- remove_fragmented_margins(first_configuration, second_configuration, indices)
+					distance_results <- mean( mean(res[[1]]), mean(res[[2]]) )
+				 }
+				else distance_results <- sum(distance_results, mean(mean_directional_hausdorff_rcpp(first_configuration[n1:n2,], second_configuration[n1:n2,]), mean_directional_hausdorff_rcpp(second_configuration[n1:n2,], first_configuration[n1:n2,])))
 			}
 			if(dist == "maximum"){
-				distance_results <- sum(distance_results, mean(max_directional_hausdorff_rcpp(first_configuration[n1:n2,], second_configuration[n1:n2,]), max_directional_hausdorff_rcpp(second_configuration[n1:n2,], first_configuration[n1:n2,])))
+				if(!is.null(indices)) {
+					res <- remove_fragmented_margins(first_configuration, second_configuration, indices)
+					distance_results <- max( max(res[[1]]), max(res[[2]]) )
+				 }
+				else distance_results <- sum(distance_results, mean(max_directional_hausdorff_rcpp(first_configuration[n1:n2,], second_configuration[n1:n2,]), max_directional_hausdorff_rcpp(second_configuration[n1:n2,], first_configuration[n1:n2,])))
 			}
 			if(dist == "dilated"){
-				distance_results <- sum(distance_results, mean(dilated_directional_hausdorff_rcpp(first_configuration[n1:n2,], second_configuration[n1:n2,]), dilated_directional_hausdorff_rcpp(second_configuration[n1:n2,], first_configuration[n1:n2,])))
+				if(!is.null(indices)) {
+					res <- remove_fragmented_margins(first_configuration, second_configuration, indices)
+					distance_results <- mean( (mean(res[[1]]) * sd(res[[1]])), (mean(res[[2]]) * sd(mean(res[[2]]))) )
+				 }
+				else distance_results <- sum(distance_results, mean(dilated_directional_hausdorff_rcpp(first_configuration[n1:n2,], second_configuration[n1:n2,]), dilated_directional_hausdorff_rcpp(second_configuration[n1:n2,], first_configuration[n1:n2,])))
 			}
 			n1 <- n2
 			n2 <- n2 + nums
@@ -48,14 +60,32 @@ hausdorff_dist <- function (first_configuration, second_configuration, test = "S
 	}
 	if(test == "Hausdorff") {
 		if(dist == "average"){
-			distance_results <- mean(mean_directional_hausdorff_rcpp(first_configuration, second_configuration),mean_directional_hausdorff_rcpp(second_configuration, first_configuration))
+				if(!is.null(indices)) {
+					res <- remove_fragmented_margins(first_configuration, second_configuration, indices)
+
+					distance_results <- mean( mean(res[[1]]), mean(res[[2]]) )
+				 }
+				else distance_results <- mean(mean_directional_hausdorff_rcpp(first_configuration, second_configuration),mean_directional_hausdorff_rcpp(second_configuration, first_configuration))
+
 		}
 		if(dist == "maximum"){
-			distance_results <- max(max_directional_hausdorff_rcpp(first_configuration, second_configuration),max_directional_hausdorff_rcpp(second_configuration, first_configuration))
+				if(!is.null(indices)) {
+					res <- remove_fragmented_margins(first_configuration, second_configuration, indices)
+					distance_results <- max( max(res[[1]]), max(res[[2]]) )
+				 }
+
+				else	distance_results <- max(max_directional_hausdorff_rcpp(first_configuration, second_configuration),max_directional_hausdorff_rcpp(second_configuration, first_configuration))
+	
 		}
 		if(dist == "dilated"){
-			distance_results <- mean(dilated_directional_hausdorff_rcpp(first_configuration, second_configuration),dilated_directional_hausdorff_rcpp(second_configuration, first_configuration))
-		}
+				if(!is.null(indices)) {
+					res <- remove_fragmented_margins(first_configuration, second_configuration, indices)
+
+					distance_results <- mean( mean(res[[1]]) * sd(res[[1]]), mean(res[[2]]) * sd(res[[2]]) )
+				 }
+
+				else distance_results <- mean(dilated_directional_hausdorff_rcpp(first_configuration, second_configuration),dilated_directional_hausdorff_rcpp(second_configuration, first_configuration))
+	}
 		
 	}
 	if(test == "Uni-Hausdorff") {

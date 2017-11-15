@@ -13,3 +13,7 @@ dilated_directional_hausdorff_rcpp <- function(a, b) {
     .Call(`_OsteoSort_dilated_directional_hausdorff_rcpp`, a, b)
 }
 
+minimum_euclidean_distances_indices <- function(a, b) {
+    .Call(`_OsteoSort_minimum_euclidean_distances_indices`, a, b)
+}
+

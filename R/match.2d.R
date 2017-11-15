@@ -88,32 +88,31 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 		for(z in 1:length(outlinedata[[2]])) {
 			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
 
+
 				zzz <- 0
 				if(nrow(specmatrix[[z]]) >= nrow(specmatrix[[x]])) {moving <- specmatrix[[x]]; target <- specmatrix[[z]];zzz <- 1}		
 				if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}	
 	
 				moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores) 
-				#trims from one spec to the other
+				
+				#identifies indices of fragmented ends
+				r1 <- fragment_margins(moving)
+				moving <- r1[[1]]
+				moving_indices <- r1[[2]]
 
-				#mutual nearest neighbor!
-				index1 <- mcNNindex(target, moving, k=1, threads = cores)
-				index2 <- mcNNindex(moving, target[index1,], k=1, threads = cores)
-				moving <- moving[index2,]
-				target <- target[index1,]
+				r1 <- fragment_margins(target)
+				target <- r1[[1]]
+				target_indices <- r1[[2]]
 
-				#finds smallest fragment among the comparison
-				if(nrow(moving) >= nrow(target)) {t1 <- target; t2 <- moving; if(zzz == 1) {zzz <- 2}; if(zzz == 2) {zzz <- 1}}		
-				if(nrow(moving) <= nrow(target)) {t1 <- moving; t2 <- target}	
-
-				distance <- hausdorff_dist(t1, t2, test = test, dist = dist, cores = cores)
+				distance <- hausdorff_dist(moving, target, test = test, dist = dist, cores = cores, indices = list(moving_indices, target_indices))
 				matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
 				matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
 				print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
 				nz <- nz + 1
 
 				#saves coords for output
-				pairwise_coords[[pwc]] <- t1
-				pairwise_coords[[pwc+1]] <- t2
+				pairwise_coords[[pwc]] <- moving
+				pairwise_coords[[pwc+1]] <- target
 				if(zzz == 1) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[z]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[x]]}
 				if(zzz == 2) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[x]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[z]]}
 				pwc <- pwc + 2 #skips by 2 since we use two indices

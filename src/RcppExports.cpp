@@ -41,11 +41,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// minimum_euclidean_distances_indices
+Rcpp::NumericMatrix minimum_euclidean_distances_indices(Rcpp::NumericMatrix a, Rcpp::NumericMatrix b);
+RcppExport SEXP _OsteoSort_minimum_euclidean_distances_indices(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type a(aSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(minimum_euclidean_distances_indices(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_OsteoSort_mean_directional_hausdorff_rcpp", (DL_FUNC) &_OsteoSort_mean_directional_hausdorff_rcpp, 2},
     {"_OsteoSort_max_directional_hausdorff_rcpp", (DL_FUNC) &_OsteoSort_max_directional_hausdorff_rcpp, 2},
     {"_OsteoSort_dilated_directional_hausdorff_rcpp", (DL_FUNC) &_OsteoSort_dilated_directional_hausdorff_rcpp, 2},
+    {"_OsteoSort_minimum_euclidean_distances_indices", (DL_FUNC) &_OsteoSort_minimum_euclidean_distances_indices, 2},
     {NULL, NULL, 0}
 };
 

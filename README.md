@@ -43,6 +43,11 @@ Re-wrote all file output into output_options() including TPS, excel, and plots.
 Re-wrote the backend for Hausdorff with RcppParallel to use parallel processing for large point clouds.
 max_directional_hausdorff_rcpp(), mean_directional_hausdorff_rcpp(), dilated_directional_hausdorff_rcpp()
 
+Added new functions, fragment_margins(), remove_fragment_margins(), and minimum_euclidean_deistances_ind() , which are ussed to identifyssss the indices of fragment margins along a orderly 2D outline and remove any non-overlapping landmark from the calculation of Hausdorff distances.
+
+The regression model used for antemortem stature association has been switched to calculate the point estimate of the measurement rather than vice versa. 
+
+
 
 
 Bug fixes:
