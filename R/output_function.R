@@ -1,6 +1,5 @@
 #' output_excel function
 #'
-#' @param results
 #' Only used to call internally
 #'
 
@@ -38,9 +37,6 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 			plot(hera1[[3]],hera1[[4]], xlab = "Stature", ylab = "Measurement")
 			points(hera1[[7]],hera1[[5]],col="blue",pch=16, cex=1.5)
 			points(hera1[[7]],hera1[[6]],col="red",pch=16, cex=1.5)
-			df1 <- data.frame(hera1[[5]], hera1[[6]])
-			df2 <- data.frame(hera1[[7]], hera1[[6]])
-			matlines(df1, df2, col=c("red"), lty=2)
 			matlines(hera1[[3]], hera1[[8]][,1], col=c("red"))
 			matlines(hera1[[3]], hera1[[8]][,2],col=c("blue"), lty = 4)
 			matlines(hera1[[3]], hera1[[8]][,3], col=c("blue"), lty = 4)
