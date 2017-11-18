@@ -72,7 +72,7 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 	}
 
 	hera1m = as.data.frame(data.table::rbindlist(hera1m))
-	colnames(hera1m) <- c("id","antemortem_stature", "id","side","element","postmortem_measurement", "t-statistic", "p-value","sample_size", "lower_PI","point_estimate","upper_PI", "Rsquared", "Result")
+	colnames(hera1m) <- c("id","am_stature", "id","side","element","pm_measurement", "t-statistic", "p-value","sample_size", "lower_PI","point_estimate","upper_PI", "Rsquared", "Result")
 	print("Antemortem stature to postmortem measurement comparisons have completed.")	
 
 	if(output_options[1]) {

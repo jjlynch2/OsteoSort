@@ -27,8 +27,8 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 				plot(hera1[[3]],hera1[[4]], xlab = "", ylab = "")
 				points(hera1[[5]],hera1[[6]],col="blue",pch=16)
 				matlines(hera1[[7]][,1], hera1[[8]], col=c("red"))
-				matlines(hera1[[7]][,2], hera1[[8]], col=c("blue"), lty = 4)
-				matlines(hera1[[7]][,3], hera1[[8]], col=c("blue"), lty = 4)
+				matlines(hera1[[7]][,2], hera1[[8]], col=c("blue"), lty = 2)
+				matlines(hera1[[7]][,3], hera1[[8]], col=c("blue"), lty = 2)
 				dev.off()
 		}
 		if(type == "plot3") {
@@ -38,8 +38,8 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 			points(hera1[[7]],hera1[[5]],col="blue",pch=16, cex=1.5)
 			points(hera1[[7]],hera1[[6]],col="red",pch=16, cex=1.5)
 			matlines(hera1[[3]], hera1[[8]][,1], col=c("red"))
-			matlines(hera1[[3]], hera1[[8]][,2],col=c("blue"), lty = 4)
-			matlines(hera1[[3]], hera1[[8]][,3], col=c("blue"), lty = 4)
+			matlines(hera1[[3]], hera1[[8]][,2],col=c("blue"), lty = 2)
+			matlines(hera1[[3]], hera1[[8]][,3], col=c("blue"), lty = 2)
 			dev.off()
 		}
 	}
