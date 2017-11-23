@@ -9,13 +9,14 @@
 #' @param testagainstzero Uses 0 for mean if true 
 #' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
 #' @param power If true, uses half-normal distribution power transformation
+#' @param tails number of tails
 #' 
 #' @keywords pm.ttest
 #' @export
 #' @examples
 #' pm.ttest()
 
-pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE, FALSE), cores = 1) {
+pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE, FALSE), cores = 1, tails = 2) {
 	print("Statistical pair match comparisons have started.")
 	enableJIT(3)
 
@@ -60,7 +61,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 				else difm <- mean(difa)
 				
 				difa1 <- ((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2)
-				p.value <- pt((difa1 - difm) / difsd, df = length(difa) - 1, lower.tail = FALSE) #one-tail for absolute value model
+				p.value <- tails * pt(-abs(difa1 - difm) / difsd, df = length(difa) - 1) #one-tail for absolute value model
 			}
 			else {
 				difa <- rowSums(y[c(T,F)] - y[c(F,T)])
@@ -69,7 +70,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 				else difm <- mean(difa)
 
 				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
-				p.value <- 2 * pt(-abs((difa1 - difm) / difsd), df = length(difa) - 1)
+				p.value <- tails * pt(-abs((difa1 - difm) / difsd), df = length(difa) - 1)
 			} 
 			is.uniquepm[[length(is.uniquepm)+1]] <<- temp1 #cache me outside 
 			unique.difsd[[length(unique.difsd)+1]] <<- difsd
@@ -89,11 +90,11 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 
 			if(absolutevalue) { 
 				difa1 <- ((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2)
-				p.value <- pt((difa1 - difm) / difsd, df = difdf, lower.tail = FALSE) #one-tail for absolute value model
+				p.value <- tails * pt(-abs(difa1 - difm) / difsd, df = difdf) #one-tail for absolute value model
 			}
 			else {
 				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
-				p.value <- 2 * pt(-abs((difa1 - difm) / difsd), df = difdf)
+				p.value <- tails * pt(-abs((difa1 - difm) / difsd), df = difdf)
 			} 
 		}
 		

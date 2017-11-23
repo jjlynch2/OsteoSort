@@ -4,11 +4,8 @@
 \alias{output_function}
 \title{output_excel function}
 \usage{
-output_function(hera1)
-}
-\arguments{
-\item{results}{Only used to call internally}
+output_function(hera1, method = "exclusion", type = "csv")
 }
 \description{
-output_excel function
+Only used to call internally
 }

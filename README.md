@@ -10,7 +10,6 @@ Modules:
 
 Updated 2D to include fragmentary shape registration and pair-matching
 
-Added pca_align() function to return rotated PCA scores for alignment prior to 3D analysis
 
 Added match.3d() function (currently broken) for 3D pair-matching
 
@@ -40,6 +39,8 @@ Re-wrote the base code for write.TPS to use lists with unequal landmarks and 3D 
 
 Re-wrote all file output into output_options() including TPS, excel, and plots.
 
+Added pca_align() function to return rotated PCA scores for alignment prior to 3D analysis
+
 Re-wrote the backend for Hausdorff with RcppParallel to use parallel processing for large point clouds.
 max_directional_hausdorff_rcpp(), mean_directional_hausdorff_rcpp(), dilated_directional_hausdorff_rcpp()
 
@@ -47,9 +48,9 @@ Added new functions, fragment_margins(), remove_fragment_margins(), and minimum_
 
 The regression model used for antemortem stature association has been switched to calculate the point estimate of the measurement rather than vice versa. 
 
-
+Added statistical option to change from 1 to 2 tail t-tests
 
 
 Bug fixes:
 
-Swapped axes for the antemortem plot (does not change result)
+

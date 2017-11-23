@@ -31,7 +31,6 @@ efa <- function(pointcloud, harmonics = 40) {
 	T <- sum(Dt)
 	an <- bn <- cn <- dn <- en <- fn <- harmonics
 #make multithreading
-#OR re-write this loop using inline c++ code... might be best option. Simple calculations. #Find rcpp book
 
 	for (i in 1:harmonics) {
 		Ti <- (T / (2 * pi^2 * i^2))

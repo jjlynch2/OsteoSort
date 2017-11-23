@@ -2,18 +2,18 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 mean_directional_hausdorff_rcpp <- function(a, b) {
-    .Call(`_OsteoSort_mean_directional_hausdorff_rcpp`, a, b)
+    .Call('_OsteoSort_mean_directional_hausdorff_rcpp', PACKAGE = 'OsteoSort', a, b)
 }
 
 max_directional_hausdorff_rcpp <- function(a, b) {
-    .Call(`_OsteoSort_max_directional_hausdorff_rcpp`, a, b)
+    .Call('_OsteoSort_max_directional_hausdorff_rcpp', PACKAGE = 'OsteoSort', a, b)
 }
 
 dilated_directional_hausdorff_rcpp <- function(a, b) {
-    .Call(`_OsteoSort_dilated_directional_hausdorff_rcpp`, a, b)
+    .Call('_OsteoSort_dilated_directional_hausdorff_rcpp', PACKAGE = 'OsteoSort', a, b)
 }
 
 minimum_euclidean_distances_indices <- function(a, b) {
-    .Call(`_OsteoSort_minimum_euclidean_distances_indices`, a, b)
+    .Call('_OsteoSort_minimum_euclidean_distances_indices', PACKAGE = 'OsteoSort', a, b)
 }
 

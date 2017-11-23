@@ -5,7 +5,8 @@
 \title{outline.images function}
 \usage{
 outline.images(imagelist1, imagelist2, threshold = 0.8, scale = TRUE,
-  mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400)
+  mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400,
+  fragment = FALSE)
 }
 \arguments{
 \item{imagelist1}{List of image locations for first set}
@@ -24,7 +25,7 @@ outline.images(imagelist1, imagelist2, threshold = 0.8, scale = TRUE,
 
 \item{nharmonics}{The number of harmonics in elliptical fourier analysis}
 
-\item{fragment}{Currently under development 
+\item{fragment}{TRUE FALSE if fragmented specimens are being used
 
 Traicing code modified from Julien Claude (Morphometrics with R 2008)}
 }
