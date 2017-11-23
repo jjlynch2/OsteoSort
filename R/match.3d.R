@@ -4,7 +4,7 @@
 #' @param min minimum distance for ICP
 #' @param iteration The number of iterations for Iterative Closest Point
 #' @param transformation The type of Iterative Closest Point transformation ("Rigid", "Similarity", "Affine")
-#' @param cores Number of cores for parallel processing
+#' @param threads Number of threads for parallel processing
 #' @param mean_iterations The number of mean iterations
 #' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")
 #' @param sessiontempdir Specifies temporary directory for analytical session
@@ -21,7 +21,7 @@
 #' @examples
 #' match.2d()
 
-match.3d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", cores=1, test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
+match.3d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", threads=1, test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
 	print("Two-dimensional pair match comparisons have started.")	
 
 	suppressMessages(library(compiler))
@@ -57,9 +57,9 @@ match.3d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 		array3d <- array(NA,c(nrow(mean), 3, length(specmatrix))) #temporary 3D array storage
 		for(i in 1:mean_iterations) {
 			for(x in 1:length(specmatrix)) {
-				specmatrix[[x]] <- icpmat(specmatrix[[x]], mean, iterations=iteration, type=transformation, threads = cores) 
-				index1 <- mcNNindex(mean, specmatrix[[x]], k = 1, threads = cores) 
-				index2 <- mcNNindex(specmatrix[[x]], mean[index1,], k = 1, threads = cores) 
+				specmatrix[[x]] <- icpmat(specmatrix[[x]], mean, iterations=iteration, type=transformation, threads = threads) 
+				index1 <- mcNNindex(mean, specmatrix[[x]], k = 1, threads = threads) 
+				index2 <- mcNNindex(specmatrix[[x]], mean[index1,], k = 1, threads = threads) 
 				temp <- mean 
 
 				temp[index1,] <- specmatrix[[x]][index2,]
@@ -72,8 +72,8 @@ match.3d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
 
 				#mutual nearest neighbor!
-				index1 <- mcNNindex(specmatrix[[x]], specmatrix[[z]], k=1, threads = cores)
-				index2 <- mcNNindex(specmatrix[[z]], specmatrix[[x]][index1,], k=1, threads = cores)
+				index1 <- mcNNindex(specmatrix[[x]], specmatrix[[z]], k=1, threads = threads)
+				index2 <- mcNNindex(specmatrix[[z]], specmatrix[[x]][index1,], k=1, threads = threads)
 				specmatrix[[z]] <- specmatrix[[z]][index2,]
 				specmatrix[[x]] <- specmatrix[[x]][index1,]
 
@@ -113,8 +113,8 @@ moving[,1] <- as.numeric(moving[,1])
 moving[,2] <- as.numeric(moving[,2])
 moving[,3] <- as.numeric(moving[,3])
 
-				index1 <- mcNNindex(target, moving, k=1, threads = cores)
-				index2 <- mcNNindex(moving, target[index1,], k=1, threads = cores)
+				index1 <- mcNNindex(target, moving, k=1, threads = threads)
+				index2 <- mcNNindex(moving, target[index1,], k=1, threads = threads)
 
 				moving <- moving[index2,]
 				target <- target[index1,]

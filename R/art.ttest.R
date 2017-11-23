@@ -3,7 +3,7 @@
 #' @param ref Reference data
 #' @param sort Sorted data for comparison
 #' @param sessiontempdir Specifies temporary directory for analytical session
-#' @param cores Number of cores for parallel processing
+#' @param threads Number of cores for parallel processing
 #' @param alphalevel Specifies alpha level
 #' @param absolutevalue Uses absolute value for D-values if true
 #' @param testagainstzero Uses 0 for mean if true 
@@ -17,7 +17,7 @@
 #' art.ttest()
 
 
-art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, cores = 1, alphalevel = 0.1, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), power = TRUE, tails = 2) {
+art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads = 1, alphalevel = 0.1, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), power = TRUE, tails = 2) {
      print("Statistical articulation comparisons have started.")
 	enableJIT(3)
 	
@@ -113,7 +113,7 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, cores = 1
 		print(op)
 	}
 	else {
-		op <- system.time ( hera1 <- mclapply(FUN = myfun, X = sort, mc.cores = cores, mc.preschedule = TRUE) )
+		op <- system.time ( hera1 <- mclapply(FUN = myfun, X = sort, mc.cores = threads, mc.preschedule = TRUE) )
 		print(op)
 	}
 

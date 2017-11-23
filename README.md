@@ -50,6 +50,8 @@ The regression model used for antemortem stature association has been switched t
 
 Added statistical option to change from 1 to 2 tail t-tests
 
+Switched terminology from cores to threads for functions
+
 
 Bug fixes:
 

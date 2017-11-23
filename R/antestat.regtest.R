@@ -14,7 +14,7 @@
 #' @examples 
 #' antestat.regtest()
 
-antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(FALSE,FALSE), prediction_interval = 0.95, tails = 2, alphalevel = 0.05, alphatest = TRUE, cores = 1) {
+antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(FALSE,FALSE), prediction_interval = 0.95, tails = 2, alphalevel = 0.05, alphatest = TRUE, threads = 1) {
      print("Antemortem stature to postmortem measurement comparisons have started.")	
 	enableJIT(3)
 
@@ -67,7 +67,7 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 		print(op)
 	}
 	else {
-		op <- system.time ( hera1m <- mclapply(FUN = myfunante, X = sortlist, mc.cores = cores, mc.preschedule = TRUE) )
+		op <- system.time ( hera1m <- mclapply(FUN = myfunante, X = sortlist, mc.cores = threads, mc.preschedule = TRUE) )
 		print(op)
 	}
 

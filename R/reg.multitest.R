@@ -7,7 +7,7 @@
 #' @param prediction_interval Specifies the prediction interval 
 #' @param sessiontempdir Specifies temporary directory for analytical session 
 #' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
-#' @param cores Number of cores for parallel processing
+#' @param threads Number of threads for parallel processing
 #' @param test If true, PCA-CCA-Regression, if false, Simple Linear Regression 
 #' @param alphalevel Specifies alpha level
 #' @param alphalevel Specifies alpha level
@@ -17,7 +17,7 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, sessiontempdir = NULL, output_options = c(TRUE,FALSE), cores = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, sessiontempdir = NULL, output_options = c(TRUE,FALSE), threads = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05) {	    
      print("Statistical association comparisons have started.")
 	enableJIT(3)
 	
@@ -143,7 +143,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 			print(op)
 		}
 		else {
-			op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = cores, mc.preschedule = TRUE) )
+			op <- system.time ( hera1 <- mclapply(FUN = myfunreg, X = sortlist, mc.cores = threads, mc.preschedule = TRUE) )
 			print(op)
 		}
 		hera1 = as.data.frame(data.table::rbindlist(hera1))
@@ -236,7 +236,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 			print(op)
 		}
 		else {
-			op <- system.time ( hera1 <- mclapply(FUN = myfunregs, X = sortlist, mc.cores = cores, mc.preschedule = TRUE) )
+			op <- system.time ( hera1 <- mclapply(FUN = myfunregs, X = sortlist, mc.cores = threads, mc.preschedule = TRUE) )
 			print(op)
 		}
 		hera1 = as.data.frame(data.table::rbindlist(hera1))

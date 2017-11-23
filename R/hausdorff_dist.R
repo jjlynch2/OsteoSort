@@ -6,7 +6,7 @@
 #' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff", "Uni-Hausdorff")
 #' @param n_regions Specifies the number of regions for Segmented-Hausdorff
 #' @param dist Specifies distance per region, either maximum or average distance
-#' @param cores The number of threads/cores to use with RcppParallel
+#' @param threads The number of threads/cores to use with RcppParallel
 #'
 #' Heavily modified from the opensource code in hausdorff_dist() function from the pracma package
 #'
@@ -15,10 +15,10 @@
 #' @examples
 #' hausdorff_dist()
 
-hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = 0, dist = "maximum", cores = 1, indices = NULL) {
+hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = 0, dist = "maximum", threads = 1, indices = NULL) {
 	if(n_regions == 1) {test="Hausdorff"}
 	
-	setThreadOptions(cores)
+	setThreadOptions(threads)
 
 	if(test == "Segmented-Hausdorff") {
 		nums <- round(nrow(first_configuration)/n_regions)

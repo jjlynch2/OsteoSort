@@ -4,7 +4,7 @@
 #' @param min minimum distance for ICP
 #' @param iteration The number of iterations for Iterative Closest Point
 #' @param transformation The type of Iterative Closest Point transformation ("Rigid", "Similarity", "Affine")
-#' @param cores Number of cores for parallel processing
+#' @param threads Number of threads for parallel processing
 #' @param mean_iterations The number of mean iterations
 #' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")
 #' @param sessiontempdir Specifies temporary directory for analytical session
@@ -21,7 +21,7 @@
 #' @examples
 #' match.2d()
 
-match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", cores=1, test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
+match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", threads=1, test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
 	print("Two-dimensional pair match comparisons have started.")	
 
 	suppressMessages(library(compiler))
@@ -56,8 +56,8 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 			for(i in 1:dim(homolog)[3]) {
 				print(paste("specimen: ", dimnames(homolog)[[3]][i], " mean iteration: ", b, sep=""))
 				moving <- homolog[,,i]
-				temp <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores)
-				homolog[,,i] <- shiftmatrices(first_configuration = temp, second_configuration = target, cores) #shifts matrices to match
+				temp <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=threads)
+				homolog[,,i] <- shiftmatrices(first_configuration = temp, second_configuration = target, threads) #shifts matrices to match
 			}
 			meann <- apply(homolog, c(1,2), mean)
 			#shifts to long axis of specimens#
@@ -71,7 +71,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 
 		for(z in 1:length(outlinedata[[2]])) {
 			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
-				distance <- hausdorff_dist(homolog[,,z], homolog[,,x], test = test, n_regions = n_regions, dist = dist, cores = cores)
+				distance <- hausdorff_dist(homolog[,,z], homolog[,,x], test = test, n_regions = n_regions, dist = dist, threads = threads)
 				matches1[nz,] <- c(dimnames(homolog)[[3]][z], dimnames(homolog)[[3]][x], distance)
 				matches2[nz,] <- c(dimnames(homolog)[[3]][x], dimnames(homolog)[[3]][z], distance)
 				print(paste(dimnames(homolog)[[3]][x], "-", dimnames(homolog)[[3]][z], " ", test, " distance: ", distance, sep=""))
@@ -93,7 +93,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				if(nrow(specmatrix[[z]]) >= nrow(specmatrix[[x]])) {moving <- specmatrix[[x]]; target <- specmatrix[[z]];zzz <- 1}		
 				if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}	
 	
-				moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=cores) 
+				moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=threads) 
 				
 				#identifies indices of fragmented ends
 				r1 <- fragment_margins(moving)
@@ -104,7 +104,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				target <- r1[[1]]
 				target_indices <- r1[[2]]
 
-				distance <- hausdorff_dist(moving, target, test = test, dist = dist, cores = cores, indices = list(moving_indices, target_indices))
+				distance <- hausdorff_dist(moving, target, test = test, dist = dist, threads = threads, indices = list(moving_indices, target_indices))
 				matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
 				matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
 				print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))

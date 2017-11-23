@@ -3,7 +3,7 @@
 #' @param ref Reference data
 #' @param sort Sorted data for comparison
 #' @param sessiontempdir Specifies temporary directory for analytical session
-#' @param cores Number of cores for parallel processing
+#' @param threads Number of threads for parallel processing
 #' @param alphalevel Specifies alpha level
 #' @param absolutevalue Uses absolute value for D-values if true
 #' @param testagainstzero Uses 0 for mean if true 
@@ -16,7 +16,7 @@
 #' @examples
 #' pm.ttest()
 
-pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE, FALSE), cores = 1, tails = 2) {
+pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2) {
 	print("Statistical pair match comparisons have started.")
 	enableJIT(3)
 
@@ -113,7 +113,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 		print(op)
 	}
 	else {
-		op <- system.time ( hera1 <- mclapply(FUN = myfunpm, X = sort, mc.cores = cores, mc.preschedule = TRUE) )
+		op <- system.time ( hera1 <- mclapply(FUN = myfunpm, X = sort, mc.cores = threads, mc.preschedule = TRUE) )
 		print(op)
 	}
 
