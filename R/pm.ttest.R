@@ -61,7 +61,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 				else difm <- mean(difa)
 				
 				difa1 <- ((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2)
-				p.value <- tails * pt(-abs(difa1 - difm) / difsd, df = length(difa) - 1) #one-tail for absolute value model
+				p.value <- tails * pt(-abs((difa1 - difm) / difsd), df = length(difa) - 1) #one-tail for absolute value model
 			}
 			else {
 				difa <- rowSums(y[c(T,F)] - y[c(F,T)])
@@ -90,7 +90,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 
 			if(absolutevalue) { 
 				difa1 <- ((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2)
-				p.value <- tails * pt(-abs(difa1 - difm) / difsd, df = difdf) #one-tail for absolute value model
+				p.value <- tails * pt(-abs((difa1 - difm) / difsd), df = difdf) #one-tail for absolute value model
 			}
 			else {
 				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
