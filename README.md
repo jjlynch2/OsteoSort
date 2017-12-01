@@ -6,12 +6,14 @@ Changes for OsteoSort version 1.2.2:
 
 
 
+
 Modules:
 
-Updated 2D to include fragmentary shape registration and pair-matching
+Updated 2D to include fragmentary shape registration and pair-matching.
 
 
-Added match.3d() function (currently broken) for 3D pair-matching
+Added match.3d() function (currently broken) for 3D pair-matching.
+
 
 
 
@@ -27,11 +29,12 @@ Moved code for matching matrices names and alpha color for plots into two intern
 
 
 
+
 Moderate changes:
 
-Renamed segmented_hausdorff_dist() function to hausdorff_dist()
+Renamed segmented_hausdorff_dist() function to hausdorff_dist().
 
-Renamed match.2d.invariant() function to match.2d()
+Renamed match.2d.invariant() function to match.2d().
 
 Re-wrote the base code for match.2d() to be more efficient with looping for distance calculations.
 
@@ -48,9 +51,10 @@ Added new functions, fragment_margins(), remove_fragment_margins(), and minimum_
 
 The regression model used for antemortem stature association has been switched to calculate the point estimate of the measurement rather than vice versa. 
 
-Added statistical option to change from 1 to 2 tail t-tests
+Added statistical option to change from 1 to 2 tail t-tests.
 
-Switched terminology from cores to threads for functions
+Switched terminology from cores to threads for functions.
+
 
 
 Bug fixes:
