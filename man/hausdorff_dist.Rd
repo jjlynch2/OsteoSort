@@ -6,7 +6,7 @@
 \usage{
 hausdorff_dist(first_configuration, second_configuration,
   test = "Segmented-Hausdorff", n_regions = 0, dist = "maximum",
-  cores = 1, indices = NULL)
+  threads = 1, indices = NULL)
 }
 \arguments{
 \item{first_configuration}{The first two-dimensional configuration}
@@ -17,11 +17,9 @@ hausdorff_dist(first_configuration, second_configuration,
 
 \item{n_regions}{Specifies the number of regions for Segmented-Hausdorff}
 
-\item{dist}{Specifies distance per region, either maximum or average distance}
+\item{dist}{Specifies distance type either maximum, average, or dilated}
 
-\item{cores}{The number of threads/cores to use with RcppParallel
-
-Heavily modified from the opensource code in hausdorff_dist() function from the pracma package}
+\item{threads}{The number of threads to use}
 }
 \description{
 hausdorff distance function

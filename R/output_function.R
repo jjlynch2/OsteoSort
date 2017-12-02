@@ -1,10 +1,13 @@
-#' output_excel function
+#' Internal function for output_options
 #'
-#' Only used to call internally
+#' @param hera1 The data to be ploted
+#' @param method The analytical method to be plotted
+#' @param type The type of output
 #'
+#' @examples
+#' output_function()
 
 output_function <- function(hera1, method = "exclusion", type = "csv") {
-
 	if(method == "exclusion") {
 		if(type == "csv") {
 			if(nrow(hera1[hera1$Result == "Cannot Exclude",]) > 0) {

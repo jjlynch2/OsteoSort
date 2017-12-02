@@ -6,7 +6,7 @@
 \usage{
 match.2d(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL,
   fragment = FALSE, output_options = c(TRUE, TRUE, TRUE, TRUE),
-  iteration = 10, transformation = "rigid", cores = 1,
+  iteration = 10, transformation = "rigid", threads = 1,
   test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5,
   n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6,
   dist = "average")
@@ -20,15 +20,15 @@ match.2d(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL,
 
 \item{fragment}{TRUE FALSE specifies if complete or fragmented registration matching procedure should be conducted}
 
-\item{output_options}{If true, writes to .csv file}
+\item{output_options}{C(TRUE,FALSE) First logic specifies excel output for matches, second specifies excel output for all distances, third specifies registered plots, and fourth specifies TPS coordinate files}
 
 \item{iteration}{The number of iterations for Iterative Closest Point}
 
 \item{transformation}{The type of Iterative Closest Point transformation ("Rigid", "Similarity", "Affine")}
 
-\item{cores}{Number of cores for parallel processing}
+\item{threads}{The number of threads to use}
 
-\item{test}{Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")}
+\item{test}{Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff", "Uni-Hausdorff")}
 
 \item{temporary_mean_specimen}{The specimen to be used as the temporary mean}
 
@@ -38,9 +38,9 @@ match.2d(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL,
 
 \item{hide_distances}{Hides the distance values in short lists to avoid analytical bias}
 
-\item{n_regions}{Specifies number of regions per Segmented-Hausdorff}
+\item{n_regions}{Specifies the number of regions for Segmented-Hausdorff}
 
-\item{dist}{Specifies distance per region, either maximum or average distance}
+\item{dist}{Specifies distance type either maximum, average, or dilated}
 }
 \description{
 two-dimensional pair-match function

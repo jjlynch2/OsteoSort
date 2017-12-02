@@ -28,7 +28,6 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 	nocut <- FALSE
 	if(cutoffmax == cutoff) {nocut <- TRUE}
 	
-
 	side <- tolower(side)
 	population <- tolower(population)
 	
@@ -36,7 +35,6 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
-	
 	sortdata <- array(NA,c(length(sort[,1]),4)) 
 	sortdata[,1] <- as.matrix(sort[["id"]]) 
 	sortdata[,2] <- tolower(sort[["Side"]]) 
@@ -347,7 +345,7 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 		}
 		if(population == "20th-fstat-any") {
 			intercept <- 25.64
-			slope <- 0.15852#' @param metric Specifies milimeters (mm), centimeters (cm), or inches (in) for stature
+			slope <- 0.15852
 		}	
 		if(population == "trotter-any-male") {
 			intercept <- 34.91
@@ -444,10 +442,10 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 	}
 	
 	
-		s <- sd(as.numeric(pointestimate[,4]))
-		m <- mean(as.numeric(pointestimate[,4]))
-		me <- mean(as.numeric(pointestimate[,4]))
-		IQQ <- quantile(as.numeric(pointestimate[,4]))[4] -  quantile(as.numeric(pointestimate[,4]))[2]
+	s <- sd(as.numeric(pointestimate[,4]))
+	m <- mean(as.numeric(pointestimate[,4]))
+	me <- mean(as.numeric(pointestimate[,4]))
+	IQQ <- quantile(as.numeric(pointestimate[,4]))[4] -  quantile(as.numeric(pointestimate[,4]))[2]
 	
 	if(method == "Standard_deviation") {
 		#two standard deviations and mean
@@ -475,7 +473,6 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 
 		plotme <- median(as.numeric(pointestimate[,4]))
 	}
-	
 	
 	outlierdfupper <- array(NA,c(length(sort[,1]),4))
 	outlierdflower <- array(NA,c(length(sort[,1]),4))
@@ -508,17 +505,13 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 			}
 		}
 	}
-	
 	colnames(nonoutliersdf) <- c("id", "Side", "Element", "Point Estimate")
 	colnames(outlierdflower) <- c("id", "Side", "Element", "Point Estimate")
 	colnames(outlierdfupper) <- c("id", "Side", "Element", "Point Estimate")
 	
-	
 	if(all(is.na(nonoutliersdf))) {nonoutliersdf <- NULL}
 	if(all(is.na(outlierdflower))) {outlierdflower <- NULL}
 	if(all(is.na(outlierdfupper))) {outlierdfupper <- NULL}
-
-
 
 	if(!is.null(upperfile)) {
 		if(!all(is.null(outlierdfupper))) { #skips if all NA (no outliers)
@@ -544,8 +537,6 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 			}
 		}
 	}	
-
-	
 	if(output_options[2]) {
 		no <- OsteoSort:::output_function(hera1 = list(as.numeric(pointestimate[,4]), bone, plotme, upper, lower, lowermax, uppermax, nocut), method = "OS", type = "plot")
 	}

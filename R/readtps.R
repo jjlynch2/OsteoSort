@@ -10,7 +10,6 @@
 #' readtps()
 
 readtps <- function (file) {
-    
 	specID = "ID"
 	ignore.case = TRUE
 	tpsfile <- scan(file = file, what = "char", sep = "\n", quiet = TRUE)
@@ -59,14 +58,11 @@ readtps <- function (file) {
 		coords <- array(coords, c(nland, k, n))
 	}
 
-
 	#extracts ID
 	ID <- sub("ID=", "", tpsfile[grep("ID=", tpsfile, ignore.case)], ignore.case)
 	if (length(ID) != 0) {
 		dimnames(coords)[[3]] <- as.list(ID)
 	}
 
-	
 	return(coords = coords)
-	
 }

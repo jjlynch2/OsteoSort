@@ -12,7 +12,6 @@
 #' pm.input()
 
 pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard', threshold = 1, measurements = NULL) {	
-
 	print("Import and reference generation has started.")
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
@@ -52,7 +51,6 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 	bone <- tolower(bone)#
 	#sort by bone
 	sort <- sort[sort$Element == bone,]
-	
 
 	if(is.null(measurements)) {
 		measurements <- eval(as.symbol(bone))
@@ -67,7 +65,6 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 	for(i in 1:length(measurements)) {
 		sortdata[,i+3] <- as.character(sort[[measurements[i]]])
 	}
-
 
 	reftemp <- read.table(system.file("extdata", filename_bone, package = "OsteoSort"), header = TRUE, sep=",")
 	refdata <- array(NA,c(nrow(reftemp),length(measurements)*2)) #times two for left and right but doesnt create one for id since it's not needed for reference
@@ -87,10 +84,8 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 	colnames(sortdata) <- c(c("A", "B", "C",measurements))
 	colnames(refdata) <- namedf
 
-
 	sortdata <- as.data.frame(sortdata, stringsAsFactors = FALSE)
 	reff <- as.data.frame(refdata, stringsAsFactors = FALSE)
-
 
 	#creates unique combination between left and right elements and reorders them 
 	#so left and right measurements are next to each other similar to the reference data
@@ -105,7 +100,6 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 
 	#Removes rows from sort if there is no corresponding match from left to right
 	###########################################################
-
 	c <- col(res)[is.na(res)]
 	r <- row(res)[is.na(res)]
 

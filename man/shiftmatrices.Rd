@@ -4,14 +4,14 @@
 \alias{shiftmatrices}
 \title{Nearest neighbor matrices shifting function}
 \usage{
-shiftmatrices(first_configuration, second_configuration, cores = 1)
+shiftmatrices(first_configuration, second_configuration, threads = 1)
 }
 \arguments{
 \item{first_configuration}{The first two-dimensional configuration}
 
 \item{second_configuration}{The second two-dimensional configuration}
 
-\item{cores}{Number of cores for parallel processing}
+\item{threads}{The number of threads to use}
 }
 \description{
 Nearest neighbor matrices shifting function

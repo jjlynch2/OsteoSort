@@ -6,20 +6,26 @@
 \usage{
 antestat.regtest(sort = NULL, ref = NULL, sessiontempdir = NULL,
   output_options = c(FALSE, FALSE), prediction_interval = 0.95, tails = 2,
-  alphalevel = 0.05, alphatest = TRUE, cores = 1)
+  alphalevel = 0.05, alphatest = TRUE, threads = 1)
 }
 \arguments{
+\item{sort}{The antemortem stature and postmorterm measurement for comparison}
+
+\item{ref}{The reference sample used in the regression model}
+
 \item{sessiontempdir}{Specifies temporary directory for analytical session}
 
 \item{output_options}{C(TRUE,FALSE) First logic specifies excel output, second specifies plot output}
 
-\item{prediction_interval}{The prediction interval level}
+\item{prediction_interval}{The prediction interval level for exclusion}
 
-\item{tails}{The number of tails for the t-statistic}
+\item{tails}{The number of tails for the t-distribution}
 
-\item{antemortem_stature}{The antemortem stature for comparison}
+\item{alphalevel}{The alpha level for exclusion}
 
-\item{postmortem_measurement}{The postmortem measurement for comparison}
+\item{alphatest}{If TRUE specifies the use of alphalevels for exclusion. If FALSE specifies the use of prediction intervals}
+
+\item{threads}{The number of threads to use}
 }
 \description{
 Function to produce a p-value evaluating the strength of evidence for comparing an antemortem stature to postmortem measurement

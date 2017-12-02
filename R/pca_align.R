@@ -1,6 +1,6 @@
 #' Conducts PCA and returns scores
 #'
-#' @param first_configuration The first point cloud and the cloud to be mirroed
+#' @param first_configuration Point cloud to be aligned along principal components
 #'
 #' @keywords pca_align
 #' @export

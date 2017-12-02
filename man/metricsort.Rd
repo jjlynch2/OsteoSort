@@ -23,7 +23,7 @@ metricsort(sort, bone = "femur", side = "both", method = "Quartiles",
 
 \item{cutoff}{The outlier cutoff value for either quartiles or standard deviations}
 
-\item{output_options}{First index TRUE outputs to excel, second index TRUE outputs plot}
+\item{output_options}{C(TRUE,FALSE) First logic specifies excel output, second specifies plot output}
 }
 \description{
 A function to sort by bone metrics

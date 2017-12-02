@@ -8,9 +8,9 @@
 #' @param npoints The number of points in the inverse elliptical fourier analysis transformation
 #' @param smooth_iterations The number of smoothing iterations in the elliptical fourier analysis
 #' @param nharmonics The number of harmonics in elliptical fourier analysis
-#' @param fragment TRUE FALSE if fragmented specimens are being used
+#' @param fragment if TRUE fragmented specimens are being used
 #'
-#' Traicing code modified from Julien Claude (Morphometrics with R 2008)
+#' Traicing code heavily modified from Julien Claude (Morphometrics with R 2008)
 #'
 #' @keywords outline.images
 #' @export
@@ -49,8 +49,6 @@ outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRU
 			}
 			orig_size <- M@size
 		}
-
-
 		temp_matrix <- M@grey
 		x <- t(which(temp_matrix == 0, arr.ind = TRUE, useNames=FALSE)[round(nrow(which(temp_matrix == 0, arr.ind = TRUE)) / 2),]) #locate starting point
 		I <- M@grey #b/w matrix
@@ -102,9 +100,6 @@ outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRU
 		spec1 <- as.matrix(data.frame(spec1))
 		spec1 <- round(spec1) #round to whole numbers
 
-
-
-
 		if(!fragment) {
 			if(scale) { #scale comes after EFA duh! 
 				centroid <- apply(spec1,2,mean)
@@ -121,7 +116,6 @@ outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRU
 			}
 		}
 	
-
 		if(fragment) { 
 			#removes any part of the outline that was on the original border! simple
 			spec1 <- spec1[spec1[,2] < orig_size[1],]

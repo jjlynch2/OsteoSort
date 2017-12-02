@@ -7,7 +7,7 @@
 #' @param measurements The measurement types to be used
 #' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
 #' @param cutoff The outlier cutoff value for either quartiles or standard deviations
-#' @param output_options First index TRUE outputs to excel, second index TRUE outputs plot
+#' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
 #'
 #' @keywords metricsort
 #' @export
@@ -47,13 +47,10 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 	}
 
 	sort <- na.omit(sort)
-
-
-
-		s <- sd(as.numeric(sort[,4]))
-		m <- mean(as.numeric(sort[,4]))
-		me <- mean(as.numeric(sort[,4]))
-		IQQ <- quantile(as.numeric(sort[,4]))[4] -  quantile(as.numeric(sort[,4]))[2]
+	s <- sd(as.numeric(sort[,4]))
+	m <- mean(as.numeric(sort[,4]))
+	me <- mean(as.numeric(sort[,4]))
+	IQQ <- quantile(as.numeric(sort[,4]))[4] -  quantile(as.numeric(sort[,4]))[2]
 		
 	if(method == "Standard_deviation") {
 		#two standard deviations and mean
@@ -110,18 +107,13 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 		}
 	}
 
-
 	colnames(nonoutliersdf) <- c("id", "Side", "Element", "measurements")
 	colnames(outlierdflower) <- c("id", "Side", "Element", "measurements")
 	colnames(outlierdfupper) <- c("id", "Side", "Element", "measurements")
-
-
 	
 	if(all(is.na(nonoutliersdf))) {nonoutliersdf <- NULL}
 	if(all(is.na(outlierdflower))) {outlierdflower <- NULL}
 	if(all(is.na(outlierdfupper))) {outlierdfupper <- NULL}
-
-	
 
 	if(!is.null(upperfile)) {
 		if(!all(is.null(outlierdfupper))) { #skips if all NA (no outliers)
@@ -149,7 +141,6 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 	}
 	
 	
-
 	if(output_options[2]) {
 		no <- OsteoSort:::output_function(hera1 = list(sort[,4], bone, plotme, upper, lower, lowermax, uppermax, nocut), method = "OS", type = "plot")
 	}

@@ -1,10 +1,9 @@
-#' analytical_temp_space function
+#' Internal function to deal with temporary analytical directory and session temp
 #' 
 #' @param output_options
 #' @param sessiontempdir
-#' 
-#' This is an internal function to deal with temporary analytical directory and session temp
 #'
+#' @examples
 #' analytical_temp_space()
 
 
@@ -20,6 +19,5 @@ analytical_temp_space <- function(output_options, sessiontempdir) {
 	else {
 		direc <- NULL
 	}
-
 	return(direc)
 }

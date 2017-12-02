@@ -7,7 +7,7 @@ Function to produce combinations for associating elements with regression}
 \usage{
 reg.multitest(sort = NULL, ref = NULL, splitn = NULL,
   prediction_interval = 0.9, sessiontempdir = NULL,
-  output_options = c(TRUE, FALSE), cores = 1, test = TRUE,
+  output_options = c(TRUE, FALSE), threads = 1, test = TRUE,
   alphatest = TRUE, alphalevel = 0.05)
 }
 \arguments{
@@ -23,13 +23,11 @@ reg.multitest(sort = NULL, ref = NULL, splitn = NULL,
 
 \item{output_options}{C(TRUE,FALSE) First logic specifies excel output, second specifies plot output}
 
-\item{cores}{Number of cores for parallel processing}
+\item{threads}{The number of threads to use}
 
 \item{test}{If true, PCA-CCA-Regression, if false, Simple Linear Regression}
 
-\item{alphalevel}{Specifies alpha level}
-
-\item{alphalevel}{Specifies alpha level}
+\item{alphalevel}{The alpha level for exclusion}
 }
 \description{
 reg.test Input Function

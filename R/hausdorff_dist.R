@@ -1,14 +1,12 @@
 #' hausdorff distance function
 #' 
-#' 
 #' @param first_configuration The first two-dimensional configuration
 #' @param second_configuration The second two-dimensional configuration
 #' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff", "Uni-Hausdorff")
 #' @param n_regions Specifies the number of regions for Segmented-Hausdorff
-#' @param dist Specifies distance per region, either maximum or average distance
-#' @param threads The number of threads/cores to use with RcppParallel
+#' @param dist Specifies distance type either maximum, average, or dilated
+#' @param threads The number of threads to use
 #'
-#' Heavily modified from the opensource code in hausdorff_dist() function from the pracma package
 #'
 #' @keywords segmented_hausdorff_dist
 #' @export

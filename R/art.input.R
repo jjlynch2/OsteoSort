@@ -111,10 +111,7 @@ art.input <- function (bone = NULL, sort = NULL) {
 
      sortdata <- split(sortdata, seq(nrow(sortdata))) #needs to be replaced
 
-     
 	gc()
 	refdata <- as.data.frame(refdata, stringsAsFactors=FALSE)
 	return(list(sortdata, refdata))
-
-
 }

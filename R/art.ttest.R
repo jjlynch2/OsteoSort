@@ -1,15 +1,15 @@
 #' Articulation comparison t-test Function
 #' 
-#' @param ref Reference data
 #' @param sort Sorted data for comparison
+#' @param ref Reference data
 #' @param sessiontempdir Specifies temporary directory for analytical session
-#' @param threads Number of cores for parallel processing
-#' @param alphalevel Specifies alpha level
-#' @param absolutevalue Uses absolute value for D-values if true
-#' @param testagainstzero Uses 0 for mean if true 
+#' @param threads The number of threads to use
+#' @param alphalevel The alpha level for exclusion
+#' @param absolutevalue if TRUE uses absolute value for D-values
+#' @param testagainstzero if TRUE uses 0 for sample mean
 #' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
-#' @param power If true, uses half-normal distribution power transformation
-#' @param tails number of tails
+#' @param power If TRUE uses half-normal distribution power transformation
+#' @param tails The number of tails for the t-distribution
 #'
 #' @keywords art.ttest
 #' @export
@@ -138,5 +138,4 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 	setwd(workingdir)
 	enableJIT(0)
 	return(list(direc,hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,],hera1[as.numeric(as.character(hera1$p.value)) <= alphalevel,]))	
-
 }

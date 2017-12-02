@@ -2,15 +2,16 @@
 % Please edit documentation in R/analytical_temp_space.R
 \name{analytical_temp_space}
 \alias{analytical_temp_space}
-\title{analytical_temp_space function}
+\title{Internal function to deal with temporary analytical directory and session temp}
 \usage{
 analytical_temp_space(output_options, sessiontempdir)
 }
 \arguments{
-\item{sessiontempdir}{This is an internal function to deal with temporary analytical directory and session temp
-
-analytical_temp_space()}
+\item{sessiontempdir}{}
 }
 \description{
-analytical_temp_space function
+Internal function to deal with temporary analytical directory and session temp
+}
+\examples{
+analytical_temp_space()
 }

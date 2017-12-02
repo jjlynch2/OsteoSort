@@ -4,9 +4,9 @@
 \alias{art.ttest}
 \title{Articulation comparison t-test Function}
 \usage{
-art.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL, cores = 1,
+art.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL, threads = 1,
   alphalevel = 0.1, absolutevalue = TRUE, testagainstzero = FALSE,
-  output_options = c(TRUE, FALSE), power = TRUE)
+  output_options = c(TRUE, FALSE), power = TRUE, tails = 2)
 }
 \arguments{
 \item{ref}{Reference data}
@@ -15,17 +15,19 @@ art.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL, cores = 1,
 
 \item{sessiontempdir}{Specifies temporary directory for analytical session}
 
-\item{cores}{Number of cores for parallel processing}
+\item{threads}{The number of threads to use}
 
-\item{alphalevel}{Specifies alpha level}
+\item{alphalevel}{The alpha level for exclusion}
 
-\item{absolutevalue}{Uses absolute value for D-values if true}
+\item{absolutevalue}{if TRUE uses absolute value for D-values}
 
-\item{testagainstzero}{Uses 0 for mean if true}
+\item{testagainstzero}{if TRUE uses 0 for sample mean}
 
 \item{output_options}{C(TRUE,FALSE) First logic specifies excel output, second specifies plot output}
 
-\item{power}{If true, uses half-normal distribution power transformation}
+\item{power}{If TRUE uses half-normal distribution power transformation}
+
+\item{tails}{The number of tails for the t-distribution}
 }
 \description{
 Articulation comparison t-test Function

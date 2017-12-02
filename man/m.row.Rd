@@ -9,10 +9,11 @@ m.row(xx, table)
 \arguments{
 \item{xx}{to be matched}
 
-\item{table}{table to search
-
-m.row()}
+\item{table}{table to search}
 }
 \description{
 Match rows from different cols
+}
+\examples{
+m.row()
 }

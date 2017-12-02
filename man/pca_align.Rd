@@ -7,7 +7,7 @@
 pca_align(configuration = NULL)
 }
 \arguments{
-\item{first_configuration}{The first point cloud and the cloud to be mirroed}
+\item{first_configuration}{Point cloud to be aligned along principal components}
 }
 \description{
 Conducts PCA and returns scores

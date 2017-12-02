@@ -30,7 +30,6 @@ efa <- function(pointcloud, harmonics = 40) {
 	t1m1 <- c(0, t1[-n_row])
 	T <- sum(Dt)
 	an <- bn <- cn <- dn <- en <- fn <- harmonics
-#make multithreading
 
 	for (i in 1:harmonics) {
 		Ti <- (T / (2 * pi^2 * i^2))

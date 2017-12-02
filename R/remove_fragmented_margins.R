@@ -12,7 +12,6 @@
 remove_fragmented_margins <- function(first_configuration, second_configuration, indices) {
 	moving_indices <- indices[[1]]
 	target_indices <- indices[[2]]
-
 	t1 <- minimum_euclidean_distances_indices(first_configuration, second_configuration)
 	t2 <- minimum_euclidean_distances_indices(second_configuration, first_configuration)
 	if(length(target_indices) > 0) {

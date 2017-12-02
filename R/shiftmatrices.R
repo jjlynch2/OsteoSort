@@ -2,7 +2,7 @@
 #' 
 #' @param first_configuration The first two-dimensional configuration
 #' @param second_configuration The second two-dimensional configuration
-#' @param cores Number of cores for parallel processing
+#' @param threads The number of threads to use
 #' 
 #' @keywords shiftmatrices
 #' @export
@@ -11,7 +11,6 @@
 
 shiftmatrices <- function(first_configuration, second_configuration, threads=1) {
 	index <- mcNNindex(first_configuration, second_configuration, k = 1, threads = threads)
-
 	if(sum(diff(index) < 0) > nrow(second_configuration)/2) {A <-2}
 	if(sum(diff(index) > 0) > nrow(second_configuration)/2) {A <-1}
 

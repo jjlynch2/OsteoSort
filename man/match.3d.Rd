@@ -4,48 +4,12 @@
 \alias{match.3d}
 \title{three-dimensional pair-match function}
 \usage{
-match.3d(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL,
-  fragment = FALSE, output_options = c(TRUE, TRUE, TRUE, TRUE),
-  iteration = 10, transformation = "rigid", cores = 1,
-  test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5,
-  n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6,
-  dist = "average")
-}
-\arguments{
-\item{outlinedata}{The outline data taken from outline.images()}
-
-\item{min}{minimum distance for ICP}
-
-\item{sessiontempdir}{Specifies temporary directory for analytical session}
-
-\item{fragment}{TRUE FALSE specifies if complete or fragmented registration matching procedure should be conducted}
-
-\item{output_options}{If true, writes to .csv file}
-
-\item{iteration}{The number of iterations for Iterative Closest Point}
-
-\item{transformation}{The type of Iterative Closest Point transformation ("Rigid", "Similarity", "Affine")}
-
-\item{cores}{Number of cores for parallel processing}
-
-\item{test}{Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")}
-
-\item{temporary_mean_specimen}{The specimen to be used as the temporary mean}
-
-\item{mean_iterations}{The number of mean iterations}
-
-\item{n_lowest_distances}{The number of lowest distance matches to return as a potential match}
-
-\item{hide_distances}{Hides the distance values in short lists to avoid analytical bias}
-
-\item{n_regions}{Specifies number of regions per Segmented-Hausdorff}
-
-\item{dist}{Specifies distance per region, either maximum or average distance}
+match.3d()
 }
 \description{
 three-dimensional pair-match function
 }
 \examples{
-match.2d()
+match.3d()
 }
 \keyword{match.2d}

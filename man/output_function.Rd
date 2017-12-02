@@ -2,10 +2,20 @@
 % Please edit documentation in R/output_function.R
 \name{output_function}
 \alias{output_function}
-\title{output_excel function}
+\title{Internal function for output_options}
 \usage{
 output_function(hera1, method = "exclusion", type = "csv")
 }
+\arguments{
+\item{hera1}{The data to be ploted}
+
+\item{method}{The analytical method to be plotted}
+
+\item{type}{The type of output}
+}
 \description{
-Only used to call internally
+Internal function for output_options
+}
+\examples{
+output_function()
 }

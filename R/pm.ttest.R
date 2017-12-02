@@ -3,13 +3,13 @@
 #' @param ref Reference data
 #' @param sort Sorted data for comparison
 #' @param sessiontempdir Specifies temporary directory for analytical session
-#' @param threads Number of threads for parallel processing
-#' @param alphalevel Specifies alpha level
-#' @param absolutevalue Uses absolute value for D-values if true
-#' @param testagainstzero Uses 0 for mean if true 
+#' @param threads The number of threads to use
+#' @param alphalevel The alpha level for exclusion
+#' @param absolutevalue if TRUE uses absolute value for D-values
+#' @param testagainstzero if TRUE uses 0 for sample mean
 #' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
-#' @param power If true, uses half-normal distribution power transformation
-#' @param tails number of tails
+#' @param power If TRUE uses half-normal distribution power transformation
+#' @param tails The number of tails for the t-distribution
 #' 
 #' @keywords pm.ttest
 #' @export
@@ -31,7 +31,6 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 	
-
 	is.uniquepm <<- list()
 	unique.difsd <<- list()
 	unique.difm <<- list()
@@ -130,12 +129,9 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 	rm(unique.yrow) 
 	rm(unique.difa)
 
-
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="csv")
 	}
-		
-
 
 	gc()
 	setwd(workingdir)

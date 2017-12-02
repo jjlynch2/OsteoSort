@@ -10,9 +10,7 @@
 
 fragment_margins <- function(configuration = NULL) {	
 	shiftm <- function(d, k) rbind(tail(d,k), head(d,-k), deparse.level = 0)
-
 	nrr <- nrow(configuration)
-
 	ed1 <- sqrt(sum( (configuration[1,] - configuration[2,]) ^2 ) )
 	ed2 <- sqrt(sum( (configuration[2,] - configuration[3,]) ^2 ) )
 

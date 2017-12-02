@@ -7,8 +7,11 @@
 add.alpha(col, alpha = 1)
 }
 \arguments{
-\item{alpha}{add.alpha()}
+\item{alpha}{}
 }
 \description{
 Internal function for adding alpha values to plots
+}
+\examples{
+add.alpha()
 }

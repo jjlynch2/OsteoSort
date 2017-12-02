@@ -4,16 +4,16 @@
 #' @param min minimum distance for ICP
 #' @param iteration The number of iterations for Iterative Closest Point
 #' @param transformation The type of Iterative Closest Point transformation ("Rigid", "Similarity", "Affine")
-#' @param threads Number of threads for parallel processing
+#' @param threads The number of threads to use
 #' @param mean_iterations The number of mean iterations
-#' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff")
+#' @param test Specifies the distance calculation ("Segmented-Hausdorff", "Hausdorff", "Uni-Hausdorff")
 #' @param sessiontempdir Specifies temporary directory for analytical session
 #' @param hide_distances Hides the distance values in short lists to avoid analytical bias 
 #' @param n_lowest_distances The number of lowest distance matches to return as a potential match
 #' @param temporary_mean_specimen The specimen to be used as the temporary mean
-#' @param output_options If true, writes to .csv file
-#' @param dist Specifies distance per region, either maximum or average distance
-#' @param n_regions Specifies number of regions per Segmented-Hausdorff
+#' @param output_options C(TRUE,FALSE) First logic specifies excel output for matches, second specifies excel output for all distances, third specifies registered plots, and fourth specifies TPS coordinate files
+#' @param dist Specifies distance type either maximum, average, or dilated
+#' @param n_regions Specifies the number of regions for Segmented-Hausdorff
 #' @param fragment TRUE FALSE specifies if complete or fragmented registration matching procedure should be conducted
 #'
 #' @keywords match.2d
@@ -87,8 +87,6 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 		pwc <- 1
 		for(z in 1:length(outlinedata[[2]])) {
 			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
-
-
 				zzz <- 0
 				if(nrow(specmatrix[[z]]) >= nrow(specmatrix[[x]])) {moving <- specmatrix[[x]]; target <- specmatrix[[z]];zzz <- 1}		
 				if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}	
@@ -121,8 +119,6 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 		coords <- pairwise_coords 
 		matches <- rbind(matches1, matches2) #combine both directions
 	}#fragment
-
-
 
 	resmatches <- array()
 	for(a in unique(matches[,1])) {

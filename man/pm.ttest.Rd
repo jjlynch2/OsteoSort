@@ -6,7 +6,8 @@
 \usage{
 pm.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL,
   alphalevel = 0.1, power = TRUE, absolutevalue = TRUE,
-  testagainstzero = FALSE, output_options = c(TRUE, FALSE), cores = 1)
+  testagainstzero = FALSE, output_options = c(TRUE, FALSE), threads = 1,
+  tails = 2)
 }
 \arguments{
 \item{ref}{Reference data}
@@ -15,17 +16,19 @@ pm.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL,
 
 \item{sessiontempdir}{Specifies temporary directory for analytical session}
 
-\item{alphalevel}{Specifies alpha level}
+\item{alphalevel}{The alpha level for exclusion}
 
-\item{power}{If true, uses half-normal distribution power transformation}
+\item{power}{If TRUE uses half-normal distribution power transformation}
 
-\item{absolutevalue}{Uses absolute value for D-values if true}
+\item{absolutevalue}{if TRUE uses absolute value for D-values}
 
-\item{testagainstzero}{Uses 0 for mean if true}
+\item{testagainstzero}{if TRUE uses 0 for sample mean}
 
 \item{output_options}{C(TRUE,FALSE) First logic specifies excel output, second specifies plot output}
 
-\item{cores}{Number of cores for parallel processing}
+\item{threads}{The number of threads to use}
+
+\item{tails}{The number of tails for the t-distribution}
 }
 \description{
 Pair-match T.test Function

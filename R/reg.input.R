@@ -94,9 +94,6 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 		sort2 <- cbind(sort2, sort2T[[i]])
 	}
 	
-	
-	
-	
 	sort1 <- sort1[,-1]
 	sort2 <- sort2[,-1]
 	

@@ -7,10 +7,9 @@
 #' @param prediction_interval Specifies the prediction interval 
 #' @param sessiontempdir Specifies temporary directory for analytical session 
 #' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
-#' @param threads Number of threads for parallel processing
+#' @param threads The number of threads to use
 #' @param test If true, PCA-CCA-Regression, if false, Simple Linear Regression 
-#' @param alphalevel Specifies alpha level
-#' @param alphalevel Specifies alpha level
+#' @param alphalevel The alpha level for exclusion
 #'
 #' @keywords reg.test
 #' @export
@@ -116,11 +115,10 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 		
 			pm1 <- predict(model1, newdata = data.frame(score1 = as.numeric(df1)), interval = "prediction", level = prediction_interval)
 
-
-				if(df2 <= pm1[3] && df2 >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
-					within <- "Cannot Exclude"
-				}
-				else within <- "Excluded"
+			if(df2 <= pm1[3] && df2 >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
+				within <- "Cannot Exclude"
+			}
+			else within <- "Excluded"
 
 			if(output_options[2]) {
 				lmp1 <- predict(model1, interval = "prediction", level = prediction_interval)
@@ -128,8 +126,6 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				score2 <- cmodel1$scores$yscores[,1]
 				no_return_value <- OsteoSort:::output_function(hera1=list(temp1[1], temp2[1], score1, score2, df2, df1, lmp1, score1), method="exclusion", type="plot2")
 			}
-
-
 
 			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],paste(c(temp1n, temp2n), collapse = " "),length(c(temp1n, temp2n)),round(rsqr1, digits = 3),t1r,NA,within, stringsAsFactors=FALSE))
 
@@ -250,8 +246,6 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
      print("Statistical association comparisons completed.")
 	names(hera1) <- c("id","Side","Element","id","Side","Element","Measurements","# of measurements","RSquared", "Sample","p-value","Result")
-
-
 
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="csv")

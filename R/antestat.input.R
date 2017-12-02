@@ -14,7 +14,6 @@
 #' antestat.input()
 
 antestat.input <- function(antemortem_stature = NULL, postmortem_measurement = NULL, bone = "Femur", population = "Trotter-any-male", metric = "cm") {
-
 	print("Import and reference generation has started.")
 
 	options(warn = -1) #disables warnings

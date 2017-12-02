@@ -2,12 +2,15 @@
 #'
 #' Function to produce a p-value evaluating the strength of evidence for comparing an antemortem stature to postmortem measurement
 #'
-#' @param antemortem_stature The antemortem stature for comparison
-#' @param postmortem_measurement The postmortem measurement for comparison
-#' @param prediction_interval The prediction interval level
-#' @param tails The number of tails for the t-statistic
+#' @param sort The antemortem stature and postmorterm measurement for comparison
+#' @param ref The reference sample used in the regression model
+#' @param prediction_interval The prediction interval level for exclusion
+#' @param alphalevel The alpha level for exclusion
+#' @param alphatest If TRUE specifies the use of alphalevels for exclusion. If FALSE specifies the use of prediction intervals
+#' @param tails The number of tails for the t-distribution
 #' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
 #' @param sessiontempdir Specifies temporary directory for analytical session 
+#' @param threads The number of threads to use
 #'
 #' @keywords antestat
 #' @export
@@ -52,7 +55,6 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 			}
 			else within <- "Excluded"
 		}
-
 		if(output_options[2]) {
 			lmp1 <- predict(lm1, interval = "prediction", level = prediction_interval)
 			no_return_value <- OsteoSort:::output_function(hera1=list(X[1], X[3], stature, measurement, pm1m[1,1], X[6], X[2], lmp1), method="exclusion", type="plot3")

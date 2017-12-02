@@ -25,9 +25,9 @@ outline.images(imagelist1, imagelist2, threshold = 0.8, scale = TRUE,
 
 \item{nharmonics}{The number of harmonics in elliptical fourier analysis}
 
-\item{fragment}{TRUE FALSE if fragmented specimens are being used
+\item{fragment}{if TRUE fragmented specimens are being used
 
-Traicing code modified from Julien Claude (Morphometrics with R 2008)}
+Traicing code heavily modified from Julien Claude (Morphometrics with R 2008)}
 }
 \description{
 outline.images function
