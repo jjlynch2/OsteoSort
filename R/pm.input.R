@@ -54,7 +54,7 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 
 	if(is.null(measurements)) {
 		measurements <- eval(as.symbol(bone))
-		#colnames(sort) <- c("id", "Side", "Element",measurements)
+		if(nrow(sort) == 1) {colnames(sort) <- c("id", "Side", "Element",measurements)}
 	}
 
 	sortdata <- array(NA,c(nrow(sort),length(measurements)+3))
