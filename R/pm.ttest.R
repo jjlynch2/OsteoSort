@@ -110,7 +110,7 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 	if(Sys.info()[['sysname']] == "Windows") {
 		cl <- makeCluster(threads)
 		clusterExport(cl, list("ref", "alphalevel", "p1", "absolutevalue", "testagainstzero", "output_options", "tails", "is.uniquepm", "unique.difsd", "unique.difm", "unique.df", "unique.ycol", "unique.yrow", "unique.difa"), envir = environment())
-		op <- system.time ( hera1 <- parLapply(FUN = myfunpm, X = sort) )
+		op <- system.time ( hera1 <- parLapply(cl, FUN = myfunpm, X = sort) )
 		print(op)
 		stopCluster(cl)
 	}
