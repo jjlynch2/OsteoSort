@@ -116,7 +116,7 @@ antestat.input <- function(antemortem_stature = NULL, postmortem_measurement = N
 	colnames(sort) <- c("id","Stature","id","Side","Element",bonemeasurement)
 	colnames(K) <- c("id","Stature")
 	gc()
-
+	sortlist <- split(sort, 1:nrow(sort))
 	options(stringsAsFactors = TRUE) #restore default R  
      print("Import and reference generation completed")
 	return(list(sort, K))

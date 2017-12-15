@@ -63,7 +63,6 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 		data.frame(X[1],X[2],X[3],X[4],X[5], X[6], round(tt, digits = 2), round(pp, digits=2), nref, round(pm1m[1,2], digits=2), round(pm1m[1,1], digits=2), round(pm1m[1,3], digits=2), round(summary(lm1)$r.squared, digits = 2), within, stringsAsFactors = FALSE)
 	}
 
-	sortlist <- split(sort, 1:nrow(sort))
 
 	if(Sys.info()[['sysname']] == "Windows") {
 		cl <- makeCluster(threads)
