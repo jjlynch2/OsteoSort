@@ -17,7 +17,7 @@
 #' @examples 
 #' antestat.regtest()
 
-antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(FALSE,FALSE), prediction_interval = 0.95, tails = 2, alphalevel = 0.05, alphatest = TRUE, threads = 1) {
+antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(TRUE,FALSE), prediction_interval = 0.95, tails = 2, alphalevel = 0.05, alphatest = TRUE, threads = 1) {
      print("Statistical comparisons started")   	
 	options(stringsAsFactors = FALSE) 
 	enableJIT(3)
@@ -66,7 +66,7 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 
 	if(Sys.info()[['sysname']] == "Windows") {
 		cl <- makeCluster(threads)
-		clusterExport(cl, list("ref", "alphalevel", "alphatest", "output_options", "tails", "lm1", "nref", "mes", "sta"), envir = environment())
+		clusterExport(cl, list("ref", "alphalevel", "prediction_interval", "alphatest", "output_options", "tails", "lm1", "nref", "mes", "sta"), envir = environment())
 		op <- system.time ( hera1 <- parLapply(cl=cl, fun = myfunante, X = sort) )
 		print(op)
 		stopCluster(cl)
