@@ -73,7 +73,7 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 
 	}
 	else {
-		op <- system.time ( hera1m <- mclapply(FUN = myfunante, X = sortlist, mc.cores = threads, mc.preschedule = TRUE) )
+		op <- system.time ( hera1m <- mclapply(FUN = myfunante, X = sort, mc.cores = threads, mc.preschedule = TRUE) )
 		print(op)
 	}
 

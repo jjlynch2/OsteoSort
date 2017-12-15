@@ -13,7 +13,6 @@
 
 pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard', threshold = 1, measurements = NULL) {	
 	print("Import and reference generation started")
-
 	options(stringsAsFactors = FALSE)
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
@@ -54,7 +53,7 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 
 	if(is.null(measurements)) {
 		measurements <- eval(as.symbol(bone))
-		#if(nrow(sort) == 1) {colnames(sort) <- c("id", "Side", "Element",measurements)}
+		if(nrow(sort) == 2) {colnames(sort) <- c("id", "Side", "Element",measurements)} #requires fix for one-to-one comparison
 	}
 
 	sortdata <- array(NA,c(nrow(sort),length(measurements)+3))
