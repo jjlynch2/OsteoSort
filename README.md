@@ -16,7 +16,7 @@ Minor changes:
 Adjusted print messages for start/finish of functions
 
 Moderate changes:
-
+parLapply implemented on Windows to replace Lapply
 
 
 
