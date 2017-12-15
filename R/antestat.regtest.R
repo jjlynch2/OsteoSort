@@ -18,7 +18,8 @@
 #' antestat.regtest()
 
 antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(FALSE,FALSE), prediction_interval = 0.95, tails = 2, alphalevel = 0.05, alphatest = TRUE, threads = 1) {
-     print("Antemortem stature to postmortem measurement comparisons have started.")	
+     print("Statistical comparisons started")   	
+	options(stringsAsFactors = FALSE) 
 	enableJIT(3)
 
 	options(warn = -1) #disables warnings
@@ -75,7 +76,6 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 
 	hera1m = as.data.frame(data.table::rbindlist(hera1m))
 	colnames(hera1m) <- c("id","am_stature", "id","side","element","pm_measurement", "t-statistic", "p-value","sample_size", "lower_PI","point_estimate","upper_PI", "Rsquared", "Result")
-	print("Antemortem stature to postmortem measurement comparisons have completed.")	
 
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(hera1m, method="exclusion", type="csv")
@@ -83,6 +83,7 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 
 	gc()
 	setwd(workingdir)
-
+	options(stringsAsFactors = TRUE) #restore default R  
+     print("Statistical comparisons completed")
 	return(list(direc,hera1m[hera1m$Result == "Cannot Exclude",], hera1m[hera1m$Result == "Excluded",]))
 }

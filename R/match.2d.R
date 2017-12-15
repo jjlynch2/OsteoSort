@@ -22,7 +22,8 @@
 #' match.2d()
 
 match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", threads=1, test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
-	print("Two-dimensional pair match comparisons have started.")	
+	print("Form comparisons started")		
+	options(stringsAsFactors = FALSE)  	
 
 	suppressMessages(library(compiler))
 	enableJIT(3)
@@ -54,7 +55,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 		for(b in 1:mean_iterations) {
 			target <- meann
 			for(i in 1:dim(homolog)[3]) {
-				print(paste("specimen: ", dimnames(homolog)[[3]][i], " mean iteration: ", b, sep=""))
+				print(paste("Registering specimen: ", dimnames(homolog)[[3]][i], " mean iteration: ", b, sep=""))
 				moving <- homolog[,,i]
 				temp <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=threads)
 				homolog[,,i] <- shiftmatrices(first_configuration = temp, second_configuration = target, threads) #shifts matrices to match
@@ -74,7 +75,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				distance <- hausdorff_dist(homolog[,,z], homolog[,,x], test = test, n_regions = n_regions, dist = dist, threads = threads)
 				matches1[nz,] <- c(dimnames(homolog)[[3]][z], dimnames(homolog)[[3]][x], distance)
 				matches2[nz,] <- c(dimnames(homolog)[[3]][x], dimnames(homolog)[[3]][z], distance)
-				print(paste(dimnames(homolog)[[3]][x], "-", dimnames(homolog)[[3]][z], " ", test, " distance: ", distance, sep=""))
+				print(paste("Specimens: ", dimnames(homolog)[[3]][x], "-", dimnames(homolog)[[3]][z], " ", test, " distance: ", distance, sep=""))
 				nz <- nz + 1
 			}
 		}
@@ -105,7 +106,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				distance <- hausdorff_dist(moving, target, test = test, dist = dist, threads = threads, indices = list(moving_indices, target_indices))
 				matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
 				matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
-				print(paste(names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
+				print(paste("Specimens: ", names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
 				nz <- nz + 1
 
 				#saves coords for output
@@ -158,8 +159,8 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 
 	comparisons <- length(outlinedata[[2]]) * length(outlinedata[[3]]) #number of comparisons
 
-	print("Two-dimensional pair match comparisons have completed.")	
-
+	print("Form comparisons completed")	
+	options(stringsAsFactors = TRUE) #restore default R  
 	return(list(coords,resmatches,direc,comparisons,matches))
 
 }

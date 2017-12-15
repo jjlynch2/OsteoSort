@@ -17,7 +17,8 @@
 #' reg.multitest()
 
 reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, sessiontempdir = NULL, output_options = c(TRUE,FALSE), threads = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05) {	    
-     print("Statistical association comparisons have started.")
+     print("Statistical comparisons started")	
+	options(stringsAsFactors = FALSE)    
 	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
@@ -244,7 +245,6 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
 	}
 
-     print("Statistical association comparisons completed.")
 	names(hera1) <- c("id","Side","Element","id","Side","Element","Measurements","# of measurements","RSquared", "Sample","p-value","Result")
 
 	if(output_options[1]) {
@@ -254,6 +254,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 	gc()
 	setwd(workingdir)
 	enableJIT(0)
-
+	options(stringsAsFactors = TRUE) #restore default R  
+     print("Statistical comparisons completed")
 	return(list(direc,hera1[hera1$Result == "Cannot Exclude",], hera1[hera1$Result == "Excluded",]))
 }

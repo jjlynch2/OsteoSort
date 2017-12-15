@@ -15,6 +15,8 @@
 #' metricsort()
 
 metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles", measurements = NULL, sessiontempdir = NULL, cutoff = 1.5, output_options = c(TRUE, TRUE)) {	
+     print("Outlier analysis started")		
+	options(stringsAsFactors = FALSE)  
 	upperfile = "upper.csv"
 	lowerfile = "lower.csv"
 	nonoutliersfile = "non-outliers.csv"
@@ -146,5 +148,7 @@ metricsort <- function (sort, bone = "femur", side = "both", method = "Quartiles
 	}
 	
 	setwd(workingdir)
+	options(stringsAsFactors = TRUE) #restore default R  
+     print("Outlier analysis completed")	
 	return(list(direc,outlierdflower,outlierdfupper,nonoutliersdf,round(m, digits=2),round(s, digits=2) ,round(me, digits=2),round(IQQ, digits=2)))
 }

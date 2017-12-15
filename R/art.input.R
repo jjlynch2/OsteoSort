@@ -9,11 +9,12 @@
 #' art.input()
 
 art.input <- function (bone = NULL, sort = NULL) {
+	print("Import and reference generation started")
+	options(stringsAsFactors = FALSE)
 	suppressMessages(library(plyr))
 	options(as.is = TRUE)
 	options(warn = -1)
 	if(is.null(bone) || is.null(sort)){return(NULL)}
-     print("Import has started......")
 	if (bone == "fi") {	
 		measurements <- c("Fem_04","Osc_17")	
 		bone1 <- 'femur'
@@ -107,11 +108,12 @@ art.input <- function (bone = NULL, sort = NULL) {
 	sortdata <- na.omit(sortdata)
 	
 	colnames(sortdata) <- c("id","id","Side","Side","Element","Element",measurements[1],measurements[2])
-     print("Import completed...Calling statistical function")
 
-     sortdata <- split(sortdata, seq(nrow(sortdata))) #needs to be replaced
+     sortdata <- split(sortdata, 1:nrow(sortdata)) #needs to be replaced
 
 	gc()
 	refdata <- as.data.frame(refdata, stringsAsFactors=FALSE)
+	options(stringsAsFactors = TRUE) #restore default R  
+     print("Import and reference generation completed")
 	return(list(sortdata, refdata))
 }

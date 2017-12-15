@@ -18,7 +18,8 @@
 
 
 art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads = 1, alphalevel = 0.1, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), power = TRUE, tails = 2) {
-     print("Statistical articulation comparisons have started.")
+	options(stringsAsFactors = FALSE)  
+     print("Statistical comparisons started")
 	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
@@ -116,7 +117,6 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 		op <- system.time ( hera1 <- mclapply(FUN = myfun, X = sort, mc.cores = threads, mc.preschedule = TRUE) )
 		print(op)
 	}
-
 	hera1 = as.data.frame(data.table::rbindlist(hera1))
 
 	colnames(hera1) <- c("id","Side","Element","id","Side","Element","Measurements","# of measurements","p.value","Sample size","mean","sd","Result")
@@ -137,5 +137,7 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 	gc()
 	setwd(workingdir)
 	enableJIT(0)
+	options(stringsAsFactors = TRUE) #restore default R  
+     print("Statistical comparisons completed")
 	return(list(direc,hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,],hera1[as.numeric(as.character(hera1$p.value)) <= alphalevel,]))	
 }

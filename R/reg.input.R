@@ -18,8 +18,8 @@
 #' reg.input()
 
 reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ulna", side2 = "right", measurement_standard = 'standard', threshold = NULL, measurements1 = NULL, measurements2 = NULL) {
-     print("Import and reference generation has started.")
-
+     print("Import and reference generation started")
+	options(stringsAsFactors = FALSE)
 	r1 <- FALSE
 	r2 <- FALSE
 
@@ -49,7 +49,7 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 		radius <- c("Rad_07","Rad_08","Rad_09","Rad_04","Rad_10")
 		ulna <- c("Uln_09","Uln_10","Uln_11")
 		os_coxa <- c("Osc_14","Osc_15","Osc_16","Osc_05","Osc_17")
-		femur <- c("Fem_14","Fem_15","Fem_16","Fem_18")
+		femur <- c("Fem_14","Fem_15","Fem_16","Fem_17")
 		tibia <- c("Tib_10","Tib_11","Tib_12")
 		fibula <- c("Fib_03","Fib_04","Fib_05")
 	}
@@ -97,14 +97,12 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 	sort1 <- sort1[,-1]
 	sort2 <- sort2[,-1]
 	
-	
 	sort1 <- as.data.frame(sort1[rowSums(!is.na(sort1[-1][-1][-1])) > 0,], stringsAsFactors = FALSE)
 	sort2 <- as.data.frame(sort2[rowSums(!is.na(sort2[-1][-1][-1])) > 0,], stringsAsFactors = FALSE)
 	
 	#measurement names
 	colnames(sort1) <- measurements
 	colnames(sort2) <- measurements2   
-
 
 	#creates correct column numbers for reference based on side
 	if(side1 == 'left') {
@@ -170,7 +168,6 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 		sort1 <- sort1[rowSums(!is.na(sort1)) >= threshold2,] #threshold	
 		sort2 <- sort2[rowSums(!is.na(sort2)) >= threshold3,] #threshold
 	}
-	
 
 	bone1temp <- ncol(sort1) #number of variables   
 	bone2temp <- ncol(sort2) #number of variables  
@@ -182,8 +179,8 @@ reg.input <- function(sort = NULL, bone1 = "radius", side1 = "left", bone2 = "ul
 
 	res <- cbind(sort1[indices[,1],], sort2[indices[,2],]) #Alternative approach combining both into a single data.frame
 
-     print("Import and reference generation completed.")
 	gc()
-
+	options(stringsAsFactors = TRUE) #restore default R  
+     print("Import and reference generation completed")
 	return(list(res, ref, splitn = c(bone1temp, bone2temp+bone1temp)))
 }

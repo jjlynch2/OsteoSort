@@ -14,7 +14,8 @@
 #' antestat.input()
 
 antestat.input <- function(antemortem_stature = NULL, postmortem_measurement = NULL, bone = "Femur", population = "Trotter-any-male", metric = "cm") {
-	print("Import and reference generation has started.")
+	print("Import and reference generation started")
+	options(stringsAsFactors = FALSE) 
 
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
@@ -115,7 +116,8 @@ antestat.input <- function(antemortem_stature = NULL, postmortem_measurement = N
 	colnames(sort) <- c("id","Stature","id","Side","Element",bonemeasurement)
 	colnames(K) <- c("id","Stature")
 	gc()
-     print("Import and reference generation completed.")
 
+	options(stringsAsFactors = TRUE) #restore default R  
+     print("Import and reference generation completed")
 	return(list(sort, K))
 }

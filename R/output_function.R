@@ -8,6 +8,7 @@
 #' output_function()
 
 output_function <- function(hera1, method = "exclusion", type = "csv") {
+	print("Writing output files")
 	if(method == "exclusion") {
 		if(type == "csv") {
 			if(nrow(hera1[hera1$Result == "Cannot Exclude",]) > 0) {
@@ -96,4 +97,5 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 			dev.off()
 		}
 	}
+	print("Output files written")
 }

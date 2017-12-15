@@ -18,6 +18,7 @@
 #' outline.images()
 
 outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 400, fragment = FALSE) {
+     print("Outline generation started")	
 	library(jpeg)
 	library(pixmap)
 	
@@ -150,7 +151,6 @@ outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRU
 		names(speclist) <- paste(gsub(".*/\\s*|.JPG.*","",imagelist), ".JPG", sep="")
 		results <- speclist
 	}
-
+     print("Outline generation completed")	
 	return(list(results, imagelist1, imagelist2))
-
 }

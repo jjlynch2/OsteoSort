@@ -12,13 +12,16 @@
 #' pm.input()
 
 pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard', threshold = 1, measurements = NULL) {	
-	print("Import and reference generation has started.")
+	print("Import and reference generation started")
+
+	options(stringsAsFactors = FALSE)
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
 	if(is.na(bone) || is.null(sort)) {return(NULL)} #input san
 	if(is.na(bone) || is.null(sort)) {return(NULL)} #input san
 	if(measurement_standard != 'standard' && measurement_standard != 'supplemental') {return(NULL)} #input san
 	if(!is.numeric(threshold)) {return(NULL)} #input san
+	bone <- tolower(bone)#
 
 	if(measurement_standard == "standard") {
 		filename_bone <- bone
@@ -40,21 +43,18 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 		radius <- c("Rad_07","Rad_08","Rad_09","Rad_04","Rad_10")
 		ulna <- c("Uln_09","Uln_10","Uln_11")
 		os_coxa <- c("Osc_14","Osc_15","Osc_16","Osc_05","Osc_17")
-		femur <- c("Fem_14","Fem_15","Fem_16","Fem_18")
-		tibia <- c("Tib_10","Tib_10","Tib_12")
+		femur <- c("Fem_14","Fem_15","Fem_16","Fem_17")
+		tibia <- c("Tib_10","Tib_11","Tib_12")
 		fibula <- c("Fib_03","Fib_04","Fib_05")
 	}
 
-	#lower case filter
 	sort$Side <- tolower(sort$Side)
 	sort$Element <- tolower(sort$Element)
-	bone <- tolower(bone)#
-	#sort by bone
 	sort <- sort[sort$Element == bone,]
 
 	if(is.null(measurements)) {
 		measurements <- eval(as.symbol(bone))
-		colnames(sort) <- c("id", "Side", "Element",measurements)
+		#colnames(sort) <- c("id", "Side", "Element",measurements)
 	}
 
 	sortdata <- array(NA,c(nrow(sort),length(measurements)+3))
@@ -105,20 +105,12 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 
 	if(length(c) != 0) {
 		d <- ifelse(c %% 2 == 1, c + 1, c - 1)
-
 		ids <- split(cbind(d, c), r)
 		na.rows <- unique(sort(r))
-
-
 		modified <- lapply(seq_along(na.rows), function(i) {
 			res[na.rows[i], -(ids[[i]]), drop = F]
 		})
-
-
-
 		unmodified <- split(res[-na.rows, ], (1:nrow(res))[-na.rows]) 
-
-
 		#combined 
 		recombined <- list()
 		recombined[na.rows] <- modified
@@ -155,8 +147,8 @@ pm.input <- function (bone = NULL, sort = NULL, measurement_standard = 'standard
 	#returns reff being the reference and recombined being the test combinations
 	###########################################################
 	if(length(recombined) == 0) {recombined <- NA}
-     print("Import and reference generation completed.")
 	gc()
-
+	options(stringsAsFactors = TRUE) #restore default R  
+     print("Import and reference generation completed")
 	return(list(recombined,reff))
 }
