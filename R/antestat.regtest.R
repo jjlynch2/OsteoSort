@@ -31,15 +31,15 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
 	#reference regression model
-     measurement <- ref[,1]
-	stature <- ref[,2]
-	lm1 <- lm(measurement~stature)
-	nref <- length(stature) #reference size
+     mes <- ref[,1]
+	sta <- ref[,2]
+	lm1 <- lm(mes~sta)
+	nref <- length(sta) #reference size
 
 	myfunante <- function(X){
-		pm1m <- predict(lm1, newdata = data.frame(stature = as.numeric(X[2])), interval = "prediction", level = prediction_interval)
+		pm1m <- predict(lm1, newdata = data.frame(sta = as.numeric(X[2])), interval = "prediction", level = prediction_interval)
 
-		tt <- abs(round(pm1m[1,1], digits=2) - X[6]) / ( summary.lm((lm1))$sigma * sqrt( 1+(1/nref) + ((X[2] - mean(stature))^2) / (nref * sd(stature)^2) ) )
+		tt <- abs(round(pm1m[1,1], digits=2) - X[6]) / ( summary.lm((lm1))$sigma * sqrt( 1+(1/nref) + ((X[2] - mean(sta))^2) / (nref * sd(sta)^2) ) )
 		tt <- tt[,1] #wtf why is this required Why a data.frame conversion? 
 
 		pp <- tails * pt(-abs(tt), df = nref - 2)
@@ -58,7 +58,7 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 		}
 		if(output_options[2]) {
 			lmp1 <- predict(lm1, interval = "prediction", level = prediction_interval)
-			no_return_value <- OsteoSort:::output_function(hera1=list(X[1], X[3], stature, measurement, pm1m[1,1], X[6], X[2], lmp1), method="exclusion", type="plot3")
+			no_return_value <- OsteoSort:::output_function(hera1=list(X[1], X[3], sta, mes, pm1m[1,1], X[6], X[2], lmp1), method="exclusion", type="plot3")
 		}
 		data.frame(X[1],X[2],X[3],X[4],X[5], X[6], round(tt, digits = 2), round(pp, digits=2), nref, round(pm1m[1,2], digits=2), round(pm1m[1,1], digits=2), round(pm1m[1,3], digits=2), round(summary(lm1)$r.squared, digits = 2), within, stringsAsFactors = FALSE)
 	}
@@ -66,7 +66,7 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 
 	if(Sys.info()[['sysname']] == "Windows") {
 		cl <- makeCluster(threads)
-		clusterExport(cl, list("ref", "alphalevel", "alphatest", "output_options", "tails", "lm1", "nref", "measurement", "stature"), envir = environment())
+		clusterExport(cl, list("ref", "alphalevel", "alphatest", "output_options", "tails", "lm1", "nref", "mes", "sta"), envir = environment())
 		op <- system.time ( hera1 <- parLapply(cl=cl, fun = myfunante, X = sort) )
 		print(op)
 		stopCluster(cl)
