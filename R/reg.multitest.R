@@ -137,7 +137,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
 		if(Sys.info()[['sysname']] == "Windows") {
 			cl <- makeCluster(threads)
-			clusterExport(cl, list("ref", "splitn", "p1", "alphalevel", "prediction_interval", "alphatest", "output_options", "is.unique", "unique.model", "unique.pca1", "unique.pca2", "unique.cca", "unique.t1r"), envir = environment())
+			clusterExport(cl, list("ref", "splitn", "alphalevel", "prediction_interval", "alphatest", "output_options", "is.unique", "unique.model", "unique.pca1", "unique.pca2", "unique.cca", "unique.t1r"), envir = environment())
 			op <- system.time ( hera1 <- parLapply(cl=cl, fun = myfunreg, X = sortlist) )
 			print(op)
 			stopCluster(cl)
@@ -233,7 +233,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
 		if(Sys.info()[['sysname']] == "Windows") {
 			cl <- makeCluster(threads)
-			clusterExport(cl, list("ref", "splitn", "p1", "alphalevel", "prediction_interval", "alphatest", "output_options", "is.uniques", "unique.models", "unique.t1rs"), envir = environment())
+			clusterExport(cl, list("ref", "splitn", "alphalevel", "prediction_interval", "alphatest", "output_options", "is.uniques", "unique.models", "unique.t1rs"), envir = environment())
 			op <- system.time ( hera1 <- parLapply(cl=cl, fun = myfunregs, X = sortlist) )
 			print(op)
 			stopCluster(cl)
