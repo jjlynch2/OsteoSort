@@ -66,8 +66,12 @@ antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, out
 	sortlist <- split(sort, 1:nrow(sort))
 
 	if(Sys.info()[['sysname']] == "Windows") {
-		op <- system.time ( hera1m <- lapply(FUN = myfunante, X = sortlist) )
+		cl <- makeCluster(threads)
+		clusterExport(cl, list("ref", "alphalevel", "alphatest", "output_options", "tails", "is.uniquepm", "lm1", "nref", "measurement", "stature"), envir = environment())
+		op <- system.time ( hera1 <- parLapply(cl=cl, fun = myfunpm, X = sort) )
 		print(op)
+		stopCluster(cl)
+
 	}
 	else {
 		op <- system.time ( hera1m <- mclapply(FUN = myfunante, X = sortlist, mc.cores = threads, mc.preschedule = TRUE) )

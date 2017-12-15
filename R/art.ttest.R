@@ -110,8 +110,11 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 
 
 	if(Sys.info()[['sysname']] == "Windows") {
-		op <- system.time ( hera1 <- lapply(FUN = myfun, X = sort) )
+		cl <- makeCluster(threads)
+		clusterExport(cl, list("ref", "alphalevel", "p1", "absolutevalue", "testagainstzero", "output_options", "tails", "is.uniqueart", "unique.difsd2", "unique.difm2", "unique.df2", "unique.ycol2", "unique.yrow2", "unique.difa"), envir = environment())
+		op <- system.time ( hera1 <- parLapply(cl=cl, fun = myfun, X = sort) )
 		print(op)
+		stopCluster(cl)
 	}
 	else {
 		op <- system.time ( hera1 <- mclapply(FUN = myfun, X = sort, mc.cores = threads, mc.preschedule = TRUE) )
