@@ -7,7 +7,7 @@
 pm.ttest(ref = NULL, sort = NULL, sessiontempdir = NULL,
   alphalevel = 0.1, power = TRUE, absolutevalue = TRUE,
   testagainstzero = FALSE, output_options = c(TRUE, FALSE), threads = 1,
-  tails = 2)
+  tails = 1)
 }
 \arguments{
 \item{ref}{Reference data}

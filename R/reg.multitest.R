@@ -115,11 +115,22 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 			}
 		
 			pm1 <- predict(model1, newdata = data.frame(score1 = as.numeric(df1)), interval = "prediction", level = prediction_interval)
+			tt <- abs(pm1[1] - df2) / ( summary.lm((model1))$sigma * sqrt( 1+(1/length(cmodel1$scores$xscores[,1])) + ((df1 - mean(cmodel1$scores$xscores[,1]))^2) / (length(cmodel1$scores$xscores[,1]) * sd(cmodel1$scores$xscores[,1])^2) ) )
+			pp <- 2 * pt(-abs(as.numeric(tt)), df = length(cmodel1$scores$xscores[,1]) - 2)
 
-			if(df2 <= pm1[3] && df2 >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
-				within <- "Cannot Exclude"
+			if(alphatest) {
+				if(pp > alphalevel) { #checks if predicted falls within prediction interval for the predictors
+					within <- "Cannot Exclude"
+				}
+				else within <- "Excluded"
 			}
-			else within <- "Excluded"
+
+			if(!alphatest) {
+				if(df2 <= pm1[3] && df2 >= pm1[2]) { #checks if predicted falls within prediction interval for the predictors
+					within <- "Cannot Exclude"
+				}
+				else within <- "Excluded"
+			}
 
 			if(output_options[2]) {
 				lmp1 <- predict(model1, interval = "prediction", level = prediction_interval)
@@ -128,7 +139,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				no_return_value <- OsteoSort:::output_function(hera1=list(temp1[1], temp2[1], score1, score2, df2, df1, lmp1, score1), method="exclusion", type="plot2")
 			}
 
-			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],paste(c(temp1n, temp2n), collapse = " "),length(c(temp1n, temp2n)),round(rsqr1, digits = 3),t1r,NA,within, stringsAsFactors=FALSE))
+			return(data.frame(temp1[1],temp1[2],temp1[3],temp2[1],temp2[2],temp2[3],paste(c(temp1n, temp2n), collapse = " "),length(c(temp1n, temp2n)),round(rsqr1, digits = 3),t1r,round(pp, digits=5),within, stringsAsFactors=FALSE))
 
 		}
 	

@@ -5,7 +5,7 @@
 \title{antestat.regtest Input Function}
 \usage{
 antestat.regtest(sort = NULL, ref = NULL, sessiontempdir = NULL,
-  output_options = c(FALSE, FALSE), prediction_interval = 0.95, tails = 2,
+  output_options = c(TRUE, FALSE), prediction_interval = 0.95, tails = 2,
   alphalevel = 0.05, alphatest = TRUE, threads = 1)
 }
 \arguments{
