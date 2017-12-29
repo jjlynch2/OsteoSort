@@ -19,9 +19,6 @@
 
 outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 100, fragment = FALSE) {
      print("Outline generation started")	
-	library(jpeg)
-	library(pixmap)
-	
 	nimages <- length(imagelist1) + length(imagelist2)
 	imagelist <- c(imagelist1, imagelist2)
 
@@ -36,9 +33,9 @@ outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRU
 		
 		print(paste("Tracing specimen: ", paste(gsub(".*/\\s*|.JPG.*","",imagelist[iii]), ".JPG", sep=""), sep=""))
 
-		M <- readJPEG(imagelist[iii])
+		M <- jpeg::readJPEG(imagelist[iii])
 
-		M <- suppressWarnings(pixmapGrey(M))
+		M <- suppressWarnings(pixmap::pixmapGrey(M))
 
 		M@grey[which(M@grey > threshold)] <- 1#white
 		M@grey[which(M@grey <= threshold)] <- 0#black

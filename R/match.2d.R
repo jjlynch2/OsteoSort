@@ -54,7 +54,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 			for(i in 1:dim(homolog)[3]) {
 				print(paste("Registering specimen: ", dimnames(homolog)[[3]][i], " mean iteration: ", b, sep=""))
 				moving <- homolog[,,i]
-				temp <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=threads)
+				temp <- Morpho::icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=threads)
 				homolog[,,i] <- shiftmatrices(first_configuration = temp, second_configuration = target, threads) #shifts matrices to match
 			}
 			meann <- apply(homolog, c(1,2), mean)
@@ -89,7 +89,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				if(nrow(specmatrix[[z]]) >= nrow(specmatrix[[x]])) {moving <- specmatrix[[x]]; target <- specmatrix[[z]];zzz <- 1}		
 				if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}	
 	
-				moving <- icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=threads) 
+				moving <- Morpho::icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=threads) 
 				
 				#identifies indices of fragmented ends
 				r1 <- fragment_margins(moving)

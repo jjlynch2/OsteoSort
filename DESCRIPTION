@@ -18,14 +18,7 @@ License: GPL-2
 LazyData: true
 ByteCompile: true
 Imports:
-    Morpho,
     parallel,
-    pixmap,
-    jpeg,
-    CCA,
-    data.table,
-    Rcpp,
-    RcppParallel
 LinkingTo: 
 	Rcpp (>= 0.12.13),
 	RcppParallel

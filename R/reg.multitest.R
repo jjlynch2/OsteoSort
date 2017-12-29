@@ -66,7 +66,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				B1PCA <- B1PCAt$x #PC scores
 				B2PCA <- B2PCAt$x #PC scores
 			
-				cmodel1 <- cc(B1PCA, B2PCA) #CCA model
+				cmodel1 <- CCA::cc(B1PCA, B2PCA) #CCA model
 				score1 <- cmodel1$scores$xscores[,1] #takes first variate y 
 				score2 <- cmodel1$scores$yscores[,1] #takes first variate x
 

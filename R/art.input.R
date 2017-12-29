@@ -11,7 +11,6 @@
 art.input <- function (bone = NULL, sort = NULL) {
 	print("Import and reference generation started")
 	options(stringsAsFactors = FALSE)
-	suppressMessages(library(plyr))
 	options(as.is = TRUE)
 	options(warn = -1)
 	if(is.null(bone) || is.null(sort)){return(NULL)}
