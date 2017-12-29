@@ -25,9 +25,6 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 	print("Form comparisons started")		
 	options(stringsAsFactors = FALSE)  	
 
-	suppressMessages(library(compiler))
-	enableJIT(3)
-
 	dist <- tolower(dist)
 	transformation <- tolower(transformation)
 	workingdir = getwd()
@@ -155,7 +152,6 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 
 	gc()
 	setwd(workingdir)
-	enableJIT(0)
 
 	comparisons <- length(outlinedata[[2]]) * length(outlinedata[[3]]) #number of comparisons
 

@@ -19,7 +19,6 @@
 pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel = 0.1, power = TRUE, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 1) {
 	options(stringsAsFactors = FALSE)	
      print("Statistical comparisons started")
-	enableJIT(3)
 	options(warn = -1) #disables warnings
 	if(is.na(sort) || is.null(sort)) {return(NULL)} #input san
 	if(is.na(ref) || is.null(ref)) {return(NULL)} #input san
@@ -137,7 +136,6 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 
 	gc()
 	setwd(workingdir)
-	enableJIT(0)
 	options(stringsAsFactors = TRUE) #restore default R  
      print("Statistical comparisons completed")
 	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,]))	

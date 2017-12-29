@@ -20,7 +20,6 @@
 antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(TRUE,FALSE), prediction_interval = 0.95, tails = 2, alphalevel = 0.05, alphatest = TRUE, threads = 1) {
      print("Statistical comparisons started")   	
 	options(stringsAsFactors = FALSE) 
-	enableJIT(3)
 
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)

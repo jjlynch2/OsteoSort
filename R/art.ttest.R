@@ -20,7 +20,6 @@
 art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads = 1, alphalevel = 0.1, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), power = TRUE, tails = 2) {
 	options(stringsAsFactors = FALSE)  
      print("Statistical comparisons started")
-	enableJIT(3)
 	
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
@@ -139,7 +138,6 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 	
 	gc()
 	setwd(workingdir)
-	enableJIT(0)
 	options(stringsAsFactors = TRUE) #restore default R  
      print("Statistical comparisons completed")
 	return(list(direc,hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,],hera1[as.numeric(as.character(hera1$p.value)) <= alphalevel,]))	
