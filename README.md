@@ -4,6 +4,8 @@ Minor changes:
 
 Added ByteCompile: yes on install
 
+Adjusted articulation t-test default options
+
 
 Moderage:
 

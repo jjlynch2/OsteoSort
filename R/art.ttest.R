@@ -17,7 +17,7 @@
 #' art.ttest()
 
 
-art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads = 1, alphalevel = 0.1, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), power = TRUE, tails = 2) {
+art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads = 1, alphalevel = 0.1, absolutevalue = FALSE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), power = FALSE, tails = 2) {
 	options(stringsAsFactors = FALSE)  
      print("Statistical comparisons started")
 	
