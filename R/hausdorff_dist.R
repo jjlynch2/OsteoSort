@@ -14,7 +14,7 @@
 #' hausdorff_dist()
 
 hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = 0, dist = "maximum", threads = 1, indices = NULL) {
-	if(n_regions == 1) {test="Hausdorff"}
+	if(n_regions == 1 && test == "Segmented-Hausdorff") {test="Hausdorff"}
 	
 	setThreadOptions(threads)
 

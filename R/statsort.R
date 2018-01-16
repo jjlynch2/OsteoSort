@@ -132,24 +132,24 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 			slope <- 1.96
 		}	
 		if(population == "19th-cstat-black-female") {
-			intercept <- 28.61
-			slope <- 0.09688
+			intercept <- 28.34
+			slope <- 0.09668
 		}
 		if(population == "19th-cstat-black-male") {
-			intercept <- 26.82
-			slope <- 0.10566
+			intercept <- 26.80
+			slope <- 0.10339
 		}
 		if(population == "19th-cstat-white-female") {
-			intercept <- 23.72
-			slope <- 0.11458
+			intercept <- 25.77
+			slope <- 0.10864
 		}
 		if(population == "19th-cstat-white-male") {
-			intercept <- 27.09
-			slope <- 0.10994
+			intercept <- 26.71
+			slope <- 0.10870
 		}
 		if(population == "19th-cstat-any") {
-			intercept <- 27.32
-			slope <- 0.10509
+			intercept <- 28.48
+			slope <- 0.10006
 		}
 		if(population == "20th-fstat-hispanic-male") {
 			intercept <- 42.15
@@ -176,16 +176,16 @@ statsort <- function (sort, bone = "femur", side = "both", population = "trotter
 			slope <- 0.10653
 		}
 		if(population == "trotter-any-male") {
-			intercept <- 34.69
-			slope <- 0.086645
+			intercept <- 34.77
+			slope <- 0.08645
 		}
 		if(population == "trotter-black-male") {
-			intercept <- 32.45
-			slope <- 0.086268
+			intercept <- 32.93
+			slope <- 0.08568
 		}
 		if(population == "trotter-white-male") {
-			intercept <- 31.29
-			slope <- 0.095860
+			intercept <- 32.44
+			slope <- 0.09286
 		}
 	}
 	if(bone == "fibula") {
