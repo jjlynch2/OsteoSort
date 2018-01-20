@@ -5,7 +5,7 @@ Requires [**Xcode**](https://developer.apple.com/xcode/) to build on OSX
 
 To install directly from GitHub use the devtools R package:
 
-`require(devtools)`
+`require("devtools")`
 
 `install_github("jjlynch2/OsteoSort", ref = "v1.2.5")`
 
