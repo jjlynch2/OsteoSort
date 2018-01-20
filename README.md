@@ -1,4 +1,4 @@
-#Installation
+# Installation
 Requires [**Rtools**](https://cran.r-project.org/bin/windows/Rtools/) to build on Windows
 Requires [**Xcode**](https://developer.apple.com/xcode/) to build on OSX
 
