@@ -5,9 +5,10 @@ Requires [**Xcode**](https://developer.apple.com/xcode/) to build on OSX
 
 To install directly from GitHub use the devtools R package:
 
-`require("devtools")`
+`install.packages("devtools")`
+`library(devtools)`
 
-`install_github("jjlynch2/OsteoSort", ref = "v1.2.5")`
+`install_github("jjlynch2/OsteoSort", ref = "v1.2.6")`
 
 # Depends
 * compiler
@@ -20,13 +21,9 @@ To install directly from GitHub use the devtools R package:
 * Rcpp
 * RcppParallel
 
-# Changes for OsteoSort version : 1.2.5
+# Changes for OsteoSort version : 1.2.6
 
 ## Minor changes:
-* Added ByteCompile: yes on install
-* Adjusted articulation t-test default options
+* Updated imports for DESC
 
 ## Moderate changes:
-* Removed plyr as a dependency
-* Adjusted population specific Trotter corrections for antemortem stature strength association
-

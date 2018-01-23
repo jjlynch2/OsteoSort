@@ -1,10 +1,16 @@
 Package: OsteoSort
 Title: Osteo Sorting of Commingled Human Remains
-Version: 1.2.5
+Version: 1.2.6
 Authors@R: person("Jeff", "Lynch", email = "jjlynch@bioarch.net", role = c("aut","cre"))
 Description: This package allows the statistical osteological sorting of commingled
     human skeletal remains using metric, 2D, and 3D data. http://osteosort.net
 Depends:
+    R (>= 3.3.0
+License: GPL-2
+LazyData: true
+ByteCompile: true
+Imports:
+    parallel,
     compiler,
     Morpho,
     parallel,
@@ -14,11 +20,6 @@ Depends:
     data.table,
     Rcpp,
     RcppParallel
-License: GPL-2
-LazyData: true
-ByteCompile: true
-Imports:
-    parallel,
 LinkingTo: 
 	Rcpp (>= 0.12.13),
 	RcppParallel
