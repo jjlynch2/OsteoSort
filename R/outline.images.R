@@ -3,7 +3,7 @@
 #' @param imagelist1 List of image locations for first set
 #' @param imagelist2 List of image locations for second set
 #' @param threshold Threshold value between white(1) and black(0)
-#' @param scale Sets if a scale should be extracted from pixel dimensions
+#' @param scale Sets if a scale to unit centroid size
 #' @param mirror If true mirrors imagelist2 to imagelist2
 #' @param npoints The number of points in the inverse elliptical fourier analysis transformation
 #' @param smooth_iterations The number of smoothing iterations in the elliptical fourier analysis
@@ -17,7 +17,7 @@
 #' @examples
 #' outline.images()
 
-outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = TRUE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 100, fragment = FALSE) {
+outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = FALSE, mirror = TRUE, npoints = 200, smooth_iterations = 1, nharmonics = 100, fragment = FALSE) {
      print("Outline generation started")	
 	nimages <- length(imagelist1) + length(imagelist2)
 	imagelist <- c(imagelist1, imagelist2)

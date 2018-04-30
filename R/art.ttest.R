@@ -8,7 +8,8 @@
 #' @param absolutevalue if TRUE uses absolute value for D-values
 #' @param testagainstzero if TRUE uses 0 for sample mean
 #' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
-#' @param power If TRUE uses half-normal distribution power transformation
+#' @param boxcox If TRUE uses boxcox power transformation
+#' @param zero_v variable to avoid having zero values in boxcox transformation
 #' @param tails The number of tails for the t-distribution
 #'
 #' @keywords art.ttest
@@ -17,7 +18,7 @@
 #' art.ttest()
 
 
-art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads = 1, alphalevel = 0.1, absolutevalue = FALSE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), power = FALSE, tails = 2) {
+art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads = 1, alphalevel = 0.1, absolutevalue = FALSE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), boxcox = TRUE, tails = 2, zero_v = 5e-05) {
 	options(stringsAsFactors = FALSE)  
      print("Statistical comparisons started")
 	
@@ -25,10 +26,7 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 	options(as.is = TRUE)
 	if(is.na(sort) || is.null(sort)) {return(NULL)} #input san
 	if(is.na(ref) || is.null(ref)) {return(NULL)} #input san
-	
-	if(power) {p1 <- 0.00005; p2 <- 0.33} #half normal transformation
-	else {p1 <- 0; p2 <- 1} #used to prevent writing new code inside loop. This transformation doesn't change the data
-	
+
 	workingdir = getwd()
 
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
@@ -40,6 +38,9 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 	unique.ycol2 <<- list()
 	unique.yrow2 <<- list()
 	unique.difa <<- list()
+	if(boxcox) {
+		unique.boxcox <<- list()
+	}
 
 	myfun<-function(X){
 
@@ -53,21 +54,27 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 			ycol <- ncol(ref)
 			yrow <- nrow(ref)
 			if(absolutevalue) {
-				difa <- (( rowSums(abs(ref[c(T,F)] - ref[c(F,T)])) + p1 ) ** p2)
-				difsd <- sd(difa)
-				if(testagainstzero) {difm <- 0} 
-				else difm <- mean(difa)
-				difa1 <- ((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2)
-				p.value <- tails * pt(-abs(difa1 - difm) / difsd, df = length(difa) - 1) #one-tail for absolute value model
+				difa <- rowSums(abs(ref[c(T,F)] - ref[c(F,T)]))
+				difa1 <- sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]))
 			}
-			else {
+			if(!absolutevalue){
 				difa <- rowSums(ref[c(T,F)] - ref[c(F,T)])
-				difsd <- sd(difa)
-				if(testagainstzero) {difm <- 0} 
-				else difm <- mean(difa)
 				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
-				p.value <- tails * pt(-abs((difa1 - difm) / difsd), df = length(difa) - 1)
 			}
+		
+			if(boxcox) {
+				bx <- car::powerTransform((difa + zero_v))$lambda
+				difa <- (difa + zero_v) ^ bx
+				difa1 <- (difa1 + zero_v) ^ bx
+			}
+
+			difsd <- sd(difa)
+			if(testagainstzero) {
+				difm <- 0
+			} 
+			else difm <- mean(difa)
+
+			p.value <- tails * pt(-abs(difa1 - difm) / difsd, df = length(difa) - 1)
 
 			is.uniqueart[[length(is.uniqueart)+1]] <<- Xname #cache me outside 
 			unique.difsd2[[length(unique.difsd2)+1]] <<- difsd
@@ -76,6 +83,9 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 			unique.ycol2[[length(unique.ycol2)+1]] <<- ycol
 			unique.yrow2[[length(unique.yrow2)+1]] <<- yrow
 			unique.difa[[length(unique.difa)+1]] <<- difa
+			if(boxcox) {
+				unique.boxcox[[length(unique.boxcox)+1]] <<- bx
+			}
 		}
 		else {
 			ycol <- as.numeric(unique.ycol2[[index]])
@@ -84,15 +94,17 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 			difsd <- as.numeric(unique.difsd2[[index]])
 			difdf <- as.numeric(unique.df2[[index]])
 			difa <- as.numeric(unique.difa[[index]])
+			if(boxcox) {
+				bx <- as.numeric(unique.boxcox[[index]])
+			}
 
 			if(absolutevalue) {
-				difa1 <- ((sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])) + p1) ** p2)
-				p.value <- tails * pt(-abs(difa1 - difm) / difsd, df = difdf) #one-tail for absolute value model
+				difa1 <- sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]))
 			}
-			else {
+			if(!absolutevalue){
 				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
-				p.value <- tails * pt(-abs((difa1 - difm) / difsd), df = difdf)
 			}
+			p.value <- tails * pt(-abs(difa1 - difm) / difsd, df = difdf)
 
 		}
 
@@ -110,7 +122,7 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 
 	if(Sys.info()[['sysname']] == "Windows") {
 		cl <- makeCluster(threads)
-		clusterExport(cl, list("ref", "alphalevel", "p1", "absolutevalue", "testagainstzero", "output_options", "tails", "is.uniqueart", "unique.difsd2", "unique.difm2", "unique.df2", "unique.ycol2", "unique.yrow2", "unique.difa"), envir = environment())
+		clusterExport(cl, list("ref", "alphalevel", "p1", "absolutevalue", "testagainstzero", "output_options", "tails", "is.uniqueart", "unique.difsd2", "unique.difm2", "unique.df2", "unique.ycol2", "unique.yrow2", "unique.difa","unique.boxcox"), envir = environment())
 		op <- system.time ( hera1 <- parLapply(cl=cl, fun = myfun, X = sort) )
 		print(op)
 		stopCluster(cl)
@@ -131,6 +143,9 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 	rm(unique.ycol2)
 	rm(unique.yrow2)
 	rm(unique.difa)
+	if(boxcox) {
+		rm(unique.boxcox)
+	}
 
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="csv")

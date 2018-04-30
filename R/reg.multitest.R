@@ -10,16 +10,17 @@
 #' @param threads The number of threads to use
 #' @param test If true, PCA-CCA-Regression, if false, Simple Linear Regression 
 #' @param alphalevel The alpha level for exclusion
+#' @param pca Specifies the number of principal components to use
 #'
 #' @keywords reg.test
 #' @export
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, sessiontempdir = NULL, output_options = c(TRUE,FALSE), threads = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, sessiontempdir = NULL, output_options = c(TRUE,FALSE), threads = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05, pca = NULL) {	    
      print("Statistical comparisons started")	
 	options(stringsAsFactors = FALSE)    
-	
+
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
 	if(is.na(sort) || is.null(sort)) {return(NULL)} #input san
@@ -63,8 +64,15 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				B1PCAt <- prcomp(t1) #PCA one
 				B2PCAt <- prcomp(t2) #PCA two
 
-				B1PCA <- B1PCAt$x #PC scores
-				B2PCA <- B2PCAt$x #PC scores
+				if(!is.null(pca)) {
+					B1PCA <- as.matrix(B1PCAt$x[,c(1:pca)]) #PC scores
+					B2PCA <- as.matrix(B2PCAt$x[,c(1:pca)]) #PC scores
+				}
+				else {
+					B1PCA <- B1PCAt$x #PC scores
+					B2PCA <- B2PCAt$x #PC scores
+				}
+
 			
 				cmodel1 <- CCA::cc(B1PCA, B2PCA) #CCA model
 				score1 <- cmodel1$scores$xscores[,1] #takes first variate y 
@@ -72,7 +80,7 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 
 				model1 <- lm(score2~score1) #linear model
 			
-				is.unique[[length(is.unique)+1]] <<-   c(temp1n,temp2n, temp1[2], temp2[2]) #cache me outside 
+				is.unique[[length(is.unique)+1]] <<- c(temp1n,temp2n, temp1[2], temp2[2]) #cache me outside 
 				unique.model[[length(unique.model)+1]] <<- model1
 				unique.pca1[[length(unique.pca1)+1]] <<- B1PCAt
 				unique.pca2[[length(unique.pca2)+1]] <<- B2PCAt
@@ -85,8 +93,17 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				B1PCAt <- unique.pca1[[index]]
 				B2PCAt <- unique.pca2[[index]]
 				cmodel1 <- unique.cca[[index]]
-				B1PCA <- B1PCAt$x #PC scores
-				B2PCA <- B2PCAt$x #PC scores
+
+				if(!is.null(pca)) {
+					B1PCA <- as.matrix(B1PCAt$x[,c(1:pca)]) #PC scores
+					B2PCA <- as.matrix(B2PCAt$x[,c(1:pca)]) #PC scores
+				}
+				else {
+					B1PCA <- B1PCAt$x #PC scores
+					B2PCA <- B2PCAt$x #PC scores
+				}
+
+
 			}
 			
 			rsqr1 <- summary(model1)$r.squared
@@ -97,8 +114,14 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 			names(temp2p) <- temp2n
 			names(temp1p) <- temp1n		
 		
-			temp1p <- as.data.frame(predict(B1PCAt, temp1p))
-			temp2p <- as.data.frame(predict(B2PCAt, temp2p))
+			if(!is.null(pca)) {
+				temp1p <- as.data.frame(predict(B1PCAt, temp1p))[c(1:pca)]
+				temp2p <- as.data.frame(predict(B2PCAt, temp2p))[c(1:pca)]
+			}
+			else {
+				temp1p <- as.data.frame(predict(B1PCAt, temp1p))
+				temp2p <- as.data.frame(predict(B2PCAt, temp2p))
+			}
 		
 			#create CV from coef of cva
 			df1 <- 0

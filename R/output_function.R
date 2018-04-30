@@ -61,6 +61,31 @@ output_function <- function(hera1, method = "exclusion", type = "csv", return_pl
 			if(!return_plot) { dev.off()}
 		}
 	}
+	if(method == "3D") {
+		if(type == "csv-res") {
+			write.csv(hera1, file = "potential-matches.csv", row.names=FALSE, col.names=TRUE)
+		}
+		if(type == "csv-all") {
+			write.csv(hera1, file = "all-distances.csv", row.names=FALSE, col.names=TRUE)
+		}
+		if(type == "coord") {
+			writetps(hera1, file = "Coordinates.tps")
+		}
+		if(type == "dot") {
+			jpeg(paste("dotchart",hera1[1,1],".jpg",sep=''),height = 1200, width = 300)
+			dev.control('enable')
+
+			a <- hera1
+			b <- hera1[-1,]
+			c <- hera1[1,]
+			stripchart(as.numeric(a[,3]) ~ a[,1], vertical = TRUE, method = "jitter", pch = 16, ylab ="", xlab = a[1,1], col = "white", cex.axis = 1.7, cex.main=1.7, cex.lab=1.7)
+
+			stripchart(as.numeric(b[,3]) ~ b[,1], vertical = TRUE, method = "jitter", pch = 16, col = "black", add = TRUE, cex = 2)
+
+stripchart(as.numeric(c[3]) ~ c[1], vertical = TRUE, method = "jitter", pch = 16, col = "dodgerblue", add = TRUE, cex = 2)
+			dev.off()
+		}
+	}
 	if(method == "2D") {
 		if(type == "csv-res") {
 			write.csv(hera1, file = "potential-matches.csv", row.names=FALSE, col.names=TRUE)

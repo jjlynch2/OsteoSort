@@ -5,6 +5,30 @@
 
 using namespace Rcpp;
 
+// euclidean_distance_matrix_rcpp
+Rcpp::NumericVector euclidean_distance_matrix_rcpp(Rcpp::NumericMatrix a, Rcpp::NumericMatrix b);
+RcppExport SEXP _OsteoSort_euclidean_distance_matrix_rcpp(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type a(aSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(euclidean_distance_matrix_rcpp(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// max_directional_hausdorff_rcpp2
+double max_directional_hausdorff_rcpp2(Rcpp::NumericMatrix a, Rcpp::NumericMatrix b);
+RcppExport SEXP _OsteoSort_max_directional_hausdorff_rcpp2(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type a(aSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(max_directional_hausdorff_rcpp2(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mean_directional_hausdorff_rcpp
 double mean_directional_hausdorff_rcpp(Rcpp::NumericMatrix a, Rcpp::NumericMatrix b);
 RcppExport SEXP _OsteoSort_mean_directional_hausdorff_rcpp(SEXP aSEXP, SEXP bSEXP) {
@@ -55,6 +79,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_OsteoSort_euclidean_distance_matrix_rcpp", (DL_FUNC) &_OsteoSort_euclidean_distance_matrix_rcpp, 2},
+    {"_OsteoSort_max_directional_hausdorff_rcpp2", (DL_FUNC) &_OsteoSort_max_directional_hausdorff_rcpp2, 2},
     {"_OsteoSort_mean_directional_hausdorff_rcpp", (DL_FUNC) &_OsteoSort_mean_directional_hausdorff_rcpp, 2},
     {"_OsteoSort_max_directional_hausdorff_rcpp", (DL_FUNC) &_OsteoSort_max_directional_hausdorff_rcpp, 2},
     {"_OsteoSort_dilated_directional_hausdorff_rcpp", (DL_FUNC) &_OsteoSort_dilated_directional_hausdorff_rcpp, 2},

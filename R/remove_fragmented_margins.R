@@ -17,13 +17,17 @@ remove_fragmented_margins <- function(first_configuration, second_configuration,
 	if(length(target_indices) > 0) {
 		for(i in 1:nrow(target_indices)) {
 			t1 <- t1[t1[,2] != target_indices[i,1], ] #first margin
-			t1 <- t1[t1[,2] != target_indices[i,2], ] #second margin
+			if(ncol(target_indices) > 1) {
+				t1 <- t1[t1[,2] != target_indices[i,2], ] #second margin
+			}
 		}
 	}
 	if(length(moving_indices) > 0) {
 		for(i in 1:nrow(moving_indices)) {
 			t2 <- t2[t2[,2] != moving_indices[i,1], ] #first margin
-			t2 <- t2[t2[,2] != moving_indices[i,2], ] #second margin
+			if(ncol(moving_indices) > 1) {
+				t2 <- t2[t2[,2] != moving_indices[i,2], ] #second margin
+			}
 		}
 	}
 	return(list(t1[,1],t2[,1]))

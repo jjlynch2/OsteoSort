@@ -75,6 +75,9 @@ hausdorff_dist <- function (first_configuration, second_configuration, test = "S
 				else	distance_results <- max(max_directional_hausdorff_rcpp(first_configuration, second_configuration),max_directional_hausdorff_rcpp(second_configuration, first_configuration))
 	
 		}
+		if(dist == "maximum2"){
+			distance_results <- max(max_directional_hausdorff_rcpp2(first_configuration, second_configuration),max_directional_hausdorff_rcpp2(second_configuration, first_configuration))
+		}
 		if(dist == "dilated"){
 				if(!is.null(indices)) {
 					res <- remove_fragmented_margins(first_configuration, second_configuration, indices)

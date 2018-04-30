@@ -5,7 +5,18 @@ Authors@R: person("Jeff", "Lynch", email = "jjlynch@bioarch.net", role = c("aut"
 Description: This package allows the statistical osteological sorting of commingled
     human skeletal remains using metric, 2D, and 3D data. http://osteosort.net
 Depends:
-    R (>= 3.3.0
+    R (>= 3.3.0),
+    parallel,
+    compiler,
+    Morpho,
+    parallel,
+    pixmap,
+    jpeg,
+    CCA,
+    data.table,
+    Rcpp,
+    RcppParallel,
+    car
 License: GPL-2
 LazyData: true
 ByteCompile: true
@@ -19,7 +30,8 @@ Imports:
     CCA,
     data.table,
     Rcpp,
-    RcppParallel
+    RcppParallel,
+    car
 LinkingTo: 
 	Rcpp (>= 0.12.13),
 	RcppParallel

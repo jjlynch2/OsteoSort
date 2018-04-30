@@ -1,3 +1,4 @@
+#Current development status for 1.3.0
 # Installation
 Requires [**Rtools**](https://cran.r-project.org/bin/windows/Rtools/) to build on Windows
 
@@ -8,7 +9,7 @@ To install directly from GitHub use the devtools R package:
 `install.packages("devtools")`
 `library(devtools)`
 
-`install_github("jjlynch2/OsteoSort", ref = "v1.2.6")`
+`install_github("jjlynch2/OsteoSort", ref = "v1.3.0")`
 
 # Depends
 * compiler
@@ -20,10 +21,19 @@ To install directly from GitHub use the devtools R package:
 * data.table
 * Rcpp
 * RcppParallel
+* car
 
-# Changes for OsteoSort version : 1.2.6
+# Changes for OsteoSort version : 1.3.0
 
 ## Minor changes:
 * Updated imports for DESC
+* Adusted default scale option for 2D outline extraction
 
 ## Moderate changes:
+* Added Boxcox transformation for t-tests
+* Added dependency on car
+* Added option to select number of Principal Components for regression analysis in reg.multitest()
+
+## Major changes:
+* Added input.3d() and match.3d() functions for importing and pair-matching 3D data respectively
+* Added rotation(), translation(), and mean_shape functions
