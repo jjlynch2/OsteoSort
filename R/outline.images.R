@@ -99,20 +99,20 @@ outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = FAL
 		spec1 <- as.matrix(data.frame(spec1))
 		spec1 <- round(spec1) #round to whole numbers
 
+
+		if(scale) {
+			centroid <- apply(spec1,2,mean)
+			centroidsize <- sqrt(sum((t(t(spec1)-centroid))^2))
+			spec1 <- spec1 / centroidsize
+		}
+
 		if(!fragment) {
-			if(scale) { #scale comes after EFA duh! 
-				centroid <- apply(spec1,2,mean)
-				centroidsize <- sqrt(sum((t(t(spec1)-centroid))^2))
-			}
 
 			test1 <- efa(spec1, harmonics = nharmonics)
 			spec1 <- i_efa(test1, points = npoints)
 
 			spec1 <- as.matrix(data.frame(spec1))
 
-			if(scale) {
-				spec1 <- spec1 / centroidsize
-			}
 		}
 	
 		if(fragment) { 
