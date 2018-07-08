@@ -1,4 +1,4 @@
-#Current development status for 1.2.6
+#Current development status for 1.2.6rc1
 # Installation
 Requires [**Rtools**](https://cran.r-project.org/bin/windows/Rtools/) to build on Windows
 
@@ -9,7 +9,7 @@ To install directly from GitHub use the devtools R package:
 `install.packages("devtools")`
 `library(devtools)`
 
-`install_github("jjlynch2/OsteoSort", ref="v1.2.6")`
+`install_github("jjlynch2/OsteoSort", ref="v1.2.6rc1")`
 
 # Depends
 * compiler
@@ -23,7 +23,7 @@ To install directly from GitHub use the devtools R package:
 * RcppParallel
 * car
 
-# Changes for OsteoSort version : 1.2.6
+# Changes for OsteoSort version : 1.2.6rc1
 
 ## Minor changes:
 * Updated imports for DESC
