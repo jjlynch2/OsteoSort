@@ -9,7 +9,7 @@ To install directly from GitHub use the devtools R package:
 `install.packages("devtools")`
 `library(devtools)`
 
-`install_github("jjlynch2/OsteoSort")`
+`install_github("jjlynch2/OsteoSort", ref="v1.2.6")`
 
 # Depends
 * compiler
