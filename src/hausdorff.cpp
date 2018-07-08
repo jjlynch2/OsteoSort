@@ -9,9 +9,9 @@ struct euclidean_distance_matrix : public RcppParallel::Worker {
 	const RcppParallel::RMatrix<double> b;
 
 	//Output
-	RcppParallel::RVector<double> medm;
+	RcppParallel::RMatrix<double> medm;
 
-	euclidean_distance_matrix(const Rcpp::NumericMatrix a, const Rcpp::NumericMatrix b, Rcpp::NumericVector medm) : a(a), b(b), medm(medm) {}
+	euclidean_distance_matrix(const Rcpp::NumericMatrix a, const Rcpp::NumericMatrix b, Rcpp::NumericMatrix medm) : a(a), b(b), medm(medm) {}
 
 	void operator() (std::size_t begin, std::size_t end) {
 		for(std::size_t i = begin; i < end; i++) {
@@ -22,11 +22,12 @@ struct euclidean_distance_matrix : public RcppParallel::Worker {
 					dsum = dsum + pow(a(i,z) - b(j,z), 2);
 				}
 				new_low = pow(dsum, 0.5);
+				medm(i,j) = new_low;
 			}
-			medm[i] = new_low;
 		}
 	}
 };
+
 
 
 // [[Rcpp::depends(RcppParallel)]]
@@ -131,14 +132,14 @@ struct max_euclidean_distances2 : public RcppParallel::Worker {
 	}
 };
 
-
 // [[Rcpp::export]]
 Rcpp::NumericVector euclidean_distance_matrix_rcpp(Rcpp::NumericMatrix a, Rcpp::NumericMatrix b){
-	Rcpp::NumericVector medm(a.nrow() * b.nrow());
+	Rcpp::NumericMatrix medm(a.nrow(),b.nrow());
 	euclidean_distance_matrix euclidean_distance_matrix(a, b, medm);
 	RcppParallel::parallelFor(0, a.nrow(), euclidean_distance_matrix);	
 	return medm;
 }
+
 
 // [[Rcpp::export]]
 double max_directional_hausdorff_rcpp2(Rcpp::NumericMatrix a, Rcpp::NumericMatrix b){
