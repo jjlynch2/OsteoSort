@@ -17,7 +17,17 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, sessiontempdir = NULL, output_options = c(TRUE,FALSE), threads = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05, pca = NULL) {	    
+reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_interval = 0.90, sessiontempdir = NULL, output_options = c(TRUE,FALSE), threads = 1, test = TRUE, alphatest = TRUE, alphalevel = 0.05, pca = NULL) {	
+
+	alphalevel
+	prediction_interval
+	alphatest
+	test
+	threads
+	pca
+	output_options
+	sessiontempdir
+    
      print("Statistical comparisons started")	
 	options(stringsAsFactors = FALSE)    
 
@@ -65,8 +75,41 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				B2PCAt <- prcomp(t2) #PCA two
 
 				if(!is.null(pca)) {
-					B1PCA <- as.matrix(B1PCAt$x[,c(1:pca)]) #PC scores
-					B2PCA <- as.matrix(B2PCAt$x[,c(1:pca)]) #PC scores
+					if(pca >= 1) {
+						npca1 <- ncol(B1PCAt$x)
+						npca2 <- ncol(B2PCAt$x)
+
+						if(npca1 >= pca) {
+							B1PCA <- as.matrix(B1PCAt$x[,c(1:pca)]) #PC scores
+						}
+						else {
+							B1PCA <- B1PCAt$x #PC scores use all if specified number is greater than what exists
+						}
+						
+						if(npca2 >= pca) {
+							B2PCA <- as.matrix(B2PCAt$x[,c(1:pca)]) #PC scores
+						}
+						else {
+							B2PCA <- B2PCAt$x #PC scores
+						}
+
+					}
+					if(pca < 1) {
+						S1 <- summary(B1PCAt)
+						S2 <- summary(B2PCAt)
+						for(jj in 1:ncol(S1$importance)){
+							if(S1$importance[3,jj] >= pca) {
+								B1PCA <- as.matrix(B1PCAt$x[,c(1:jj)]) #PC scores
+								break
+							}
+						}
+						for(jj in 1:ncol(S2$importance)){
+							if(S2$importance[3,jj] >= pca) {
+								B2PCA <- as.matrix(B2PCAt$x[,c(1:jj)]) #PC scores
+								break
+							}
+						}
+					}
 				}
 				else {
 					B1PCA <- B1PCAt$x #PC scores
@@ -95,13 +138,47 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 				cmodel1 <- unique.cca[[index]]
 
 				if(!is.null(pca)) {
-					B1PCA <- as.matrix(B1PCAt$x[,c(1:pca)]) #PC scores
-					B2PCA <- as.matrix(B2PCAt$x[,c(1:pca)]) #PC scores
+					if(pca >= 1) {
+						npca1 <- ncol(B1PCAt$x)
+						npca2 <- ncol(B2PCAt$x)
+
+						if(npca1 >= pca) {
+							B1PCA <- as.matrix(B1PCAt$x[,c(1:pca)]) #PC scores
+						}
+						else {
+							B1PCA <- B1PCAt$x #PC scores use all if specified number is greater than what exists
+						}
+						
+						if(npca2 >= pca) {
+							B2PCA <- as.matrix(B2PCAt$x[,c(1:pca)]) #PC scores
+						}
+						else {
+							B2PCA <- B2PCAt$x #PC scores
+						}
+
+					}
+					if(pca < 1) {
+						S1 <- summary(B1PCAt)
+						S2 <- summary(B2PCAt)
+						for(jj in 1:ncol(S1$importance)){
+							if(S1$importance[3,jj] >= pca) {
+								B1PCA <- as.matrix(B1PCAt$x[,c(1:jj)]) #PC scores
+								break
+							}
+						}
+						for(jj in 1:ncol(S2$importance)){
+							if(S2$importance[3,jj] >= pca) {
+								B2PCA <- as.matrix(B2PCAt$x[,c(1:jj)]) #PC scores
+								break
+							}
+						}
+					}
 				}
 				else {
 					B1PCA <- B1PCAt$x #PC scores
 					B2PCA <- B2PCAt$x #PC scores
 				}
+
 
 
 			}
@@ -115,8 +192,41 @@ reg.multitest <- function(sort = NULL, ref = NULL, splitn = NULL, prediction_int
 			names(temp1p) <- temp1n		
 		
 			if(!is.null(pca)) {
-				temp1p <- as.data.frame(predict(B1PCAt, temp1p))[c(1:pca)]
-				temp2p <- as.data.frame(predict(B2PCAt, temp2p))[c(1:pca)]
+				if(pca >= 1) {
+					npca1 <- ncol(B1PCAt$x)
+					npca2 <- ncol(B2PCAt$x)
+
+					if(npca1 >= pca) {
+						temp1p <- as.data.frame(predict(B1PCAt, temp1p))[c(1:pca)]
+					}
+					else {
+						temp1p <- as.data.frame(predict(B1PCAt, temp1p))
+					}
+					
+					if(npca2 >= pca) {
+						temp2p <- as.data.frame(predict(B2PCAt, temp2p))[c(1:pca)]
+					}
+					else {
+						temp2p <- as.data.frame(predict(B2PCAt, temp2p))
+					}
+
+				}
+				if(pca < 1) {
+					S1 <- summary(B1PCAt)
+					S2 <- summary(B2PCAt)
+					for(jj in 1:ncol(S1$importance)){
+						if(S1$importance[3,jj] >= pca) {
+							temp1p <- as.data.frame(predict(B1PCAt, temp1p))[c(1:jj)]
+							break
+						}
+					}
+					for(jj in 1:ncol(S2$importance)){
+						if(S2$importance[3,jj] >= pca) {
+							temp2p <- as.data.frame(predict(B2PCAt, temp2p))[c(1:jj)]
+							break
+						}
+					}
+				}
 			}
 			else {
 				temp1p <- as.data.frame(predict(B1PCAt, temp1p))

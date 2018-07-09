@@ -18,6 +18,15 @@
 #' antestat.regtest()
 
 antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(TRUE,FALSE), prediction_interval = 0.95, tails = 2, alphalevel = 0.05, alphatest = TRUE, threads = 1) {
+
+	sessiontempdir
+	output_options
+	prediction_interval
+	tails
+	alphalevel
+	alphatest
+	threads
+
      print("Statistical comparisons started")   	
 	options(stringsAsFactors = FALSE) 
 

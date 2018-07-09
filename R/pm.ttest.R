@@ -18,6 +18,17 @@
 #' pm.ttest()
 
 pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, zero_v = 5e-05, boxcox = TRUE) {
+
+	alphalevel
+	absolutevalue
+	testagainstzero
+	threads
+	tails
+	zero_v
+	boxcox
+	output_options
+	sessiontempdir
+
 	options(stringsAsFactors = FALSE)	
      print("Statistical comparisons started")
 	options(warn = -1) #disables warnings
@@ -133,7 +144,6 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 		op <- system.time ( hera1 <- mclapply(FUN = myfunpm, X = sort, mc.cores = threads, mc.preschedule = TRUE) )
 		print(op)
 	}
-
 	hera1 <- as.data.frame(data.table::rbindlist(hera1))
 	
      colnames(hera1) <- c("id","Side","Element","id","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd","Result")
