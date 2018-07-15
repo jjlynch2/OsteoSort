@@ -1,4 +1,4 @@
-#Current development status for 1.2.6rc1
+#Current development status for 1.2.6
 # Installation
 Requires [**Rtools**](https://cran.r-project.org/bin/windows/Rtools/) to build on Windows
 
@@ -10,7 +10,7 @@ To install directly from GitHub use the devtools R package:
 
 `library(devtools)`
 
-`install_github("jjlynch2/OsteoSort", ref="v1.2.6rc1")`
+`install_github("jjlynch2/OsteoSort", ref="v1.2.6")`
 
 # Depends
 * compiler
@@ -24,7 +24,7 @@ To install directly from GitHub use the devtools R package:
 * RcppParallel
 * car
 
-# Changes for OsteoSort version : 1.2.6rc1
+# Changes for OsteoSort version : 1.2.6
 
 ## Minor changes:
 * Updated imports for DESC
@@ -39,3 +39,6 @@ To install directly from GitHub use the devtools R package:
 ## Major changes:
 * Added input.3d() and match.3d() functions for importing and pair-matching 3D data respectively
 * Added rotation(), translation(), and mean_shape() functions
+
+## Bug fixes:
+* Fixed bug with prediction interval lines for simple regression
