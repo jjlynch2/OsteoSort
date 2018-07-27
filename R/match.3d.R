@@ -43,16 +43,22 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 
 				L1 <- as.matrix(translation(list1[[i]][,c(1:3)]))
 				L1p <- as.numeric(na.omit(list1[[i]][,c(4:6)]))
-				L1mp <- as.numeric(na.omit(list1[[i]][,c(7)]))
+				L1p <- rbind(L1p, as.numeric(na.omit(list1[[i]][,c(7:9)])))
+				L1p <- rbind(L1p, as.numeric(na.omit(list1[[i]][,c(10:12)])))
+				L1mp <- as.numeric(na.omit(list1[[i]][,c(13)]))
 
-				L2 <- as.matrix(translation(list2[[x]][,c(1:3)]))
-				L2p <- as.numeric(na.omit(list2[[x]][,c(4:6)]))
-				L2mp <- as.numeric(na.omit(list2[[x]][,c(7)]))
+				L1p[,2] <- L1p[,2] * -1 #mirror 
 
-				rot <- rotation(L1[L1p,], L2[L2p,])
+				L2 <- as.matrix(translation(list2[[i]][,c(1:3)]))
+				L2p <- as.numeric(na.omit(list2[[i]][,c(4:6)]))
+				L2p <- rbind(L2p, as.numeric(na.omit(list2[[i]][,c(7:9)])))
+				L2p <- rbind(L2p, as.numeric(na.omit(list2[[i]][,c(10:12)])))
+				L2mp <- as.numeric(na.omit(list2[[i]][,c(13)]))
 
-				L1 <- L1 - rep(1,nrow(L1)) %*% t(mean_shape(L1[L1p,]))
-				L2 <- L2 - rep(1,nrow(L2)) %*% t(mean_shape(L2[L2p,]))
+				rot <- rotation(L1p, L2p)
+
+				L1 <- L1 - rep(1,nrow(L1)) %*% t(mean_shape(L1p))
+				L2 <- L2 - rep(1,nrow(L2)) %*% t(mean_shape(L2p))
 				L2 <- L2 %*% rot$rotation
 
 				L1 <- icpmat(L1, L2, type = transformation, threads = threads, iterations = iteration)
@@ -128,7 +134,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 		lista <- list()
 		listb <- list()
 		for(i in 1:length(list1)) {
-			A <- list1[[i]]
+			A <- list1[[i]][,c(1:3)]
 			A <- OsteoSort::pca_align(A)
 			
 			if(band == TRUE) {
@@ -148,7 +154,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 		}
 
 		for(i in 1:length(list2)) {
-			B <- list2[[i]]
+			B <- list2[[i]][,c(1:3)]
 			B <- OsteoSort::pca_align(B)
 
 			if(band == TRUE) {

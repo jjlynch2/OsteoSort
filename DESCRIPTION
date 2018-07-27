@@ -16,7 +16,8 @@ Depends:
     data.table,
     Rcpp,
     RcppParallel,
-    car
+    car,
+    ClusterR
 License: GPL-2
 LazyData: true
 ByteCompile: true
@@ -31,7 +32,8 @@ Imports:
     data.table,
     Rcpp,
     RcppParallel,
-    car
+    car,
+    ClusterR
 LinkingTo: 
 	Rcpp (>= 0.12.13),
 	RcppParallel

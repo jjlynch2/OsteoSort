@@ -25,3 +25,11 @@ minimum_euclidean_distances_indices <- function(a, b) {
     .Call(`_OsteoSort_minimum_euclidean_distances_indices`, a, b)
 }
 
+random_means <- function(a, k) {
+    .Call(`_OsteoSort_random_means`, a, k)
+}
+
+best_cluster <- function(a, m, k) {
+    .Call(`_OsteoSort_best_cluster`, a, m, k)
+}
+

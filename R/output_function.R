@@ -38,9 +38,9 @@ output_function <- function(hera1, method = "exclusion", type = "csv", return_pl
 
 				plot(hera1[[3]],hera1[[4]], xlab = "", ylab = "", pch=1, cex.axis=1.7); box(lwd=2)
 				points(hera1[[5]],hera1[[6]],col="blue",pch=16, cex=2)
-				matlines(hera1[[8]],hera1[[7]][,1],  col=c("red"), lwd=2,lty=1)
-				matlines(hera1[[8]],hera1[[7]][,2],  col=c("blue"),lwd=2,lty=1)
-				matlines(hera1[[8]], hera1[[7]][,3], col=c("blue"),lwd=2,lty=1)
+				lines(hera1[[8]],hera1[[7]][,1],  col=c("red"), lwd=2,lty=1)
+				lines(hera1[[8]],hera1[[7]][,2],  col=c("blue"),lwd=2,lty=1)
+				lines(hera1[[8]], hera1[[7]][,3], col=c("blue"),lwd=2,lty=1)
 
 				if(!return_plot) { dev.off() }
 		}
@@ -54,9 +54,9 @@ output_function <- function(hera1, method = "exclusion", type = "csv", return_pl
 			points(hera1[[7]],hera1[[5]],col="blue",pch=16, cex=2)
 			points(hera1[[7]],hera1[[6]],col="red",pch=16, cex=2)
 
-			matlines(hera1[[3]], hera1[[8]][,1], col=c("red"),lwd=2,lty=1)
-			matlines(hera1[[3]], hera1[[8]][,2],col=c("blue"),lwd=2,lty=1)
-			matlines(hera1[[3]], hera1[[8]][,3], col=c("blue"),lwd=2,lty=1)
+			lines(hera1[[3]], hera1[[8]][,1], col=c("red"),lwd=2,lty=1)
+			lines(hera1[[3]], hera1[[8]][,2],col=c("blue"),lwd=2,lty=1)
+			lines(hera1[[3]], hera1[[8]][,3], col=c("blue"),lwd=2,lty=1)
 
 			if(!return_plot) { dev.off()}
 		}
