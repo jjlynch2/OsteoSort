@@ -17,20 +17,18 @@
 #' @examples
 #' pm.ttest()
 
-pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolutevalue = TRUE, testagainstzero = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, zero_v = 5e-05, boxcox = TRUE) {
-
-	alphalevel
-	absolutevalue
-	testagainstzero
-	threads
-	tails
-	zero_v
-	boxcox
-	output_options
-	sessiontempdir
+pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortright = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, realmean = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, boxcox = TRUE) {
+	force(alphalevel)
+	force(absolutevalue)
+	force(testagainstzero)
+	force(threads)
+	force(tails)
+	force(boxcox)
+	force(output_options)
+	force(sessiontempdir)
 
 	options(stringsAsFactors = FALSE)	
-     print("Statistical comparisons started")
+     print("Pair-matching comparisons are running...")
 	options(warn = -1) #disables warnings
 	if(is.na(sort) || is.null(sort)) {return(NULL)} #input san
 	if(is.na(ref) || is.null(ref)) {return(NULL)} #input san
@@ -38,134 +36,52 @@ pm.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, alphalevel
 	workingdir = getwd()
 
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
-	
-	is.uniquepm <<- list()
-	unique.difsd <<- list()
-	unique.difm <<- list()
-	unique.df <<- list()
-	unique.ycol <<- list()
-	unique.yrow <<- list()
-	unique.difa <<- list()
-	if(boxcox) {
-		unique.boxcox <<- list()
+
+	if(absolute && realmean && boxcox) {
+		results <- julia_call("PMABM", sortleft, sortright, refleft, refright, tails)
 	}
-
-	myfunpm<-function(X){
-		temp1n <- names(X[-c(1:6)][c(T,F)])
-		temp1 <- sort(c(temp1n, paste(temp1n,"R",sep="")))
-
-		output1 <- lapply(is.uniquepm, function(zz) { 
-			ident <- identical(zz, temp1)
-			return(ident) 
-		})
-		index <- match(TRUE,output1) #index of model if exists
-
-		if(is.na(index)) {
-			y <- ref[temp1]
-			ycol <- ncol(y)
-			yrow <- nrow(y)
-			if(absolutevalue) { 
-				difa <- rowSums(abs(y[c(T,F)] - y[c(F,T)]))
-				difa1 <- sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]))
-			}
-			if(!absolutevalue) {
-				difa <- rowSums(y[c(T,F)] - y[c(F,T)])
-				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
-			}
-
-			if(boxcox) {
-				bx <- car::powerTransform((difa + zero_v))$lambda
-				difa <- (difa + zero_v) ^ bx
-				difa1 <- (difa1 + zero_v) ^ bx
-			}
-
-			difsd <- sd(difa)
-			if(testagainstzero) {
-				difm <- 0
-			} 
-			else difm <- mean(difa)
-
-			p.value <- tails * pt(-abs((difa1 - difm) / difsd), df = length(difa) - 1)
-			
-			is.uniquepm[[length(is.uniquepm)+1]] <<- temp1 #cache me outside 
-			unique.difsd[[length(unique.difsd)+1]] <<- difsd
-			unique.difm[[length(unique.difm)+1]] <<- difm
-			unique.df[[length(unique.df)+1]] <<- length(difa) - 1 #1 for degrees of freedom
-			unique.ycol[[length(unique.ycol)+1]] <<- ycol
-			unique.yrow[[length(unique.yrow)+1]] <<- yrow
-			unique.difa[[length(unique.difa)+1]] <<- difa
-			if(boxcox) {
-				unique.boxcox[[length(unique.boxcox)+1]] <<- bx
-			}
-		}
-		else {
-			ycol <- as.numeric(unique.ycol[[index]])
-			difm <- as.numeric(unique.difm[[index]])
-			yrow <- as.numeric(unique.yrow[[index]])
-			difsd <- as.numeric(unique.difsd[[index]])
-			difdf <- as.numeric(unique.df[[index]])
-			difa <- as.numeric(unique.difa[[index]])
-			if(boxcox) {
-				bx <- as.numeric(unique.boxcox[[index]])
-			}
-
-			if(absolutevalue) { 
-				difa1 <- sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]))
-			}
-			if(!absolutevalue) {
-				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
-			}
-
-			if(boxcox) {
-				difa1 <- (difa1 + zero_v) ^ bx
-			}
-
-			p.value <- tails * pt(-abs((difa1 - difm) / difsd), df = difdf) 
-		}
-		
-		if(round(p.value, digits = 4) > alphalevel) {result1 <- "Cannot Exclude"}
-		if(round(p.value, digits = 4) <= alphalevel) {result1 <- "Excluded"}
-
-		if(output_options[2]) {
-			no_return_value <- OsteoSort:::output_function(hera1 = list(X[,1], X[,2], difa, difa1), method="exclusion", type="plot")
-		}		
-
-		return(data.frame(X[,1], X[,3],X[,5],X[,2],X[,4],X[,6],toString(temp1n),round(p.value, digits = 4),ycol/2,yrow,round(difm, digits = 4),round(difsd, digits = 4),result1, stringsAsFactors=FALSE)) 
-	} 
-
-	if(Sys.info()[['sysname']] == "Windows") {
-		cl <- makeCluster(threads)
-		clusterExport(cl, list("ref", "alphalevel", "p1", "absolutevalue", "testagainstzero", "output_options", "tails", "is.uniquepm", "unique.difsd", "unique.difm", "unique.df", "unique.ycol", "unique.yrow", "unique.difa", "unique.boxcox"), envir = environment())
-		op <- system.time ( hera1 <- parLapply(cl=cl, fun = myfunpm, X = sort) )
-		print(op)
-		stopCluster(cl)
+	else if(absolute && realmean) {
+		results <- julia_call("PMAM", sortleft, sortright, refleft, refright, tails)
+	}
+	else if(absolute && boxcox) {
+		results <- julia_call("PMAB", sortleft, sortright, refleft, refright, tails)
+	}
+	else if(realmean && boxcox) {
+		results <- julia_call("PMBM", sortleft, sortright, refleft, refright, tails)
+	}
+	else if(absolute) {
+		results <- julia_call("PMA", sortleft, sortright, refleft, refright, tails)
+	}
+	else if(boxcox) {
+		results <- julia_call("PMB", sortleft, sortright, refleft, refright, tails)
+	}
+	else if(realmean) {
+		results <- julia_call("PMM", sortleft, sortright, refleft, refright, tails)
 	}
 	else {
-		op <- system.time ( hera1 <- mclapply(FUN = myfunpm, X = sort, mc.cores = threads, mc.preschedule = TRUE) )
-		print(op)
+		results <- julia_call("PM", sortleft, sortright, refleft, refright, tails)
 	}
-	hera1 <- as.data.frame(data.table::rbindlist(hera1))
-	
-     colnames(hera1) <- c("id","Side","Element","id","Side","Element","Measurements","p.value","# of measurements","Sample size", "mean", "sd","Result")
-     
-	rm(is.uniquepm) #making the environment clean again
-	rm(unique.difsd)
-	rm(unique.difm)
-	rm(unique.df)
-	rm(unique.ycol)
-	rm(unique.yrow) 
-	rm(unique.difa)
-	if(boxcox) {
-		rm(unique.boxcox)
-	}
+	#julia functions port above... do neo piece at a time
 
+	#if(output) {
+	#	no_return_value <- OsteoSort:::output_function(hera1 = list(SL$id, SR$id, ref_dif, sort_dif), method="exclusion", type="plot")
+	#}
+#need to parse measurement names before this output call
 	if(output_options[1]) {
-		no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="csv")
+		no_return_value <- OsteoSort:::output_function(results, method="exclusion", type="csv")
 	}
 
+	#transform numerical T/F to measurement names
+	measurements <- results[,c(8:ncol(results))]
+	for(i in 1:ncol(measurements)) {
+		measurements[measurements[,i] == 1,] <- names(sortleft[,i+3])
+	}
+	measurements <- paste(measurements[,c(1:ncol(measurements))], sep=" ")
+
+	results_formatted <- cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = results[,5], sd = results[,6], sample = results[,7],stringsAsFactors=FALSE)
 	gc()
 	setwd(workingdir)
 	options(stringsAsFactors = TRUE) #restore default R  
-     print("Statistical comparisons completed")
+     print("Finished.")
 	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,]))	
 }

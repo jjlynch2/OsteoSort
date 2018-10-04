@@ -11,12 +11,8 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 	options(stringsAsFactors = FALSE)  	
 
 
-	if(fragment == "Complete") {
-		fragment <- FALSE
-	}
-	if(fragment == "Fragmented") {
-		fragment <- TRUE
-	}
+	if(fragment == "Complete") {fragment <- FALSE}
+	if(fragment == "Fragmented") {fragment <- TRUE} 	
 
 	dist <- tolower(dist)
 	transformation <- tolower(transformation)

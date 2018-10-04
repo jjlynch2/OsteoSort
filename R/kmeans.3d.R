@@ -1,4 +1,4 @@
-#' k-means simplification
+#' k-means simplification wrapper
 #' 
 #'
 #' @keywords kmeans.3d
