@@ -1,44 +1,38 @@
-#Current development status for 1.2.6
-# Installation
-Requires [**Rtools**](https://cran.r-project.org/bin/windows/Rtools/) to build on Windows
+## This is the current development branch for 1.3.0
 
-Requires [**Xcode**](https://developer.apple.com/xcode/) to build on OSX
+## Installation
+* Nothing yet
 
-To install directly from GitHub use the devtools R package:
+## R Dependencies
+* pixmap            Converting images to pixmaps
+* jpeg              Converting pixmaps to greyscale
+* Morpho            Iterative Closest Point
+* DT                Data tables in Shiny
+* shiny             GUI
+* htmltools         GUI extended features
+* zip               Archiving results
+* rgl               Displaying and digitizing three-dimensional data
+* ClusterR          K-means clustering
+* JuliaCall         Integrate R with Julia
 
-`install.packages("devtools")`
+## Julia Dependencies
+* Pkg               Package management
+* Statistics        Basic statistical operations
+* Distributed       Distributed parallel processing support
+* SharedArrays      Shared arrays for returning data from multiple cores
+* Optim             Optimize min/max for use with boxcox
+* Rmath             R-style function calls
 
-`library(devtools)`
-
-`install_github("jjlynch2/OsteoSort", ref="v1.2.6")`
-
-# Depends
-* compiler
-* Morpho
-* parallel
-* pixmap
-* jpeg
-* CCA
-* data.table
-* Rcpp
-* RcppParallel
-* car
-
-# Changes for OsteoSort version : 1.2.6
+## Changes for OsteoSort version : 1.3.0
 
 ## Minor changes:
-* Updated imports for DESC
-* Adusted default scale option for 2D outline extraction
+* Deprecated unidirectional Hausdorff distances
+* Deprecated Robject example data tables
 
 ## Moderate changes:
-* Added Boxcox transformation for t-tests
-* Added dependency on car
-* Added option to select number of Principal Components for regression analysis in reg.multitest()
-* Added option (default) to select number of Principal Components based on cumulative variance 
+
 
 ## Major changes:
-* Added input.3d() and match.3d() functions for importing and pair-matching 3D data respectively
-* Added rotation(), translation(), and mean_shape() functions
+
 
 ## Bug fixes:
-* Fixed bug with prediction interval lines for simple regression
