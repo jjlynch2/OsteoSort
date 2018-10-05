@@ -1,11 +1,11 @@
 #Imports reference data and the config file
 
-reference_name_list <- reactiveValues(reference_name_list = list(c("a")))
+
+reference_name_list <- reactiveValues(reference_name_list = list.files(system.file("extdata/data", '', package = "OsteoSort"), recursive = FALSE, full.names = FALSE))
 reference_list <- reactiveValues(reference_list = list())
 config_df <- reactiveValues(config_df = data.frame())
 
-observeEvent(reference_list$reference_list, {
-	reference_name_list$reference_name_list <- list.files(system.file("extdata/data", '', package = "OsteoSort"), recursive = FALSE, full.names = FALSE)
+observeEvent(TRUE, {
 	reference_name_list$reference_name_list <- reference_name_list$reference_name_list[grepl(".ref", reference_name_list$reference_name_list)]
 	for (i in reference_name_list$reference_name_list) {
 		reference_list$reference_list[[i]] <- read.csv(file = paste(system.file("extdata/data", '', package = "OsteoSort"), i, sep=""), header = TRUE, sep=",", stringsAsFactors=FALSE)
@@ -36,19 +36,16 @@ output$reference_data_interface <- renderUI({
 })
 
 #work in progress
-#observeEvent(input$importRef, {
-#	for (i in input$importRef$name) {
-#		file.copy(input$importRef$datapath[i], paste(system.file("extdata/data", '', package = "OsteoSort"),input$importRef$name[i],sep=""))
-#	}
-
-#	reference_name_list$reference_name_list <- list.files(system.file("extdata/data", '', package = "OsteoSort"), recursive = FALSE, full.names = FALSE)
-#	reference_name_list$reference_name_list <- reference_name_list$reference_name_list[grepl(".ref", reference_name_list$reference_name_list)]
-
-#	for (i in reference_name_list$reference_name_list) {
-#		reference_list$reference_list[[i]] <- read.csv(file = paste(system.file("extdata/data", '', package = "OsteoSort"), i, sep=""), header = TRUE, sep=",", stringsAsFactors=FALSE)
-#	}
-
-#	reference_name_list$reference_name_list <- gsub(".ref", "", reference_name_list$reference_name_list)
-#	names(reference_list$reference_list) <- reference_name_list$reference_name_list
-
-#})
+#file.copy is broken
+observeEvent(input$importRef, {
+global1 <<- input$importRef$name
+global2 <<- input$importRef$datapath
+global3 <<- input$importRef
+	for (i in input$importRef$name) {
+		file.copy(input$importRef$datapath[i], paste(system.file("extdata/data", '', package = "OsteoSort"),input$importRef$name[i],sep=""))
+		reference_name_list$reference_name_list[(length(reference_name_list$reference_name_list)+1)] <- input$importRef$name
+		reference_list$reference_list[[(length(reference_list$reference_list)+1)]] <- read.csv(file = paste(system.file("extdata/data", '', package = "OsteoSort"),input$importRef$name[i],sep=""), header = TRUE, sep=",", stringsAsFactors=FALSE)
+	}
+	reference_name_list$reference_name_list <- gsub(".ref", "", reference_name_list$reference_name_list)
+	names(reference_list$reference_list) <- reference_name_list$reference_name_list
+})

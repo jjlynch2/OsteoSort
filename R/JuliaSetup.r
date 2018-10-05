@@ -27,5 +27,7 @@ JuliaSetup <- function(cores = NULL, recall = FALSE) {
 	julia_source(system.file("jl", "Box_Cox.jl", package = "OsteoSort"))
 	julia_source(system.file("jl", "Euclidean_Distance_Operations.jl", package = "OsteoSort"))
 
-	return(NULL)
+	JV <- JuliaCall:::julia_line(c("-e", "print(VERSION)"), stdout=TRUE)
+
+	return(JV)
 }

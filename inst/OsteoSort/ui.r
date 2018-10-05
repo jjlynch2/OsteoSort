@@ -8,21 +8,14 @@ library(rgl)
 #Navigation bar interface
 shinyUI(
 	navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort", title=div(img(src="OsteoSort.png", width = "25px"), "OsteoSort"),
-	navbarMenu("Help",
+	navbarMenu("Help",icon = icon("info", lib="font-awesome"),
 			tabPanel("About",icon = icon("question", lib="font-awesome"),
-				HTML(paste(
-					"<strong>OsteoSort:  </strong>", gsub("'", "" , packageVersion("OsteoSort")),"<p></p>",
-					"<strong>R: </strong>", gsub('R version', '', gsub('version.string R ', '', version['version.string'])),"<p></p>",
-					"<strong>Julia: </strong>", JuliaCall:::julia_line(c("-e", "print(VERSION)"), stdout=TRUE), "<p></p>",
-					"<strong>Measurements: </strong>", "0.0.1", "<p></p>",
-					"<strong>Platform:  </strong>", Sys.info()[['sysname']], sep = "")
-				),
-				HTML("<hr><span style='font-family: 'Times New Roman', serif;'> 
-					<p>
-					<h3>
-					References
-					</h3>
+				uiOutput("version_numbers"),
+				HTML("
 					<p>&nbsp;</p>
+					<p><h3>References</h3></p>
+					<p>
+					<hr><span style='font-family: 'Times New Roman', serif;'> 
 					Lynch JJ, Byrd JE, LeGarde CB. The Power of Exclusion using Automated Osteometric Sorting: Pair-matching. Journal of Forensic Sciences <a href='https://doi.org/10.1111/1556-4029.13560', target='_blank'>https://doi.org/10.1111/1556-4029.13560</a>
 					<p>&nbsp;</p>
 					Lynch JJ. An Analysis on the Choice of Alpha Level in the Osteometric Pair-matching of the Os Coxa, Scapula, and Clavicle. Journal of Forensic Sciences <a href='https://doi.org/10.1111/1556-4029.13599', target='_blank'>https://doi.org/10.1111/1556-4029.13599</a/>
@@ -36,7 +29,7 @@ shinyUI(
 					Lynch JJ, Stephan CN. Computational Tools in Forensic Anthropology: The Value of Open-Source Licensing as a Standard. Forensic Anthropology <a href='http://dx.doi.org/10.5744/fa.2018.0025', target='_blank'>http://dx.doi.org/10.5744/fa.2018.0025</a>
 					<p>&nbsp;</p>
 					</p>
-					")
+				")
 			),
 			tabPanel("Files",icon = icon("folder", lib="font-awesome"),
 				downloadButton('postmortem_template', 'Postmortem template'),
@@ -49,11 +42,20 @@ shinyUI(
 				tags$style(type = "text/css", "#osteoguide { width:10%; font-size:85%; background-color:#126a8f }"),
 				tags$style(type = "text/css", "#example_data { width:10%; font-size:85%; background-color:#126a8f }")
 			),
-			#tabPanel("Reference",icon = icon("server", lib="font-awesome"),
-			#	uiOutput("reference_data_interface"),
-			#	uiOutput("importRefR"),
-			#	actionButton("clearFileRef", "clear   ", icon = icon("window-close"))
-			#),
+			tabPanel("Reference",icon = icon("server", lib="font-awesome"),
+				fluidRow(
+					column(2, 
+						uiOutput("reference_data_interface"),
+						actionButton("refdel", "delete   ", icon = icon("window-close"))
+					),
+					column(2,
+						uiOutput("importRefR"),
+						actionButton("clearFileRef", "clear   ", icon = icon("window-close"))
+					)
+				),
+				tags$style(type = "text/css", "#clearFileRef { width:100%; font-size:85%; background-color:#126a8f }"),
+				tags$style(type = "text/css", "#refdel { width:100%; font-size:85%; background-color:#126a8f }")
+			),
 			tabPanel("Measurements",icon = icon("archive", lib="font-awesome"),
 				DT::dataTableOutput('measurement_conversion_table')
 			),
@@ -64,7 +66,7 @@ shinyUI(
 			tabPanel(HTML("<a href='https://github.com/jjlynch2/OsteoSort', target='_blank'>GitHub</a>"))
 		), #Help tab
 		navbarMenu("Osteometric",
-			tabPanel("Single",icon = icon("user", lib="font-awesome"),
+			tabPanel("Single",icon = icon("gear", lib="font-awesome"),
 				titlePanel(""),
 				sidebarLayout(
 					sidebarPanel(
@@ -187,7 +189,7 @@ shinyUI(
 					)#main
 				)#sidebarLayout
 			),#tabPanel
-		tabPanel("Multiple",icon = icon("users", lib="font-awesome"),
+		tabPanel("Multiple",icon = icon("gears", lib="font-awesome"),
 			titlePanel(""),
 				sidebarLayout(
 					sidebarPanel(
@@ -439,8 +441,8 @@ shinyUI(
 				)
 			)
 		),
-		navbarMenu("Outlier",	
-			tabPanel("Metric",icon = icon("bar-chart", lib="font-awesome"),	
+		navbarMenu("Outlier",icon = icon("bar-chart", lib="font-awesome"),
+			tabPanel("Metric",icon = icon("line-chart", lib="font-awesome"),	
 				sidebarLayout(
 					sidebarPanel(					
 						uiOutput("testtype3"),
@@ -556,7 +558,7 @@ shinyUI(
 					)
 				)
 			),
-			tabPanel("Stature",icon = icon("line-chart", lib="font-awesome"),
+			tabPanel("Stature",icon = icon("user", lib="font-awesome"),
 				sidebarLayout(
 					sidebarPanel(					
 							selectInput(inputId = 'metric_type2', 'Stature metric', c(Millimeters = "mm", Centimeters = "cm", Inches = "in"), selected = 'in'),
@@ -665,7 +667,7 @@ shinyUI(
 				)
 			)
 		),		
-		navbarMenu("Osteoshape",		
+		navbarMenu("Osteoshape", icon = icon("cloud", lib="font-waesome"),
 			tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"),
 				titlePanel(""),
 					sidebarLayout(
@@ -947,8 +949,8 @@ shinyUI(
 			)		
 
 		),
-		navbarMenu("Antemortem",	
-			tabPanel("Single",icon = icon("user", lib="font-awesome"),
+		navbarMenu("Antemortem", icon = icon("users", lib="font-awesome"),
+			tabPanel("Single",icon = icon("gear", lib="font-awesome"),
 				sidebarLayout(
 					sidebarPanel(	
 						selectInput(inputId = 'metric_type', 'Stature metric', c(Millimeters = "mm", Centimeters = "cm", Inches = "in"), selected = 'in'),
@@ -1031,7 +1033,7 @@ shinyUI(
 					)
 				)	
 			),
-			tabPanel("Multiple",icon = icon("users", lib="font-awesome"),
+			tabPanel("Multiple",icon = icon("gears", lib="font-awesome"),
 				sidebarLayout(
 					sidebarPanel(	
 						selectInput(inputId = 'metric_typem', 'Stature metric', c(Millimeters = "mm", Centimeters = "cm", Inches = "in"), selected = 'in'),

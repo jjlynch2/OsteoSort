@@ -20,8 +20,29 @@ shinyServer(function(input, output, session) {
 	setwd(sessiontempd)
 	sessiontemp <- getwd()
 
+	#generate UI for version numbers
+	JV <- NULL
+	system_name <- Sys.info()[['sysname']]
+	if(system_name == "Linux") {system_name <- paste(icon = icon("linux", lib="font-awesome"))}
+	else if(system_name == "Windows") {system_name <- paste(icon = icon("windows", lib="font-awesome"))}
+	else if(system_name == "Darwin") {system_name <- paste(icon = icon("apple", lib="font-awesome"))}
+	else {system_name <- ""}
+
+	output$version_numbers <- renderUI({
+		HTML(paste(
+			"<p><h3>Version Details</h3></p>",
+			"<hr><span style='font-family: 'Times New Roman', serif;'>",
+			"<strong>OsteoSort:  </strong>", gsub("'", "" , packageVersion("OsteoSort")),"<p></p>",
+			"<strong>R: </strong>", gsub('R version', '', gsub('version.string R ', '', version['version.string'])),"<p></p>",
+			"<strong>Julia: </strong>", JV, "<p></p>",
+			"<strong>Measurements: </strong>", "0.0.1", "<p></p>",
+			"<strong>Platform:  </strong>", system_name, " ", Sys.info()[['sysname']], sep = "")
+		)
+	})
+
+	#load Julia environment
 	showModal(modalDialog(title = "Loading Julia environment...", easyClose = FALSE, footer = NULL))
-	JuliaSetup()
+	JV <- JuliaSetup()
 	removeModal()  
 
 	#defines which modules to include
@@ -35,6 +56,7 @@ shinyServer(function(input, output, session) {
 	source(system.file("OsteoSort/server", 'threedalignment.r', package = "OsteoSort"), local=TRUE) ###imports three-dimensional alignment tool
 	source(system.file("OsteoSort/server", 'antestat_single.r', package = "OsteoSort"), local=TRUE) ###imports single comparison antemortem stature code
 	source(system.file("OsteoSort/server", 'antestat_multiple.r', package = "OsteoSort"), local=TRUE) ###imports multiple comparison antemortem stature code
+	
 	################stops the shiny app when closing session
 	session$onSessionEnded(function() { stopApp()})
 
@@ -43,7 +65,6 @@ shinyServer(function(input, output, session) {
 		unlink(sessiontemp, recursive = TRUE)    
 	})
 	
-	#download handlers for files on the help page
 	output$postmortem_template <- downloadHandler(
 		filename <- function() {
 			"postmortem_template.csv"
@@ -53,7 +74,6 @@ shinyServer(function(input, output, session) {
 		},
 	)  
 
-	#download handlers for files on the help page
 	output$antemortem_template <- downloadHandler(
 		filename <- function() {
 			"antemortem_template.csv"
