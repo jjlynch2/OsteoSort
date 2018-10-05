@@ -24,22 +24,17 @@ shinyServer(function(input, output, session) {
 	JuliaSetup()
 	removeModal()  
 
-
-
 	#defines which modules to include
-	source("../../server/reference.R", local=TRUE) ###imports single comparison server code
-	source("../../server/single.R", local=TRUE) ###imports single comparison server code
-
-
-
-	source("../../server/multiple.r", local=TRUE) ###imports multiple comparison server code
-	source("../../server/metric.r", local=TRUE) ###imports metric comparison server code
-	source("../../server/stature.r", local=TRUE) ###imports stature outlier comparison server code
-	source("../../server/twod.r", local=TRUE) ###imports two-dimensional scomparison server code
-	source("../../server/threed.r", local=TRUE) ###imports three-dimensional comparison server code
-	source("../../server/threedalignment.r", local=TRUE) ###imports three-dimensional alignment tool
-	source("../../server/antestat_single.r", local=TRUE) ###imports single comparison antemortem stature code
-	source("../../server/antestat_multiple.r", local=TRUE) ###imports multiple comparison antemortem stature code
+	source(system.file("OsteoSort/server", 'reference.r', package = "OsteoSort"), local=TRUE) ###imports single comparison server code
+	source(system.file("OsteoSort/server", 'single.r', package = "OsteoSort"), local=TRUE) ###imports single comparison server code
+	source(system.file("OsteoSort/server", 'multiple.r', package = "OsteoSort"), local=TRUE) ###imports multiple comparison server code
+	source(system.file("OsteoSort/server", 'metric.r', package = "OsteoSort"), local=TRUE) ###imports metric comparison server code
+	source(system.file("OsteoSort/server", 'stature.r', package = "OsteoSort"), local=TRUE) ###imports stature outlier comparison server code
+	source(system.file("OsteoSort/server", 'twod.r', package = "OsteoSort"), local=TRUE) ###imports two-dimensional scomparison server code
+	source(system.file("OsteoSort/server", 'threed.r', package = "OsteoSort"), local=TRUE) ###imports three-dimensional comparison server code
+	source(system.file("OsteoSort/server", 'threedalignment.r', package = "OsteoSort"), local=TRUE) ###imports three-dimensional alignment tool
+	source(system.file("OsteoSort/server", 'antestat_single.r', package = "OsteoSort"), local=TRUE) ###imports single comparison antemortem stature code
+	source(system.file("OsteoSort/server", 'antestat_multiple.r', package = "OsteoSort"), local=TRUE) ###imports multiple comparison antemortem stature code
 	################stops the shiny app when closing session
 	session$onSessionEnded(function() { stopApp()})
 

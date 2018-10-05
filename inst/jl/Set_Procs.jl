@@ -1,4 +1,4 @@
-# Wrapper to avoid adding more procs than actually detected
+# Wrapper to avoid adding more processors than actually detected
 
 @everywhere function Set_Procs(a, n)
 	a = Int64(a)

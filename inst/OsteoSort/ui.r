@@ -46,12 +46,12 @@ shinyUI(
 				tags$style(type = "text/css", "#example_data { width:10%; font-size:85%; background-color:#126a8f }")
 			),
 			tabPanel("Reference Data",icon = icon("server", lib="font-awesome"),
-				fluidRow(
-					uiOutput("reference_import"),
+				#fluidRow(
+					uiOutput("importRefR"),
+					actionButton("clearFileRef", "clear   ", icon = icon("window-close")),
 					uiOutput("reference_data_interface"),
-					actionButton('delete_warning_trigger', 'Delete', icon = icon("trash", lib = "font-awesome")  ),
-					tags$style(type = "text/css", "#delete_warning_trigger { width:1%; font-size:85%; background-color:#FF0000 }")
-				)
+					tags$style(type = "text/css", "#clearFileRef { width:10%; font-size:85%; background-color:#126a8f }")
+				#)
 			),
 			tabPanel("Measurements",icon = icon("archive", lib="font-awesome"),
 				DT::dataTableOutput('measurement_conversion_table')
