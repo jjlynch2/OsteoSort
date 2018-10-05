@@ -10,26 +10,30 @@ shinyUI(
 	navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort", title=div(img(src="OsteoSort.png", width = "25px"), "OsteoSort"),
 	navbarMenu("Help",
 			tabPanel("About",icon = icon("question", lib="font-awesome"),
-				HTML(paste("<h1><span style='font-family: 'Times New Roman', serif;'><strong>OsteoSort</strong></span></h1><hr/>",
+				HTML(paste(
 					"<strong>OsteoSort:  </strong>", gsub("'", "" , packageVersion("OsteoSort")),"<p></p>",
-					"<strong>R: </strong>", gsub('R ', '', gsub('version.string R ', '', version['version.string'])),"<p></p>",
+					"<strong>R: </strong>", gsub('R version', '', gsub('version.string R ', '', version['version.string'])),"<p></p>",
+					"<strong>Julia: </strong>", JuliaCall:::julia_line(c("-e", "print(VERSION)"), stdout=TRUE), "<p></p>",
+					"<strong>Measurements: </strong>", "0.0.1", "<p></p>",
 					"<strong>Platform:  </strong>", Sys.info()[['sysname']], sep = "")
 				),
 				HTML("<hr><span style='font-family: 'Times New Roman', serif;'> 
 					<p>
-					<h2>
+					<h3>
 					References
-					</h2>
+					</h3>
 					<p>&nbsp;</p>
-					Lynch JJ, Byrd JE, LeGarde CB. The power of exclusion using automated osteometric sorting: pair-matching. J Forensic Sci. <a href='https://doi.org/10.1111/1556-4029.13560', target='_blank'>https://doi.org/10.1111/1556-4029.13560</a>. Epub 2017 May 26.
+					Lynch JJ, Byrd JE, LeGarde CB. The Power of Exclusion using Automated Osteometric Sorting: Pair-matching. Journal of Forensic Sciences <a href='https://doi.org/10.1111/1556-4029.13560', target='_blank'>https://doi.org/10.1111/1556-4029.13560</a>
 					<p>&nbsp;</p>
-					Lynch JJ. An analysis on the choice of alpha level in the osteometric pair-matching of the os coxa, scapula, and clavicle. J Forensic Sci. <a href='https://doi.org/10.1111/1556-4029.13599', target='_blank'>https://doi.org/10.1111/1556-4029.13599</a/>. Epub 2017 July 18.
+					Lynch JJ. An Analysis on the Choice of Alpha Level in the Osteometric Pair-matching of the Os Coxa, Scapula, and Clavicle. Journal of Forensic Sciences <a href='https://doi.org/10.1111/1556-4029.13599', target='_blank'>https://doi.org/10.1111/1556-4029.13599</a/>
 					<p>&nbsp;</p>
-					Lynch JJ. The automation of regression modeling in osteometric sorting: an ordination approach. J Forensic Sci. <a href='https://doi.org/10.1111/1556-4029.13597', target='_blank'>https://doi.org/10.1111/1556-4029.13597</a>. Epub 2017 July 21.
+					Lynch JJ. The Automation of Regression Modeling in Osteometric Sorting: An Ordination Approach. Journal of Forensic Sciences <a href='https://doi.org/10.1111/1556-4029.13597', target='_blank'>https://doi.org/10.1111/1556-4029.13597</a>
 					<p>&nbsp;</p>
-					Lynch JJ. An automated two-dimensional form registration method for osteological pair-matching. J Forensic Sci. <a href='https://doi.org/10.1111/1556-4029.13670', target='_blank'>https://doi.org/10.1111/1556-4029.13670</a>. Epub 2017 October 16.
+					Lynch JJ. An Automated Two-dimensional Form Registration Method for Osteological Pair-matching. Journal of Forensic Sciences <a href='https://doi.org/10.1111/1556-4029.13670', target='_blank'>https://doi.org/10.1111/1556-4029.13670</a>
 					<p>&nbsp;</p>
-					Lynch JJ. An automated two-dimensional pairwise form registration method for pair-matching of fragmented skeletal remains. <a href='http://dx.doi.org/10.1111/1556-4029.13787', target='_blank'>http://dx.doi.org/10.1111/1556-4029.13787</a>. Epub 2018 April 10.
+					Lynch JJ. An Automated Two-dimensional Pairwise Form Registration Method for Pair-matching of Fragmented Skeletal Remains. Journal of Forensic Sciences <a href='http://dx.doi.org/10.1111/1556-4029.13787', target='_blank'>http://dx.doi.org/10.1111/1556-4029.13787</a>
+					<p>&nbsp;</p>
+					Lynch JJ, Stephan CN. Computational Tools in Forensic Anthropology: The Value of Open-Source Licensing as a Standard. Forensic Anthropology <a href='http://dx.doi.org/10.5744/fa.2018.0025', target='_blank'>http://dx.doi.org/10.5744/fa.2018.0025</a>
 					<p>&nbsp;</p>
 					</p>
 					")
@@ -45,23 +49,21 @@ shinyUI(
 				tags$style(type = "text/css", "#osteoguide { width:10%; font-size:85%; background-color:#126a8f }"),
 				tags$style(type = "text/css", "#example_data { width:10%; font-size:85%; background-color:#126a8f }")
 			),
-			tabPanel("Reference Data",icon = icon("server", lib="font-awesome"),
-				#fluidRow(
-					uiOutput("importRefR"),
-					actionButton("clearFileRef", "clear   ", icon = icon("window-close")),
-					uiOutput("reference_data_interface"),
-					tags$style(type = "text/css", "#clearFileRef { width:10%; font-size:85%; background-color:#126a8f }")
-				#)
-			),
+			#tabPanel("Reference",icon = icon("server", lib="font-awesome"),
+			#	uiOutput("reference_data_interface"),
+			#	uiOutput("importRefR"),
+			#	actionButton("clearFileRef", "clear   ", icon = icon("window-close"))
+			#),
 			tabPanel("Measurements",icon = icon("archive", lib="font-awesome"),
 				DT::dataTableOutput('measurement_conversion_table')
 			),
 			tabPanel("Misc",icon = icon("terminal", lib="font-awesome"),
-					actionButton('Create_Desktop_Icon', 'Desktop icon', icon = icon("gears")),
-					tags$style(type = "text/css", "#Create_Desktop_Icon { width:8%; font-size:85%; background-color:#126a8f }")
-			)
+				actionButton('Create_Desktop_Icon', 'Desktop icon', icon = icon("gears")),
+				tags$style(type = "text/css", "#Create_Desktop_Icon { width:8%; font-size:85%; background-color:#126a8f }")
+			),
+			tabPanel(HTML("<a href='https://github.com/jjlynch2/OsteoSort', target='_blank'>GitHub</a>"))
 		), #Help tab
-		navbarMenu("Osteometric sorting",
+		navbarMenu("Osteometric",
 			tabPanel("Single",icon = icon("user", lib="font-awesome"),
 				titlePanel(""),
 				sidebarLayout(
@@ -437,7 +439,7 @@ shinyUI(
 				)
 			)
 		),
-		navbarMenu("Outlier sorting",	
+		navbarMenu("Outlier",	
 			tabPanel("Metric",icon = icon("bar-chart", lib="font-awesome"),	
 				sidebarLayout(
 					sidebarPanel(					
@@ -663,7 +665,7 @@ shinyUI(
 				)
 			)
 		),		
-		navbarMenu("Osteoshape sorting",		
+		navbarMenu("Osteoshape",		
 			tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"),
 				titlePanel(""),
 					sidebarLayout(
@@ -945,8 +947,8 @@ shinyUI(
 			)		
 
 		),
-		navbarMenu("Antemortem sorting",	
-			tabPanel("Single stature",icon = icon("user", lib="font-awesome"),
+		navbarMenu("Antemortem",	
+			tabPanel("Single",icon = icon("user", lib="font-awesome"),
 				sidebarLayout(
 					sidebarPanel(	
 						selectInput(inputId = 'metric_type', 'Stature metric', c(Millimeters = "mm", Centimeters = "cm", Inches = "in"), selected = 'in'),
@@ -1029,7 +1031,7 @@ shinyUI(
 					)
 				)	
 			),
-			tabPanel("Multiple stature",icon = icon("users", lib="font-awesome"),
+			tabPanel("Multiple",icon = icon("users", lib="font-awesome"),
 				sidebarLayout(
 					sidebarPanel(	
 						selectInput(inputId = 'metric_typem', 'Stature metric', c(Millimeters = "mm", Centimeters = "cm", Inches = "in"), selected = 'in'),
