@@ -12,7 +12,7 @@ shinyUI(
 
 
 	navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
-	tags$script(HTML("var header = $('.navbar > .container-fluid');header.append('<div style=\"float:left\"><img src=\"osteosort_new.png\" alt=\"alt\" style=\"float:right; width:200px;padding-top:0px;\"></div><div style=\"float:right\"><a href=\"https://github.com/jjlynch2/OsteoSort\" target=\"_blank\"><img src=\"github.png\" alt=\"alt\" style=\"float:right; width:40px;padding-top:10px;\"> </a></div>');console.log(header)")),
+	tags$script(HTML(paste("var header = $('.navbar > .container-fluid');header.append('<div style=\"float:left\"><img src=\"osteosort_new.png\" alt=\"alt\" style=\"float:right; width:200px;padding-top:0px;\"></div><div style=\"float:right; padding-top:15px\">", uiOutput("memUsage"), "</div>');console.log(header)", sep=""))),
 	navbarMenu("Help",icon = icon("info", lib="font-awesome"),
 			tabPanel("About",icon = icon("question", lib="font-awesome"),
 				uiOutput("version_numbers"),
@@ -67,6 +67,9 @@ shinyUI(
 			tabPanel("Misc",icon = icon("terminal", lib="font-awesome"),
 				actionButton('Create_Desktop_Icon', 'Desktop icon', icon = icon("gears")),
 				tags$style(type = "text/css", "#Create_Desktop_Icon { width:8%; font-size:85%; background-color:#126a8f }")
+			),
+			tabPanel(
+				title=a(img("Source Code", src='github.png',width='20px'), href='https://github.com/jjlynch2/OsteoSort', target='_blank')
 			)
 		), #Help tab
 		navbarMenu("Osteometric",icon = icon("bar-chart", lib="font-awesome"),
