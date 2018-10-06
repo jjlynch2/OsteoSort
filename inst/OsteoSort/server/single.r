@@ -153,7 +153,7 @@ output$single_reference <- renderUI({
 })
 
 single_reference_imported <- reactiveValues(single_reference_imported = data.frame())
-single_reference_art_imported <- reactiveValues(single_reference_art_imported = data.frame())
+#single_reference_art_imported <- reactiveValues(single_reference_art_imported = data.frame())
 elements <- reactiveValues(elements = c("temp") )
 
 
@@ -163,27 +163,27 @@ art_elements_a <- reactiveValues(art_elements_a = c("temp"))
 
 observeEvent(input$single_reference, {
 	single_reference_imported$single_reference_imported <- reference_list$reference_list[[single_reference$single_reference]]
-	single_reference_art_imported$single_reference_art_imported <- config_list$config_list[[single_reference$single_reference]][config_list$config_list[[single_reference$single_reference]]$Method == "Articulation",]
+	#single_reference_art_imported$single_reference_art_imported <- config_list$config_list[[single_reference$single_reference]][config_list$config_list[[single_reference$single_reference]]$Method == "Articulation",]
 
 	elements$elements <- unique(single_reference_imported$single_reference_imported$Element)
-	art_elements_a$art_elements_a <- cbind(single_reference_art_imported$single_reference_art_imported$Elementa, single_reference_art_imported$single_reference_art_imported$Elementb, single_reference_art_imported$single_reference_art_imported$Measurementa, single_reference_art_imported$single_reference_art_imported$Measurementb)
+	#art_elements_a$art_elements_a <- cbind(single_reference_art_imported$single_reference_art_imported$Elementa, single_reference_art_imported$single_reference_art_imported$Elementb, single_reference_art_imported$single_reference_art_imported$Measurementa, single_reference_art_imported$single_reference_art_imported$Measurementb)
 })
 
 
-output$single_element_articulation_a <- renderUI({
-	selectInput(inputId = "single_element_articulation_a_", label = "First", choices = unique(c(art_elements_a$art_elements_a[,1],art_elements_a$art_elements_a[,2])) )
-})
+#output$single_element_articulation_a <- renderUI({
+#	selectInput(inputId = "single_element_articulation_a_", label = "First", choices = unique(c(art_elements_a$art_elements_a[,1],art_elements_a$art_elements_a[,2])) )
+#})
 
-observeEvent(input$single_element_articulation_a_, {
-	temp1 = art_elements_a$art_elements_a[art_elements_a$art_elements_a[,1] == input$single_element_articulation_a_,2]
-	temp2 = art_elements_a$art_elements_a[art_elements_a$art_elements_a[,2] == input$single_element_articulation_a_,1]
+#observeEvent(input$single_element_articulation_a_, {
+#	temp1 = art_elements_a$art_elements_a[art_elements_a$art_elements_a[,1] == input$single_element_articulation_a_,2]
+#	temp2 = art_elements_a$art_elements_a[art_elements_a$art_elements_a[,2] == input$single_element_articulation_a_,1]
 
-	ch = unique(c(temp1, temp2))
+#	ch = unique(c(temp1, temp2))
 
-	output$single_element_articulation_b <- renderUI({
-		selectInput(inputId = "single_element_articulation_b_", label = "Second", choices = ch)
-	})
-})
+#	output$single_element_articulation_b <- renderUI({
+#		selectInput(inputId = "single_element_articulation_b_", label = "Second", choices = ch)
+#	})
+#})
 
 output$single_element_pair_match <- renderUI({
 	selectInput(inputId = "single_elements_pairmatch", label = "Element", choices = elements$elements)

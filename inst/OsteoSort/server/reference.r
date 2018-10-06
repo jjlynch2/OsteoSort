@@ -19,7 +19,7 @@ observeEvent(TRUE, {
 output$importRefR <- renderUI({
 	input$clearFileRef
 	input$uploadFormat
-	fileInput('importRef', 'Import', accept=c('.ref'), multiple = TRUE)
+	fileInput('importRef', '', accept=c('.ref'), multiple = TRUE)
 })
 
 #clears session for multiple comparison
@@ -28,11 +28,11 @@ observeEvent(input$clearFileRef, {
 		file.remove(input$importRef$datapath)
 		file.remove(input$importRef$name)
 	}
-	fileInput('importRef', 'Import', accept=c('.ref'), multiple = TRUE)
+	fileInput('importRef', '', accept=c('.ref'), multiple = TRUE)
 })
 
 output$reference_data_interface <- renderUI({
-	selectInput(inputId = "Reference_Sample", label = "Reference", choices = reference_name_list$reference_name_list)
+	selectInput(inputId = "Reference_Sample", label = "", choices = reference_name_list$reference_name_list)
 })
 
 #work in progress

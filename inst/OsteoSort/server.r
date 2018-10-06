@@ -36,7 +36,11 @@ shinyServer(function(input, output, session) {
 	source(system.file("OsteoSort/server", 'files.r', package = "OsteoSort"), local=TRUE) ###imports code to save supplemental files from help menu
 	source(system.file("OsteoSort/server", 'shortcut.r', package = "OsteoSort"), local=TRUE) ###imports code to create shortcut from help menu
 	source(system.file("OsteoSort/server", 'measurement_standards.r', package = "OsteoSort"), local=TRUE) ###imports code to create measurement conversion data table
-	source(system.file("OsteoSort/server", 'mem.r', package = "OsteoSort"), local=TRUE) ###imports code to display memory usage
+	source(system.file("OsteoSort/server", 'system_info.r', package = "OsteoSort"), local=TRUE) ###imports code to display system information
+	source(system.file("OsteoSort/server", 'URL.r', package = "OsteoSort"), local=TRUE) ###imports code to display URLs
+	source(system.file("OsteoSort/server", 'update_gh.r', package = "OsteoSort"), local=TRUE) ###imports code to check for updates
+	source(system.file("OsteoSort/server", 'about_refs.r', package = "OsteoSort"), local=TRUE) ###imports code to display references
+	source(system.file("OsteoSort/server", 'changes.r', package = "OsteoSort"), local=TRUE) ###imports code to display version changes
 
 	#stops the shiny app when closing session
 	session$onSessionEnded(function() { stopApp()})

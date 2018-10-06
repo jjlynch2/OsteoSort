@@ -15,61 +15,82 @@ shinyUI(
 	tags$script(HTML(paste("var header = $('.navbar > .container-fluid');header.append('<div style=\"float:left\"><img src=\"osteosort_new.png\" alt=\"alt\" style=\"float:right; width:200px;padding-top:0px;\"></div><div style=\"float:right; padding-top:15px\">", uiOutput("memUsage"), "</div>');console.log(header)", sep=""))),
 	navbarMenu("Help",icon = icon("info", lib="font-awesome"),
 			tabPanel("About",icon = icon("question", lib="font-awesome"),
-				uiOutput("version_numbers"),
-				HTML("
-					<p>&nbsp;</p>
-					<p><h3>References</h3></p>
-					<p>
-					<hr><span style='font-family: 'Times New Roman', serif;'> 
-					Lynch JJ, Byrd JE, LeGarde CB. The Power of Exclusion using Automated Osteometric Sorting: Pair-matching. Journal of Forensic Sciences <a href='https://doi.org/10.1111/1556-4029.13560', target='_blank'>https://doi.org/10.1111/1556-4029.13560</a>
-					<p>&nbsp;</p>
-					Lynch JJ. An Analysis on the Choice of Alpha Level in the Osteometric Pair-matching of the Os Coxa, Scapula, and Clavicle. Journal of Forensic Sciences <a href='https://doi.org/10.1111/1556-4029.13599', target='_blank'>https://doi.org/10.1111/1556-4029.13599</a/>
-					<p>&nbsp;</p>
-					Lynch JJ. The Automation of Regression Modeling in Osteometric Sorting: An Ordination Approach. Journal of Forensic Sciences <a href='https://doi.org/10.1111/1556-4029.13597', target='_blank'>https://doi.org/10.1111/1556-4029.13597</a>
-					<p>&nbsp;</p>
-					Lynch JJ. An Automated Two-dimensional Form Registration Method for Osteological Pair-matching. Journal of Forensic Sciences <a href='https://doi.org/10.1111/1556-4029.13670', target='_blank'>https://doi.org/10.1111/1556-4029.13670</a>
-					<p>&nbsp;</p>
-					Lynch JJ. An Automated Two-dimensional Pairwise Form Registration Method for Pair-matching of Fragmented Skeletal Remains. Journal of Forensic Sciences <a href='http://dx.doi.org/10.1111/1556-4029.13787', target='_blank'>http://dx.doi.org/10.1111/1556-4029.13787</a>
-					<p>&nbsp;</p>
-					Lynch JJ, Stephan CN. Computational Tools in Forensic Anthropology: The Value of Open-Source Licensing as a Standard. Forensic Anthropology <a href='http://dx.doi.org/10.5744/fa.2018.0025', target='_blank'>http://dx.doi.org/10.5744/fa.2018.0025</a>
-					<p>&nbsp;</p>
-					</p>
-				")
+				fluidRow(
+					sidebarPanel(
+						uiOutput("version_numbers")
+					,width = 3),
+					sidebarPanel(
+						uiOutput("update_gh")
+					,width = 3),
+					sidebarPanel(
+						uiOutput("system_info")
+					,width=3),
+					sidebarPanel(
+						uiOutput("URL")
+					,width=3)
+				),
+				fluidRow(br()),
+				fluidRow(
+					sidebarPanel(
+						uiOutput("changes")
+					,width = 6),
+					sidebarPanel(
+						uiOutput("about_refs")
+					,width = 6)
+				)
 			),
 			tabPanel("Files",icon = icon("folder", lib="font-awesome"),
-				downloadButton('postmortem_template', 'Postmortem template'),
-				downloadButton('antemortem_template', 'Antemortem template'),
-				downloadButton('osteoguide', 'Help guide'),
-				downloadButton('example_data', "Example data"),
-
-				tags$style(type = "text/css", "#postmortem_template { width:10%; font-size:85%; background-color:#126a8f }"),
-				tags$style(type = "text/css", "#antemortem_template { width:10%; font-size:85%; background-color:#126a8f }"),
-				tags$style(type = "text/css", "#osteoguide { width:10%; font-size:85%; background-color:#126a8f }"),
-				tags$style(type = "text/css", "#example_data { width:10%; font-size:85%; background-color:#126a8f }")
+				sidebarPanel(
+					fluidRow(
+						HTML("<p><h3>Help Files</h3></p>")
+					),
+					fluidRow(
+						downloadButton('osteoguide', 'Help guide')
+					),
+					fluidRow(br()),
+					fluidRow(
+						downloadButton('antemortem_template', 'Antemortem template')
+					),
+					fluidRow(br()),
+					fluidRow(
+						downloadButton('postmortem_template', 'Postmortem template')
+					),
+					fluidRow(br()),
+					fluidRow(
+						downloadButton('example_data', "Example data")
+					),
+					fluidRow(br()),
+					fluidRow(
+						actionButton('Create_Desktop_Icon', 'Desktop shortcut', icon = icon("gears"))
+					)
+				,width = 2),
+				tags$style(type = "text/css", "#Create_Desktop_Icon { width:100%; font-size:85%; background-color:#126a8f }"),
+				tags$style(type = "text/css", "#postmortem_template { width:100%; font-size:85%; background-color:#126a8f }"),
+				tags$style(type = "text/css", "#antemortem_template { width:100%; font-size:85%; background-color:#126a8f }"),
+				tags$style(type = "text/css", "#osteoguide { width:100%; font-size:85%; background-color:#126a8f }"),
+				tags$style(type = "text/css", "#example_data { width:100%; font-size:85%; background-color:#126a8f }")
 			),
 			tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 				fluidRow(
-					column(2, 
+					sidebarPanel(
+						HTML("<p><h3>Delete Reference</h3></p>"),
 						uiOutput("reference_data_interface"),
 						actionButton("refdel", "delete   ", icon = icon("window-close"))
-					),
-					column(2,
+					,width = 2),
+					sidebarPanel(
+						HTML("<p><h3>Import Reference</h3></p>"),
 						uiOutput("importRefR"),
 						actionButton("clearFileRef", "clear   ", icon = icon("window-close"))
-					)
+					,width = 2),
+					sidebarPanel(
+						HTML("<p><h3>Configuration</h3></p>")
+					,width = 2)
 				),
 				tags$style(type = "text/css", "#clearFileRef { width:100%; font-size:85%; background-color:#126a8f }"),
 				tags$style(type = "text/css", "#refdel { width:100%; font-size:85%; background-color:#126a8f }")
 			),
 			tabPanel("Measurements",icon = icon("archive", lib="font-awesome"),
 				DT::dataTableOutput('measurement_conversion_table')
-			),
-			tabPanel("Misc",icon = icon("terminal", lib="font-awesome"),
-				actionButton('Create_Desktop_Icon', 'Desktop icon', icon = icon("gears")),
-				tags$style(type = "text/css", "#Create_Desktop_Icon { width:8%; font-size:85%; background-color:#126a8f }")
-			),
-			tabPanel(
-				title=a(img("Source Code", src='github.png',width='20px'), href='https://github.com/jjlynch2/OsteoSort', target='_blank')
 			)
 		), #Help tab
 		navbarMenu("Osteometric",icon = icon("bar-chart", lib="font-awesome"),
