@@ -7,7 +7,12 @@ library(shiny)
 library(rgl)
 #Navigation bar interface
 shinyUI(
-	navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort", title=div(img(src="OsteoSort.png", width = "25px"), "OsteoSort"),
+
+
+
+
+	navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
+	tags$script(HTML("var header = $('.navbar > .container-fluid');header.append('<div style=\"float:left\"><img src=\"osteosort_new.png\" alt=\"alt\" style=\"float:right; width:200px;padding-top:0px;\"></div><div style=\"float:right\"><a href=\"https://github.com/jjlynch2/OsteoSort\" target=\"_blank\"><img src=\"github.png\" alt=\"alt\" style=\"float:right; width:40px;padding-top:10px;\"> </a></div>');console.log(header)")),
 	navbarMenu("Help",icon = icon("info", lib="font-awesome"),
 			tabPanel("About",icon = icon("question", lib="font-awesome"),
 				uiOutput("version_numbers"),
@@ -62,10 +67,9 @@ shinyUI(
 			tabPanel("Misc",icon = icon("terminal", lib="font-awesome"),
 				actionButton('Create_Desktop_Icon', 'Desktop icon', icon = icon("gears")),
 				tags$style(type = "text/css", "#Create_Desktop_Icon { width:8%; font-size:85%; background-color:#126a8f }")
-			),
-			tabPanel(HTML("<a href='https://github.com/jjlynch2/OsteoSort', target='_blank'>GitHub</a>"))
+			)
 		), #Help tab
-		navbarMenu("Osteometric",
+		navbarMenu("Osteometric",icon = icon("bar-chart", lib="font-awesome"),
 			tabPanel("Single",icon = icon("gear", lib="font-awesome"),
 				titlePanel(""),
 				sidebarLayout(
@@ -441,7 +445,7 @@ shinyUI(
 				)
 			)
 		),
-		navbarMenu("Outlier",icon = icon("bar-chart", lib="font-awesome"),
+		navbarMenu("Outlier",icon = icon("sort-amount-asc", lib="font-awesome"),
 			tabPanel("Metric",icon = icon("line-chart", lib="font-awesome"),	
 				sidebarLayout(
 					sidebarPanel(					
@@ -667,7 +671,7 @@ shinyUI(
 				)
 			)
 		),		
-		navbarMenu("Osteoshape", icon = icon("cloud", lib="font-waesome"),
+		navbarMenu("Osteoshape", icon = icon("cloud", lib="font-awesome"),
 			tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"),
 				titlePanel(""),
 					sidebarLayout(
