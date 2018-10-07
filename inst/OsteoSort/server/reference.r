@@ -1,6 +1,4 @@
 #Imports reference data and the config file
-
-
 reference_name_list <- reactiveValues(reference_name_list = list.files(system.file("extdata/data", '', package = "OsteoSort"), recursive = FALSE, full.names = FALSE))
 reference_list <- reactiveValues(reference_list = list())
 config_df <- reactiveValues(config_df = data.frame())
@@ -14,7 +12,6 @@ observeEvent(TRUE, {
 	names(reference_list$reference_list) <- reference_name_list$reference_name_list
 	config_df$config_df <- read.csv(file = system.file("extdata/data", 'config', package = "OsteoSort"), header = TRUE, sep=",", stringsAsFactors=FALSE)
 })
-
 
 output$importRefR <- renderUI({
 	input$clearFileRef
@@ -35,17 +32,30 @@ output$reference_data_interface <- renderUI({
 	selectInput(inputId = "Reference_Sample", label = "", choices = reference_name_list$reference_name_list)
 })
 
-#work in progress
-#file.copy is broken
 observeEvent(input$importRef, {
-global1 <<- input$importRef$name
-global2 <<- input$importRef$datapath
-global3 <<- input$importRef
-	for (i in input$importRef$name) {
+	for (i in length(input$importRef$name)) {
 		file.copy(input$importRef$datapath[i], paste(system.file("extdata/data", '', package = "OsteoSort"),input$importRef$name[i],sep=""))
 		reference_name_list$reference_name_list[(length(reference_name_list$reference_name_list)+1)] <- input$importRef$name
 		reference_list$reference_list[[(length(reference_list$reference_list)+1)]] <- read.csv(file = paste(system.file("extdata/data", '', package = "OsteoSort"),input$importRef$name[i],sep=""), header = TRUE, sep=",", stringsAsFactors=FALSE)
 	}
 	reference_name_list$reference_name_list <- gsub(".ref", "", reference_name_list$reference_name_list)
 	names(reference_list$reference_list) <- reference_name_list$reference_name_list
+})
+
+observeEvent(input$refdel, {
+	rmf <- paste(system.file("extdata/data", '', package = "OsteoSort"),input$Reference_Sample,".ref",sep="")
+	if(file.exists(rmf)) { 
+		file.remove(rmf) 
+	}
+	name_ind <- which(reference_name_list$reference_name_list == input$Reference_Sample)
+	reference_list$reference_list <- reference_list$reference_list[-name_ind]
+	reference_name_list$reference_name_list <- reference_name_list$reference_name_list[reference_name_list$reference_name_list != input$Reference_Sample]
+})
+
+output$reference_table <- DT::renderDataTable ({
+	DT::datatable(reference_list$reference_list[[input$Reference_Sample]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+})
+
+output$reference_config <- DT::renderDataTable ({
+	DT::datatable(config_df$config_df, options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rowname = FALSE)
 })

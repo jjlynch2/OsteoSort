@@ -71,20 +71,32 @@ shinyUI(
 				tags$style(type = "text/css", "#example_data { width:100%; font-size:85%; background-color:#126a8f }")
 			),
 			tabPanel("Reference",icon = icon("server", lib="font-awesome"),
-				fluidRow(
+				sidebarLayout(
 					sidebarPanel(
 						HTML("<p><h3>Delete Reference</h3></p>"),
 						uiOutput("reference_data_interface"),
-						actionButton("refdel", "delete   ", icon = icon("window-close"))
-					,width = 2),
-					sidebarPanel(
-						HTML("<p><h3>Import Reference</h3></p>"),
+						actionButton("refdel", "delete   ", icon = icon("window-close")),
 						uiOutput("importRefR"),
 						actionButton("clearFileRef", "clear   ", icon = icon("window-close"))
 					,width = 2),
-					sidebarPanel(
-						HTML("<p><h3>Configuration</h3></p>")
-					,width = 2)
+					mainPanel(
+						tabsetPanel(id="tabSelectedreference",
+							tabPanel("Reference",
+								fluidRow(
+									column(12, 
+										DT::dataTableOutput('reference_table')
+									)
+								,width = 12)
+							),
+						 	tabPanel("Configuration",
+								fluidRow(
+									column(12,
+										DT::dataTableOutput('reference_config')
+									)
+								,width = 12)
+							)
+						)
+					)
 				),
 				tags$style(type = "text/css", "#clearFileRef { width:100%; font-size:85%; background-color:#126a8f }"),
 				tags$style(type = "text/css", "#refdel { width:100%; font-size:85%; background-color:#126a8f }")
