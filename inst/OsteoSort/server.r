@@ -41,7 +41,6 @@ shinyServer(function(input, output, session) {
 	source(system.file("OsteoSort/server", 'update_gh.r', package = "OsteoSort"), local=TRUE) ###imports code to check for updates
 	source(system.file("OsteoSort/server", 'about_refs.r', package = "OsteoSort"), local=TRUE) ###imports code to display references
 	source(system.file("OsteoSort/server", 'changes.r', package = "OsteoSort"), local=TRUE) ###imports code to display version changes
-
 	#stops the shiny app when closing session
 	session$onSessionEnded(function() { stopApp()})
 
