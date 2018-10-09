@@ -2,17 +2,15 @@
 #' 
 #' This is the ui.r file for the interface that utilizes all previous functions. 
 #' runApp("osteosort")
+
 options(warn = -1)
 library(shiny)
 library(rgl)
 #Navigation bar interface
 shinyUI(
-
-
-
-
-	navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
-	tags$script(HTML(paste("var header = $('.navbar > .container-fluid');header.append('<div style=\"float:left\"><img src=\"osteosort_new.png\" alt=\"alt\" style=\"float:right; width:200px;padding-top:0px;\"></div><div style=\"float:right; padding-top:15px\">", uiOutput("memUsage"), "</div>');console.log(header)", sep=""))),
+navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
+	tags$script(HTML(paste("var header = $('.navbar > .container-fluid');header.append('<div style=\"float:left\"><img src=\"osteosort_new.png\" alt=\"alt\" style=\"float:right; width:200px;padding-top:0px;\"></div><div style=\"float:right; padding-top:15px\">", 
+					uiOutput("memUsage"), "</div>');console.log(header)", sep=""))),
 	navbarMenu("Help",icon = icon("info", lib="font-awesome"),
 			tabPanel("About",icon = icon("question", lib="font-awesome"),
 				fluidRow(
@@ -103,6 +101,10 @@ shinyUI(
 			),
 			tabPanel("Measurements",icon = icon("archive", lib="font-awesome"),
 				DT::dataTableOutput('measurement_conversion_table')
+			),		
+			tabPanel(
+				tags$button(type = "button", id = "exitOsteoSort", class = "increment btn btn-default", onclick = "window.close();", HTML("<i class ='fa fa-window-close'></i>"), "Exit"),
+				tags$style(type = "text/css", "#exitOsteoSort { width:100%; height:25%; vertical-align:middle; font-size:70%; background-color:#D3D3D3; color:#126a8f }")
 			)
 		), #Help tab
 		navbarMenu("Osteometric",icon = icon("bar-chart", lib="font-awesome"),

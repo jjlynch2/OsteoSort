@@ -19,7 +19,6 @@ output$importRefR <- renderUI({
 	fileInput('importRef', '', accept=c('.ref'), multiple = TRUE)
 })
 
-#clears session for multiple comparison
 observeEvent(input$clearFileRef, {
 	if(!is.null(input$importRef$datapath)) {
 		file.remove(input$importRef$datapath)
