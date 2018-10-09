@@ -7,20 +7,12 @@
 library(shiny)
 options(rgl.useNULL=TRUE) #required to avoid rgl device opening 
 library(rgl)
-options(shiny.maxRequestSize=200*1024^2) #increased file upload size to 30MB
+options(shiny.maxRequestSize=200*1024^2) #30MB file size limit
 options(warn = -1) #disables warnings
 
 shinyServer(function(input, output, session) {
-	#generates temporary directories
-	workingdd <- getwd()
-	sessiontempd <- OsteoSort:::randomstring(n = 1, length = 12)
-	dir.create('tmp')
-	setwd('tmp')
-	dir.create(sessiontempd)
-	setwd(sessiontempd)
-	sessiontemp <- getwd()
-
 	#defines which modules to include
+	source(system.file("OsteoSort/server", 'temp_dir.r', package = "OsteoSort"), local=TRUE) ###imports temporary directory code
 	source(system.file("OsteoSort/server", 'versions.r', package = "OsteoSort"), local=TRUE) ###imports versioning code
 	source(system.file("OsteoSort/server", 'julia.r', package = "OsteoSort"), local=TRUE) ###imports julia environment
 	source(system.file("OsteoSort/server", 'reference.r', package = "OsteoSort"), local=TRUE) ###imports single comparison server code
@@ -42,5 +34,4 @@ shinyServer(function(input, output, session) {
 	source(system.file("OsteoSort/server", 'about_refs.r', package = "OsteoSort"), local=TRUE) ###imports code to display references
 	source(system.file("OsteoSort/server", 'changes.r', package = "OsteoSort"), local=TRUE) ###imports code to display version changes
 	source(system.file("OsteoSort/server", 'exit_parameters.r', package = "OsteoSort"), local=TRUE) ###imports code to execute when app closes
-
 })

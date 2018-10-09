@@ -52,9 +52,54 @@ observeEvent(input$refdel, {
 })
 
 output$reference_table <- DT::renderDataTable ({
-	DT::datatable(reference_list$reference_list[[input$Reference_Sample]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+	DT::datatable(reference_list$reference_list[[input$Reference_Sample]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20), rownames = FALSE)
 })
 
 output$reference_config <- DT::renderDataTable ({
-	DT::datatable(config_df$config_df, options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rowname = FALSE)
+	DT::datatable(config_df$config_df, options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20), rowname = FALSE)
+})
+
+output$config_a <- renderUI({
+	tempcona <- colnames(reference_list$reference_list[[input$Reference_Sample]][,-c(1:6)])
+	selectInput(inputId = "config_a_input", label = "", choices = tempcona)
+})
+
+observeEvent(input$config_a_input, {
+	output$config_b <- renderUI({
+		tempconb <- colnames(reference_list$reference_list[[input$Reference_Sample]][,-c(1:6)])
+		tempconb <- tempconb[tempconb != input$config_a_input]
+		selectInput(inputId = "config_b_input", label = "", choices = tempconb)
+	})
+})
+
+output$config_render <- renderUI({
+	radioButtons(inputId = "config_options", label = "", choices = c("Articulation",  "Stature"), selected = "Articulation")
+})
+
+observeEvent(input$config_add, {
+	if(input$config_options == "Articulation") {
+		config_df$config_df <- rbind(config_df$config_df, data.frame(Measurementa = input$config_a_input, Measurementb = input$config_b_input, Method = "Articulation"))
+	}
+	else {
+		config_df$config_df <- rbind(config_df$config_df, data.frame(Measurementa = input$config_a_input, Measurementb = "", Method = "Stature"))
+	}
+	write.csv(config_df$config_df, file = system.file("extdata/data", 'config', package = "OsteoSort"), col.names = TRUE, sep=",", row.names = FALSE)
+})
+
+observeEvent(input$config_delete, {
+	if(input$config_options == "Articulation") {
+		for(i in 1:nrow(config_df$config_df)) {
+			if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == "Articulation") {
+				config_df$config_df <- config_df$config_df[-i,]
+			}
+		}
+	}
+	else {
+		for(i in 1:nrow(config_df$config_df)) {
+			if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,3] == "Stature") {
+				config_df$config_df <- config_df$config_df[-i,]
+			}
+		}
+	}
+	write.csv(config_df$config_df, file = system.file("extdata/data", 'config', package = "OsteoSort"), col.names = TRUE, sep=",", row.names = FALSE)
 })
