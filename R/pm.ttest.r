@@ -18,8 +18,7 @@
 #' pm.ttest()
 
 pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortright = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, realmean = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, boxcox = TRUE) {
-	julia_call("Set_Procs", threads,detectCores())
-	julia_source(system.file("jl", "library.jl", package = "OsteoSort"))
+	JuliaSetup(cores = threads, recall = TRUE)
 ###############################
 grl <<- refleft
 grr <<- refright
@@ -50,39 +49,36 @@ gsr <<- sortright
 
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
+	#remove first 3 rows convert to matrix for fast operations
 	if(absolute && realmean && boxcox) {
-		results <- julia_call("PMABM", sortleft, sortright, refleft, refright, tails)
+		results <- julia_call("PMABM", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
 	}
 	else if(absolute && realmean) {
-		results <- julia_call("PMAM", sortleft, sortright, refleft, refright, tails)
+		results <- julia_call("PMAM", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
 	}
 	else if(absolute && boxcox) {
-		results <- julia_call("PMAB", sortleft, sortright, refleft, refright, tails)
+		results <- julia_call("PMAB", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
 	}
 	else if(realmean && boxcox) {
-		results <- julia_call("PMBM", sortleft, sortright, refleft, refright, tails)
+		results <- julia_call("PMBM", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
 	}
 	else if(absolute) {
-		results <- julia_call("PMA", sortleft, sortright, refleft, refright, tails)
+		results <- julia_call("PMA", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
 	}
 	else if(boxcox) {
-		results <- julia_call("PMB", sortleft, sortright, refleft, refright, tails)
+		results <- julia_call("PMB", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
 	}
 	else if(realmean) {
-		results <- julia_call("PMM", sortleft, sortright, refleft, refright, tails)
+		results <- julia_call("PMM", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
 	}
 	else {
-		results <- julia_call("PM", sortleft, sortright, refleft, refright, tails)
+		results <- julia_call("PM", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
 	}
-	#julia functions port above... do neo piece at a time
 
+	#only do plot if 1 comparison
 	#if(output) {
 	#	no_return_value <- OsteoSort:::output_function(hera1 = list(SL$id, SR$id, ref_dif, sort_dif), method="exclusion", type="plot")
 	#}
-#need to parse measurement names before this output call
-	if(output_options[1]) {
-		no_return_value <- OsteoSort:::output_function(results, method="exclusion", type="csv")
-	}
 
 	#transform numerical T/F to measurement names
 	measurements <- results[,c(8:ncol(results))]
@@ -92,6 +88,11 @@ gsr <<- sortright
 	measurements <- paste(measurements[,c(1:ncol(measurements))], sep=" ")
 
 	results_formatted <- cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = results[,5], sd = results[,6], sample = results[,7],stringsAsFactors=FALSE)
+
+	if(output_options[1]) {
+		no_return_value <- OsteoSort:::output_function(results, method="exclusion", type="csv")
+	}
+	
 	gc()
 	setwd(workingdir)
 	options(stringsAsFactors = TRUE) #restore default R  

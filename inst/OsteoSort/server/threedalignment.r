@@ -168,7 +168,7 @@ observeEvent(input$simplify, {
 			ttt <- filelist3$list[[position$pos]]
 			filelist3$list[[position$pos]] <- kmeans.3d(filelist3$list[[position$pos]], cluster = vara$vara)
 			if(!is.null(landmarks$landmarks[[position$pos]][[2]])) {
-				julia_call("Set_Procs", ncorespc$ncorespc,detectCores())
+				JuliaSetup(cores = ncorespc$ncorespc, recall = TRUE)
 				tempp <- julia_call("AD3D", as.matrix(ttt[landmarks$landmarks[[position$pos]][[2]],]), as.matrix(filelist3$list[[position$pos]]))
 
 				landmarks$landmarks[[position$pos]][[2]] <- unique(which(tempp < tva$tva, arr.ind = TRUE)[,2])
@@ -182,7 +182,7 @@ observeEvent(input$simplify, {
 				filelist3$list[[i]] <- kmeans.3d(filelist3$list[[i]], cluster = vara$vara)
 
 				if(!is.null(landmarks$landmarks[[i]][[2]])) {
-					julia_call("Set_Procs", ncorespc$ncorespc,detectCores())
+					JuliaSetup(cores = ncorespc$ncorespc, recall = TRUE)
 					tempp <- julia_call("AD3D", as.matrix(ttt[landmarks$landmarks[[i]][[2]],]), as.matrix(filelist3$list[[i]]))
 					landmarks$landmarks[[i]][[2]] <- unique(which(tempp < tva$tva, arr.ind = TRUE)[,2])
 					if(length(landmarks$landmarks[[i]][[2]]) == 0) { landmarks$landmarks[[i]][[2]] <- NULL }
