@@ -90,8 +90,19 @@ gsr <<- sortright
 	#	measurements <- paste(measurements[,c(1:ncol(measurements))], sep=" ")
 	#}
 
-	results_formatted <- cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = "NOTADDEDYET", p_value = round(results[,4], digits = 4), mean = results[,5], sd = results[,6], sample = results[,7],stringsAsFactors=FALSE)
+	results_formatted <- data.frame(cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = "NOTADDEDYET", p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA)
 
+g1 <<- results_formatted
+	#Append exclusion results
+	for(i in nrow(results_formatted)) {
+		if(results_formatted[i,8] > alphalevel) {
+			results_formatted[i,12] <- c("Cannot Exclude")
+		}
+		if(results_formatted[i,8] <= alphalevel) {
+			results_formatted[i,12] <- c("Excluded")
+		}
+	}
+g2 <<- results_formatted
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results, method="exclusion", type="csv")
 	}
@@ -100,5 +111,5 @@ gsr <<- sortright
 	setwd(workingdir)
 	options(stringsAsFactors = TRUE) #restore default R  
      print("Finished.")
-	return(list(direc,hera1[hera1$p.value > alphalevel,],hera1[hera1$p.value <= alphalevel,]))	
+	return(list(direc,results_formatted[results_formatted$p.value > alphalevel,],results_formatted[results_formatted$p.value <= alphalevel,]))
 }
