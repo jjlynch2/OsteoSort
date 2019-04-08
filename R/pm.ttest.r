@@ -18,6 +18,19 @@
 #' pm.ttest()
 
 pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortright = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, realmean = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, boxcox = TRUE) {
+	julia_call("Set_Procs", threads,detectCores())
+	julia_source(system.file("jl", "library.jl", package = "OsteoSort"))
+###############################
+grl <<- refleft
+grr <<- refright
+gsl <<- sortleft
+gsr <<- sortright
+
+
+
+
+
+###############################
 	force(alphalevel)
 	force(absolutevalue)
 	force(testagainstzero)

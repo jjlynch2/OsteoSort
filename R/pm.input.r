@@ -64,10 +64,10 @@ pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL,
 	}
 
 	#replace NA with zero
-	sortleft <- sortleft[is.na(sortleft)] <- 0
-	sortright <- sortright[is.na(sortright)] <- 0
-	refleft <- refleft[is.na(refleft)] <- 0
-	refright <- refright[is.na(refright)] <- 0
+	sortleft[is.na(sortleft)] <- 0
+	sortright[is.na(sortright)] <- 0
+	refleft[is.na(refleft)] <- 0
+	refright[is.na(refright)] <- 0
 
 	options(stringsAsFactors = TRUE) #restore default R  
      print("Finished...")

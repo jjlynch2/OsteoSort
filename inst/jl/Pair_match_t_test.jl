@@ -9,7 +9,7 @@
 		dsum = 0
 		for g in 1:size(v1,1)
 			if v1[1] != 0 && m2[j,g] != 0
-				dsum += abs(v1[g] - m2[j,g])
+				dsum += (v1[g] - m2[j,g])
 				res[j,g+7] = 1
 			end
 		end
@@ -203,7 +203,7 @@ end
 		dsum = 0
 		for g in 1:size(v1,1)
 			if v1[1] != 0 && m2[j,g] != 0
-				dsum += abs(v1[g] - m2[j,g])
+				dsum += (v1[g] - m2[j,g])
 				res[j,g+7] = 1
 			end
 		end
@@ -268,7 +268,7 @@ end
 		dsum = 0
 		for g in 1:size(v1,1)
 			if v1[1] != 0 && m2[j,g] != 0
-				dsum += abs(v1[g] - m2[j,g])
+				dsum += (v1[g] - m2[j,g])
 				res[j,g+7] = 1
 			end
 		end
@@ -333,7 +333,7 @@ end
 		dsum = 0
 		for g in 1:size(v1,1)
 			if v1[1] != 0 && m2[j,g] != 0
-				dsum += abs(v1[g] - m2[j,g])
+				dsum += (v1[g] - m2[j,g])
 				res[j,g+7] = 1
 			end
 		end

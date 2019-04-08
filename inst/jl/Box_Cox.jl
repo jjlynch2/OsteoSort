@@ -15,7 +15,7 @@
 @everywhere function lambda(𝐱; interval = (-2.0, 2.0))
     i1, i2 = interval
     res = optimize(λ -> -mle(𝐱, λ), i1, i2)
-    return minimizer(res)
+    return Optim.minimizer(res)
 end
 
 @everywhere function mle(𝐱, λ)

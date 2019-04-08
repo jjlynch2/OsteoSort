@@ -15,6 +15,7 @@
 
 hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = 0, dist = "average", threads = 1, indices = NULL) {
 	julia_call("Set_Procs", threads,detectCores())
+	julia_source(system.file("jl", "library.jl", package = "OsteoSort"))
 
 	#1 Region is the same as regular Hausdorff
 	if(n_regions == 1 && test == "Segmented-Hausdorff") {test="Hausdorff"}
