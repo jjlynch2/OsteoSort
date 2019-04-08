@@ -31,8 +31,8 @@ gsr <<- sortright
 
 ###############################
 	force(alphalevel)
-	force(absolutevalue)
-	force(testagainstzero)
+	force(absolute)
+	force(realmean)
 	force(threads)
 	force(tails)
 	force(boxcox)
@@ -81,13 +81,16 @@ gsr <<- sortright
 	#}
 
 	#transform numerical T/F to measurement names
-	measurements <- results[,c(8:ncol(results))]
-	for(i in 1:ncol(measurements)) {
-		measurements[measurements[,i] == 1,] <- names(sortleft[,i+3])
-	}
-	measurements <- paste(measurements[,c(1:ncol(measurements))], sep=" ")
+	#measurements <- results[,c(8:ncol(results))]
 
-	results_formatted <- cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = results[,5], sd = results[,6], sample = results[,7],stringsAsFactors=FALSE)
+	#for(x in 1:nrow(measurements)) {
+	#	for(i in 1:ncol(measurements)) {
+	#		measurements[measurements[x,i] == 1,] <- colnames(sortleft[x,i+3]) #does this introduce a bug where comparisons are removed in julia? It shouldn't... unless there is a ref problem! 
+	#	}
+	#	measurements <- paste(measurements[,c(1:ncol(measurements))], sep=" ")
+	#}
+
+	results_formatted <- cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = "NOTADDEDYET", p_value = round(results[,4], digits = 4), mean = results[,5], sd = results[,6], sample = results[,7],stringsAsFactors=FALSE)
 
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results, method="exclusion", type="csv")

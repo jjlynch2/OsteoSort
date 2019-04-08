@@ -264,22 +264,31 @@ observeEvent(input$proc, {
 	})
 #need to transpose and name columns before appending ID and such... can this be done in a single lapply?
 	if(input$single_analysis == "Antimere t-test") {
+		#concat left values
 		single_input_list_left <- reactiveValues(single_input_list_left = c())
 		lapply(single_ML$single_ML, function(i) {
-			single_input_list_left$single_input_list_left <- c(single_input_list_left$single_input_list_left,input[[paste0(i,"_left")]])
-			#colnames(single_input_list_left$single_input_list_left) <- i
+			single_input_list_left$single_input_list_left <- c(single_input_list_left$single_input_list_left, input[[paste0(i,"_left")]])
 		})
-
+		#concat right values
 		single_input_list_right <- reactiveValues(single_input_list_right = c())
 		lapply(single_ML$single_ML, function(i) {
 			single_input_list_right$single_input_list_right <- c(single_input_list_right$single_input_list_right, input[[paste0(i,"_right")]])
-			#colnames(single_input_list_right$single_input_list_right) <- i
 		})
 
-global1 <<- single_input_list_right$single_input_list_right
-global2 <<- single_input_list_left$single_input_list_left
-		#pm.d1 <- pm.input()
-		#pm.res <- pm.ttest(pm.d1[[1]], pm.d1[[2]], pm.d1[[3]], pm.d1[[4]], 
+		#transform into dataframe and name columns
+		single_input_list_left$single_input_list_left <- t(data.frame(single_input_list_left$single_input_list_left))
+		colnames(single_input_list_left$single_input_list_left) <- single_ML$single_ML
+		single_input_list_right$single_input_list_right <- t(data.frame(single_input_list_right$single_input_list_right))
+		colnames(single_input_list_right$single_input_list_right) <- single_ML$single_ML
+
+		#combine with id, bone, and side
+		sortleft <<- data.frame(id = input$ID1, Side = "left", Element = input$single_elements_pairmatch, single_input_list_left$single_input_list_left)
+		sortright <<- data.frame(id = input$ID2, Side = "right", Element = input$single_elements_pairmatch, single_input_list_right$single_input_list_right)
+
+		pm.d1 <<- pm.input(sort = rbind(sortleft, sortright), bone = input$single_elements_pairmatch, measurements = single_ML$single_ML, ref = single_reference_imported$single_reference_imported)
+		pm.d2 <<- pm.ttest(sortleft = pm.d1[[3]], sortright = pm.d1[[4]], refleft = pm.d1[[1]], refright = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, realmean = !single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+
+
 	}
 
 	removeModal()
