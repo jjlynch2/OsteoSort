@@ -31,12 +31,11 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	options(stringsAsFactors = FALSE)	
      print("Pair-matching comparisons are running...")
 	options(warn = -1) #disables warnings
-	if(is.na(sortleft) || is.null(sortleft)) {return(NULL)} #input san
-	if(is.na(sortright) || is.null(sortright)) {return(NULL)} #input san
-	if(is.na(refleft) || is.null(refleft)) {return(NULL)} #input san
-	if(is.na(refright) || is.null(refright)) {return(NULL)} #input san
+	if(is.na(sortleft) || is.null(sortleft)) {return(NULL)}
+	if(is.na(sortright) || is.null(sortright)) {return(NULL)}
+	if(is.na(refleft) || is.null(refleft)) {return(NULL)}
+	if(is.na(refright) || is.null(refright)) {return(NULL)}
 	workingdir = getwd()
-
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
 	#remove first 3 rows convert to matrix for fast operations
@@ -69,20 +68,23 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	#if(output) {
 	#	no_return_value <- OsteoSort:::output_function(hera1 = list(SL$id, SR$id, ref_dif, sort_dif), method="exclusion", type="plot")
 	#}
-
+g1 <<- results
+g2 <<- sortleft
 	#transform numerical T/F to measurement names
-	#measurements <- results[,c(8:ncol(results))]
+	if(nrow(results) > 1) {
+		measurements <- data.frame(results[,c(8:ncol(results))])
+	}else {
+		measurements <- data.frame(t(results[c(8:length(results))]))
+	}
+	measurement_names <- colnames(sortleft[,-c(1:3)])
+	for(i in 1:ncol(measurements)) {
+		measurements[measurements[,i] == 1,i] <- measurement_names[i] #does this introduce a bug where comparisons are removed in julia? It shouldn't... unless there is a ref problem! 
+		measurements[measurements[,i] == 0,i] <- ""
+	}
+	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))] )
 
-	#for(x in 1:nrow(measurements)) {
-	#	for(i in 1:ncol(measurements)) {
-	#		measurements[measurements[x,i] == 1,] <- colnames(sortleft[x,i+3]) #does this introduce a bug where comparisons are removed in julia? It shouldn't... unless there is a ref problem! 
-	#	}
-	#	measurements <- paste(measurements[,c(1:ncol(measurements))], sep=" ")
-	#}
+	results_formatted <<- data.frame(cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
 
-	results_formatted <- data.frame(cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = "NOTADDEDYET", p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA)
-
-g1 <<- results_formatted
 	#Append exclusion results
 	for(i in nrow(results_formatted)) {
 		if(results_formatted[i,8] > alphalevel) {
@@ -92,14 +94,15 @@ g1 <<- results_formatted
 			results_formatted[i,12] <- c("Excluded")
 		}
 	}
-g2 <<- results_formatted
+
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results, method="exclusion", type="csv")
 	}
-	
+
+	#cleanup
 	gc()
 	setwd(workingdir)
 	options(stringsAsFactors = TRUE) #restore default R  
      print("Finished.")
-	return(list(direc,results_formatted[results_formatted$p_value > alphalevel,],results_formatted[results_formatted$p_value <= alphalevel,]))
+	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",]))
 }
