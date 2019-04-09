@@ -19,17 +19,6 @@
 
 pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortright = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, realmean = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, boxcox = TRUE) {
 	JuliaSetup(cores = threads, recall = TRUE)
-###############################
-grl <<- refleft
-grr <<- refright
-gsl <<- sortleft
-gsr <<- sortright
-
-
-
-
-
-###############################
 	force(alphalevel)
 	force(absolute)
 	force(realmean)
@@ -42,9 +31,10 @@ gsr <<- sortright
 	options(stringsAsFactors = FALSE)	
      print("Pair-matching comparisons are running...")
 	options(warn = -1) #disables warnings
-	if(is.na(sort) || is.null(sort)) {return(NULL)} #input san
-	if(is.na(ref) || is.null(ref)) {return(NULL)} #input san
-	
+	if(is.na(sortleft) || is.null(sortleft)) {return(NULL)} #input san
+	if(is.na(sortright) || is.null(sortright)) {return(NULL)} #input san
+	if(is.na(refleft) || is.null(refleft)) {return(NULL)} #input san
+	if(is.na(refright) || is.null(refright)) {return(NULL)} #input san
 	workingdir = getwd()
 
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
@@ -111,5 +101,5 @@ g2 <<- results_formatted
 	setwd(workingdir)
 	options(stringsAsFactors = TRUE) #restore default R  
      print("Finished.")
-	return(list(direc,results_formatted[results_formatted$p.value > alphalevel,],results_formatted[results_formatted$p.value <= alphalevel,]))
+	return(list(direc,results_formatted[results_formatted$p_value > alphalevel,],results_formatted[results_formatted$p_value <= alphalevel,]))
 }
