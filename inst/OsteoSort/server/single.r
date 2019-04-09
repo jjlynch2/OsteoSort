@@ -198,8 +198,6 @@ observeEvent(input$single_elements_pairmatch, {
 	single_ML$single_ML <- names(t2)
 })
 
-
-
 output$list_numeric_inputs_single_left <- renderUI ({
 	lapply(single_ML$single_ML, function(i) {
 		numericInput(paste0(i,"_left"), label = i, value = "", min=0,max=999,step=0.01)
@@ -211,8 +209,6 @@ output$list_numeric_inputs_single_right <- renderUI ({
 		numericInput(paste0(i,"_right"), label = i, value = "", min=0,max=999,step=0.01)
 	})
 })
-
-
 
 output$single_elements_association_a <- renderUI({
 	selectInput(inputId = "single_elements_association_a", label = "Dependent", choices = elements$elements)
@@ -262,7 +258,7 @@ observeEvent(input$proc, {
 			Sys.sleep(0.05)
 		}
 	})
-#need to transpose and name columns before appending ID and such... can this be done in a single lapply?
+
 	if(input$single_analysis == "Antimere t-test") {
 		#concat left values
 		single_input_list_left <- reactiveValues(single_input_list_left = c())

@@ -65,11 +65,12 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	}
 
 	#only do plot if 1 comparison
+#call the julia difference function code directly???????? might be the easiest / only way?
+#this will be fast for a single comparison... since we dont do it for multiple we are good?
 	#if(output) {
 	#	no_return_value <- OsteoSort:::output_function(hera1 = list(SL$id, SR$id, ref_dif, sort_dif), method="exclusion", type="plot")
 	#}
-g1 <<- results
-g2 <<- sortleft
+
 	#transform numerical T/F to measurement names
 	if(nrow(results) > 1) {
 		measurements <- data.frame(results[,c(8:ncol(results))])
@@ -83,7 +84,8 @@ g2 <<- sortleft
 	}
 	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))] )
 
-	results_formatted <<- data.frame(cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
+	#format data.frame to return
+	results_formatted <- data.frame(cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
 
 	#Append exclusion results
 	for(i in nrow(results_formatted)) {
