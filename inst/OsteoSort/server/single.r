@@ -293,7 +293,7 @@ observeEvent(input$proc, {
 
 	if(single_file_output1$single_file_output1 || single_file_output2$single_file_output2) {  
 		#Zip and download handler
-		direc <- direc2[[1]]
+		direc <- pm.d2[[1]]
 		setwd(sessiontemp)
 		setwd(direc)
 		if(single_file_output2$single_file_output2) {

@@ -324,10 +324,6 @@ end
 @everywhere function PMM_worker(v1, m2, li, RL, RR, TL)
 	#results
 	res = zeros(size(m2,1),size(m2,2)+7)
-	
-	#boxcox cache for each worker
-	bc_worker_cache = zeros((size(v1,1) * size(v1,1)), (size(v1,1)+1))
-	bc_iter_counter = 1
 
 	for j in 1:size(m2,1)
 		dsum = 0
@@ -358,10 +354,6 @@ end
 @everywhere function PMA_worker(v1, m2, li, RL, RR, TL)
 	#results
 	res = zeros(size(m2,1),size(m2,2)+7)
-	
-	#boxcox cache for each worker
-	bc_worker_cache = zeros((size(v1,1) * size(v1,1)), (size(v1,1)+1))
-	bc_iter_counter = 1
 
 	for j in 1:size(m2,1)
 		dsum = 0

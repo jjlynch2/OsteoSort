@@ -28,8 +28,8 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	force(output_options)
 	force(sessiontempdir)
 
-	options(stringsAsFactors = FALSE)	
-     print("Pair-matching comparisons are running...")
+	options(stringsAsFactors = FALSE)
+	print("Pair-matching comparisons are running...")
 	options(warn = -1) #disables warnings
 	if(is.na(sortleft) || is.null(sortleft)) {return(NULL)}
 	if(is.na(sortright) || is.null(sortright)) {return(NULL)}
@@ -41,35 +41,52 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	#remove first 3 rows convert to matrix for fast operations
 	if(absolute && realmean && boxcox) {
 		results <- julia_call("PMABM", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sortleft)) == 1 && nrow(as.matrix(sortleft)) == 1) { 
+			plot_data <- julia_call("PMAB_plot", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]))
+		}
 	}
 	else if(absolute && realmean) {
 		results <- julia_call("PMAM", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sortleft)) == 1 && nrow(as.matrix(sortleft)) == 1) { 
+			plot_data <- julia_call("PMA_plot", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]))
+		}
 	}
 	else if(absolute && boxcox) {
 		results <- julia_call("PMAB", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sortleft)) == 1 && nrow(as.matrix(sortleft)) == 1) { 
+			plot_data <- julia_call("PMAB_plot", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]))
+		}
 	}
 	else if(realmean && boxcox) {
 		results <- julia_call("PMBM", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sortleft)) == 1 && nrow(as.matrix(sortleft)) == 1) { 
+			plot_data <- julia_call("PMAB_plot", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]))
+		}
 	}
 	else if(absolute) {
 		results <- julia_call("PMA", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sortleft)) == 1 && nrow(as.matrix(sortleft)) == 1) { 
+			plot_data <- julia_call("PMAB_plot", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]))
+		}
 	}
 	else if(boxcox) {
 		results <- julia_call("PMB", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sortleft)) == 1 && nrow(as.matrix(sortleft)) == 1) { 
+			plot_data <- julia_call("PMB_plot", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]))
+		}
 	}
 	else if(realmean) {
 		results <- julia_call("PMM", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sortleft)) == 1 && nrow(as.matrix(sortleft)) == 1) { 
+			plot_data <- julia_call("PM_plot", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]))
+		}
 	}
 	else {
 		results <- julia_call("PM", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sortleft)) == 1 && nrow(as.matrix(sortleft)) == 1) { 
+			plot_data <- julia_call("PM_plot", as.matrix(sortleft[,-c(1:3)]), as.matrix(sortright[,-c(1:3)]), as.matrix(refleft[,-c(1:3)]), as.matrix(refright[,-c(1:3)]))
+		}
 	}
-
-	#only do plot if 1 comparison
-#call the julia difference function code directly???????? might be the easiest / only way?
-#this will be fast for a single comparison... since we dont do it for multiple we are good?
-	#if(output) {
-	#	no_return_value <- OsteoSort:::output_function(hera1 = list(SL$id, SR$id, ref_dif, sort_dif), method="exclusion", type="plot")
-	#}
 
 	#transform numerical T/F to measurement names
 	if(nrow(results) > 1) {
@@ -98,9 +115,12 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	}
 
 	if(output_options[1]) {
-		no_return_value <- OsteoSort:::output_function(results, method="exclusion", type="csv")
+		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}
 
+	if(output_options[2] && nrow(as.matrix(sortleft)) == 1 && nrow(as.matrix(sortleft)) == 1) { 
+		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,2], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot")
+	}
 	#cleanup
 	gc()
 	setwd(workingdir)
