@@ -31,7 +31,6 @@ pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL,
 	ref <- ref[order(ref$id),]
 	n_ref <- data.frame()
 	for(i in seq(from = 1, to = nrow(ref)-1, by = 2)) {
-		print(i)
 		if(ref[i,1] == ref[i+1,1] && ref[i,2] == "left" && ref[i+1,2] == "right" || ref[i,1] == ref[i+1,1] && ref[i,2] == "right" && ref[i+1,2] == "left") {
 			n_ref <- rbind(n_ref, ref[i,], ref[i+1,])
 		}
@@ -76,7 +75,7 @@ pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL,
 	refright[is.na(refright)] <- 0
 
 	options(stringsAsFactors = TRUE) #restore default R  
-     print("Finished...")
+	print("Finished...")
 	return(list(refleft, refright, sortleft, sortright, rejected))
 }
 
