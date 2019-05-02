@@ -209,7 +209,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					),
 					mainPanel(
 						htmlOutput('single_contents'),
-						imageOutput('plotplot', width=400, height=400),
+						imageOutput('single_plot', width=400, height=400),
 						DT::dataTableOutput('table2'),
 						bsModal("settingssingle", title = "Settings", trigger = "settings2", size = "large", 
 					 		tabsetPanel(id="single_tab",

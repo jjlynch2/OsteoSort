@@ -22,7 +22,7 @@ output_function <- function(hera1, method = "exclusion", type = "csv", return_pl
 		}
 		if(type == "plot") {
 			if(!return_plot) {
-				jpeg(paste("graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''),height = 600, width = 600)
+				jpeg(paste("graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''),height = 400, width = 400)
 				dev.control('enable')
 			}	
 			hist(x = hera1[[3]], xlab = "", main = NULL, ylab="", cex.axis=1.7)
