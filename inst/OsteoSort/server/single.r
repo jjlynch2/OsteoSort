@@ -29,7 +29,7 @@ observeEvent(input$single_file_output2, {
 ##association type settings
 association_types <- reactiveValues(association_types = "PCA-CCA") #default option
 output$association_types <- renderUI({
-	radioButtons(inputId ="association_types", label = "Regression type", choices = c("PCA-CCA", "Simple"), selected = "PCA-CCA")
+	radioButtons(inputId ="association_types", label = "Regression type", choices = c("PCA-CCA", "Simple"), selected = "Simple")
 })
 observeEvent(input$association_types, {
 	association_types$association_types <- input$association_types
@@ -99,7 +99,7 @@ observeEvent(input$common_alpha_level, {
 ##pair-match articulation absolute value
 single_absolute_value <- reactiveValues(single_absolute_value = TRUE) #default option
 output$single_absolute_value <- renderUI({
-	checkboxInput(inputId = "single_absolute_value", label = "Absolute D-value |a-b|", value = TRUE)
+	checkboxInput(inputId = "single_absolute_value", label = "Absolute D-value |a-b|", value = FALSE)
 })
 observeEvent(input$single_absolute_value, {
 	single_absolute_value$single_absolute_value <- input$single_absolute_value
@@ -119,7 +119,7 @@ observeEvent(input$single_boxcox, {
 ##pair-match articulation mean
 single_mean <- reactiveValues(single_mean = TRUE) #default option
 output$single_mean <- renderUI({
-	checkboxInput(inputId = "single_mean", label = "Zero sample mean", value = FALSE)					
+	checkboxInput(inputId = "single_mean", label = "Zero mean", value = FALSE)					
 })
 observeEvent(input$single_mean, {
 	single_mean$single_mean <- input$single_mean
@@ -313,7 +313,7 @@ observeEvent(input$proc, {
 		output$downloadData2 <- downloadHandler(
 			filename = function() {
 				paste("results.zip")
-			},      
+			},
 			content = function(file) {
 				setwd(direc)
 				file.copy(paste(direc,'.zip',sep=''), file)  
