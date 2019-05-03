@@ -332,36 +332,40 @@ end
 #############################################
 ##Reference absolute value difference
 @everywhere function ref_difa(res, RL, RR)
-	refd = zeros(size(RL,1),1)
-	ref_counter = 0
+	refd = []
 	for i in 1:size(RL,1)
+		dsum = 0
+		variable = false
 		for j in 1:size(res,1)
 			if RL[i,j] != 0 && RR[i,j] != 0 && res[j] != 0
-				refd[i,1] += abs(RL[i,j] - RR[i,j])
-				ref_counter += 1
+				dsum += abs(RL[i,j] - RR[i,j])
+				variable = true
 			end
 		end
+		if variable
+			push!(refd, dsum)
+		end
 	end
-	dif = zeros(ref_counter,1)
-	dif = refd[1:ref_counter,1]
-	return dif
+	return refd
 end
 
 ##Reference value difference
 @everywhere function ref_dif(res, RL, RR)
-	refd = zeros(size(RL,1),1)
-	ref_counter = 0
+	refd = []
 	for i in 1:size(RL,1)
+		dsum = 0
+		variable = false
 		for j in 1:size(res,1)
 			if RL[i,j] != 0 && RR[i,j] != 0 && res[j] != 0
-				refd[i,1] += (RL[i,j] - RR[i,j])
-				ref_counter += 1
+				dsum += (RL[i,j] - RR[i,j])
+				variable = true
 			end
 		end
+		if variable
+			push!(refd, dsum)
+		end
 	end
-	dif = zeros(ref_counter,1)
-	dif = refd[1:ref_counter,1]
-	return dif
+	return refd
 end
 
 #############################################

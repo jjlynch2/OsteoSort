@@ -13,6 +13,7 @@
 			res[g] = 1
 		end
 	end
+	res = res[1,1:end]
 	ref = ref_dif(res, RL, RR)
 	results = zeros(size(ref,1)+1,1)
 	results[1:size(ref,1),1] = ref
@@ -30,6 +31,7 @@ end
 			res[g] = 1
 		end
 	end
+	res = res[1,1:end]
 	ref = ref_difa(res, RL, RR)
 	results = zeros(size(ref,1)+1,1)
 	results[1:size(ref,1),1] = ref
@@ -47,6 +49,7 @@ end
 			res[g] = 1
 		end
 	end
+	res = res[1,1:end]
 	ref = ref_difa(res, RL, RR)
 	bc = lambda(ref)
 	ref = transform(ref)
@@ -58,7 +61,7 @@ end
 
 #Boxcox only
 @everywhere function PMB_plot(SL, SR, RL, RR)
-	res = zeros(1,size(SL,2))
+	res = zeros(1,size(SL,1))
 	dsum = 0
 	for g in 1:size(SL,2)
 		if SL[g] != 0 && SR[g] != 0
@@ -66,6 +69,7 @@ end
 			res[g] = 1
 		end
 	end
+	res = res[1,1:end]
 	ref = ref_dif(res, RL, RR)
 	results = zeros(size(ref,1)+1,1)
 	results[1:size(ref,1),1] = ref
