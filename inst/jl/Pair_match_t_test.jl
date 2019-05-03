@@ -32,7 +32,7 @@ end
 	for j in 1:size(m2,1)
 		dsum = 0
 		for g in 1:size(v1,1)
-			if v1[1,g] != 0 && m2[j,g] != 0
+			if v1[g] != 0 && m2[j,g] != 0
 				dsum += abs(v1[g] - m2[j,g])
 				res[j,g+7] = 1
 			end

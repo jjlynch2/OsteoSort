@@ -5,11 +5,9 @@
 #' @param sessiontempdir Specifies temporary directory for analytical session
 #' @param threads The number of threads to use
 #' @param alphalevel The alpha level for exclusion
-#' @param absolutevalue if TRUE uses absolute value for D-values
-#' @param testagainstzero if TRUE uses 0 for sample mean
+#' @param absolute if TRUE uses absolute value for D-values
 #' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
 #' @param boxcox If TRUE uses boxcox power transformation
-#' @param zero_v variable to avoid having zero values in boxcox transformation
 #' @param tails The number of tails for the t-distribution
 #' 
 #' @keywords pm.ttest
@@ -100,7 +98,6 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 		measurements[measurements[,i] == 0,i] <- ""
 	}
 	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
-
 	#format data.frame to return
 	results_formatted <- data.frame(cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
 
@@ -120,10 +117,11 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	if(output_options[2] && nrow(as.matrix(sortleft)) == 1 && nrow(as.matrix(sortleft)) == 1) { 
 		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,2], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot")
 	}
+
 	#cleanup
 	gc()
 	setwd(workingdir)
-	options(stringsAsFactors = TRUE) #restore default R  
+	options(stringsAsFactors = TRUE) #restore default R
 	print("Finished.")
 	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",]))
 }
