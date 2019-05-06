@@ -4,7 +4,6 @@ output$single_contents <- renderUI({
 })
 ##default blank output
 
-
 ##output settings
 single_file_output1 <- reactiveValues(single_file_output1 = TRUE) #default option
 output$single_file_output1 <- renderUI({
@@ -24,7 +23,6 @@ observeEvent(input$single_file_output2, {
 	single_file_output2$single_file_output2 <- input$single_file_output2
 })
 ##output settings
-
 
 ##association type settings
 association_types <- reactiveValues(association_types = "PCA-CCA") #default option
@@ -97,7 +95,7 @@ observeEvent(input$common_alpha_level, {
 ##common alpha level
 
 ##pair-match articulation absolute value
-single_absolute_value <- reactiveValues(single_absolute_value = TRUE) #default option
+single_absolute_value <- reactiveValues(single_absolute_value = FALSE) #default option
 output$single_absolute_value <- renderUI({
 	checkboxInput(inputId = "single_absolute_value", label = "Absolute D-value |a-b|", value = FALSE)
 })
@@ -107,9 +105,9 @@ observeEvent(input$single_absolute_value, {
 ##pair-match articulation absolute value
 
 ##pair-match articulation boxcox
-single_boxcox <- reactiveValues(single_boxcox = TRUE) #default option
+single_boxcox <- reactiveValues(single_boxcox = FALSE) #default option
 output$single_boxcox <- renderUI({
-	checkboxInput(inputId = "single_boxcox", label = "Boxcox transformation", value = TRUE)
+	checkboxInput(inputId = "single_boxcox", label = "Boxcox transformation", value = FALSE)
 })
 observeEvent(input$single_boxcox, {
 	single_boxcox$single_boxcox <- input$single_boxcox
@@ -117,7 +115,7 @@ observeEvent(input$single_boxcox, {
 ##pair-match articulation boxcox
 
 ##pair-match articulation mean
-single_mean <- reactiveValues(single_mean = TRUE) #default option
+single_mean <- reactiveValues(single_mean = FALSE) #default option
 output$single_mean <- renderUI({
 	checkboxInput(inputId = "single_mean", label = "Zero mean", value = FALSE)					
 })
@@ -324,4 +322,4 @@ observeEvent(input$proc, {
 	removeModal()
 	setwd(sessiontemp)
 	gc() #clean up 
-})  
+})

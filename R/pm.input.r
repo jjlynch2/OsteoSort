@@ -73,7 +73,6 @@ pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL,
 	sortright[is.na(sortright)] <- 0
 	refleft[is.na(refleft)] <- 0
 	refright[is.na(refright)] <- 0
-
 	options(stringsAsFactors = TRUE) #restore default R  
 	print("Finished...")
 	return(list(refleft, refright, sortleft, sortright, rejected))

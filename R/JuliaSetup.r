@@ -24,8 +24,8 @@ JuliaSetup <- function(cores = NULL, recall = FALSE) {
 
 	julia_source(system.file("jl", "library.jl", package = "OsteoSort"))
 	julia_source(system.file("jl", "Hausdorff.jl", package = "OsteoSort"))
-	julia_source(system.file("jl", "Pair_match_t_test.jl", package = "OsteoSort"))
-	julia_source(system.file("jl", "Pair_match_plot.jl", package = "OsteoSort"))
+	julia_source(system.file("jl", "Antimere_t_test.jl", package = "OsteoSort"))
+	julia_source(system.file("jl", "Antimereh_plot.jl", package = "OsteoSort"))
 	julia_source(system.file("jl", "Box_Cox.jl", package = "OsteoSort"))
 	julia_source(system.file("jl", "Euclidean_Distance_Operations.jl", package = "OsteoSort"))
 

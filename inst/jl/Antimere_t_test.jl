@@ -14,7 +14,7 @@
 		res[j,1] = li #index of left
 		res[j,2] = j #index of right
 		res[j,3] = dsum
-		ref = ref_dif(res[j,8:end], RL, RR) #something is wrong with 8:end
+		ref = ref_dif(res[j,8:end], RL, RR)
 		ref_size = size(ref,1)
 		ref_mean = mean(ref)
 		ref_sd = std(ref)
@@ -337,7 +337,7 @@ end
 		dsum = 0
 		variable = false
 		for j in 1:size(res,1)
-			if RL[i,j] != 0 && RR[i,j] != 0 && res[j] != 0
+			if RL[i,j] != 0 && RR[i,j] != 0 && res[j] == 1
 				dsum += abs(RL[i,j] - RR[i,j])
 				variable = true
 			end
@@ -356,7 +356,7 @@ end
 		dsum = 0
 		variable = false
 		for j in 1:size(res,1)
-			if RL[i,j] != 0 && RR[i,j] != 0 && res[j] != 0
+			if RL[i,j] != 0 && RR[i,j] != 0 && res[j] == 1
 				dsum += (RL[i,j] - RR[i,j])
 				variable = true
 			end

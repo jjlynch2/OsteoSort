@@ -94,12 +94,12 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	}
 	measurement_names <- colnames(sortleft[,-c(1:3)])
 	for(i in 1:ncol(measurements)) {
-		measurements[measurements[,i] == 1,i] <- measurement_names[i]
+		measurements[measurements[,i] == 1,i] <- paste(measurement_names[i], " ", sep="")
 		measurements[measurements[,i] == 0,i] <- ""
 	}
 	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
 	#format data.frame to return
-	results_formatted <- data.frame(cbind(id = sortleft[results[,1],1], element = sortleft[results[,1],2], side = sortleft[results[,1],3], id = sortright[results[,2],1], element = sortright[results[,2],2], side = sortright[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
+	results_formatted <- data.frame(cbind(id_1 = sortleft[results[,1],1], element_1 = sortleft[results[,1],2], side_1 = sortleft[results[,1],3], id_2 = sortright[results[,2],1], element_2 = sortright[results[,2],2], side_2 = sortright[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
 
 	#Append exclusion results
 	for(i in nrow(results_formatted)) {
