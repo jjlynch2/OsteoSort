@@ -1,5 +1,5 @@
 #Maximum Hausdorff
-@everywhere function Max_Hausdorff(m1,m2)
+function Max_Hausdorff(m1,m2)
 	if size(m1,2) == 3
 			Res1 = MED3D(m1,m2)
 			Res1 = findmax(Res1)[1]
@@ -17,7 +17,7 @@
 end
 
 #Average Hausdorff
-@everywhere function Average_Hausdorff(m1,m2)
+function Average_Hausdorff(m1,m2)
 	if size(m1,2) == 3
 			Res1 = MED3D(m1,m2)
 			Res1 = mean(Res1)
@@ -35,7 +35,7 @@ end
 end
 
 #Dilated Hausdorff
-@everywhere function Dilated_Hausdorff(m1,m2)
+function Dilated_Hausdorff(m1,m2)
 	if size(m1,2) == 3
 			Res1 = MED3D(m1,m2)
 			Res2 = MED3D(m2,m1)

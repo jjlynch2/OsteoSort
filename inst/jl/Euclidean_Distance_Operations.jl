@@ -87,7 +87,7 @@ end
 #############################################
 #############################################
 #Three-dimensional
-@everywhere function MED3D(m1, m2)
+function MED3D(m1, m2)
 	n1 = size(m1,1)
 	Dist = SharedArray{Float64}(n1)
 	@sync @distributed for k in 1:n1
@@ -97,7 +97,7 @@ end
 end
 
 #Two-dimensional
-@everywhere function MED2D(m1, m2)
+function MED2D(m1, m2)
 	n1 = size(m1,1)
 	Dist = SharedArray{Float64}(n1)
 	@sync @distributed for k in 1:n1
@@ -110,7 +110,7 @@ end
 #############################################
 #############################################
 #Three-dimensional
-@everywhere function EDM3D(m1, m2)
+function EDM3D(m1, m2)
 	n1 = size(m1,1)
 	n2 = size(m2,1)
 	Dist = SharedArray{Float64}(n1,n2)
@@ -121,7 +121,7 @@ end
 end
 
 #Three-dimensional
-@everywhere function EDM2D(m1, m2)
+function EDM2D(m1, m2)
 	n1 = size(m1,1)
 	n2 = size(m2,1)
 	Dist = SharedArray{Float64}(n1,n2)
@@ -135,7 +135,7 @@ end
 #############################################
 #############################################
 #Three-dimensional
-@everywhere function MEDI3D(m1, m2)
+function MEDI3D(m1, m2)
 	n1 = size(m1,1)
 	Dist = SharedArray{Float64}(n1,2)
 	@sync @distributed for k in 1:n1
@@ -145,7 +145,7 @@ end
 end
 
 #Two-dimensional
-@everywhere function MEDI2D(m1, m2)
+function MEDI2D(m1, m2)
 	n1 = size(m1,1)
 	Dist = SharedArray{Float64}(n1,2)
 	@sync @distributed for k in 1:n1

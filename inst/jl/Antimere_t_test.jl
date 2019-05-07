@@ -371,7 +371,7 @@ end
 #############################################
 #############################################
 ##Pair-match absolute value boxcox mean R call
-@everywhere function PMABM(SL, SR, RL, RR, TL)
+function PMABM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
@@ -383,7 +383,7 @@ end
 end
 
 ##Pair-match absolute vale boxcox R call
-@everywhere function PMAB(SL, SR, RL, RR, TL)
+function PMAB(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
@@ -395,7 +395,7 @@ end
 end
 
 ##Pair-match absolute value mean R call
-@everywhere function PMAM(SL, SR, RL, RR, TL)
+function PMAM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
@@ -407,7 +407,7 @@ end
 end
 
 ##Pair-match boxcox mean R call
-@everywhere function PMBM(SL, SR, RL, RR, TL)
+function PMBM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
@@ -419,7 +419,7 @@ end
 end
 
 ##Pair-match absolute value R call
-@everywhere function PMA(SL, SR, RL, RR, TL)
+function PMA(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
@@ -431,7 +431,7 @@ end
 end
 
 ##Pair-match boxcox R call
-@everywhere function PMB(SL, SR, RL, RR, TL)
+function PMB(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
@@ -443,7 +443,7 @@ end
 end
 
 ##Pair-match mean R call
-@everywhere function PMM(SL, SR, RL, RR, TL)
+function PMM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
@@ -455,7 +455,7 @@ end
 end
 
 ##Pair-match R call
-@everywhere function PM(SL, SR, RL, RR, TL)
+function PM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)

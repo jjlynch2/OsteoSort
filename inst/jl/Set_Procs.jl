@@ -1,6 +1,6 @@
 # Wrapper to avoid adding more processors than actually detected
 
-@everywhere function Set_Procs(a, n)
+function Set_Procs(a, n)
 	a = Int64(a)
 	n = Int64(n)
 	if a < 1

@@ -4,7 +4,7 @@
 #for plotting in the R environment
 
 #No boxcox or absolute value
-@everywhere function PM_plot(SL, SR, RL, RR)
+function PM_plot(SL, SR, RL, RR)
 	res = zeros(1,size(SL,2))
 	dsum = 0
 	for g in 1:size(SL,2)
@@ -22,7 +22,7 @@
 end
 
 #Absolute value only
-@everywhere function PMA_plot(SL, SR, RL, RR)
+function PMA_plot(SL, SR, RL, RR)
 	res = zeros(1,size(SL,2))
 	dsum = 0
 	for g in 1:size(SL,2)
@@ -40,7 +40,7 @@ end
 end
 
 #Absolute value and boxcox
-@everywhere function PMAB_plot(SL, SR, RL, RR)
+function PMAB_plot(SL, SR, RL, RR)
 	res = zeros(1,size(SL,2))
 	dsum = 0
 	for g in 1:size(SL,2)
@@ -60,7 +60,7 @@ end
 end
 
 #Boxcox only
-@everywhere function PMB_plot(SL, SR, RL, RR)
+function PMB_plot(SL, SR, RL, RR)
 	res = zeros(1,size(SL,2))
 	dsum = 0
 	for g in 1:size(SL,2)
