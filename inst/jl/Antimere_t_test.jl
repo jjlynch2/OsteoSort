@@ -359,7 +359,6 @@ end
 			if RL[i,j] != 0 && RR[i,j] != 0 && res[j] == 1
 				dsum += (RL[i,j] - RR[i,j])
 				m_counter += 1 #counts if reference data measurements match that of comparison
-				println(m_counter)
 			end
 		end
 		if m_counter == sum(res)

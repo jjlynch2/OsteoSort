@@ -250,262 +250,100 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 									)#fr
 								)#tp
 							)#tsp
-						) #bsmodal
+						)#bsmodal
 					)#main
-				)#sidebarLayout
-			),#tabPanel
-		tabPanel("Multiple",icon = icon("gears", lib="font-awesome"),
-			titlePanel(""),
+				)
+			),#sidebarLayout
+			tabPanel("Multiple",icon = icon("gears", lib="font-awesome"),
+				titlePanel(""),
 				sidebarLayout(
 					sidebarPanel(
-						selectInput('testtype2', 'Analysis', c(Pair='Pair_match',Articulation='Articulation_match',Association='Regression_match'), 'Pair_match'),
+						uiOutput("multiple_reference"),
+						uiOutput("multiple_analysis"),
 						uiOutput("testtype2"),
-						conditionalPanel(condition = "input.testtype2 == 'Regression_match' || input.bone == 'alttp' || input.bone == 'altt' || input.bone == 'humerus' || input.bone == 'ulna' || input.bone == 'radius' || input.bone == 'femur' || input.bone == 'tibia' || input.bone == 'fibula' || input.bone == 'scapula' || input.bone == 'os_coxa' || input.bone == 'clavicle' ",
-							selectInput('standard', 'Measurements', c(Standard='Standard', Supplemental='Supplemental'),'Standard')		
-						),		
-						uiOutput('resettableInput'),	
-							fluidRow(
-								column(6,
-									actionButton("settings1","settings", icon=icon("keyboard-o"))
-								),
-								column(6,
-									actionButton("pro","process ", icon = icon("cog"))
-								)
+						uiOutput('resettableInput'),
+						conditionalPanel(condition = "input.multiple_analysis == 'Antimere t-test'",
+							uiOutput("multiple_element_pair_match")
+						),
+						fluidRow(
+							column(6,
+								actionButton("settings1","settings", icon=icon("keyboard-o"))
 							),
-							fluidRow(br()),
-							fluidRow(
-								column(6,
-									actionButton("clearFile1", "clear   ", icon = icon("window-close"))
-								),
-								column(6,
-									downloadButton("downloadData", "save    ")
-								)
+							column(6,
+								actionButton("pro","process ", icon = icon("cog"))
+							)
+						),
+						fluidRow(br()),
+						fluidRow(
+							column(6,
+								actionButton("clearFile1", "clear   ", icon = icon("window-close"))
 							),
-							tags$style(type = "text/css", "#settings1 { width:100%; font-size:85%; background-color:#126a8f  }"),
-							tags$style(type = "text/css", "#pro { width:100%; font-size:85%; background-color:#126a8f  }"),
-							tags$style(type = "text/css", "#clearFile1 { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#downloadData { width:100%; font-size:85%; background-color:#126a8f }"),
-							width=2
+							column(6,
+								downloadButton("downloadData", "save    ")
+							)
+						),
+						tags$style(type = "text/css", "#settings1 { width:100%; font-size:85%; background-color:#126a8f  }"),
+						tags$style(type = "text/css", "#pro { width:100%; font-size:85%; background-color:#126a8f  }"),
+						tags$style(type = "text/css", "#clearFile1 { width:100%; font-size:85%; background-color:#126a8f }"),
+						tags$style(type = "text/css", "#downloadData { width:100%; font-size:85%; background-color:#126a8f }"),
+						width=2
 					),
 					mainPanel(
-						htmlOutput('contents'),
+						htmlOutput('multiple_contents'),
 						tabsetPanel(id="tabSelected",
 							tabPanel("Not excluded",
-					 			DT::dataTableOutput('table')),
-					 		tabPanel("Excluded",
-					 			DT::dataTableOutput('tablen'))),
-					 	bsModal("settings", title = "Settings", trigger = "settings1", size = "large", 
-					 		tabsetPanel(id="tabSelected2",
-					 			tabPanel("Output Parameters",
-									checkboxInput(inputId = "fileoutput1", label = "Output excel files", value = TRUE),
-									checkboxInput(inputId = "fileoutput1plot", label = "Output plot files (WARNING: This option will generate a plot for every comparison)", value = FALSE)
-					 			),
-					 			tabPanel("Measurements",
-					 				selectInput("suppp", "Measurement type: ", c(Standard='Standard', Supplemental='Supplemental'),'Standard'),
-					 				conditionalPanel(condition = "input.suppp == 'Standard'",
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurements1')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsed1', '', c('Cla_01','Cla_04','Cla_05'), inline = TRUE, selected = c('Cla_01','Cla_04','Cla_05'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurements2')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsed2', ' ', c('Sca_01','Sca_02'), inline = TRUE, selected = c('Sca_01','Sca_02'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurements3')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsed3', '', c('Hum_01','Hum_02','Hum_03','Hum_04','Hum_05'), inline = TRUE, selected = c('Hum_01','Hum_02','Hum_03','Hum_04','Hum_05'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurements5')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsed5', '', c('Rad_01','Rad_05','Rad_06'), inline = TRUE, selected = c('Rad_01','Rad_05','Rad_06'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurements4')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsed4', '', c('Uln_01','Uln_04','Uln_05','Uln_06'), inline = TRUE, selected = c('Uln_01','Uln_04','Uln_05','Uln_06')) #52 removed
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurements6')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsed6', '', c('Osc_01','Osc_02'), inline = TRUE, selected = c('Osc_01','Osc_02'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurements7')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsed7', '', c('Fem_01','Fem_02','Fem_03','Fem_04','Fem_06','Fem_05','Fem_07'), inline = TRUE, selected = c('Fem_01','Fem_02','Fem_03','Fem_04','Fem_06','Fem_05','Fem_07')) #67 68 removed
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurements8')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsed8', '', c('Tib_01','Tib_02','Tib_03','Tib_04','Tib_05'), inline = TRUE, selected = c('Tib_01','Tib_02','Tib_03','Tib_04','Tib_05')) #74 removed
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurements9')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsed9', '', c('Fib_01','Fib_02'), inline = TRUE, selected = c('Fib_01','Fib_02'))
-											)
-										)
+								DT::dataTableOutput('table')
+							),
+							tabPanel("Excluded",
+								DT::dataTableOutput('tablen')
+							),
+							bsModal("settingsmultiple", title = "Settings", trigger = "settings1", size = "large", 
+								tabsetPanel(id="multiple_tab",
+									tabPanel("Output Parameters",
+										uiOutput("multiple_file_output1")
 									),
-					 				conditionalPanel(condition = "input.suppp == 'Supplemental'",
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurementsa')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUseda', '', c('Cla_06','Cla_07','Cla_08','Cla_09'), inline = TRUE, selected = c('Cla_06','Cla_07','Cla_08','Cla_09'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurementsb')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsedb', ' ', c('Sca_03','Sca_04','Sca_05'), inline = TRUE, selected = c('Sca_03','Sca_04','Sca_05'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurementsc')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsedc', '', c('Hum_06','Hum_07','Hum_08','Hum_09'), inline = TRUE, selected = c('Hum_06','Hum_07','Hum_08','Hum_09'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurementsd')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsede', '', c('Rad_07','Rad_08','Rad_09','Rad_04','Rad_10'), inline = TRUE, selected = c('Rad_07','Rad_08','Rad_09','Rad_04','Rad_10'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurementse')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsedd', '', c('Uln_09','Uln_10','Uln_11'), inline = TRUE, selected = c('Uln_09','Uln_10','Uln_11'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurementsf')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsedf', '', c('Osc_14','Osc_15','Osc_16','Osc_05','Osc_17'), inline = TRUE, selected = c('Osc_14','Osc_15','Osc_16','Osc_05','Osc_17'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurementsg')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsedg', '', c('Fem_14','Fem_15','Fem_16','Fem_17'), inline = TRUE, selected = c('Fem_14','Fem_15','Fem_16','Fem_17'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurementsh')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsedh', '', c('Tib_10','Tib_11','Tib_12'), inline = TRUE, selected = c('Tib_10','Tib_11','Tib_12'))
-											)
-										),
-				 						fluidRow(
-				 							column(3,
-												uiOutput('measurementsi')
-											),
-											column(9,
-												checkboxGroupInput(inputId = 'MeasurementsUsedi', '', c('Fib_03','Fib_04','Fib_05'), inline = TRUE, selected = c('Fib_03','Fib_04','Fib_05'))
-											)
-										)
-									)
-								),
-								tabPanel("Statistical Parameters",
-									fluidRow(
-										column(4,
-											h4("Association"),
-											radioButtons(inputId ="regtesttypem", label = "Regression:", choices = c("PCA-CCA", "Simple"), selected = "PCA-CCA"),
-											checkboxInput(inputId = "alphapred2", label = "Use alpha levels for regression", value = TRUE),
-											sliderInput(inputId = "asspredlevel", label = "Prediction interval level", min=0.01, max=1, value=0.95, step=0.01),
-
-
-											conditionalPanel(condition = "input.regtesttypem == 'PCA-CCA'",
-												radioButtons(inputId ="pcamultipleuse", label = "Principal Component Analysis", choices = c("All", "Select", "Variance"), selected = "Variance"),
-											
-												conditionalPanel(condition = "input.pcamultipleuse == 'Select'",
-													sliderInput(inputId = "pcamultiple1", label = "Principal Components", min=1, max = 10, value = 1)
+									tabPanel("Statistical Parameters",
+										fluidRow(
+											column(4,
+												h4("Regression"),
+												uiOutput("multiple_association_types"),
+												uiOutput("multiple_association_alpha_prediction"),
+												conditionalPanel(condition = "!input.multiple_association_alpha_prediction",
+													uiOutput("multiple_association_prediction")
 												),
-
-												conditionalPanel(condition = "input.pcamultipleuse == 'Variance'",
-													sliderInput(inputId = "pcamultiple2", label = "Cumulative Variance", min=0.1, max = 0.99, value = 0.99)
+												conditionalPanel(condition = "input.multiple_association_types == 'PCA-CCA'",
+													uiOutput("multiple_association_pca"),
+													conditionalPanel(condition = "input.multiple_association_pca == 'Select'",
+														uiOutput("multiple_association_pca_select")
+													),
+													conditionalPanel(condition = "input.multiple_association_pca == 'Variance'",
+														uiOutput("multiple_association_pca_variance")
+													)
 												)
-											)
-									
-										),
-										column(4,
-											h4("Common"),
-											sliderInput(inputId = "alphalevel", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01),
-											checkboxInput(inputId = "research", label = "Calculate research statistics", value = FALSE)								
-										),
-										column(4,
-											h4("Pair & Articulation"),
-											conditionalPanel(condition = "input.testtype2 == 'Articulation_match'",
-												checkboxInput(inputId = "absolutevalue2", label = "Absolute D-value |a-b|", value = FALSE),
-
-												checkboxInput(inputId = "power22", label = "Boxcox transformation", value = FALSE),
-												checkboxInput(inputId = "testagainst2", label = "Zero sample mean", value = FALSE),
-												sliderInput(inputId = "tails22", label = "Tails", min=1, max=2, value=2, step=1)
 											),
-											conditionalPanel(condition = "input.testtype2 == 'Pair_match'",
-												checkboxInput(inputId = "absolutevalue", label = "Absolute D-value |a-b|", value = TRUE),
-
-												checkboxInput(inputId = "power2", label = "Boxcox transformation", value = TRUE),
-												checkboxInput(inputId = "testagainst", label = "Zero sample mean", value = FALSE),
-												sliderInput(inputId = "tails2", label = "Tails", min=1, max=2, value=2, step=1)
+											column(4,
+												h4("Common"),
+												uiOutput("multiple_common_alpha_level")
+											),
+											column(4,
+												h4("t-test"),
+												uiOutput("multiple_absolute_value"),
+												uiOutput("multiple_boxcox"),
+												uiOutput("multiple_mean"),
+												uiOutput("multiple_tails")
 											)
-										)
-									)								
-								),
-								tabPanel("Computational Parameters",
-									uiOutput('ncores')
-								)
-							)
-						)
-					)			
-				)
-			)
-		),
+										)#fr
+									),#tp
+									tabPanel("Computational Parameters",
+										uiOutput('ncores')
+									)
+								)#tsp
+							)#bsmodal
+						)#tabpanel
+					)#main
+				)#main
+			)#sidebar
+		),#navbar osteometric
 		navbarMenu("Outlier",icon = icon("sort-amount-asc", lib="font-awesome"),
 			tabPanel("Metric",icon = icon("line-chart", lib="font-awesome"),	
 				sidebarLayout(

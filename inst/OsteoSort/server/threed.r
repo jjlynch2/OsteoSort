@@ -10,7 +10,7 @@ observeEvent(input$mspec3D, {
 		tt2 <- out2[[1]][[tt2]]
 
 		output$webgl3D <- renderRglwidget ({
-   			try(rgl.close())
+			try(rgl.close())
 
 			points3d(tt1, size=3, col="dimgray", box=FALSE)
 			points3d(tt2, size=3, col="dodgerblue", box=FALSE)

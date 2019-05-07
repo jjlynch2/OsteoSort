@@ -102,7 +102,7 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	results_formatted <- data.frame(cbind(id_1 = sortleft[results[,1],1], element_1 = sortleft[results[,1],2], side_1 = sortleft[results[,1],3], id_2 = sortright[results[,2],1], element_2 = sortright[results[,2],2], side_2 = sortright[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
 
 	#Append exclusion results
-	for(i in nrow(results_formatted)) {
+	for(i in 1:nrow(results_formatted)) {
 		if(results_formatted[i,8] > alphalevel) {
 			results_formatted[i,12] <- c("Cannot Exclude")
 		}
