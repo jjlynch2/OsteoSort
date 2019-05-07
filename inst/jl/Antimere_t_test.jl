@@ -335,14 +335,14 @@ end
 	refd = []
 	for i in 1:size(RL,1)
 		dsum = 0
-		variable = false
+		m_counter = 0
 		for j in 1:size(res,1)
 			if RL[i,j] != 0 && RR[i,j] != 0 && res[j] == 1
 				dsum += abs(RL[i,j] - RR[i,j])
-				variable = true
+				m_counter += 1 #counts if reference data measurements match that of comparison
 			end
 		end
-		if variable
+		if m_counter == sum(res)
 			push!(refd, dsum)
 		end
 	end
@@ -354,14 +354,15 @@ end
 	refd = []
 	for i in 1:size(RL,1)
 		dsum = 0
-		variable = false
+		m_counter = 0
 		for j in 1:size(res,1)
 			if RL[i,j] != 0 && RR[i,j] != 0 && res[j] == 1
 				dsum += (RL[i,j] - RR[i,j])
-				variable = true
+				m_counter += 1 #counts if reference data measurements match that of comparison
+				println(m_counter)
 			end
 		end
-		if variable
+		if m_counter == sum(res)
 			push!(refd, dsum)
 		end
 	end

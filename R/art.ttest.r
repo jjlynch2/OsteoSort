@@ -31,7 +31,7 @@ art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads =
 	sessiontempdir
 
 	options(stringsAsFactors = FALSE)  
-     print("Statistical comparisons started")
+	print("Statistical comparisons started")
 	
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
