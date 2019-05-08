@@ -300,8 +300,9 @@ observeEvent(input$proc, {
 		sorta <- data.frame(id = input$ID1, Side = input$single_articulation_side, Element = strsplit(input$single_element_articulation, split = "-")[[1]][1], single_input_art_a$single_input_art_a, false_df_b, stringsAsFactors = FALSE)
 		sortb <- data.frame(id = input$ID2, Side = input$single_articulation_side, Element = strsplit(input$single_element_articulation, split = "-")[[1]][2], false_df_a, single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
 		sort <- rbind(sorta, sortb)
-		pm.d1 <- art.input(side = input$single_articulation_side, ref = single_reference_imported$single_reference_imported, sort = sort, bones = c(strsplit(input$single_element_articulation, split = "-")[[1]][1], strsplit(input$single_element_articulation, split = "-")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
-		pm.d2 <- art.ttest(sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+		art.d1 <- art.input(side = input$single_articulation_side, ref = single_reference_imported$single_reference_imported, sort = sort, bones = c(strsplit(input$single_element_articulation, split = "-")[[1]][1], strsplit(input$single_element_articulation, split = "-")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
+		d2 <- ttest(sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}
 	if(input$single_analysis == "Antimere t-test") {
 		#concat left values
@@ -325,8 +326,8 @@ observeEvent(input$proc, {
 		sortleft <- data.frame(id = input$ID1, Side = "left", Element = input$single_elements_pairmatch, single_input_list_left$single_input_list_left, stringsAsFactors = FALSE)
 		sortright <- data.frame(id = input$ID2, Side = "right", Element = input$single_elements_pairmatch, single_input_list_right$single_input_list_right, stringsAsFactors = FALSE)
 		pm.d1 <- pm.input(sort = rbind(sortleft, sortright), bone = input$single_elements_pairmatch, measurements = single_ML$single_ML, ref = single_reference_imported$single_reference_imported)
-		pm.d2 <- pm.ttest(sortleft = pm.d1[[3]], sortright = pm.d1[[4]], refleft = pm.d1[[1]], refright = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
-		tempDF <- rbind(pm.d2[[2]], pm.d2[[3]]) #combines excluded and not excluded for results
+		d2 <- pttest(sortleft = pm.d1[[3]], sortright = pm.d1[[4]], refleft = pm.d1[[1]], refright = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 	}
 
 	#output table
@@ -336,7 +337,7 @@ observeEvent(input$proc, {
 
 	if(single_file_output1$single_file_output1 || single_file_output2$single_file_output2) {  
 		#Zip and download handler
-		direc <- pm.d2[[1]]
+		direc <- d2[[1]]
 		setwd(sessiontemp)
 		setwd(direc)
 		if(single_file_output2$single_file_output2) {

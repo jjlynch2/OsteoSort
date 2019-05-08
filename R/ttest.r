@@ -1,4 +1,4 @@
-#' Pair-match T.test Function
+#' T.test Function
 #' 
 #' @param ref Reference data
 #' @param sort Sorted data for comparison
@@ -13,7 +13,7 @@
 #' @keywords pm.ttest
 #' @export
 #' @examples
-#' pm.ttest()
+#' ttest()
 
 pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortright = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, boxcox = TRUE) {
 	JuliaSetup(cores = threads, recall = TRUE)
@@ -26,14 +26,15 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	force(output_options)
 	force(sessiontempdir)
 
-refleft_g <<- refleft
-refright_g <<- refright
-sortleft_g <<- sortleft
-sortright_g <<- sortright
+	#appends a variable with 0 to make sure the data structure stays the same in Julia
+	refleft <- cbind(refleft,0)
+	refright <- cbind(refright,0)
+	sortleft <- cbind(sortleft,0)
+	sortright <- cbind(sortright,0)
 
 
 	options(stringsAsFactors = FALSE)
-	print("Pair-matching comparisons are running...")
+	print("Comparisons are running...")
 	options(warn = -1) #disables warnings
 	if(is.na(sortleft) || is.null(sortleft)) {return(NULL)}
 	if(is.na(sortright) || is.null(sortright)) {return(NULL)}

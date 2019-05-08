@@ -4,7 +4,7 @@
 #for plotting in the R environment
 
 #No boxcox or absolute value
-function PM_plot(SL, SR, RL, RR)
+function TTEST_plot(SL, SR, RL, RR)
 	res = zeros(1,size(SL,2))
 	dsum = 0
 	for g in 1:size(SL,2)
@@ -22,7 +22,7 @@ function PM_plot(SL, SR, RL, RR)
 end
 
 #Absolute value only
-function PMA_plot(SL, SR, RL, RR)
+function TTESTA_plot(SL, SR, RL, RR)
 	res = zeros(1,size(SL,2))
 	dsum = 0
 	for g in 1:size(SL,2)
@@ -40,7 +40,7 @@ function PMA_plot(SL, SR, RL, RR)
 end
 
 #Absolute value and boxcox
-function PMAB_plot(SL, SR, RL, RR)
+function TTESTAB_plot(SL, SR, RL, RR)
 	res = zeros(1,size(SL,2))
 	dsum = 0
 	for g in 1:size(SL,2)
@@ -60,7 +60,7 @@ function PMAB_plot(SL, SR, RL, RR)
 end
 
 #Boxcox only
-function PMB_plot(SL, SR, RL, RR)
+function TTESTB_plot(SL, SR, RL, RR)
 	res = zeros(1,size(SL,2))
 	dsum = 0
 	for g in 1:size(SL,2)

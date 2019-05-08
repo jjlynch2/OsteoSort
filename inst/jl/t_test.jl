@@ -1,7 +1,7 @@
 #############################################
 #############################################
 ##Pair-match
-@everywhere function PM_worker(v1, m2, li, RL, RR, TL)
+@everywhere function TTEST_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	for j in 1:size(m2,1)
 		dsum = 0
@@ -27,7 +27,7 @@
 end
 
 ##pair-match absolute value
-@everywhere function PMA_worker(v1, m2, li, RL, RR, TL)
+@everywhere function TTESTA_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	for j in 1:size(m2,1)
 		dsum = 0
@@ -53,7 +53,7 @@ end
 end
 
 ##pair-match absolute value boxcox
-@everywhere function PMAB_worker(v1, m2, li, RL, RR, TL)
+@everywhere function TTESTAB_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	#boxcox cache for each worker
 	bc_worker_cache = zeros((size(v1,1) * size(v1,1)), (size(v1,1)+1))
@@ -109,7 +109,7 @@ end
 end
 
 ##Pair-match absolute value boxcox zero mean
-@everywhere function PMABM_worker(v1, m2, li, RL, RR, TL)
+@everywhere function TTESTABM_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	#boxcox cache for each worker
 	bc_worker_cache = zeros((size(v1,1) * size(v1,1)), (size(v1,1)+1))
@@ -165,7 +165,7 @@ end
 end
 
 ##Pair-matching boxcox
-@everywhere function PMB_worker(v1, m2, li, RL, RR, TL)
+@everywhere function TTESTB_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	#boxcox cache for each worker
 	bc_worker_cache = zeros((size(v1,1) * size(v1,1)), (size(v1,1)+1))
@@ -221,7 +221,7 @@ end
 end
 
 ##Pair-matching boxcox
-@everywhere function PMBM_worker(v1, m2, li, RL, RR, TL)
+@everywhere function TTESTBM_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	#boxcox cache for each worker
 	bc_worker_cache = zeros((size(v1,1) * size(v1,1)), (size(v1,1)+1))
@@ -277,7 +277,7 @@ end
 end
 
 ##Pair-matching mean
-@everywhere function PMM_worker(v1, m2, li, RL, RR, TL)
+@everywhere function TTESTM_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	for j in 1:size(m2,1)
 		dsum = 0
@@ -303,7 +303,7 @@ end
 end
 
 ##Pair-matching mean
-@everywhere function PMAM_worker(v1, m2, li, RL, RR, TL)
+@everywhere function TTESTAM_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	for j in 1:size(m2,1)
 		dsum = 0
@@ -371,97 +371,97 @@ end
 #############################################
 #############################################
 ##Pair-match absolute value boxcox mean R call
-function PMABM(SL, SR, RL, RR, TL)
+function TTESTABM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
 	Results = SharedArray{Float64}(n2*n1,n3+7)
 	@sync @distributed for k in 1:n1
-		Results[((k*n2) - n2+1):(k*n2),:] = PMABM_worker(SL[k,:], SR, k, RL, RR, TL)
+		Results[((k*n2) - n2+1):(k*n2),:] = TTESTABM_worker(SL[k,:], SR, k, RL, RR, TL)
 	end
 	return Results
 end
 
 ##Pair-match absolute vale boxcox R call
-function PMAB(SL, SR, RL, RR, TL)
+function TTESTAB(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
 	Results = SharedArray{Float64}(n2*n1,n3+7)
 	@sync @distributed for k in 1:n1
-		Results[((k*n2) - n2+1):(k*n2),:] = PMAB_worker(SL[k,:], SR, k, RL, RR, TL)
+		Results[((k*n2) - n2+1):(k*n2),:] = TTESTAB_worker(SL[k,:], SR, k, RL, RR, TL)
 	end
 	return Results
 end
 
 ##Pair-match absolute value mean R call
-function PMAM(SL, SR, RL, RR, TL)
+function TTESTAM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
 	Results = SharedArray{Float64}(n2*n1,n3+7)
 	@sync @distributed for k in 1:n1
-		Results[((k*n2) - n2+1):(k*n2),:] = PMAM_worker(SL[k,:], SR, k, RL, RR, TL)
+		Results[((k*n2) - n2+1):(k*n2),:] = TTESTAM_worker(SL[k,:], SR, k, RL, RR, TL)
 	end
 	return Results
 end
 
 ##Pair-match boxcox mean R call
-function PMBM(SL, SR, RL, RR, TL)
+function TTESTBM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
 	Results = SharedArray{Float64}(n2*n1,n3+7)
 	@sync @distributed for k in 1:n1
-		Results[((k*n2) - n2+1):(k*n2),:] = PMBM_worker(SL[k,:], SR, k, RL, RR, TL)
+		Results[((k*n2) - n2+1):(k*n2),:] = TTESTBM_worker(SL[k,:], SR, k, RL, RR, TL)
 	end
 	return Results
 end
 
 ##Pair-match absolute value R call
-function PMA(SL, SR, RL, RR, TL)
+function TTESTA(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
 	Results = SharedArray{Float64}(n2*n1,n3+7)
 	@sync @distributed for k in 1:n1
-		Results[((k*n2) - n2+1):(k*n2),:] = PMA_worker(SL[k,:], SR, k, RL, RR, TL)
+		Results[((k*n2) - n2+1):(k*n2),:] = TTESTA_worker(SL[k,:], SR, k, RL, RR, TL)
 	end
 	return Results
 end
 
 ##Pair-match boxcox R call
-function PMB(SL, SR, RL, RR, TL)
+function TTESTB(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
 	Results = SharedArray{Float64}(n2*n1,n3+7)
 	@sync @distributed for k in 1:n1
-		Results[((k*n2) - n2+1):(k*n2),:] = PMB_worker(SL[k,:], SR, k, RL, RR, TL)
+		Results[((k*n2) - n2+1):(k*n2),:] = TTESTB_worker(SL[k,:], SR, k, RL, RR, TL)
 	end
 	return Results
 end
 
 ##Pair-match mean R call
-function PMM(SL, SR, RL, RR, TL)
+function TTESTM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
 	Results = SharedArray{Float64}(n2*n1,n3+7)
 	@sync @distributed for k in 1:n1
-		Results[((k*n2) - n2+1):(k*n2),:] = PMM_worker(SL[k,:], SR, k, RL, RR, TL)
+		Results[((k*n2) - n2+1):(k*n2),:] = TTESTM_worker(SL[k,:], SR, k, RL, RR, TL)
 	end
 	return Results
 end
 
 ##Pair-match R call
-function PM(SL, SR, RL, RR, TL)
+function TTEST(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
 	Results = SharedArray{Float64}(n2*n1,n3+7)
 	@sync @distributed for k in 1:n1
-		Results[((k*n2) - n2+1):(k*n2),:] = PM_worker(SL[k,:], SR, k, RL, RR, TL)
+		Results[((k*n2) - n2+1):(k*n2),:] = TTEST_worker(SL[k,:], SR, k, RL, RR, TL)
 	end
 	return Results
 end
