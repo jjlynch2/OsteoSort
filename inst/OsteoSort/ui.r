@@ -152,7 +152,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 								)
 							)
 						),
-						conditionalPanel(condition = "input.single_analysis == 'Non-Antimere regression'",
+						conditionalPanel(condition = "input.single_analysis == 'Non_antimere regression'",
 							fluidRow(
 								column(6,
 									selectInput("single_association_side_a", "Side", c(Left='Left', Right='Right')),
@@ -166,19 +166,19 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 								)
 							)
 						),
-						conditionalPanel(condition = "input.single_analysis == 'Non-Antimere t-test'",
+						conditionalPanel(condition = "input.single_analysis == 'Non_antimere t-test'",
 							fluidRow(
 								column(12,
-									selectInput("single_articulation_side", "Side", c(Left='Left', Right='Right'))
+									selectInput("single_non_antimere_side", "Side", c(Left='Left', Right='Right'))
 								),
 								column(12,
-									uiOutput("single_element_articulation")
+									uiOutput("single_element_non_antimere")
 								),
 								column(6,
-									uiOutput("single_measurement_articulation_a")
+									uiOutput("single_measurement_non_antimere_a")
 								),
 								column(6,
-									uiOutput("single_measurement_articulation_b")
+									uiOutput("single_measurement_non_antimere_b")
 								)
 							)
 						),

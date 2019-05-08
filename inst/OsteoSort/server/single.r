@@ -94,7 +94,7 @@ observeEvent(input$common_alpha_level, {
 })
 ##common alpha level
 
-##pair-match articulation absolute value
+##pair-match non_antimere absolute value
 single_absolute_value <- reactiveValues(single_absolute_value = FALSE) #default option
 output$single_absolute_value <- renderUI({
 	checkboxInput(inputId = "single_absolute_value", label = "Absolute D-value |a-b|", value = FALSE)
@@ -102,9 +102,9 @@ output$single_absolute_value <- renderUI({
 observeEvent(input$single_absolute_value, {
 	single_absolute_value$single_absolute_value <- input$single_absolute_value
 })
-##pair-match articulation absolute value
+##pair-match non_antimere absolute value
 
-##pair-match articulation boxcox
+##pair-match non_antimere boxcox
 single_boxcox <- reactiveValues(single_boxcox = FALSE) #default option
 output$single_boxcox <- renderUI({
 	checkboxInput(inputId = "single_boxcox", label = "Boxcox transformation", value = FALSE)
@@ -112,9 +112,9 @@ output$single_boxcox <- renderUI({
 observeEvent(input$single_boxcox, {
 	single_boxcox$single_boxcox <- input$single_boxcox
 })
-##pair-match articulation boxcox
+##pair-match non_antimere boxcox
 
-##pair-match articulation mean
+##pair-match non_antimere mean
 single_mean <- reactiveValues(single_mean = FALSE) #default option
 output$single_mean <- renderUI({
 	checkboxInput(inputId = "single_mean", label = "Zero mean", value = FALSE)					
@@ -122,9 +122,9 @@ output$single_mean <- renderUI({
 observeEvent(input$single_mean, {
 	single_mean$single_mean <- input$single_mean
 })
-##pair-match articulation mean
+##pair-match non_antimere mean
 
-##pair-match articulation tails
+##pair-match non_antimere tails
 single_tails <- reactiveValues(single_tails = TRUE) #default option
 output$single_tails <- renderUI({
 	sliderInput(inputId = "single_tails", label = "Tails", min=1, max=2, value=2, step=1)
@@ -132,14 +132,14 @@ output$single_tails <- renderUI({
 observeEvent(input$single_tails, {
 	single_tails$single_tails <- input$single_tails
 })
-##pair-match articulation tails
+##pair-match non_antimere tails
 
 single_analysis <- reactiveValues(single_analysis = "Antimere t-test")
 observeEvent(input$single_analysis, {
 	single_analysis$single_analysis <- input$single_analysis
 })
 output$single_analysis <- renderUI({
-	selectInput(inputId = "single_analysis", label = "Analysis", choices = c("Antimere t-test","Non-Antimere t-test","Non-Antimere regression"), selected = "Antimere t-test")
+	selectInput(inputId = "single_analysis", label = "Analysis", choices = c("Antimere t-test","Non_antimere t-test","Non_antimere regression"), selected = "Antimere t-test")
 })
 
 single_reference <- reactiveValues(single_reference = c("temp"))
@@ -161,7 +161,7 @@ observeEvent(input$single_reference, {
 	single_reference_imported$single_reference_imported <- reference_list$reference_list[[single_reference$single_reference]]
 	elements$elements <- unique(single_reference_imported$single_reference_imported$Element)
 
-	art <- config_df$config_df[config_df$config_df$Method == 'Articulation',]
+	art <- config_df$config_df[config_df$config_df$Method == 'Non_antimere',]
 	ref_col_names <- colnames(single_reference_imported$single_reference_imported)
 	for(i in 1:nrow(art)) {
 		a = FALSE
@@ -181,18 +181,18 @@ observeEvent(input$single_reference, {
 	}
 })
 
-output$single_element_articulation <- renderUI({
-	selectInput(inputId = "single_element_articulation", label = "Elements", choices = art_elements$df)
+output$single_element_non_antimere <- renderUI({
+	selectInput(inputId = "single_element_non_antimere", label = "Elements", choices = art_elements$df)
 })
 
-observeEvent(input$single_element_articulation, {
-	temp1 <- which(art_elements$df == input$single_element_articulation)
-	output$single_measurement_articulation_a <- renderUI({
+observeEvent(input$single_element_non_antimere, {
+	temp1 <- which(art_elements$df == input$single_element_non_antimere)
+	output$single_measurement_non_antimere_a <- renderUI({
 		lapply(art_measurements_a$df[temp1], function(i) {
 			numericInput(paste0(i,"_art_a"), label = i, value = "", min=0,max=999,step=0.01)
 		})
 	})
-	output$single_measurement_articulation_b <- renderUI({
+	output$single_measurement_non_antimere_b <- renderUI({
 		lapply(art_measurements_b$df[temp1], function(i) {
 			numericInput(paste0(i,"_art_b"), label = i, value = "", min=0,max=999,step=0.01)
 		})
@@ -272,8 +272,8 @@ observeEvent(input$proc, {
 			Sys.sleep(0.05)
 		}
 	})
-	if(input$single_analysis == "Non-Antimere t-test") {
-		temp1 <- which(art_elements$df == input$single_element_articulation)
+	if(input$single_analysis == "Non_antimere t-test") {
+		temp1 <- which(art_elements$df == input$single_element_non_antimere)
 		tempa <- art_measurements_a$df[temp1][!duplicated(art_measurements_a$df[temp1])]
 		tempb <- art_measurements_b$df[temp1][!duplicated(art_measurements_b$df[temp1])]
 
@@ -297,11 +297,11 @@ observeEvent(input$proc, {
 		false_df_b <- as.data.frame(matrix(NA,nrow = 1, ncol = length(tempb)))
 		colnames(false_df_b) <- tempb
 
-		sorta <- data.frame(id = input$ID1, Side = input$single_articulation_side, Element = strsplit(input$single_element_articulation, split = "-")[[1]][1], single_input_art_a$single_input_art_a, false_df_b, stringsAsFactors = FALSE)
-		sortb <- data.frame(id = input$ID2, Side = input$single_articulation_side, Element = strsplit(input$single_element_articulation, split = "-")[[1]][2], false_df_a, single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
+		sorta <- data.frame(id = input$ID1, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][1], single_input_art_a$single_input_art_a, false_df_b, stringsAsFactors = FALSE)
+		sortb <- data.frame(id = input$ID2, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], false_df_a, single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
 		sort <- rbind(sorta, sortb)
-		art.d1 <- art.input(side = input$single_articulation_side, ref = single_reference_imported$single_reference_imported, sort = sort, bones = c(strsplit(input$single_element_articulation, split = "-")[[1]][1], strsplit(input$single_element_articulation, split = "-")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
-		d2 <- ttest(sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+		art.d1 <- art.input(side = input$single_non_antimere_side, ref = single_reference_imported$single_reference_imported, sort = sort, bones = c(strsplit(input$single_element_non_antimere, split = "-")[[1]][1], strsplit(input$single_element_non_antimere, split = "-")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
+		d2 <- ttest(sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}
 	if(input$single_analysis == "Antimere t-test") {
@@ -326,7 +326,7 @@ observeEvent(input$proc, {
 		sortleft <- data.frame(id = input$ID1, Side = "left", Element = input$single_elements_pairmatch, single_input_list_left$single_input_list_left, stringsAsFactors = FALSE)
 		sortright <- data.frame(id = input$ID2, Side = "right", Element = input$single_elements_pairmatch, single_input_list_right$single_input_list_right, stringsAsFactors = FALSE)
 		pm.d1 <- pm.input(sort = rbind(sortleft, sortright), bone = input$single_elements_pairmatch, measurements = single_ML$single_ML, ref = single_reference_imported$single_reference_imported)
-		d2 <- pttest(sortleft = pm.d1[[3]], sortright = pm.d1[[4]], refleft = pm.d1[[1]], refright = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+		d2 <- ttest(sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 	}
 

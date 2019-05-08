@@ -73,12 +73,12 @@ observeEvent(input$config_a_input, {
 })
 
 output$config_render <- renderUI({
-	radioButtons(inputId = "config_options", label = "", choices = c("Articulation",  "Stature"), selected = "Articulation")
+	radioButtons(inputId = "config_options", label = "", choices = c("Non_antimere",  "Stature"), selected = "Non_antimere")
 })
 
 observeEvent(input$config_add, {
-	if(input$config_options == "Articulation") {
-		config_df$config_df <- rbind(config_df$config_df, data.frame(Measurementa = input$config_a_input, Measurementb = input$config_b_input, Method = "Articulation"))
+	if(input$config_options == "Non_antimere") {
+		config_df$config_df <- rbind(config_df$config_df, data.frame(Measurementa = input$config_a_input, Measurementb = input$config_b_input, Method = "Non_antimere"))
 	}
 	else {
 		config_df$config_df <- rbind(config_df$config_df, data.frame(Measurementa = input$config_a_input, Measurementb = "", Method = "Stature"))
@@ -87,9 +87,9 @@ observeEvent(input$config_add, {
 })
 
 observeEvent(input$config_delete, {
-	if(input$config_options == "Articulation") {
+	if(input$config_options == "Non_antimere") {
 		for(i in 1:nrow(config_df$config_df)) {
-			if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == "Articulation") {
+			if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == "Non_antimere") {
 				config_df$config_df <- config_df$config_df[-i,]
 			}
 		}
