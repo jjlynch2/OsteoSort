@@ -26,6 +26,12 @@ pm.ttest <- function (refleft = NULL, refright = NULL, sortleft = NULL, sortrigh
 	force(output_options)
 	force(sessiontempdir)
 
+refleft_g <<- refleft
+refright_g <<- refright
+sortleft_g <<- sortleft
+sortright_g <<- sortright
+
+
 	options(stringsAsFactors = FALSE)
 	print("Pair-matching comparisons are running...")
 	options(warn = -1) #disables warnings

@@ -9,25 +9,24 @@
 #' art.input()
 
 art.input <- function (bones = NULL, side = NULL, ref = NULL, sort = NULL, measurementsa = NULL, measurementsb = NULL, threshold = 1) {
-bones_g <<- bones
-ref_g <<- ref
-sort_g <<- sort
-measurementsa_g <<- measurementsa
-measurementsb_g <<- measurementsb
-threshold_g <<- threshold
-
 	print("Filtering data by element types, specified measurements, and threshold value...")
 	options(stringsAsFactors = FALSE)
 	options(as.is = TRUE)
 	options(warn = -1)
 	if(is.null(bones) || is.null(sort)){return(NULL)}
+g1 <<- ref
+g2 <<- side
+g3 <<- sort
+g4 <<- measurementsa
+g5 <<- measurementsb
 
+	side <- tolower(side)
 	ref$Side <- tolower(ref$Side)
 	ref$Element <- tolower(ref$Element)
 	ref <- ref[ref$Element == bones,]
 	ref <- ref[ref$Side == side,]
-	ref <- ref[order(ref$id),]
 	ref <- cbind(ref[,c(1:3)], ref[c(measurementsa, measurementsb)])
+	ref <- ref[order(ref$id),]
 	n_ref <- data.frame()
 	for(i in seq(from = 1, to = nrow(ref)-1, by = 2)) {
 		if(ref[i,1] == ref[i+1,1]) {
@@ -36,8 +35,8 @@ threshold_g <<- threshold
 	}
 	refa <- n_ref[n_ref$Element == bones[1],]
 	refb <- n_ref[n_ref$Element == bones[2],]
-	refa <- cbind(refa[,c(1:3)], n_ref[measurementsa])
-	refb <- cbind(refb[,c(1:3)], n_ref[measurementsb])
+	refa <- refa[measurementsa]
+	refb <- refb[measurementsb]
 
 	sort$Side <- tolower(sort$Side)
 	sort$Element <- tolower(sort$Element)

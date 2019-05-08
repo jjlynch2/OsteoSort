@@ -174,7 +174,7 @@ observeEvent(input$single_reference, {
 				art_measurements_b$df <- c(art_measurements_b$df, art$Measurementb[i])
 				temp1 <- na.omit(unique(single_reference_imported$single_reference_imported[!is.na(single_reference_imported$single_reference_imported[[art$Measurementa[i]]]),]$Element))[1]
 				temp2 <- na.omit(unique(single_reference_imported$single_reference_imported[!is.na(single_reference_imported$single_reference_imported[[art$Measurementb[i]]]),]$Element))[1]
-				art_elements$df <- c(art_elements$df, paste(temp1, temp2, sep="_"))
+				art_elements$df <- c(art_elements$df, paste(temp1, temp2, sep="-"))
 				break
 			}
 		}
@@ -187,15 +187,13 @@ output$single_element_articulation <- renderUI({
 
 observeEvent(input$single_element_articulation, {
 	temp1 <- which(art_elements$df == input$single_element_articulation)
-	tempa <- art_measurements_a$df[temp1][!duplicated(art_measurements_a$df[temp1])]
-	tempb <- art_measurements_b$df[temp1][!duplicated(art_measurements_b$df[temp1])]
 	output$single_measurement_articulation_a <- renderUI({
-		lapply(tempa, function(i) {
+		lapply(art_measurements_a$df[temp1], function(i) {
 			numericInput(paste0(i,"_art_a"), label = i, value = "", min=0,max=999,step=0.01)
 		})
 	})
 	output$single_measurement_articulation_b <- renderUI({
-		lapply(tempb, function(i) {
+		lapply(art_measurements_b$df[temp1], function(i) {
 			numericInput(paste0(i,"_art_b"), label = i, value = "", min=0,max=999,step=0.01)
 		})
 	})
@@ -299,11 +297,11 @@ observeEvent(input$proc, {
 		false_df_b <- as.data.frame(matrix(NA,nrow = 1, ncol = length(tempb)))
 		colnames(false_df_b) <- tempb
 
-		sorta <- data.frame(id = input$ID1, Side = input$single_articulation_side, Element = strsplit(input$single_element_articulation, split = "_")[[1]][1], single_input_art_a$single_input_art_a, false_df_b, stringsAsFactors = FALSE)
-		sortb <- data.frame(id = input$ID2, Side = input$single_articulation_side, Element = strsplit(input$single_element_articulation, split = "_")[[1]][2], false_df_a, single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
+		sorta <- data.frame(id = input$ID1, Side = input$single_articulation_side, Element = strsplit(input$single_element_articulation, split = "-")[[1]][1], single_input_art_a$single_input_art_a, false_df_b, stringsAsFactors = FALSE)
+		sortb <- data.frame(id = input$ID2, Side = input$single_articulation_side, Element = strsplit(input$single_element_articulation, split = "-")[[1]][2], false_df_a, single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
 		sort <- rbind(sorta, sortb)
-		pm.d1 <- art.input(side = input$single_articulation_side, ref = single_reference_imported$single_reference_imported, sort = sort, bones = c(strsplit(input$single_element_articulation, split = "_")[[1]][1], strsplit(input$single_element_articulation, split = "_")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
-g1 <<- pm.d1
+		pm.d1 <- art.input(side = input$single_articulation_side, ref = single_reference_imported$single_reference_imported, sort = sort, bones = c(strsplit(input$single_element_articulation, split = "-")[[1]][1], strsplit(input$single_element_articulation, split = "-")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
+		pm.d2 <- art.ttest(sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 	}
 	if(input$single_analysis == "Antimere t-test") {
 		#concat left values

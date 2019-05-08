@@ -18,153 +18,118 @@
 #' art.ttest()
 
 
-art.ttest <- function (ref = NULL, sort = NULL, sessiontempdir = NULL, threads = 1, alphalevel = 0.1, absolutevalue = FALSE, testagainstzero = FALSE, output_options = c(TRUE,FALSE), boxcox = TRUE, tails = 2, zero_v = 5e-05) {
+art.ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, boxcox = TRUE) {
+	JuliaSetup(cores = threads, recall = TRUE)
+	force(alphalevel)
+	force(absolute)
+	force(zmean)
+	force(threads)
+	force(tails)
+	force(boxcox)
+	force(output_options)
+	force(sessiontempdir)
 
-	alphalevel
-	absolutevalue
-	testagainstzero
-	threads
-	tails
-	zero_v
-	boxcox
-	output_options
-	sessiontempdir
+refa_g <<- refa
+refb_g <<- refb
+sorta_g <<- sorta
+sortb_g <<- sortb
 
-	options(stringsAsFactors = FALSE)  
-	print("Statistical comparisons started")
-	
+	options(stringsAsFactors = FALSE)
+	print("Pair-matching comparisons are running...")
 	options(warn = -1) #disables warnings
-	options(as.is = TRUE)
-	if(is.na(sort) || is.null(sort)) {return(NULL)} #input san
-	if(is.na(ref) || is.null(ref)) {return(NULL)} #input san
-
+	if(is.na(sorta) || is.null(sorta)) {return(NULL)}
+	if(is.na(sortb) || is.null(sortb)) {return(NULL)}
+	if(is.na(refa) || is.null(refa)) {return(NULL)}
+	if(is.na(refb) || is.null(refb)) {return(NULL)}
 	workingdir = getwd()
-
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
-	is.uniqueart <<- list()
-	unique.difsd2 <<- list()
-	unique.difm2 <<- list()
-	unique.df2 <<- list()
-	unique.ycol2 <<- list()
-	unique.yrow2 <<- list()
-	unique.difa <<- list()
-	if(boxcox) {
-		unique.boxcox <<- list()
+	#remove first 3 rows convert to matrix for fast operations
+	if(absolute && zmean && boxcox) {
+		results <- julia_call("PMABM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+			plot_data <- julia_call("PMAB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
+		}
 	}
-
-	myfun<-function(X){
-
-		Xname <- names(X[-c(1:6)])
-		output1 <- lapply(is.uniqueart, function(zz) { 
-			ident <- identical(zz, Xname)
-			return(ident) 
-		})
-		index <- match(TRUE,output1) #index of model if exists
-		if(is.na(index)) {
-			ycol <- ncol(ref)
-			yrow <- nrow(ref)
-			if(absolutevalue) {
-				difa <- rowSums(abs(ref[c(T,F)] - ref[c(F,T)]))
-				difa1 <- sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]))
-			}
-			if(!absolutevalue){
-				difa <- rowSums(ref[c(T,F)] - ref[c(F,T)])
-				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
-			}
-		
-			if(boxcox) {
-				bx <- car::powerTransform((difa + zero_v))$lambda
-				difa <- (difa + zero_v) ^ bx
-				difa1 <- (difa1 + zero_v) ^ bx
-			}
-
-			difsd <- sd(difa)
-			if(testagainstzero) {
-				difm <- 0
-			} 
-			else difm <- mean(difa)
-
-			p.value <- tails * pt(-abs(difa1 - difm) / difsd, df = length(difa) - 1)
-
-			is.uniqueart[[length(is.uniqueart)+1]] <<- Xname #cache me outside 
-			unique.difsd2[[length(unique.difsd2)+1]] <<- difsd
-			unique.difm2[[length(unique.difm2)+1]] <<- difm
-			unique.df2[[length(unique.df2)+1]] <<- length(difa) - 1 #1 for degrees of freedom
-			unique.ycol2[[length(unique.ycol2)+1]] <<- ycol
-			unique.yrow2[[length(unique.yrow2)+1]] <<- yrow
-			unique.difa[[length(unique.difa)+1]] <<- difa
-			if(boxcox) {
-				unique.boxcox[[length(unique.boxcox)+1]] <<- bx
-			}
+	else if(absolute && zmean) {
+		results <- julia_call("PMAM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+			plot_data <- julia_call("PMA_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
-		else {
-			ycol <- as.numeric(unique.ycol2[[index]])
-			difm <- as.numeric(unique.difm2[[index]])
-			yrow <- as.numeric(unique.yrow2[[index]])
-			difsd <- as.numeric(unique.difsd2[[index]])
-			difdf <- as.numeric(unique.df2[[index]])
-			difa <- as.numeric(unique.difa[[index]])
-			if(boxcox) {
-				bx <- as.numeric(unique.boxcox[[index]])
-			}
-
-			if(absolutevalue) {
-				difa1 <- sum(abs(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)]))
-			}
-			if(!absolutevalue){
-				difa1 <- sum(as.numeric(X[-c(1:6)])[c(T,F)] - as.numeric(X[-c(1:6)])[c(F,T)])
-			}
-			p.value <- tails * pt(-abs(difa1 - difm) / difsd, df = difdf)
-
-		}
-
-		if(round(p.value, digits = 4) > alphalevel) {result1 <- "Cannot Exclude"}
-		if(round(p.value, digits = 4) <= alphalevel) {result1 <- "Excluded"}
-		
-		if(output_options[2]) {
-			no_return_value <- OsteoSort:::output_function(hera1 = list(X[,1], X[,2], difa, difa1), method="exclusion", type="plot")
-		}
-
-
-		return(data.frame(X[1],X[3],X[5],X[2],X[4],X[6],toString(Xname),ycol,round(p.value, digits = 4),yrow,round(difm, digits = 4),round(difsd, digits = 4),result1, stringsAsFactors=FALSE)) 
 	}
-
-
-	if(Sys.info()[['sysname']] == "Windows") {
-		cl <- makeCluster(threads)
-		clusterExport(cl, list("ref", "alphalevel", "p1", "absolutevalue", "testagainstzero", "output_options", "tails", "is.uniqueart", "unique.difsd2", "unique.difm2", "unique.df2", "unique.ycol2", "unique.yrow2", "unique.difa","unique.boxcox"), envir = environment())
-		op <- system.time ( hera1 <- parLapply(cl=cl, fun = myfun, X = sort) )
-		print(op)
-		stopCluster(cl)
+	else if(absolute && boxcox) {
+		results <- julia_call("PMAB", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+			plot_data <- julia_call("PMAB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
+		}
+	}
+	else if(zmean && boxcox) {
+		results <- julia_call("PMBM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+			plot_data <- julia_call("PMB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
+		}
+	}
+	else if(absolute) {
+		results <- julia_call("PMA", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+			plot_data <- julia_call("PMA_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
+		}
+	}
+	else if(boxcox) {
+		results <- julia_call("PMB", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+			plot_data <- julia_call("PMB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
+		}
+	}
+	else if(zmean) {
+		results <- julia_call("PMM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+			plot_data <- julia_call("PM_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
+		}
 	}
 	else {
-		op <- system.time ( hera1 <- mclapply(FUN = myfun, X = sort, mc.cores = threads, mc.preschedule = TRUE) )
-		print(op)
+		results <- julia_call("PM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+			plot_data <- julia_call("PM_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
+		}
 	}
-	hera1 = as.data.frame(data.table::rbindlist(hera1))
 
-	colnames(hera1) <- c("id","Side","Element","id","Side","Element","Measurements","# of measurements","p.value","Sample size","mean","sd","Result")
-     print("Statistical articulation comparisons completed.")
+	#transform numerical T/F to measurement names
+	if(nrow(results) > 1) {
+		measurements <- data.frame(results[,c(8:ncol(results))])
+	}else {
+		measurements <- data.frame(t(results[c(8:length(results))]))
+	}
+	measurement_names <- c(colnames(sorta[,-c(1:3)]), colnames(sortb[,-c(1:3)]))
+	for(i in 1:ncol(measurements)) {
+		measurements[measurements[,i] == 1,i] <- paste(measurement_names[i], " ", sep="")
+		measurements[measurements[,i] == 0,i] <- ""
+	}
+	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
+	#format data.frame to return
+	results_formatted <- data.frame(cbind(id_1 = sorta[results[,1],1], element_1 = sorta[results[,1],2], side_1 = sorta[results[,1],3], id_2 = sortb[results[,2],1], element_2 = sortb[results[,2],2], side_2 = sortb[results[,2],3], measurements = measurements, p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
 
-	rm(is.uniqueart) #making the environment clean again
-	rm(unique.difsd2)
-	rm(unique.difm2)
-	rm(unique.df2)
-	rm(unique.ycol2)
-	rm(unique.yrow2)
-	rm(unique.difa)
-	if(boxcox) {
-		rm(unique.boxcox)
+	#Append exclusion results
+	for(i in 1:nrow(results_formatted)) {
+		if(results_formatted[i,8] > alphalevel) {
+			results_formatted[i,12] <- c("Cannot Exclude")
+		}
+		if(results_formatted[i,8] <= alphalevel) {
+			results_formatted[i,12] <- c("Excluded")
+		}
 	}
 
 	if(output_options[1]) {
-		no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="csv")
+		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}
-	
+	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,2], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot")
+	}
+
+	#cleanup
 	gc()
 	setwd(workingdir)
-	options(stringsAsFactors = TRUE) #restore default R  
-     print("Statistical comparisons completed")
-	return(list(direc,hera1[as.numeric(as.character(hera1$p.value)) > alphalevel,],hera1[as.numeric(as.character(hera1$p.value)) <= alphalevel,]))	
+	options(stringsAsFactors = TRUE) #restore default R
+	print("Finished.")
+	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",]))
 }
