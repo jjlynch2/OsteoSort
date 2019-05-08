@@ -8,111 +8,74 @@
 #' @examples
 #' art.input()
 
-art.input <- function (bone = NULL, sort = NULL) {
-	print("Import and reference generation started")
+art.input <- function (bones = NULL, side = NULL, ref = NULL, sort = NULL, measurementsa = NULL, measurementsb = NULL, threshold = 1) {
+bones_g <<- bones
+ref_g <<- ref
+sort_g <<- sort
+measurementsa_g <<- measurementsa
+measurementsb_g <<- measurementsb
+threshold_g <<- threshold
+
+	print("Filtering data by element types, specified measurements, and threshold value...")
 	options(stringsAsFactors = FALSE)
 	options(as.is = TRUE)
 	options(warn = -1)
-	if(is.null(bone) || is.null(sort)){return(NULL)}
-	if (bone == "fi") {	
-		measurements <- c("Fem_04","Osc_17")	
-		bone1 <- 'femur'
-		bone2 <- 'os_coxa'	
+	if(is.null(bones) || is.null(sort)){return(NULL)}
+
+	ref$Side <- tolower(ref$Side)
+	ref$Element <- tolower(ref$Element)
+	ref <- ref[ref$Element == bones,]
+	ref <- ref[ref$Side == side,]
+	ref <- ref[order(ref$id),]
+	ref <- cbind(ref[,c(1:3)], ref[c(measurementsa, measurementsb)])
+	n_ref <- data.frame()
+	for(i in seq(from = 1, to = nrow(ref)-1, by = 2)) {
+		if(ref[i,1] == ref[i+1,1]) {
+			n_ref <- rbind(n_ref, ref[i,], ref[i+1,])
+		}
 	}
-	if (bone == "hu") {
-		measurements <- c("Hum_06","Uln_11")	
-		bone1 <- 'humerus'
-		bone2 <- 'ulna'		
+	refa <- n_ref[n_ref$Element == bones[1],]
+	refb <- n_ref[n_ref$Element == bones[2],]
+	refa <- cbind(refa[,c(1:3)], n_ref[measurementsa])
+	refb <- cbind(refb[,c(1:3)], n_ref[measurementsb])
+
+	sort$Side <- tolower(sort$Side)
+	sort$Element <- tolower(sort$Element)
+	sort <- sort[sort$Element == bones,]
+	sort <- sort[sort$Side == side,]
+	sort <- cbind(sort[,c(1:3)], sort[c(measurementsa, measurementsb)])
+	sorta <- sort[sort$Element == bones[1],]
+	sortb <- sort[sort$Element == bones[2],]
+	sorta <- cbind(sorta[,c(1:3)], sorta[measurementsa])
+	sortb <- cbind(sortb[,c(1:3)], sortb[measurementsb])
+
+	sort_A <- data.frame()
+	sort_B <- data.frame()
+	rejected <- data.frame()
+
+	for(i in 1:nrow(sorta)) {
+		if((length(measurementsa) - sum(is.na(sorta[i,c(4:length(measurementsa))]))) >= threshold) {
+			sort_A <- rbind(sort_A, sorta[i,])
+		}
+		else {
+			rejected <- rbind(rejected, sorta[i,])
+		}
 	}
-	if (bone == "hr") {
-		measurements <- c("Hum_06","Rad_04")	
-		bone1 <- 'humerus'
-		bone2 <- 'radius'
+	for(i in 1:nrow(sortb)) {
+		if((length(measurementsb) - sum(is.na(sortb[i,c(4:length(measurementsb))]))) >= threshold) {
+			sort_B <- rbind(sort_B, sortb[i,])
+		}
+		else {
+			rejected <- rbind(rejected, sortb[i,])
+		}
 	}
-	if (bone == "hs") {
-		measurements <- c("Hum_07","Sca_03")	
-		bone1 <- 'humerus'
-		bone2 <- 'scapula'
-	}
-	if (bone == "hss") {
-		measurements <- c("Hum_07","Sca_04")	
-		bone1 <- 'humerus'
-		bone2 <- 'scapula'
-	}
-	if (bone == "ft") {
-		measurements <- c("Fem_03","Tib_02")	
-		bone1 <- 'femur'
-		bone2 <- 'tibia'
-	}
-	if (bone == "ftt") {
-		measurements <- c("Fib_05","Tib_12")	
-		bone1 <- 'fibula'
-		bone2 <- 'tibia'		
-	}
-	
-	#reference input
-	reftemp <- read.table(system.file("extdata", 'artmleft.csv', package = "OsteoSort"), header = TRUE, sep=",")
-	refdata <- cbind(reftemp[[measurements[1]]], reftemp[[measurements[2]]])
-	refdata <- na.omit(refdata)
 
-	if(nrow(sort) == 1) {sort[7] <- as.numeric(as.matrix(sort[7])); sort[8] <- as.numeric(as.matrix(sort[8])); return(list(list(as.data.frame(sort, stringsAsFactors = FALSE)), as.data.frame(refdata, stringsAsFactors=FALSE)))} #returns if single user input since no sorting required
+	sort_A[is.na(sort_A)] <- 0
+	sort_B[is.na(sort_B)] <- 0
+	refa[is.na(refa)] <- 0
+	refb[is.na(refb)] <- 0
 
-	cols1 <- c(grep(paste("^","id","$",sep=""), colnames(sort)), grep("Side", colnames(sort)), grep("Element", colnames(sort)), grep(paste("^",measurements[1],"$",sep=""), colnames(sort))) #greps column name to grab column index 
-	cols2 <- c(grep(paste("^","id","$",sep=""), colnames(sort)), grep("Side", colnames(sort)), grep("Element", colnames(sort)), grep(paste("^",measurements[2],"$",sep=""), colnames(sort))) #greps column name to grab column index
-
-	#uses regex to capture first match in grep but this can be removed eventually. Just some input cleaning due to shitty excel files
-	sortdata <- sort
-	#lower case
-	sortdata$Side <- tolower(sortdata$Side)
-	sortdata$Element <- tolower(sortdata$Element)
-
-	sortdata1 <- sortdata[sortdata$Side == 'left',]
-	sortdata2 <- sortdata[sortdata$Side == 'right',]
-	
-	sortdataleftf <- na.omit(sortdata1[sortdata1$Element == bone1,][,cols1])
-	sortdatalefti <- na.omit(sortdata1[sortdata1$Element == bone2,][,cols2])
-	sortdatarightf <- na.omit(sortdata2[sortdata2$Element == bone1,][,cols1])
-	sortdatarighti <- na.omit(sortdata2[sortdata2$Element == bone2,][,cols2])
-	
-	##########################################################
-	colnames(sortdataleftf) <- c('b', 'c', 'd', 'e')
-	colnames(sortdatalefti) <- c('b', 'c', 'd', 'e')
-	colnames(sortdatarightf) <- c('b', 'c', 'd', 'e')
-	colnames(sortdatarighti) <- c('b', 'c', 'd', 'e')
-	sortdataleft <- rbind(sortdataleftf, sortdatalefti)
-	sortdataright <- rbind(sortdatarightf, sortdatarighti)
-	##########################################################
-
-	###########################################################
-	n_vars1 <- length(unique(sortdataleft[sortdataleft$d == bone1,][,1]))
-	n_vars2 <- length(unique(sortdataleft[sortdataleft$d == bone2,][,1]))
-	indices <- expand.grid(1:n_vars1, 1:n_vars2)
-	bone11 <- sortdataleft[sortdataleft$d == bone1,]
-	bone22 <- sortdataleft[sortdataleft$d == bone2,]
-	res <- cbind(bone11[indices[,1],], bone22[indices[,2],])
-	resleft <- res[,order(names(res))]
-	###########################################################
-
-	###########################################################
-	n_vars1 <- length(unique(sortdataright[sortdataright$d == bone1,][,1]))
-	n_vars2 <- length(unique(sortdataright[sortdataright$d == bone2,][,1]))
-	indices <- expand.grid(1:n_vars1, 1:n_vars2)
-	bone11 <- sortdataright[sortdataright$d == bone1,]
-	bone22 <- sortdataright[sortdataright$d == bone2,]
-	res <- cbind(bone11[indices[,1],], bone22[indices[,2],])
-	resright <- res[,order(names(res))]
-	###########################################################	
-
-	sortdata <- rbind(resleft, resright) #Brings left and rights back together in final combo dataframe
-	sortdata <- na.omit(sortdata)
-	
-	colnames(sortdata) <- c("id","id","Side","Side","Element","Element",measurements[1],measurements[2])
-
-     sortdata <- split(sortdata, 1:nrow(sortdata)) #needs to be replaced
-
-	gc()
-	refdata <- as.data.frame(refdata, stringsAsFactors=FALSE)
 	options(stringsAsFactors = TRUE) #restore default R  
-     print("Import and reference generation completed")
-	return(list(sortdata, refdata))
+	print("Finished...")
+	return(list(refa, refb, sort_A, sort_B, rejected))
 }

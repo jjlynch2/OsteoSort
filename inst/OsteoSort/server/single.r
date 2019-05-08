@@ -151,11 +151,8 @@ output$single_reference <- renderUI({
 })
 
 single_reference_imported <- reactiveValues(single_reference_imported = data.frame())
-#single_reference_art_imported <- reactiveValues(single_reference_art_imported = data.frame())
 elements <- reactiveValues(elements = c("temp") )
 
-
-########3broken need to add element type to articulation config? articulation config must have same name as the corresponding reference
 art_elements <- reactiveValues(df = c())
 art_measurements_a <- reactiveValues(df = c())
 art_measurements_b <- reactiveValues(df = c())
@@ -277,7 +274,37 @@ observeEvent(input$proc, {
 			Sys.sleep(0.05)
 		}
 	})
+	if(input$single_analysis == "Non-Antimere t-test") {
+		temp1 <- which(art_elements$df == input$single_element_articulation)
+		tempa <- art_measurements_a$df[temp1][!duplicated(art_measurements_a$df[temp1])]
+		tempb <- art_measurements_b$df[temp1][!duplicated(art_measurements_b$df[temp1])]
 
+		single_input_art_a <- reactiveValues(single_input_art_a = c())
+		lapply(tempa, function(i) {
+			single_input_art_a$single_input_art_a <- c(single_input_art_a$single_input_art_a, input[[paste0(i,"_art_a")]])
+		})
+
+		single_input_art_b <- reactiveValues(single_input_art_b = c())
+		lapply(tempb, function(i) {
+			single_input_art_b$single_input_art_b <- c(single_input_art_b$single_input_art_b, input[[paste0(i,"_art_b")]])
+		})
+
+		single_input_art_a$single_input_art_a <- t(data.frame(single_input_art_a$single_input_art_a))
+		colnames(single_input_art_a$single_input_art_a) <- tempa
+		single_input_art_b$single_input_art_b <- t(data.frame(single_input_art_b$single_input_art_b))
+		colnames(single_input_art_b$single_input_art_b) <- tempb
+		
+		false_df_a <- as.data.frame(matrix(NA,nrow = 1, ncol = length(tempa)))
+		colnames(false_df_a) <- tempa
+		false_df_b <- as.data.frame(matrix(NA,nrow = 1, ncol = length(tempb)))
+		colnames(false_df_b) <- tempb
+
+		sorta <- data.frame(id = input$ID1, Side = input$single_articulation_side, Element = strsplit(input$single_element_articulation, split = "_")[[1]][1], single_input_art_a$single_input_art_a, false_df_b, stringsAsFactors = FALSE)
+		sortb <- data.frame(id = input$ID2, Side = input$single_articulation_side, Element = strsplit(input$single_element_articulation, split = "_")[[1]][2], false_df_a, single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
+		sort <- rbind(sorta, sortb)
+		pm.d1 <- art.input(side = input$single_articulation_side, ref = single_reference_imported$single_reference_imported, sort = sort, bones = c(strsplit(input$single_element_articulation, split = "_")[[1]][1], strsplit(input$single_element_articulation, split = "_")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
+g1 <<- pm.d1
+	}
 	if(input$single_analysis == "Antimere t-test") {
 		#concat left values
 		single_input_list_left <- reactiveValues(single_input_list_left = c())

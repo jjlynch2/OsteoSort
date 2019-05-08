@@ -169,7 +169,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						conditionalPanel(condition = "input.single_analysis == 'Non-Antimere t-test'",
 							fluidRow(
 								column(12,
-									selectInput("single_articulation_side_a", "Side", c(Left='Left', Right='Right'))
+									selectInput("single_articulation_side", "Side", c(Left='Left', Right='Right'))
 								),
 								column(12,
 									uiOutput("single_element_articulation")
