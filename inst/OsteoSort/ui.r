@@ -171,11 +171,14 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 								column(12,
 									selectInput("single_articulation_side_a", "Side", c(Left='Left', Right='Right'))
 								),
-								column(6,
-									uiOutput("single_element_articulation_a")
+								column(12,
+									uiOutput("single_element_articulation")
 								),
 								column(6,
-									uiOutput("single_element_articulation_b")
+									uiOutput("single_measurement_articulation_a")
+								),
+								column(6,
+									uiOutput("single_measurement_articulation_b")
 								)
 							)
 						),

@@ -156,32 +156,53 @@ elements <- reactiveValues(elements = c("temp") )
 
 
 ########3broken need to add element type to articulation config? articulation config must have same name as the corresponding reference
-art_elements_a <- reactiveValues(art_elements_a = c("temp"))
-
+art_elements <- reactiveValues(df = c())
+art_measurements_a <- reactiveValues(df = c())
+art_measurements_b <- reactiveValues(df = c())
 
 observeEvent(input$single_reference, {
 	single_reference_imported$single_reference_imported <- reference_list$reference_list[[single_reference$single_reference]]
-	#single_reference_art_imported$single_reference_art_imported <- config_list$config_list[[single_reference$single_reference]][config_list$config_list[[single_reference$single_reference]]$Method == "Articulation",]
-
 	elements$elements <- unique(single_reference_imported$single_reference_imported$Element)
-	#art_elements_a$art_elements_a <- cbind(single_reference_art_imported$single_reference_art_imported$Elementa, single_reference_art_imported$single_reference_art_imported$Elementb, single_reference_art_imported$single_reference_art_imported$Measurementa, single_reference_art_imported$single_reference_art_imported$Measurementb)
+
+	art <- config_df$config_df[config_df$config_df$Method == 'Articulation',]
+	ref_col_names <- colnames(single_reference_imported$single_reference_imported)
+	for(i in 1:nrow(art)) {
+		a = FALSE
+		b = FALSE
+		for(x in 1:length(ref_col_names)) {
+			if(art$Measurementa[i] == ref_col_names[x]) {a=TRUE}
+			if(art$Measurementb[i] == ref_col_names[x]) {b=TRUE}
+			if(a && b) {
+				art_measurements_a$df <- c(art_measurements_a$df, art$Measurementa[i])
+				art_measurements_b$df <- c(art_measurements_b$df, art$Measurementb[i])
+				temp1 <- na.omit(unique(single_reference_imported$single_reference_imported[!is.na(single_reference_imported$single_reference_imported[[art$Measurementa[i]]]),]$Element))[1]
+				temp2 <- na.omit(unique(single_reference_imported$single_reference_imported[!is.na(single_reference_imported$single_reference_imported[[art$Measurementb[i]]]),]$Element))[1]
+				art_elements$df <- c(art_elements$df, paste(temp1, temp2, sep="_"))
+				break
+			}
+		}
+	}
 })
 
+output$single_element_articulation <- renderUI({
+	selectInput(inputId = "single_element_articulation", label = "Elements", choices = art_elements$df)
+})
 
-#output$single_element_articulation_a <- renderUI({
-#	selectInput(inputId = "single_element_articulation_a_", label = "First", choices = unique(c(art_elements_a$art_elements_a[,1],art_elements_a$art_elements_a[,2])) )
-#})
-
-#observeEvent(input$single_element_articulation_a_, {
-#	temp1 = art_elements_a$art_elements_a[art_elements_a$art_elements_a[,1] == input$single_element_articulation_a_,2]
-#	temp2 = art_elements_a$art_elements_a[art_elements_a$art_elements_a[,2] == input$single_element_articulation_a_,1]
-
-#	ch = unique(c(temp1, temp2))
-
-#	output$single_element_articulation_b <- renderUI({
-#		selectInput(inputId = "single_element_articulation_b_", label = "Second", choices = ch)
-#	})
-#})
+observeEvent(input$single_element_articulation, {
+	temp1 <- which(art_elements$df == input$single_element_articulation)
+	tempa <- art_measurements_a$df[temp1][!duplicated(art_measurements_a$df[temp1])]
+	tempb <- art_measurements_b$df[temp1][!duplicated(art_measurements_b$df[temp1])]
+	output$single_measurement_articulation_a <- renderUI({
+		lapply(tempa, function(i) {
+			numericInput(paste0(i,"_art_a"), label = i, value = "", min=0,max=999,step=0.01)
+		})
+	})
+	output$single_measurement_articulation_b <- renderUI({
+		lapply(tempb, function(i) {
+			numericInput(paste0(i,"_art_b"), label = i, value = "", min=0,max=999,step=0.01)
+		})
+	})
+})
 
 output$single_element_pair_match <- renderUI({
 	selectInput(inputId = "single_elements_pairmatch", label = "Element", choices = elements$elements)
