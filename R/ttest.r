@@ -32,7 +32,6 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	sorta <- cbind(sorta,0)
 	sortb <- cbind(sortb,0)
 
-
 	options(stringsAsFactors = FALSE)
 	print("Comparisons are running...")
 	options(warn = -1) #disables warnings

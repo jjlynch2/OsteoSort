@@ -1,22 +1,17 @@
-#file upload render for multiple comparison
 output$resettableInput <- renderUI({
 	input$clearFile1
 	input$uploadFormat
 	fileInput('file1', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))
 })
 
-#clears session for multiple comparison
 observeEvent(input$clearFile1, {
 	fileInput('file1', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))
 })
 
-##default blank output
 output$multiple_contents <- renderUI({
 	HTML(paste(""))
 })
-##default blank output
 
-##output settings
 multiple_file_output1 <- reactiveValues(multiple_file_output1 = TRUE) #default option
 output$multiple_file_output1 <- renderUI({
 	checkboxInput(inputId = "multiple_file_output1", label = "Output excel file", value = TRUE)
@@ -24,9 +19,7 @@ output$multiple_file_output1 <- renderUI({
 observeEvent(input$multiple_file_output1, {
 	multiple_file_output1$multiple_file_output1 <- input$multiple_file_output1
 })
-##output settings
 
-##association type settings
 multiple_association_types <- reactiveValues(multiple_association_types = "PCA-CCA") #default option
 output$multiple_association_types <- renderUI({
 	radioButtons(inputId ="multiple_association_types", label = "Regression type", choices = c("PCA-CCA", "Simple"), selected = "Simple")
@@ -34,9 +27,7 @@ output$multiple_association_types <- renderUI({
 observeEvent(input$multiple_association_types, {
 	multiple_association_types$multiple_association_types <- input$multiple_association_types
 })
-##association type settings
 
-##association alpha test settings
 multiple_association_alpha_prediction <- reactiveValues(multiple_association_alpha_prediction = TRUE) #default option
 output$multiple_association_alpha_prediction <- renderUI({
 	checkboxInput(inputId = "multiple_association_alpha_prediction", label = "Use alpha level hypothesis", value = TRUE)
@@ -44,9 +35,7 @@ output$multiple_association_alpha_prediction <- renderUI({
 observeEvent(input$multiple_association_alpha_prediction, {
 	multiple_association_alpha_prediction$multiple_association_alpha_prediction <- input$multiple_association_alpha_prediction
 })
-##association alpha test settings
 
-##association prediction test settings
 multiple_association_prediction <- reactiveValues(multiple_association_prediction = 0.95) #default option
 output$multiple_association_prediction <- renderUI({
 	sliderInput(inputId = "multiple_association_prediction", label = "Prediction interval level", min=0.01, max=1, value=0.95, step = 0.01)
@@ -54,9 +43,7 @@ output$multiple_association_prediction <- renderUI({
 observeEvent(input$multiple_association_prediction, {
 	multiple_association_prediction$multiple_association_prediction <- input$multiple_association_prediction
 })
-##association prediction test settings
 
-##association pca-cca test settings
 multiple_association_pca <- reactiveValues(multiple_association_pca = "Select") #default option
 output$multiple_association_pca <- renderUI({
 	radioButtons(inputId ="multiple_association_pca", label = "Principal Component Analysis", choices = c("All", "Select", "Variance"), selected = "Variance")
@@ -64,9 +51,7 @@ output$multiple_association_pca <- renderUI({
 observeEvent(input$multiple_association_pca, {
 	multiple_association_pca$multiple_association_pca <- input$multiple_association_pca
 })
-##association pca-cca test settings
 
-##association pca-cca test settings
 multiple_association_pca_select <- reactiveValues(multiple_association_pca_select = 1) #default option
 output$multiple_association_pca_select <- renderUI({
 	sliderInput(inputId = "multiple_association_pca_select", label = "Principal Components", min=1, max = 10, value = 1)
@@ -74,9 +59,7 @@ output$multiple_association_pca_select <- renderUI({
 observeEvent(input$multiple_association_pca_select, {
 	multiple_association_pca_select$multiple_association_pca_select <- input$multiple_association_pca_select
 })
-##association pca-cca test settings
 
-##association pca-cca test settings
 multiple_association_pca_variance <- reactiveValues(multiple_association_pca_variance = 0.99) #default option
 output$multiple_association_pca_variance <- renderUI({
 	sliderInput(inputId = "multiple_association_pca_variance", label = "Cumulative Variance", min=0.1, max = 0.99, value = 0.99)
@@ -84,9 +67,7 @@ output$multiple_association_pca_variance <- renderUI({
 observeEvent(input$multiple_association_pca_variance, {
 	multiple_association_pca_variance$multiple_association_pca_variance <- input$multiple_association_pca_variance
 })
-##association pca-cca test settings
 
-##common alpha level
 multiple_common_alpha_level <- reactiveValues(multiple_common_alpha_level = 0.05) #default option
 output$multiple_common_alpha_level <- renderUI({
 	sliderInput(inputId = "multiple_common_alpha_level", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
@@ -94,9 +75,7 @@ output$multiple_common_alpha_level <- renderUI({
 observeEvent(input$multiple_common_alpha_level, {
 	multiple_common_alpha_level$multiple_common_alpha_level <- input$multiple_common_alpha_level
 })
-##common alpha level
 
-##pair-match articulation absolute value
 multiple_absolute_value <- reactiveValues(multiple_absolute_value = FALSE) #default option
 output$multiple_absolute_value <- renderUI({
 	checkboxInput(inputId = "multiple_absolute_value", label = "Absolute D-value |a-b|", value = FALSE)
@@ -104,9 +83,7 @@ output$multiple_absolute_value <- renderUI({
 observeEvent(input$multiple_absolute_value, {
 	multiple_absolute_value$multiple_absolute_value <- input$multiple_absolute_value
 })
-##pair-match articulation absolute value
 
-##pair-match articulation boxcox
 multiple_boxcox <- reactiveValues(multiple_boxcox = FALSE) #default option
 output$multiple_boxcox <- renderUI({
 	checkboxInput(inputId = "multiple_boxcox", label = "Boxcox transformation", value = FALSE)
@@ -114,9 +91,7 @@ output$multiple_boxcox <- renderUI({
 observeEvent(input$multiple_boxcox, {
 	multiple_boxcox$multiple_boxcox <- input$multiple_boxcox
 })
-##pair-match articulation boxcox
 
-##pair-match articulation mean
 multiple_mean <- reactiveValues(multiple_mean = FALSE) #default option
 output$multiple_mean <- renderUI({
 	checkboxInput(inputId = "multiple_mean", label = "Zero mean", value = FALSE)					
@@ -124,9 +99,7 @@ output$multiple_mean <- renderUI({
 observeEvent(input$multiple_mean, {
 	multiple_mean$multiple_mean <- input$multiple_mean
 })
-##pair-match articulation mean
 
-##pair-match articulation tails
 multiple_tails <- reactiveValues(multiple_tails = TRUE) #default option
 output$multiple_tails <- renderUI({
 	sliderInput(inputId = "multiple_tails", label = "Tails", min=1, max=2, value=2, step=1)
@@ -134,7 +107,6 @@ output$multiple_tails <- renderUI({
 observeEvent(input$multiple_tails, {
 	multiple_tails$multiple_tails <- input$multiple_tails
 })
-##pair-match articulation tails
 
 numbercoresglobal <- reactiveValues(ncore = detectCores()-1)
 observeEvent(input$numbercores, {
@@ -167,7 +139,6 @@ output$multiple_reference <- renderUI({
 multiple_reference_imported <- reactiveValues(multiple_reference_imported = data.frame())
 elements <- reactiveValues(elements = c("temp") )
 
-
 multiple_art_elements <- reactiveValues(df = c())
 multiple_art_measurements_a <- reactiveValues(df = c())
 multiple_art_measurements_b <- reactiveValues(df = c())
@@ -194,10 +165,9 @@ observeEvent(input$multiple_reference, {
 		}
 	}
 
-output$multiple_element_non_antimere <- renderUI({
-	selectInput(inputId = "multiple_element_non_antimere", label = "Elements", choices = multiple_art_elements$df)
-})
-
+	output$multiple_element_non_antimere <- renderUI({
+		selectInput(inputId = "multiple_element_non_antimere", label = "Elements", choices = multiple_art_elements$df)
+	})
 })
 
 multiple_ML <- reactiveValues(multiple_ML = c("temp"))
@@ -208,7 +178,6 @@ observeEvent(input$multiple_elements_pairmatch, {
 	t2 <- t2[,colSums(is.na(t2)) < nrow(t2)]
 	multiple_ML$multiple_ML <- names(t2)
 })
-
 
 observeEvent(input$pro, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
@@ -299,7 +268,6 @@ observeEvent(input$pro, {
 		)
 		setwd(sessiontemp)
 	}
-
 	gc()
 	removeModal()
 })
