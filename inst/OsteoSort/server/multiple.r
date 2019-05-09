@@ -167,9 +167,37 @@ output$multiple_reference <- renderUI({
 multiple_reference_imported <- reactiveValues(multiple_reference_imported = data.frame())
 elements <- reactiveValues(elements = c("temp") )
 
+
+multiple_art_elements <- reactiveValues(df = c())
+multiple_art_measurements_a <- reactiveValues(df = c())
+multiple_art_measurements_b <- reactiveValues(df = c())
+
 observeEvent(input$multiple_reference, {
 	multiple_reference_imported$multiple_reference_imported <- reference_list$reference_list[[multiple_reference$multiple_reference]]
 	elements$elements <- unique(multiple_reference_imported$multiple_reference_imported$Element)
+	art <- config_df$config_df[config_df$config_df$Method == 'Non_antimere',]
+	ref_col_names <- colnames(multiple_reference_imported$multiple_reference_imported)
+	for(i in 1:nrow(art)) {
+		a = FALSE
+		b = FALSE
+		for(x in 1:length(ref_col_names)) {
+			if(art$Measurementa[i] == ref_col_names[x]) {a=TRUE}
+			if(art$Measurementb[i] == ref_col_names[x]) {b=TRUE}
+			if(a && b) {
+				multiple_art_measurements_a$df <- c(multiple_art_measurements_a$df, art$Measurementa[i])
+				multiple_art_measurements_b$df <- c(multiple_art_measurements_b$df, art$Measurementb[i])
+				temp1 <- na.omit(unique(multiple_reference_imported$multiple_reference_imported[!is.na(multiple_reference_imported$multiple_reference_imported[[art$Measurementa[i]]]),]$Element))[1]
+				temp2 <- na.omit(unique(multiple_reference_imported$multiple_reference_imported[!is.na(multiple_reference_imported$multiple_reference_imported[[art$Measurementb[i]]]),]$Element))[1]
+				multiple_art_elements$df <- c(multiple_art_elements$df, paste(temp1, temp2, sep="-"))
+				break
+			}
+		}
+	}
+
+output$multiple_element_non_antimere <- renderUI({
+	selectInput(inputId = "multiple_element_non_antimere", label = "Elements", choices = multiple_art_elements$df)
+})
+
 })
 
 multiple_ML <- reactiveValues(multiple_ML = c("temp"))
@@ -212,16 +240,23 @@ observeEvent(input$pro, {
 	tempdatab <- lapply(tempdata1[,-(1:3)], function(x) { as.numeric(as.character(x))})
 	tempdata1 <- c(tempdataa, tempdatab)
 	tempdata1 <- as.data.frame(tempdata1) #combines first four columns with now numeric measurements
-
+	if(input$multiple_analysis == "Non-Antimere t-test") {
+		temp1 <- which(multiple_art_elements$df == input$multiple_element_non_antimere)
+		tempa <- multiple_art_measurements_a$df[temp1][!duplicated(multiple_art_measurements_a$df[temp1])]
+		tempb <- multiple_art_measurements_b$df[temp1][!duplicated(multiple_art_measurements_b$df[temp1])]
+		art.d1 <- art.input(side = input$multiple_non_antimere_side, ref = multiple_reference_imported$multiple_reference_imported, sort = tempdata1, bones = c(strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1], strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
+		d2 <- ttest(sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
+		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
+	}
 	if(input$multiple_analysis == "Antimere t-test") {
 		pm.d1 <- pm.input(sort = tempdata1, bone = input$multiple_elements_pairmatch, measurements = multiple_ML$multiple_ML, ref = multiple_reference_imported$multiple_reference_imported)
-		pm.d2 <- pm.ttest(sortleft = pm.d1[[3]], sortright = pm.d1[[4]], refleft = pm.d1[[1]], refright = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
-		tempDF <- rbind(pm.d2[[2]], pm.d2[[3]]) #combines excluded and not excluded for results
+		d2 <- ttest(sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
+		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 	}
 
 	#if combinations exist, produces output
-	if(!all(is.na(pm.d2[[2]])) || !all(is.na(pm.d2[[3]]))) {
-		direc <- pm.d2[[1]]
+	if(!all(is.na(d2[[2]])) || !all(is.na(d2[[3]]))) {
+		direc <- d2[[1]]
 		if(multiple_file_output1$multiple_file_output1) {
 			files <- list.files(direc, recursive = TRUE)
 			setwd(direc)
@@ -231,10 +266,10 @@ observeEvent(input$pro, {
 			}
 			setwd(sessiontemp)
 		}
-		lent <- length(unique(rbind(as.matrix(pm.d2[[2]][1]),as.matrix(pm.d2[[2]][4])))) #fix for number of specimens matched
-		ll <- nrow(pm.d2[[2]]) + nrow(pm.d2[[3]])
-		nmatch <- nrow(pm.d2[[2]])
-		samplesize <- length(unique(c(pm.d2[[2]]$id_1, pm.d2[[2]]$id_2, pm.d2[[3]]$id_1, pm.d2[[3]]$id_2)))
+		lent <- length(unique(rbind(as.matrix(d2[[2]][1]),as.matrix(d2[[2]][4])))) #fix for number of specimens matched
+		ll <- nrow(d2[[2]]) + nrow(d2[[3]])
+		nmatch <- nrow(d2[[2]])
+		samplesize <- length(unique(c(d2[[2]]$id_1, d2[[2]]$id_2, d2[[3]]$id_1, d2[[3]]$id_2)))
 	}
 	output$multiple_contents <- renderUI({
 		HTML(paste("<strong>","<br/>","Comparisons: ",   "<font color=\"#00688B\">", ll, "</font>", 
@@ -244,10 +279,10 @@ observeEvent(input$pro, {
 	})
 
 	output$table <- DT::renderDataTable({
-		DT::datatable(pm.d2[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		DT::datatable(d2[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 	output$tablen <- DT::renderDataTable({
-		DT::datatable(pm.d2[[3]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		DT::datatable(d2[[3]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 
 	if(multiple_file_output1$multiple_file_output1) {

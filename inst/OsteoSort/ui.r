@@ -84,7 +84,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 								uiOutput("config_a")
 							),
 							column(6,
-								conditionalPanel(condition = "input.config_options == 'Articulation'",
+								conditionalPanel(condition = "input.config_options == 'Non_antimere'",
 									uiOutput("config_b")
 								)
 							)
@@ -267,6 +267,10 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						uiOutput('resettableInput'),
 						conditionalPanel(condition = "input.multiple_analysis == 'Antimere t-test'",
 							uiOutput("multiple_element_pair_match")
+						),
+						conditionalPanel(condition = "input.multiple_analysis == 'Non-Antimere t-test'",
+							selectInput("multiple_non_antimere_side", "Side", c(Left='Left', Right='Right')),
+							uiOutput("multiple_element_non_antimere")
 						),
 						fluidRow(
 							column(6,
