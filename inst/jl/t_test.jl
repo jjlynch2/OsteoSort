@@ -1,6 +1,6 @@
 #############################################
 #############################################
-##Pair-match
+##
 @everywhere function TTEST_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	for j in 1:size(m2,1)
@@ -26,7 +26,7 @@
 	return res
 end
 
-##pair-match absolute value
+## absolute value
 @everywhere function TTESTA_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	for j in 1:size(m2,1)
@@ -52,7 +52,7 @@ end
 	return res
 end
 
-##pair-match absolute value boxcox
+## absolute value boxcox
 @everywhere function TTESTAB_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	#boxcox cache for each worker
@@ -86,7 +86,7 @@ end
 	return res
 end
 
-##Pair-match absolute value boxcox zero mean
+## absolute value boxcox zero mean
 @everywhere function TTESTABM_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	#boxcox cache for each worker
@@ -120,7 +120,7 @@ end
 	return res
 end
 
-##Pair-matching boxcox
+##ing boxcox
 @everywhere function TTESTB_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	#boxcox cache for each worker
@@ -154,7 +154,7 @@ end
 	return res
 end
 
-##Pair-matching boxcox
+##ing boxcox
 @everywhere function TTESTBM_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	#boxcox cache for each worker
@@ -188,7 +188,7 @@ end
 	return res
 end
 
-##Pair-matching mean
+##ing mean
 @everywhere function TTESTM_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	for j in 1:size(m2,1)
@@ -214,7 +214,7 @@ end
 	return res
 end
 
-##Pair-matching mean
+##ing mean
 @everywhere function TTESTAM_worker(v1, m2, li, RL, RR, TL)
 	res = zeros(size(m2,1),size(m2,2)+7)
 	for j in 1:size(m2,1)
@@ -282,7 +282,7 @@ end
 
 #############################################
 #############################################
-##Pair-match absolute value boxcox mean R call
+## absolute value boxcox mean R call
 function TTESTABM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
@@ -294,7 +294,7 @@ function TTESTABM(SL, SR, RL, RR, TL)
 	return Results
 end
 
-##Pair-match absolute vale boxcox R call
+## absolute vale boxcox R call
 function TTESTAB(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
@@ -306,7 +306,7 @@ function TTESTAB(SL, SR, RL, RR, TL)
 	return Results
 end
 
-##Pair-match absolute value mean R call
+## absolute value mean R call
 function TTESTAM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
@@ -318,7 +318,7 @@ function TTESTAM(SL, SR, RL, RR, TL)
 	return Results
 end
 
-##Pair-match boxcox mean R call
+## boxcox mean R call
 function TTESTBM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
@@ -330,7 +330,7 @@ function TTESTBM(SL, SR, RL, RR, TL)
 	return Results
 end
 
-##Pair-match absolute value R call
+## absolute value R call
 function TTESTA(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
@@ -342,7 +342,7 @@ function TTESTA(SL, SR, RL, RR, TL)
 	return Results
 end
 
-##Pair-match boxcox R call
+## boxcox R call
 function TTESTB(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
@@ -354,7 +354,7 @@ function TTESTB(SL, SR, RL, RR, TL)
 	return Results
 end
 
-##Pair-match mean R call
+## mean R call
 function TTESTM(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
@@ -366,7 +366,7 @@ function TTESTM(SL, SR, RL, RR, TL)
 	return Results
 end
 
-##Pair-match R call
+## R call
 function TTEST(SL, SR, RL, RR, TL)
 	n1 = size(SL,1)
 	n2 = size(SR,1)
