@@ -18,7 +18,7 @@
 		ref_size = size(ref,1)
 		ref_mean = mean(ref)
 		ref_sd = std(ref)
-		res[j,4] = TL[1] * pt(-abs( dsum / ref_sd), ref_size - 1) #p.value
+		res[j,4] = TL[1] * pt(-abs( (dsum - ref_mean) / ref_sd), ref_size - 1) #p.value
 		res[j,5] = ref_mean #reference mean
 		res[j,6] = ref_sd #reference standard deviation
 		res[j,7] = ref_size #reference sample size
@@ -70,37 +70,15 @@ end
 		res[j,2] = j #index of right
 		res[j,3] = dsum
 		RT = ref_difa(res[j,8:end], RL, RR)
-		#boxcox cache comparison
-		cache_temp = 0
-		cache_index = 0
-		for a in 1:bc_iter_counter
-			for b in 1:size(v1,1)
-				if res[j,(b+7)] == bc_worker_cache[a,b]
-					cache_temp = cache_temp + 1
-				end
-			end
-			if cache_temp == size(v1,1)
-				cache_index = a
-				break
-			else
-				cache_index = 0
-				cache_temp = 0
-			end
-		end
-		if cache_temp != size(v1,1)
-			bc = lambda(RT)
-			bc_worker_cache[bc_iter_counter,1:(end-1)] = res[j,8:end]
-			bc_worker_cache[bc_iter_counter,end] = bc
-			bc_iter_counter = bc_iter_counter + 1
-		else
-			bc = bc_worker_cache[cache_index,end]
-		end
-		ref = zeros(size(RT,1),1)
-		ref = transform(RT)
+		RT .+= 0.005 #shift to avoid 0
+		dsum += 0.005 #shift to avoid 0
+		bc = lambda(RT)[1] #calculate lambda
+		ref = ((RT.^bc).-1)./bc #transform ref data by lambda
+		dsum = (dsum^bc-1)/bc #transform sort data by lambda
 		ref_size = size(ref,1)
 		ref_mean = mean(ref)
 		ref_sd = std(ref)
-		res[j,4] = TL[1] * pt(-abs(( dsum^bc) / ref_sd), ref_size - 1) #p.value
+		res[j,4] = TL[1] * pt(-abs( (abs(dsum - ref_mean) ) / ref_sd), ref_size - 1) #p.value
 		res[j,5] = ref_mean #reference mean
 		res[j,6] = ref_sd #reference standard deviation
 		res[j,7] = ref_size #reference sample size
@@ -126,37 +104,15 @@ end
 		res[j,2] = j #index of right
 		res[j,3] = dsum
 		RT = ref_difa(res[j,8:end], RL, RR)
-		#boxcox cache comparison
-		cache_temp = 0
-		cache_index = 0
-		for a in 1:bc_iter_counter
-			for b in 1:size(v1,1)
-				if res[j,(b+7)] == bc_worker_cache[a,b]
-					cache_temp = cache_temp + 1
-				end
-			end
-			if cache_temp == size(v1,1)
-				cache_index = a
-				break
-			else
-				cache_index = 0
-				cache_temp = 0
-			end
-		end
-		if cache_temp != size(v1,1)
-			bc = lambda(RT)
-			bc_worker_cache[bc_iter_counter,1:(end-1)] = res[j,8:end]
-			bc_worker_cache[bc_iter_counter,end] = bc
-			bc_iter_counter = bc_iter_counter + 1
-		else
-			bc = bc_worker_cache[cache_index,end]
-		end
-		ref = zeros(size(RT,1),1)
-		ref = transform(RT)
+		RT .+= 0.005 #shift to avoid 0
+		dsum += 0.005 #shift to avoid 0
+		bc = lambda(RT)[1] #calculate lambda
+		ref = ((RT.^bc).-1)./bc #transform ref data by lambda
+		dsum = (dsum^bc-1)/bc #transform sort data by lambda
 		ref_size = size(ref,1)
 		ref_mean = 0
 		ref_sd = std(ref)
-		res[j,4] = TL[1] * pt(-abs( (abs(dsum - ref_mean) ^ bc) / ref_sd), ref_size - 1) #p.value
+		res[j,4] = TL[1] * pt(-abs( (abs(dsum - ref_mean) ) / ref_sd), ref_size - 1) #p.value
 		res[j,5] = ref_mean #reference mean
 		res[j,6] = ref_sd #reference standard deviation
 		res[j,7] = ref_size #reference sample size
@@ -182,37 +138,15 @@ end
 		res[j,2] = j #index of right
 		res[j,3] = dsum
 		RT = ref_dif(res[j,8:end], RL, RR)
-		#boxcox cache comparison
-		cache_temp = 0
-		cache_index = 0
-		for a in 1:bc_iter_counter
-			for b in 1:size(v1,1)
-				if res[j,(b+7)] == bc_worker_cache[a,b]
-					cache_temp = cache_temp + 1
-				end
-			end
-			if cache_temp == size(v1,1)
-				cache_index = a
-				break
-			else
-				cache_index = 0
-				cache_temp = 0
-			end
-		end
-		if cache_temp != size(v1,1)
-			bc = lambda(RT)
-			bc_worker_cache[bc_iter_counter,1:(end-1)] = res[j,8:end]
-			bc_worker_cache[bc_iter_counter,end] = bc
-			bc_iter_counter = bc_iter_counter + 1
-		else
-			bc = bc_worker_cache[cache_index,end]
-		end
-		ref = zeros(size(RT,1),1)
-		ref = transform(RT)
+		RT .+= 0.005 #shift to avoid 0
+		dsum += 0.005 #shift to avoid 0
+		bc = lambda(RT)[1] #calculate lambda
+		ref = ((RT.^bc).-1)./bc #transform ref data by lambda
+		dsum = (dsum^bc-1)/bc #transform sort data by lambda
 		ref_size = size(ref,1)
 		ref_mean = mean(ref)
 		ref_sd = std(ref)
-		res[j,4] = TL[1] * pt(-abs( ((dsum - ref_mean) ^ bc) / ref_sd), ref_size - 1) #p.value
+		res[j,4] = TL[1] * pt(-abs( (dsum - ref_mean) / ref_sd), ref_size - 1) #p.value
 		res[j,5] = ref_mean #reference mean
 		res[j,6] = ref_sd #reference standard deviation
 		res[j,7] = ref_size #reference sample size
@@ -238,37 +172,15 @@ end
 		res[j,2] = j #index of right
 		res[j,3] = dsum
 		RT = ref_dif(res[j,8:end], RL, RR)
-		#boxcox cache comparison
-		cache_temp = 0
-		cache_index = 0
-		for a in 1:bc_iter_counter
-			for b in 1:size(v1,1)
-				if res[j,(b+7)] == bc_worker_cache[a,b]
-					cache_temp = cache_temp + 1
-				end
-			end
-			if cache_temp == size(v1,1)
-				cache_index = a
-				break
-			else
-				cache_index = 0
-				cache_temp = 0
-			end
-		end
-		if cache_temp != size(v1,1)
-			bc = lambda(RT)
-			bc_worker_cache[bc_iter_counter,1:(end-1)] = res[j,8:end]
-			bc_worker_cache[bc_iter_counter,end] = bc
-			bc_iter_counter = bc_iter_counter + 1
-		else
-			bc = bc_worker_cache[cache_index,end]
-		end
-		ref = zeros(size(RT,1),1)
-		ref = transform(RT)
+		RT .+= 0.005 #shift to avoid 0
+		dsum += 0.005 #shift to avoid 0
+		bc = lambda(RT)[1] #calculate lambda
+		ref = ((RT.^bc).-1)./bc #transform ref data by lambda
+		dsum = (dsum^bc-1)/bc #transform sort data by lambda
 		ref_size = size(ref,1)
 		ref_mean = 0
 		ref_sd = std(ref)
-		res[j,4] = TL[1] * pt(-abs( (dsum^bc) / ref_sd), ref_size - 1) #p.value
+		res[j,4] = TL[1] * pt(-abs( (dsum - ref_mean) / ref_sd), ref_size - 1) #p.value
 		res[j,5] = ref_mean #reference mean
 		res[j,6] = ref_sd #reference standard deviation
 		res[j,7] = ref_size #reference sample size
@@ -320,7 +232,7 @@ end
 		ref_size = size(ref,1)
 		ref_mean = 0
 		ref_sd = std(ref)
-		res[j,4] = TL[1] * pt(-abs( (dsum - ref_mean) / ref_sd), ref_size - 1) #p.value
+		res[j,4] = TL[1] * pt(-abs( (abs(dsum - ref_mean) ) / ref_sd), ref_size - 1) #p.value
 		res[j,5] = ref_mean #reference mean
 		res[j,6] = ref_sd #reference standard deviation
 		res[j,7] = ref_size #reference sample size
