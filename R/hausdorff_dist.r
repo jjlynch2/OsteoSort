@@ -13,9 +13,7 @@
 #' @examples
 #' hausdorff_dist()
 
-hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = 0, dist = "average", threads = 1, indices = NULL) {
-	JuliaSetup(cores = threads, recall = TRUE) #reloads libraries onto specified cores
-
+hausdorff_dist <- function (first_configuration, second_configuration, test = "Segmented-Hausdorff", n_regions = 0, dist = "average", indices = NULL) {
 	#1 Region is the same as regular Hausdorff
 	if(n_regions == 1 && test == "Segmented-Hausdorff") {test="Hausdorff"}
 
@@ -70,7 +68,6 @@ hausdorff_dist <- function (first_configuration, second_configuration, test = "S
 		}
 		
 	}
-
-    return(distance_results)
+	return(distance_results)
 }
 

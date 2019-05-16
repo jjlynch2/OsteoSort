@@ -209,8 +209,6 @@ observeEvent(input$single_elements_pairmatch, {
 	t1 <- temp[,c(1:6)]
 	t2 <- temp[,-c(1:6)]
 	single_ML$single_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
-
-gg1 <<- temp
 })
 
 output$list_numeric_inputs_single_left <- renderUI ({

@@ -162,15 +162,13 @@ observeEvent(input$aligndata$datapath, {
 
 observeEvent(input$simplify, {
 	if(length(input$aligndata$datapath) > 0) {
-
+		JuliaSetup(add_cores = ncorespc$ncorespc, source = TRUE, recall_libraries = TRUE)
 		showModal(modalDialog(title = "Point cloud K-means simplification started...", easyClose = FALSE, footer = NULL))
 		if(input$alln == "Present") {		
 			ttt <- filelist3$list[[position$pos]]
 			filelist3$list[[position$pos]] <- kmeans.3d(filelist3$list[[position$pos]], cluster = vara$vara)
 			if(!is.null(landmarks$landmarks[[position$pos]][[2]])) {
-				JuliaSetup(cores = ncorespc$ncorespc, recall = TRUE)
 				tempp <- julia_call("AD3D", as.matrix(ttt[landmarks$landmarks[[position$pos]][[2]],]), as.matrix(filelist3$list[[position$pos]]))
-
 				landmarks$landmarks[[position$pos]][[2]] <- unique(which(tempp < tva$tva, arr.ind = TRUE)[,2])
 				if(length(landmarks$landmarks[[position$pos]][[2]]) == 0) { landmarks$landmarks[[position$pos]][[2]] <- NULL }
 			}
@@ -182,14 +180,13 @@ observeEvent(input$simplify, {
 				filelist3$list[[i]] <- kmeans.3d(filelist3$list[[i]], cluster = vara$vara)
 
 				if(!is.null(landmarks$landmarks[[i]][[2]])) {
-					JuliaSetup(cores = ncorespc$ncorespc, recall = TRUE)
 					tempp <- julia_call("AD3D", as.matrix(ttt[landmarks$landmarks[[i]][[2]],]), as.matrix(filelist3$list[[i]]))
 					landmarks$landmarks[[i]][[2]] <- unique(which(tempp < tva$tva, arr.ind = TRUE)[,2])
 					if(length(landmarks$landmarks[[i]][[2]]) == 0) { landmarks$landmarks[[i]][[2]] <- NULL }
 				}
 			}
 		}
-
+				JuliaSetup(remove_cores = TRUE) #clean up workers
 		removeModal()  
 	}
 })
@@ -229,33 +226,37 @@ observeEvent(input$start2, {
 
 observeEvent(input$RGB1, {
 	if(length(input$aligndata$datapath) > 0) {
+		JuliaSetup(add_cores = ncorespc$ncorespc, source = TRUE, recall_libraries = TRUE)
 		showModal(modalDialog(title = "RGB landmark extraction has started...", easyClose = FALSE, footer = NULL))
 		if(input$alln == "Present") {		
 			temp_p <- filelist3$list[[position$pos]]
-			landmarks$landmarks[[position$pos]][[1]] <- RGB.locator.3d(temp_p, r = red$red, g = green$green, b = blue$blue,type = "landmark",threads = ncorespc$ncorespc)[[1]]
+			landmarks$landmarks[[position$pos]][[1]] <- RGB.locator.3d(temp_p, r = red$red, g = green$green, b = blue$blue,type = "landmark")[[1]]
 		}
 		if(input$alln == "All") {		
 			ll <- length(filelist3$list)
 			for (i in 1:ll) {	
-				landmarks$landmarks[[i]][[1]] <- RGB.locator.3d(filelist3$list[[i]], r = red$red, g = green$green, b = blue$blue, type = "landmark",threads = ncorespc$ncorespc)[[1]]
+				landmarks$landmarks[[i]][[1]] <- RGB.locator.3d(filelist3$list[[i]], r = red$red, g = green$green, b = blue$blue, type = "landmark")[[1]]
 			}
 		}
+		JuliaSetup(remove_cores = TRUE) #clean up workers
 		removeModal() 
 	} 
 })
 observeEvent(input$RGB2, {
 	if(length(input$aligndata$datapath) > 0) {
+		JuliaSetup(add_cores = ncorespc$ncorespc, source = TRUE, recall_libraries = TRUE)
 		showModal(modalDialog(title = "RGB fracture extraction has started...", easyClose = FALSE, footer = NULL))
 		if(input$alln == "Present") {		
 			temp_p <- filelist3$list[[position$pos]]
-			landmarks$landmarks[[position$pos]][[2]] <- RGB.locator.3d(temp_p, f = fra$fra,type = "fracture",threads = ncorespc$ncorespc,f_threshold = fracturet$fracturet)[[1]]
+			landmarks$landmarks[[position$pos]][[2]] <- RGB.locator.3d(temp_p, f = fra$fra,type = "fracture",f_threshold = fracturet$fracturet)[[1]]
 		}
 		if(input$alln == "All") {		
 			ll <- length(filelist3$list)
 			for (i in 1:ll) {	
-				landmarks$landmarks[[i]][[2]] <- RGB.locator.3d(filelist3$list[[i]], f = fra$fra, type = "fracture", threads = ncorespc$ncorespc, f_threshold = fracturet$fracturet)[[1]]
+				landmarks$landmarks[[i]][[2]] <- RGB.locator.3d(filelist3$list[[i]], f = fra$fra, type = "fracture", f_threshold = fracturet$fracturet)[[1]]
 			}
 		}
+		JuliaSetup(remove_cores = TRUE) #clean up workers
 		removeModal()  
 	}
 })

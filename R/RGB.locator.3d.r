@@ -6,8 +6,7 @@
 #' @examples
 #' RGB.locator.3d()
 
-RGB.locator.3d <- function(align_data, type = "landmark",r = c(255,255,255), g = c(0,255,0), b = c(0,0,255), f = c(255,0,0), f_threshold = 100, threads = 1) {	
-	JuliaCall::Set_Procs(threads,detectCores())
+RGB.locator.3d <- function(align_data, type = "landmark",r = c(255,255,255), g = c(0,255,0), b = c(0,0,255), f = c(255,0,0), f_threshold = 100) {	
 	a <- 0
 	aa <- 0
 

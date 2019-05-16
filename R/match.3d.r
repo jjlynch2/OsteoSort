@@ -10,6 +10,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 	print("Form comparisons started")		
 	options(stringsAsFactors = FALSE)  	
 
+	JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
 
 	if(fragment == "Complete") {fragment <- FALSE}
 	if(fragment == "Fragmented") {fragment <- TRUE} 	
@@ -173,35 +174,35 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 		for(i in 1:length(lista)) {
 			for(x in 1:length(listb)) {
 				lt <- icpmat(lista[[i]], listb[[x]], iterations = iteration, type = transformation, threads = threads)
-				d1 <- hausdorff_dist(lt, listb[[x]], test = test, dist = dist, threads =threads)
+				d1 <- hausdorff_dist(lt, listb[[x]], test = test, dist = dist)
 
 				lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2],lista[[i]][,3])
 				lt1 <- icpmat(lt1, listb[[x]], iterations = iteration, type = transformation, threads = threads)
-				d2 <- hausdorff_dist(lt1, listb[[x]], test = test, dist = dist, threads =threads)
+				d2 <- hausdorff_dist(lt1, listb[[x]], test = test, dist = dist)
 
 				lt2 <- cbind( lista[[i]][,1], lista[[i]][,2]*-1,lista[[i]][,3])
 				lt2 <- icpmat(lt2, listb[[x]], iterations = iteration, type = transformation, threads = threads)
-				d3 <- hausdorff_dist(lt2, listb[[x]], test = test, dist = dist, threads =threads)
+				d3 <- hausdorff_dist(lt2, listb[[x]], test = test, dist = dist)
 
 				lt3 <- cbind( lista[[i]][,1], lista[[i]][,2],lista[[i]][,3]*-1)
 				lt3 <- icpmat(lt3, listb[[x]], iterations = iteration, type = transformation, threads = threads)
-				d4 <- hausdorff_dist(lt3, listb[[x]], test = test, dist = dist, threads =threads)
+				d4 <- hausdorff_dist(lt3, listb[[x]], test = test, dist = dist)
 
 				lt4 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2]*-1,lista[[i]][,3])
 				lt4 <- icpmat(lt4, listb[[x]], iterations = iteration, type = transformation, threads = threads)
-				d5 <- hausdorff_dist(lt4, listb[[x]], test = test, dist = dist, threads =threads)
+				d5 <- hausdorff_dist(lt4, listb[[x]], test = test, dist = dist)
 
 				lt5 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2],lista[[i]][,3]*-1)
 				lt5 <- icpmat(lt5, listb[[x]], iterations = iteration, type = transformation, threads = threads)
-				d6 <- hausdorff_dist(lt5, listb[[x]], test = test, dist = dist, threads =threads)
+				d6 <- hausdorff_dist(lt5, listb[[x]], test = test, dist = dist)
 
 				lt6 <- cbind( lista[[i]][,1], lista[[i]][,2]*-1,lista[[i]][,3]*-1)
 				lt6 <- icpmat(lt6, listb[[x]], iterations = iteration, type = transformation, threads = threads)
-				d7 <- hausdorff_dist(lt6, listb[[x]], test = test, dist = dist, threads =threads)
+				d7 <- hausdorff_dist(lt6, listb[[x]], test = test, dist = dist)
 
 				lt7 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2]*-1,lista[[i]][,3]*-1)
 				lt7 <- icpmat(lt7, listb[[x]], iterations = iteration, type = transformation, threads = threads)
-				d8 <- hausdorff_dist(lt7, listb[[x]], test = test, dist = dist, threads =threads)
+				d8 <- hausdorff_dist(lt7, listb[[x]], test = test, dist = dist)
 
 				if(d1 < d2 && d1 < d3 && d1 < d4 && d1 < d5 && d1 < d6 && d1 < d7 && d1 < d8) {dd <- d1; pairwise_coords[[pwc]] <- lt}
 				if(d2 < d1 && d2 < d3 && d2 < d4 && d2 < d5 && d2 < d6 && d2 < d7 && d2 < d8) {dd <- d2; pairwise_coords[[pwc]] <- lt1}
@@ -292,7 +293,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 
 	print("Form comparisons completed")	
 	options(stringsAsFactors = TRUE) #restore default R  
-
+	JuliaSetup(remove_cores = TRUE) #clean up workers
 	return(list(pairwise_coords, resmatches, direc, comparisons, matches, renderlist))
 
 }

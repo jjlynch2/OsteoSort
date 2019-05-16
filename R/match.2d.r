@@ -25,6 +25,8 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 	print("Form comparisons started")		
 	options(stringsAsFactors = FALSE) 
 
+	JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
+
 	dist <- tolower(dist)
 	transformation <- tolower(transformation)
 	workingdir = getwd()
@@ -69,7 +71,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 
 		for(z in 1:length(outlinedata[[2]])) {
 			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
-				distance <- hausdorff_dist(homolog[,,z], homolog[,,x], test = test, n_regions = n_regions, dist = dist, threads = threads)
+				distance <- hausdorff_dist(homolog[,,z], homolog[,,x], test = test, n_regions = n_regions, dist = dist)
 				matches1[nz,] <- c(dimnames(homolog)[[3]][z], dimnames(homolog)[[3]][x], distance)
 				matches2[nz,] <- c(dimnames(homolog)[[3]][x], dimnames(homolog)[[3]][z], distance)
 				print(paste("Specimens: ", dimnames(homolog)[[3]][x], "-", dimnames(homolog)[[3]][z], " ", test, " distance: ", distance, sep=""))
@@ -100,7 +102,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				target <- r1[[1]]
 				target_indices <- r1[[2]]
 
-				distance <- hausdorff_dist(moving, target, test = test, dist = dist, threads = threads, indices = list(moving_indices, target_indices))
+				distance <- hausdorff_dist(moving, target, test = test, dist = dist, indices = list(moving_indices, target_indices))
 				matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
 				matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
 				print(paste("Specimens: ", names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
@@ -156,6 +158,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 	comparisons <- length(outlinedata[[2]]) * length(outlinedata[[3]]) #number of comparisons
 
 	print("Form comparisons completed")	
+	JuliaSetup(remove_cores = TRUE) #clean up workers
 	options(stringsAsFactors = TRUE) #restore default R  
 	return(list(coords,resmatches,direc,comparisons,matches))
 

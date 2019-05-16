@@ -16,7 +16,7 @@
 #' ttest()
 
 ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, boxcox = TRUE) {
-	JuliaSetup(cores = threads, recall = TRUE)
+	JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
 	force(alphalevel)
 	force(absolute)
 	force(zmean)
@@ -128,6 +128,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	gc()
 	setwd(workingdir)
 	options(stringsAsFactors = TRUE) #restore default R
+	JuliaSetup(remove_cores = TRUE)
 	print("Finished.")
 	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",]))
 }

@@ -1,11 +1,11 @@
 .onAttach <- function(...) { #modified from the shinyBS package for R
   
   # Create link to javascript and css files for package
-  shiny::addResourcePath("sbs", system.file("OsteoSort/www", package="OsteoShiny"))
+  shiny::addResourcePath("sbs", system.file("OsteoSort/www", package="OsteoSort"))
   
 }
 
-shinyBSDep <- htmltools::htmlDependency("OsteoShiny", packageVersion("OsteoShiny"), src = c("href" = "sbs"), script = "shinyBS.js", stylesheet = "shinyBS.css")
+shinyBSDep <- htmltools::htmlDependency("OsteoSort", packageVersion("OsteoSort"), src = c("href" = "sbs"), script = "shinyBS.js", stylesheet = "shinyBS.css")
 #typeaheadDep <- htmltools::htmlDependency("shinyBS", packageVersion("shinyBS"), src = c("href" = "sbs"), script = c("bootstrap3-typeahead.js", "typeahead_inputbinding.js"));
 
 # Copy of dropNulls function for shiny to avoid using shiny:::dropNulls
