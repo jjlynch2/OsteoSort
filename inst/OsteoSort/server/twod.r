@@ -250,7 +250,7 @@ observeEvent(input$pro2D, {
 			setwd(sessiontemp)
 			files <- list.files(direc, recursive = TRUE)
 			setwd(direc)
-			zip:::zip(zipfile = paste(direc,'.zip',sep=''), files = files)
+			zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files)
 			output$downloadData2D <- downloadHandler(
 				filename <- function() {
 					paste("results.zip")

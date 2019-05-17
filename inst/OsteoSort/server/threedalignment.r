@@ -314,7 +314,7 @@ output$savedata <- downloadHandler(
 		setwd(sessiontemp)
 		files <- list.files(direc, recursive = TRUE)
 		setwd(direc)
-		zip:::zip(zipfile = paste(direc,'.zip',sep=''), files = files)
+		zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files)
 		file.copy(paste(direc,'.zip',sep=''), file)
 
 	},

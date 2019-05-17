@@ -229,9 +229,9 @@ observeEvent(input$pro, {
 		if(multiple_file_output1$multiple_file_output1) {
 			files <- list.files(direc, recursive = TRUE)
 			setwd(direc)
-			zip:::zip(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
+			zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
 			for(file_na in files[-1]) {
-				zip:::zip_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
+				zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
 			}
 			setwd(sessiontemp)
 		}

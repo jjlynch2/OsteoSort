@@ -15,6 +15,10 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 			JuliaCall::julia_library(i)
 		}
 		julia_source(system.file("jl", "Set_Procs.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "t_test_plot_MC.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "t_test_MC.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "Euclidean_Distance_Operations_MC.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "Hausdorff_MC.jl", package = "OsteoSort"))
 	}
 
 	if(add_cores > 1) {
@@ -25,11 +29,9 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 
 	if (source) {
 		julia_source(system.file("jl", "library.jl", package = "OsteoSort"))
-		julia_source(system.file("jl", "Hausdorff.jl", package = "OsteoSort"))
-		julia_source(system.file("jl", "t_test.jl", package = "OsteoSort"))
-		julia_source(system.file("jl", "t_test_plot.jl", package = "OsteoSort"))
-		julia_source(system.file("jl", "Box_Cox.jl", package = "OsteoSort"))
-		julia_source(system.file("jl", "Euclidean_Distance_Operations.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "t_test_WC.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "Box_Cox_WC.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "Euclidean_Distance_Operations_WC.jl", package = "OsteoSort"))
 	}
 
 	if(recall_libraries) {

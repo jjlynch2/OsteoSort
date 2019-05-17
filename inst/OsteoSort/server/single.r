@@ -351,7 +351,7 @@ observeEvent(input$proc, {
 			}, deleteFile = FALSE)
 		}
 		files <- list.files(recursive = TRUE)
-		zip:::zip(zipfile = paste(direc,'.zip',sep=''), files = files)
+		zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files)
 		output$downloadData2 <- downloadHandler(
 			filename = function() {
 				paste("results.zip")

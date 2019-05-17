@@ -71,6 +71,12 @@ output_function <- function(hera1, method = "exclusion", type = "csv", return_pl
 		if(type == "coord") {
 			writetps(hera1, file = "Coordinates.tps")
 		}
+
+
+
+###########finish this???????????????????????????????????
+###########
+###########
 		if(type == "dot") {
 			jpeg(paste("dotchart",hera1[1,1],".jpg",sep=''),height = 1200, width = 300)
 			dev.control('enable')
