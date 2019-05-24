@@ -100,6 +100,17 @@ observeEvent(input$multiple_mean, {
 	multiple_mean$multiple_mean <- input$multiple_mean
 })
 
+
+##pair-match non_antimere z-transform value
+multiple_ztransform <- reactiveValues(multiple_ztransform = FALSE) #default option
+output$multiple_ztransform <- renderUI({
+	checkboxInput(inputId = "multiple_ztransform", label = "Z-transform", value = FALSE)
+})
+observeEvent(input$single_ztransform, {
+	single_ztransform$single_ztransform <- input$single_ztransform
+})
+##pair-match non_antimere z-transform value
+
 multiple_tails <- reactiveValues(multiple_tails = TRUE) #default option
 output$multiple_tails <- renderUI({
 	sliderInput(inputId = "multiple_tails", label = "Tails", min=1, max=2, value=2, step=1)
@@ -214,12 +225,12 @@ observeEvent(input$pro, {
 		tempa <- multiple_art_measurements_a$df[temp1][!duplicated(multiple_art_measurements_a$df[temp1])]
 		tempb <- multiple_art_measurements_b$df[temp1][!duplicated(multiple_art_measurements_b$df[temp1])]
 		art.d1 <- art.input(side = input$multiple_non_antimere_side, ref = multiple_reference_imported$multiple_reference_imported, sort = tempdata1, bones = c(strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1], strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
-		d2 <- ttest(sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
+		d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}
 	if(input$multiple_analysis == "Antimere t-test") {
 		pm.d1 <- pm.input(sort = tempdata1, bone = input$multiple_elements_pairmatch, measurements = multiple_ML$multiple_ML, ref = multiple_reference_imported$multiple_reference_imported)
-		d2 <- ttest(sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
+		d2 <- ttest(ztest = multiple_ztransform$multiple_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 	}
 

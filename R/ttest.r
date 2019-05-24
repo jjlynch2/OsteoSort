@@ -15,7 +15,7 @@
 #' @examples
 #' ttest()
 
-ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, boxcox = TRUE) {
+ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, boxcox = TRUE, ztest = FALSE) {
 	JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
 	force(alphalevel)
 	force(absolute)
@@ -42,52 +42,56 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	workingdir = getwd()
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
-	#remove first 3 rows convert to matrix for fast operations
-	if(absolute && zmean && boxcox) {
+	if(ztest) {
+		#ztest no plot
+		results <- julia_call("ZTEST", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
+		output_options[2] <- FALSE #force false as a safety check	
+	}
+	else if(absolute && zmean && boxcox) {
 		results <- julia_call("TTESTABM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
-		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTESTAB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
 	else if(absolute && zmean) {
 		results <- julia_call("TTESTAM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
-		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTESTA_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
 	else if(absolute && boxcox) {
 		results <- julia_call("TTESTAB", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
-		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTESTAB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
 	else if(zmean && boxcox) {
 		results <- julia_call("TTESTBM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
-		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTESTB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
 	else if(absolute) {
 		results <- julia_call("TTESTA", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
-		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTESTA_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
 	else if(boxcox) {
 		results <- julia_call("TTESTB", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
-		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTESTB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
 	else if(zmean) {
 		results <- julia_call("TTESTM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
-		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTEST_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
 	else {
 		results <- julia_call("TTEST", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
-		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTEST_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
@@ -120,7 +124,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}
-	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sorta)) == 1) { 
+	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,2], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot")
 	}
 

@@ -212,44 +212,48 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					),
 					mainPanel(
 						htmlOutput('single_contents'),
-						imageOutput('single_plot', width=400, height=400),
+						imageOutput('single_plot'),
 						DT::dataTableOutput('table2'),
-						bsModal("settingssingle", title = "Settings", trigger = "settings2", size = "large", 
+						bsModal("settingssingle", title = "Settings", trigger = "settings2", size = "medium", 
 					 		tabsetPanel(id="single_tab",
 								tabPanel("Output Parameters",
 									uiOutput("single_file_output1"),
-									uiOutput("single_file_output2")
+									conditionalPanel(condition = "!input.single_ztransform || input.single_analysis != 'Antimere t-test'", 
+										uiOutput("single_file_output2")
+									)
 						 		),
 						 		tabPanel("Statistical Parameters",
 									fluidRow(
-										column(4, 
-											h4("Regression"),
-											uiOutput("association_types"),
-											uiOutput("association_alpha_prediction"),
-											conditionalPanel(condition = "!input.association_alpha_prediction",
-												uiOutput("association_prediction")
-											),
-											conditionalPanel(condition = "input.association_types == 'PCA-CCA'",
-												uiOutput("association_pca"),
-												conditionalPanel(condition = "input.association_pca == 'Select'",
-													uiOutput("association_pca_select")
+										column(8, 
+											conditionalPanel(condition = "input.single_analysis == 'Non_antimere regression'", 
+												uiOutput("association_types"),
+												uiOutput("association_alpha_prediction"),
+												conditionalPanel(condition = "!input.association_alpha_prediction",
+													uiOutput("association_prediction")
 												),
-												conditionalPanel(condition = "input.association_pca == 'Variance'",
-													uiOutput("association_pca_variance")
+												conditionalPanel(condition = "input.association_types == 'PCA-CCA'",
+													uiOutput("association_pca"),
+													conditionalPanel(condition = "input.association_pca == 'Select'",
+														uiOutput("association_pca_select")
+													),
+													conditionalPanel(condition = "input.association_pca == 'Variance'",
+														uiOutput("association_pca_variance")
+													)
 												)
-											)
-										),
-										column(4,
-											h4("Common"),
+											),
+											conditionalPanel(condition = "input.single_analysis != 'Non_antimere regression'", 
+												conditionalPanel(condition = "input.single_analysis == 'Antimere t-test'", 
+													uiOutput("single_ztransform")
+												),
+												conditionalPanel(condition = "!input.single_ztransform || input.single_analysis != 'Antimere t-test'",
+													uiOutput("single_absolute_value"),
+													uiOutput("single_boxcox"),
+													uiOutput("single_mean"),
+													uiOutput("single_tails")
+												)
+											),
 											uiOutput("common_alpha_level")
-										),
-										column(4,
-											h4("t-test"),
-											uiOutput("single_absolute_value"),
-											uiOutput("single_boxcox"),
-											uiOutput("single_mean"),
-											uiOutput("single_tails")
-										)
+										)#column
 									)#fr
 								)#tp
 							)#tsp
@@ -304,41 +308,43 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							tabPanel("Excluded",
 								DT::dataTableOutput('tablen')
 							),
-							bsModal("settingsmultiple", title = "Settings", trigger = "settings1", size = "large", 
+							bsModal("settingsmultiple", title = "Settings", trigger = "settings1", size = "medium", 
 								tabsetPanel(id="multiple_tab",
 									tabPanel("Output Parameters",
 										uiOutput("multiple_file_output1")
 									),
 									tabPanel("Statistical Parameters",
 										fluidRow(
-											column(4,
-												h4("Regression"),
-												uiOutput("multiple_association_types"),
-												uiOutput("multiple_association_alpha_prediction"),
-												conditionalPanel(condition = "!input.multiple_association_alpha_prediction",
-													uiOutput("multiple_association_prediction")
-												),
-												conditionalPanel(condition = "input.multiple_association_types == 'PCA-CCA'",
-													uiOutput("multiple_association_pca"),
-													conditionalPanel(condition = "input.multiple_association_pca == 'Select'",
-														uiOutput("multiple_association_pca_select")
+											column(8,
+												conditionalPanel(condition = "input.multiple_analysis == 'Non-Antimere regression'", 
+													uiOutput("multiple_association_types"),
+													uiOutput("multiple_association_alpha_prediction"),
+													conditionalPanel(condition = "!input.multiple_association_alpha_prediction",
+														uiOutput("multiple_association_prediction")
 													),
-													conditionalPanel(condition = "input.multiple_association_pca == 'Variance'",
-														uiOutput("multiple_association_pca_variance")
+													conditionalPanel(condition = "input.multiple_association_types == 'PCA-CCA'",
+														uiOutput("multiple_association_pca"),
+														conditionalPanel(condition = "input.multiple_association_pca == 'Select'",
+															uiOutput("multiple_association_pca_select")
+														),
+														conditionalPanel(condition = "input.multiple_association_pca == 'Variance'",
+															uiOutput("multiple_association_pca_variance")
+														)
 													)
-												)
-											),
-											column(4,
-												h4("Common"),
+												),
+												conditionalPanel(condition = "input.multiple_analysis != 'Non-Antimere regression'", 
+													conditionalPanel(condition = "input.multiple_analysis == 'Antimere t-test'", 
+														uiOutput("multiple_ztransform")
+													),
+													conditionalPanel(condition = "!input.multiple_ztransform || input.multiple_analysis != 'Antimere t-test'",
+														uiOutput("multiple_absolute_value"),
+														uiOutput("multiple_boxcox"),
+														uiOutput("multiple_mean"),
+														uiOutput("multiple_tails")
+													)
+												),
 												uiOutput("multiple_common_alpha_level")
-											),
-											column(4,
-												h4("t-test"),
-												uiOutput("multiple_absolute_value"),
-												uiOutput("multiple_boxcox"),
-												uiOutput("multiple_mean"),
-												uiOutput("multiple_tails")
-											)
+											)#column
 										)#fr
 									),#tp
 									tabPanel("Computational Parameters",
@@ -398,7 +404,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					 	bsModal("settingsoutlier", title = "Settings", trigger = "settings3", size = "large", 
 					 		tabsetPanel(id="tabSelected2",
 								tabPanel("Output Paramters",
-									checkboxInput(inputId = "fileoutputl1", label = "Output excel file", value = TRUE),
+									checkboxInput(inputId = "fileoutputl1", label = "Output csv file", value = TRUE),
 									checkboxInput(inputId = "fileoutputl2", label = "Output plot", value = TRUE)
 								),	
 					 			tabPanel("Measurements",
@@ -521,7 +527,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					 	bsModal("settingsoutlier4", title = "Settings", trigger = "settings4", size = "large", 
 					 		tabsetPanel(id="tabSelected2",
 								tabPanel("Output Paramters",
-									checkboxInput(inputId = "fileoutputstature1", label = "Output excel file", value = TRUE),
+									checkboxInput(inputId = "fileoutputstature1", label = "Output csv file", value = TRUE),
 									checkboxInput(inputId = "fileoutputstature2", label = "Output plot", value = TRUE)
 								),					 			
 								tabPanel("Measurements",
@@ -925,7 +931,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					 	bsModal("settingsante2", title = "Settings", trigger = "settingsante", size = "large", 
 					 		tabsetPanel(id="tabSelected2s",
 								tabPanel("Output Paramters",
-									checkboxInput(inputId = "fileoutputant1", label = "Output excel file", value = TRUE),
+									checkboxInput(inputId = "fileoutputant1", label = "Output csv file", value = TRUE),
 									checkboxInput(inputId = "fileoutputant2", label = "Output plot", value = TRUE)
 								),	
 								tabPanel("Statistical Parameters",
@@ -984,7 +990,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					 	bsModal("settingsante2m", title = "Settings", trigger = "settingsantem", size = "large", 
 					 		tabsetPanel(id="tabSelected2m",
 								tabPanel("Output Paramters",
-									checkboxInput(inputId = "fileoutputant1m", label = "Output excel file", value = TRUE),
+									checkboxInput(inputId = "fileoutputant1m", label = "Output csv file", value = TRUE),
 									checkboxInput(inputId = "fileoutputant2m", label = "Output plot (WARNING: This option will generate a plot for every comparison)", value = FALSE)
 								),	
 								tabPanel("Statistical Parameters",

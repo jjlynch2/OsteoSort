@@ -104,6 +104,16 @@ observeEvent(input$single_absolute_value, {
 })
 ##pair-match non_antimere absolute value
 
+##pair-match non_antimere z-transform value
+single_ztransform <- reactiveValues(single_ztransform = FALSE) #default option
+output$single_ztransform <- renderUI({
+	checkboxInput(inputId = "single_ztransform", label = "Z-transform", value = FALSE)
+})
+observeEvent(input$single_ztransform, {
+	single_ztransform$single_ztransform <- input$single_ztransform
+})
+##pair-match non_antimere z-transform value
+
 ##pair-match non_antimere boxcox
 single_boxcox <- reactiveValues(single_boxcox = FALSE) #default option
 output$single_boxcox <- renderUI({
@@ -298,10 +308,9 @@ observeEvent(input$proc, {
 		sortb <- data.frame(id = input$ID2, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], false_df_a, single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
 		sort <- rbind(sorta, sortb)
 		art.d1 <- art.input(side = input$single_non_antimere_side, ref = single_reference_imported$single_reference_imported, sort = sort, bones = c(strsplit(input$single_element_non_antimere, split = "-")[[1]][1], strsplit(input$single_element_non_antimere, split = "-")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
-		d2 <- ttest(sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
-		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
-	}
-	if(input$single_analysis == "Antimere t-test") {
+		d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
+	} else if(input$single_analysis == "Antimere t-test") {
 		#concat left values
 		single_input_list_left <- reactiveValues(single_input_list_left = c())
 		lapply(single_ML$single_ML, function(i) {
@@ -323,8 +332,28 @@ observeEvent(input$proc, {
 		sortleft <- data.frame(id = input$ID1, Side = "left", Element = input$single_elements_pairmatch, single_input_list_left$single_input_list_left, stringsAsFactors = FALSE)
 		sortright <- data.frame(id = input$ID2, Side = "right", Element = input$single_elements_pairmatch, single_input_list_right$single_input_list_right, stringsAsFactors = FALSE)
 		pm.d1 <- pm.input(sort = rbind(sortleft, sortright), bone = input$single_elements_pairmatch, measurements = single_ML$single_ML, ref = single_reference_imported$single_reference_imported)
-		d2 <- ttest(sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+		d2 <- ttest(ztest = single_ztransform$single_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
+	} else if(input$single_analysis == "Non_antimere regression") {
+		#concat A values
+		single_input_list_A <- reactiveValues(single_input_list_A = c())
+		lapply(single_MLA$single_ML, function(i) {
+			single_input_list_A$single_input_list_A <- c(single_input_list_A$single_input_list_A, input[[paste0(i,"_A")]])
+		})
+
+		#concat B values
+		single_input_list_B <- reactiveValues(single_input_listB = c())
+		lapply(single_MLB$single_ML, function(i) {
+			single_input_list_B$single_input_list_B <- c(single_input_list_B$single_input_list_B, input[[paste0(i,"_B")]])
+		})
+		single_input_list_A$single_input_list_A <- t(data.frame(single_input_list_A$single_input_list_A))
+		single_input_list_B$single_input_list_B <- t(data.frame(single_input_list_B$single_input_list_B))
+		colnames(single_input_list_A$single_input_list_A) <- single_MLA$single_ML
+		colnames(single_input_list_B$single_input_list_B) <- single_MLB$single_ML
+
+		sorta <- data.frame(id = input$ID1, Side = input$single_association_side_a, Element = input$single_elements_association_a, single_input_list_A$single_input_list_A, stringsAsFactors = FALSE)
+		sortb <- data.frame(id = input$ID2, Side = input$single_association_side_b, Element = input$single_elements_association_b, single_input_list_B$single_input_list_B, stringsAsFactors = FALSE)
+		reg.d1 <<- reg.input(sorta = sorta, sortb = sortb, sidea = input$single_association_side_a, sideb = input$single_association_side_b, bonea = input$single_elements_association_a, boneb = input$single_elements_association_b, measurementsa = single_MLA$single_ML, measurementsb = single_MLB$single_ML, ref = single_reference_imported$single_reference_imported)
 	}
 
 	#output table
@@ -337,19 +366,20 @@ observeEvent(input$proc, {
 		direc <- d2[[1]]
 		setwd(sessiontemp)
 		setwd(direc)
-		if(single_file_output2$single_file_output2) {
-			nimages <- list.files()
+		nimages <- list.files()
+		if(single_file_output2$single_file_output2 && length(nimages[grep(".jpg", nimages)]) != 0) {
 			nimages <- paste(sessiontemp, "/", direc, "/", nimages[grep(".jpg", nimages)], sep="")
-
-			output$single_plot <- renderImage({
-				list(src = nimages,
-					contentType = 'image/jpg',
-					width = 400,
-					height = 400,
-					alt = "A"
-				)
-			}, deleteFile = FALSE)
+		} else {
+			nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")
 		}
+		output$single_plot <- renderImage({
+			list(src = nimages,
+				contentType = 'image/jpg',
+				#width = 400,
+				#height = 400,
+				alt = "A"
+			)
+		}, deleteFile = FALSE)
 		files <- list.files(recursive = TRUE)
 		zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files)
 		output$downloadData2 <- downloadHandler(

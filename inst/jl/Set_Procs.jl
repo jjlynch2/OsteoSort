@@ -1,4 +1,4 @@
-# Wrapper to avoid adding more processors than actually detected
+# Wrapper 
 
 function Set_Procs(a)
 	a = Int64(a)
