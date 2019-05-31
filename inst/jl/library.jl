@@ -6,3 +6,4 @@
 @everywhere using SharedArrays
 @everywhere using Optim
 @everywhere using Rmath
+@everywhere using GLM

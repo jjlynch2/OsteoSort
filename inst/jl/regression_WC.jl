@@ -62,7 +62,14 @@ end
 		refd_1 = refd_1[2:end,1] #remove first row
 		refd_2 = refd_2[2:end,1] #remove first row
 
-		OLS = lm(reshape(refd_1, length(refd_1), 1), refd_2)
+
+		#fixed code
+		#fixed code
+		X = hcat(fill(1, size(X, 1)), X)
+		hcat(X,ones(length(x),1))
+		 fit(LinearModel, X, Y, false)
+		#fixed code
+		#fixed code
 		POLS = predict(OLS, reshape([dsum_2],1,1)) #prediction level = PL 
 
 		sigma = res_std_err(OLS)
