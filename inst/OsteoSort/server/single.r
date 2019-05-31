@@ -1,148 +1,94 @@
-##default blank output
 output$single_contents <- renderUI({
 	HTML(paste(""))
 })
-##default blank output
 
-##output settings
-single_file_output1 <- reactiveValues(single_file_output1 = TRUE) #default option
+single_file_output1 <- reactiveValues(single_file_output1 = TRUE) 
 output$single_file_output1 <- renderUI({
 	checkboxInput(inputId = "single_file_output1", label = "Output excel file", value = TRUE)
 })
 observeEvent(input$single_file_output1, {
 	single_file_output1$single_file_output1 <- input$single_file_output1
 })
-##output settings
 
-##output settings
-single_file_output2 <- reactiveValues(single_file_output2 = TRUE) #default option
+single_file_output2 <- reactiveValues(single_file_output2 = TRUE) 
 output$single_file_output2 <- renderUI({
 	checkboxInput(inputId = "single_file_output2", label = "Output plot", value = TRUE)
 })
 observeEvent(input$single_file_output2, {
 	single_file_output2$single_file_output2 <- input$single_file_output2
 })
-##output settings
 
-##association type settings
-association_types <- reactiveValues(association_types = "PCA-CCA") #default option
+association_types <- reactiveValues(association_types = "Logarithm Composite") 
 output$association_types <- renderUI({
-	radioButtons(inputId ="association_types", label = "Regression type", choices = c("PCA-CCA", "Simple"), selected = "Simple")
+	radioButtons(inputId ="association_types", label = "Regression type", choices = c("CCA Ordination", "Logarithm Composite"), selected = "Logarithm Composite")
 })
 observeEvent(input$association_types, {
 	association_types$association_types <- input$association_types
 })
-##association type settings
 
-##association alpha test settings
-association_alpha_prediction <- reactiveValues(association_alpha_prediction = TRUE) #default option
-output$association_alpha_prediction <- renderUI({
-	checkboxInput(inputId = "association_alpha_prediction", label = "Use alpha level hypothesis", value = TRUE)
-})
-observeEvent(input$association_alpha_prediction, {
-	association_alpha_prediction$association_alpha_prediction <- input$association_alpha_prediction
-})
-##association alpha test settings
-
-##association prediction test settings
-association_prediction <- reactiveValues(association_prediction = 0.95) #default option
-output$association_prediction <- renderUI({
-	sliderInput(inputId = "association_prediction", label = "Prediction interval level", min=0.01, max=1, value=0.95, step = 0.01)
-})
-observeEvent(input$association_prediction, {
-	association_prediction$association_prediction <- input$association_prediction
-})
-##association prediction test settings
-
-##association pca-cca test settings
-association_pca <- reactiveValues(association_pca = "Select") #default option
+association_pca <- reactiveValues(association_pca = TRUE) 
 output$association_pca <- renderUI({
-	radioButtons(inputId ="association_pca", label = "Principal Component Analysis", choices = c("All", "Select", "Variance"), selected = "Variance")
+	checkboxInput(inputId ="association_pca", label = "Principal Component Analysis", value = TRUE)
 })
 observeEvent(input$association_pca, {
 	association_pca$association_pca <- input$association_pca
 })
-##association pca-cca test settings
 
-##association pca-cca test settings
-association_pca_select <- reactiveValues(association_pca_select = 1) #default option
-output$association_pca_select <- renderUI({
-	sliderInput(inputId = "association_pca_select", label = "Principal Components", min=1, max = 10, value = 1)
-})
-observeEvent(input$association_pca_select, {
-	association_pca_select$association_pca_select <- input$association_pca_select
-})
-##association pca-cca test settings
-
-##association pca-cca test settings
-association_pca_variance <- reactiveValues(association_pca_variance = 0.99) #default option
+association_pca_variance <- reactiveValues(association_pca_variance = 0.99) 
 output$association_pca_variance <- renderUI({
 	sliderInput(inputId = "association_pca_variance", label = "Cumulative Variance", min=0.1, max = 0.99, value = 0.99)
 })
 observeEvent(input$association_pca_variance, {
 	association_pca_variance$association_pca_variance <- input$association_pca_variance
 })
-##association pca-cca test settings
 
-##common alpha level
-common_alpha_level <- reactiveValues(common_alpha_level = 0.05) #default option
+common_alpha_level <- reactiveValues(common_alpha_level = 0.05) 
 output$common_alpha_level <- renderUI({
 	sliderInput(inputId = "common_alpha_level", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
 })
 observeEvent(input$common_alpha_level, {
 	common_alpha_level$common_alpha_level <- input$common_alpha_level
 })
-##common alpha level
 
-##pair-match non_antimere absolute value
-single_absolute_value <- reactiveValues(single_absolute_value = FALSE) #default option
+single_absolute_value <- reactiveValues(single_absolute_value = FALSE) 
 output$single_absolute_value <- renderUI({
 	checkboxInput(inputId = "single_absolute_value", label = "Absolute D-value |a-b|", value = FALSE)
 })
 observeEvent(input$single_absolute_value, {
 	single_absolute_value$single_absolute_value <- input$single_absolute_value
 })
-##pair-match non_antimere absolute value
 
-##pair-match non_antimere z-transform value
-single_ztransform <- reactiveValues(single_ztransform = FALSE) #default option
+single_ztransform <- reactiveValues(single_ztransform = FALSE) 
 output$single_ztransform <- renderUI({
 	checkboxInput(inputId = "single_ztransform", label = "Z-transform", value = FALSE)
 })
 observeEvent(input$single_ztransform, {
 	single_ztransform$single_ztransform <- input$single_ztransform
 })
-##pair-match non_antimere z-transform value
 
-##pair-match non_antimere boxcox
-single_boxcox <- reactiveValues(single_boxcox = FALSE) #default option
+single_boxcox <- reactiveValues(single_boxcox = FALSE) 
 output$single_boxcox <- renderUI({
 	checkboxInput(inputId = "single_boxcox", label = "Boxcox transformation", value = FALSE)
 })
 observeEvent(input$single_boxcox, {
 	single_boxcox$single_boxcox <- input$single_boxcox
 })
-##pair-match non_antimere boxcox
 
-##pair-match non_antimere mean
-single_mean <- reactiveValues(single_mean = FALSE) #default option
+single_mean <- reactiveValues(single_mean = FALSE) 
 output$single_mean <- renderUI({
 	checkboxInput(inputId = "single_mean", label = "Zero mean", value = FALSE)					
 })
 observeEvent(input$single_mean, {
 	single_mean$single_mean <- input$single_mean
 })
-##pair-match non_antimere mean
 
-##pair-match non_antimere tails
-single_tails <- reactiveValues(single_tails = TRUE) #default option
+single_tails <- reactiveValues(single_tails = TRUE) 
 output$single_tails <- renderUI({
 	sliderInput(inputId = "single_tails", label = "Tails", min=1, max=2, value=2, step=1)
 })
 observeEvent(input$single_tails, {
 	single_tails$single_tails <- input$single_tails
 })
-##pair-match non_antimere tails
 
 single_analysis <- reactiveValues(single_analysis = "Antimere t-test")
 observeEvent(input$single_analysis, {
@@ -298,16 +244,11 @@ observeEvent(input$proc, {
 		colnames(single_input_art_a$single_input_art_a) <- tempa
 		single_input_art_b$single_input_art_b <- t(data.frame(single_input_art_b$single_input_art_b))
 		colnames(single_input_art_b$single_input_art_b) <- tempb
-		
-		false_df_a <- as.data.frame(matrix(NA,nrow = 1, ncol = length(tempa)))
-		colnames(false_df_a) <- tempa
-		false_df_b <- as.data.frame(matrix(NA,nrow = 1, ncol = length(tempb)))
-		colnames(false_df_b) <- tempb
 
-		sorta <- data.frame(id = input$ID1, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][1], single_input_art_a$single_input_art_a, false_df_b, stringsAsFactors = FALSE)
-		sortb <- data.frame(id = input$ID2, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], false_df_a, single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
-		sort <- rbind(sorta, sortb)
-		art.d1 <- art.input(side = input$single_non_antimere_side, ref = single_reference_imported$single_reference_imported, sort = sort, bones = c(strsplit(input$single_element_non_antimere, split = "-")[[1]][1], strsplit(input$single_element_non_antimere, split = "-")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
+		sorta <- data.frame(id = input$ID1, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][1], single_input_art_a$single_input_art_a, stringsAsFactors = FALSE)
+		sortb <- data.frame(id = input$ID2, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
+
+		art.d1 <- art.input(side = input$single_non_antimere_side, ref = single_reference_imported$single_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$single_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], measurementsa = tempa, measurementsb = tempb)
 		d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 	} else if(input$single_analysis == "Antimere t-test") {
@@ -335,13 +276,17 @@ observeEvent(input$proc, {
 		d2 <- ttest(ztest = single_ztransform$single_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 	} else if(input$single_analysis == "Non_antimere regression") {
-		#concat A values
+		if(association_pca$association_pca) {
+			pca = association_pca_variance$association_pca_variance
+		} else {
+			pca = NULL
+		}
+
 		single_input_list_A <- reactiveValues(single_input_list_A = c())
 		lapply(single_MLA$single_ML, function(i) {
 			single_input_list_A$single_input_list_A <- c(single_input_list_A$single_input_list_A, input[[paste0(i,"_A")]])
 		})
 
-		#concat B values
 		single_input_list_B <- reactiveValues(single_input_listB = c())
 		lapply(single_MLB$single_ML, function(i) {
 			single_input_list_B$single_input_list_B <- c(single_input_list_B$single_input_list_B, input[[paste0(i,"_B")]])
@@ -354,6 +299,7 @@ observeEvent(input$proc, {
 		sorta <- data.frame(id = input$ID1, Side = input$single_association_side_a, Element = input$single_elements_association_a, single_input_list_A$single_input_list_A, stringsAsFactors = FALSE)
 		sortb <- data.frame(id = input$ID2, Side = input$single_association_side_b, Element = input$single_elements_association_b, single_input_list_B$single_input_list_B, stringsAsFactors = FALSE)
 		reg.d1 <<- reg.input(sorta = sorta, sortb = sortb, sidea = input$single_association_side_a, sideb = input$single_association_side_b, bonea = input$single_elements_association_a, boneb = input$single_elements_association_b, measurementsa = single_MLA$single_ML, measurementsb = single_MLB$single_ML, ref = single_reference_imported$single_reference_imported)
+		d2 <- reg.test(ztest = single_ztransform$single_ztransform, type = association_types$association_types, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2), pca = pca)
 	}
 
 	#output table
@@ -375,8 +321,6 @@ observeEvent(input$proc, {
 		output$single_plot <- renderImage({
 			list(src = nimages,
 				contentType = 'image/jpg',
-				#width = 400,
-				#height = 400,
 				alt = "A"
 			)
 		}, deleteFile = FALSE)

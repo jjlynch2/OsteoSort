@@ -17,14 +17,23 @@
 #' @examples 
 #' reg.multitest()
 
-reg.multitest <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, prediction_interval = 0.90, sessiontempdir = NULL, output_options = c(TRUE,FALSE), threads = 1, simple = TRUE, pcaccaz = FALSE, pcacca = FALSE, alphatest = TRUE, alphalevel = 0.05, pca = NULL) {	
+reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, output_options = c(TRUE,FALSE), threads = 1, type = "Logarithm Composite", pca = 0.99, alphalevel = 0.05) {	
+	if(threads > 1) {
+		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
+	}	
 	force(alphalevel)
-	force(prediction_interval)
-	force(alphatest)
 	force(threads)
+	force(type)
 	force(pca)
+	force(ztest)
 	force(output_options)
 	force(sessiontempdir)
+
+	#appends a variable with 0 to make sure the data structure stays the same in Julia
+	refa <- cbind(refa,fa = 0)
+	refb <- cbind(refb,fa = 0)
+	sorta <- cbind(sorta,fa = 0)
+	sortb <- cbind(sortb,fa = 0)
 
 	print("Comparisons are running...")
 	options(stringsAsFactors = FALSE)    
@@ -38,23 +47,24 @@ reg.multitest <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, 
 	workingdir = getwd()
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
-	if(simple) { #true PCA CCA regression
-		results <- julia_call("REGTESTS", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
-	} else if (pcacca) { #false simple regression
+	if(type == "Logarithm Composite") { #true PCA CCA regression
+		results <- julia_call("REGS", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
+	} else if (type == "CCA Ordination") { #false simple regression
+		if(is.numeric(pca) && ztest) {
 
+		} else if (ztest) {
+			output_options[1] = FALSE
+		} else if (is.numeric(pca)) {
 
-
-	} else if (pcaccaz) {
-
+		}
 	}
-
 	#transform numerical T/F to measurement names
 	if(nrow(results) > 1) {
 		measurements <- data.frame(results[,c(8:ncol(results))])
 	}else {
 		measurements <- data.frame(t(results[c(8:length(results))]))
 	}
-	measurement_names <- colnames(sorta[,-c(1:3)])
+	measurement_names <- unique(c(colnames(sorta[,-c(1:3)]), colnames(sortb[,-c(1:3)])))
 	for(i in 1:ncol(measurements)) {
 		measurements[measurements[,i] == 1,i] <- paste(measurement_names[i], " ", sep="")
 		measurements[measurements[,i] == 0,i] <- ""
@@ -82,7 +92,10 @@ reg.multitest <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, 
 
 	gc()
 	setwd(workingdir)
-	options(stringsAsFactors = TRUE) #restore default R  
+	options(stringsAsFactors = TRUE) #restore default R
+	if(threads > 1) {
+		JuliaSetup(remove_cores = TRUE)
+	}
 	print("Finished.")
 	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",]))
 }

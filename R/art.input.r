@@ -8,40 +8,39 @@
 #' @examples
 #' art.input()
 
-art.input <- function (bones = NULL, side = NULL, ref = NULL, sort = NULL, measurementsa = NULL, measurementsb = NULL, threshold = 1) {
+art.input <- function (bonea = NULL, boneb = NULL, side = NULL, ref = NULL, sorta = NULL, sortb = NULL, measurementsa = NULL, measurementsb = NULL, threshold = 1) {
 	print("Filtering data by element types, specified measurements, and threshold value...")
 	options(stringsAsFactors = FALSE)
 	options(as.is = TRUE)
 	options(warn = -1)
-	if(is.null(bones) || is.null(sort)){return(NULL)}
+	if(is.null(bonea) || is.null(boneb) || is.null(sort)){return(NULL)}
 
 	side <- tolower(side)
 	ref$Side <- tolower(ref$Side)
 	ref$Element <- tolower(ref$Element)
-	ref <- ref[ref$Element == bones,]
-	ref <- ref[ref$Side == side,]
-	ref <- cbind(ref[,c(1:3)], ref[c(measurementsa, measurementsb)])
-	ref <- ref[order(ref$id),]
-	n_ref <- data.frame()
+	refa <- ref[ref$Element == bonea,]
+	refb <- ref[ref$Element == boneb,]
 
-	for(i in seq(from = 1, to = nrow(ref)-1, by = 2)) {
-		if(ref[i,1] == ref[i+1,1]) {
-			n_ref <- rbind(n_ref, ref[i,], ref[i+1,])
-		}
-	}
-	refa <- n_ref[n_ref$Element == bones[1],]
-	refb <- n_ref[n_ref$Element == bones[2],]
+	refa <- refa[refa$Side == side,]
+	refb <- refb[refb$Side == side,]
 	refa <- cbind(refa[,c(1:3)], refa[measurementsa])
 	refb <- cbind(refb[,c(1:3)], refb[measurementsb])
+	refa <- refa[order(refa$id),]
+	refb <- refb[order(refb$id),]
 
-	sort$Side <- tolower(sort$Side)
-	sort$Element <- tolower(sort$Element)
-	sort <- sort[sort$Element == bones,]
-	sort <- sort[sort$Side == side,]
-	sort <- cbind(sort[,c(1:3)], sort[c(measurementsa, measurementsb)])
-	sorta <- sort[sort$Element == bones[1],]
-	sortb <- sort[sort$Element == bones[2],]
+	n_refa <- refa[refa$id %in% refb$id,]
+	n_refb <- refb[refb$id %in% refa$id,]
+
+	sorta$Side <- tolower(sorta$Side)
+	sorta$Element <- tolower(sorta$Element)
+	sorta <- sorta[sorta$Element == bonea,]
+	sorta <- sorta[sorta$Side == side,]
 	sorta <- cbind(sorta[,c(1:3)], sorta[measurementsa])
+
+	sortb$Side <- tolower(sortb$Side)
+	sortb$Element <- tolower(sortb$Element)
+	sortb <- sortb[sortb$Element == boneb,]
+	sortb <- sortb[sortb$Side == side,]
 	sortb <- cbind(sortb[,c(1:3)], sortb[measurementsb])
 
 	sort_A <- data.frame()
@@ -67,10 +66,10 @@ art.input <- function (bones = NULL, side = NULL, ref = NULL, sort = NULL, measu
 
 	sort_A[is.na(sort_A)] <- 0
 	sort_B[is.na(sort_B)] <- 0
-	refa[is.na(refa)] <- 0
-	refb[is.na(refb)] <- 0
+	n_refa[is.na(n_refa)] <- 0
+	n_refb[is.na(n_refb)] <- 0
 
 	options(stringsAsFactors = TRUE) #restore default R  
 	print("Finished...")
-	return(list(refa, refb, sort_A, sort_B, rejected))
+	return(list(n_refa, n_refb, sort_A, sort_B, rejected))
 }

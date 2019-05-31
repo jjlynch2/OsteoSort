@@ -28,7 +28,7 @@ end
 
 @everywhere function REGS_worker(v1, m2, li, RL, RR)
 	res = zeros(size(m2,1),size(m2,2)+7+size(v1,1)) #plus 7 and size of measurements for v1 m2?
-	res_1 = measurement_counter(v1[1,1:end]) #transposes and counts
+	res_1 = measurement_counter(v1) #transposes and counts
 	dsum_1 = log(sum(v1)) #should work outside of the loops since 0 
 	refd_a = zeros(1,1)
 	refd_b = zeros(1,1)
@@ -56,9 +56,9 @@ end
 					ref_dsum_2 += RR[i,j]
 				end
 			end
-			if length(m_counter_1[2:end]) == res_1 && length(m_counter_2[2:end]) == res_2 #if ref 1 and ref 2 both match the sort comparisons
-				m_counter_1_o = m_counter_1[2:end]
-				m_counter_2_o = m_counter_2[2:end]
+			if size(m_counter_1[2:end], 1) == res_1 && size(m_counter_2[2:end], 1) == res_2 #if ref 1 and ref 2 both match the sort comparisons
+				m_counter_1_o = m_counter_1[2:end] #indices of measurements being used
+				m_counter_2_o = m_counter_2[2:end] #indices of measurements being used
 				refd_1 = vcat(refd_1, log(ref_dsum_1))
 				refd_2 = vcat(refd_2, log(ref_dsum_2))
 			end
@@ -79,17 +79,19 @@ end
 		pVal = 2 * pt(-abs(tStat), n-2) #always uses 2-tails with 2 degrees of freedom
 		res[x,1] = li #index of left
 		res[x,2] = x #index of right
-		res[x,3] = 0 #no needed but left here so array columns match in R
+		res[x,3] = 0 #not needed but left here so array columns match in R
 		res[x,4] = pVal #p-value
 		res[x,5] = mean_ref #mean sample
 		res[x,6] = sd_ref #sd sample
 		res[x,7] = n #reference sample size
-		for j in m_counter_1_o
-			res[x,j+7] = 1
-		end
-		for j in m_counter_2_o
-			res[x,j+7+size(v1,1)] = 1
-		end
+#		for j in m_counter_1_o
+#println(j)
+#			res[x,j+7] = 1
+#		end
+#		for j in m_counter_2_o
+#println(j)
+		#	res[x,j+7+size(v1,1)] = 1
+		#end
 	end
 	return res
 end

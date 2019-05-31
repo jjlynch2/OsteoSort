@@ -12,7 +12,7 @@ output$multiple_contents <- renderUI({
 	HTML(paste(""))
 })
 
-multiple_file_output1 <- reactiveValues(multiple_file_output1 = TRUE) #default option
+multiple_file_output1 <- reactiveValues(multiple_file_output1 = TRUE) 
 output$multiple_file_output1 <- renderUI({
 	checkboxInput(inputId = "multiple_file_output1", label = "Output excel file", value = TRUE)
 })
@@ -20,47 +20,23 @@ observeEvent(input$multiple_file_output1, {
 	multiple_file_output1$multiple_file_output1 <- input$multiple_file_output1
 })
 
-multiple_association_types <- reactiveValues(multiple_association_types = "PCA-CCA") #default option
+multiple_association_types <- reactiveValues(multiple_association_types = "Logarithm Composite") 
 output$multiple_association_types <- renderUI({
-	radioButtons(inputId ="multiple_association_types", label = "Regression type", choices = c("PCA-CCA", "Simple"), selected = "Simple")
+	radioButtons(inputId ="multiple_association_types", label = "Regression type", choices = c("CCA Ordination", "Logarithm Composite"), selected = "Logarithm Composite")
 })
 observeEvent(input$multiple_association_types, {
 	multiple_association_types$multiple_association_types <- input$multiple_association_types
 })
 
-multiple_association_alpha_prediction <- reactiveValues(multiple_association_alpha_prediction = TRUE) #default option
-output$multiple_association_alpha_prediction <- renderUI({
-	checkboxInput(inputId = "multiple_association_alpha_prediction", label = "Use alpha level hypothesis", value = TRUE)
-})
-observeEvent(input$multiple_association_alpha_prediction, {
-	multiple_association_alpha_prediction$multiple_association_alpha_prediction <- input$multiple_association_alpha_prediction
-})
-
-multiple_association_prediction <- reactiveValues(multiple_association_prediction = 0.95) #default option
-output$multiple_association_prediction <- renderUI({
-	sliderInput(inputId = "multiple_association_prediction", label = "Prediction interval level", min=0.01, max=1, value=0.95, step = 0.01)
-})
-observeEvent(input$multiple_association_prediction, {
-	multiple_association_prediction$multiple_association_prediction <- input$multiple_association_prediction
-})
-
-multiple_association_pca <- reactiveValues(multiple_association_pca = "Select") #default option
+multiple_association_pca <- reactiveValues(multiple_association_pca = TRUE) 
 output$multiple_association_pca <- renderUI({
-	radioButtons(inputId ="multiple_association_pca", label = "Principal Component Analysis", choices = c("All", "Select", "Variance"), selected = "Variance")
+	checkboxInput(inputId ="multiple_association_pca", label = "Principal Component Analysis", value = TRUE)
 })
 observeEvent(input$multiple_association_pca, {
 	multiple_association_pca$multiple_association_pca <- input$multiple_association_pca
 })
 
-multiple_association_pca_select <- reactiveValues(multiple_association_pca_select = 1) #default option
-output$multiple_association_pca_select <- renderUI({
-	sliderInput(inputId = "multiple_association_pca_select", label = "Principal Components", min=1, max = 10, value = 1)
-})
-observeEvent(input$multiple_association_pca_select, {
-	multiple_association_pca_select$multiple_association_pca_select <- input$multiple_association_pca_select
-})
-
-multiple_association_pca_variance <- reactiveValues(multiple_association_pca_variance = 0.99) #default option
+multiple_association_pca_variance <- reactiveValues(multiple_association_pca_variance = 0.99) 
 output$multiple_association_pca_variance <- renderUI({
 	sliderInput(inputId = "multiple_association_pca_variance", label = "Cumulative Variance", min=0.1, max = 0.99, value = 0.99)
 })
@@ -68,7 +44,7 @@ observeEvent(input$multiple_association_pca_variance, {
 	multiple_association_pca_variance$multiple_association_pca_variance <- input$multiple_association_pca_variance
 })
 
-multiple_common_alpha_level <- reactiveValues(multiple_common_alpha_level = 0.05) #default option
+multiple_common_alpha_level <- reactiveValues(multiple_common_alpha_level = 0.05) 
 output$multiple_common_alpha_level <- renderUI({
 	sliderInput(inputId = "multiple_common_alpha_level", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
 })
@@ -76,7 +52,7 @@ observeEvent(input$multiple_common_alpha_level, {
 	multiple_common_alpha_level$multiple_common_alpha_level <- input$multiple_common_alpha_level
 })
 
-multiple_absolute_value <- reactiveValues(multiple_absolute_value = FALSE) #default option
+multiple_absolute_value <- reactiveValues(multiple_absolute_value = FALSE) 
 output$multiple_absolute_value <- renderUI({
 	checkboxInput(inputId = "multiple_absolute_value", label = "Absolute D-value |a-b|", value = FALSE)
 })
@@ -84,7 +60,7 @@ observeEvent(input$multiple_absolute_value, {
 	multiple_absolute_value$multiple_absolute_value <- input$multiple_absolute_value
 })
 
-multiple_boxcox <- reactiveValues(multiple_boxcox = FALSE) #default option
+multiple_boxcox <- reactiveValues(multiple_boxcox = FALSE) 
 output$multiple_boxcox <- renderUI({
 	checkboxInput(inputId = "multiple_boxcox", label = "Boxcox transformation", value = FALSE)
 })
@@ -92,7 +68,7 @@ observeEvent(input$multiple_boxcox, {
 	multiple_boxcox$multiple_boxcox <- input$multiple_boxcox
 })
 
-multiple_mean <- reactiveValues(multiple_mean = FALSE) #default option
+multiple_mean <- reactiveValues(multiple_mean = FALSE) 
 output$multiple_mean <- renderUI({
 	checkboxInput(inputId = "multiple_mean", label = "Zero mean", value = FALSE)					
 })
@@ -100,18 +76,15 @@ observeEvent(input$multiple_mean, {
 	multiple_mean$multiple_mean <- input$multiple_mean
 })
 
-
-##pair-match non_antimere z-transform value
-multiple_ztransform <- reactiveValues(multiple_ztransform = FALSE) #default option
+multiple_ztransform <- reactiveValues(multiple_ztransform = FALSE) 
 output$multiple_ztransform <- renderUI({
 	checkboxInput(inputId = "multiple_ztransform", label = "Z-transform", value = FALSE)
 })
 observeEvent(input$single_ztransform, {
 	single_ztransform$single_ztransform <- input$single_ztransform
 })
-##pair-match non_antimere z-transform value
 
-multiple_tails <- reactiveValues(multiple_tails = TRUE) #default option
+multiple_tails <- reactiveValues(multiple_tails = TRUE) 
 output$multiple_tails <- renderUI({
 	sliderInput(inputId = "multiple_tails", label = "Tails", min=1, max=2, value=2, step=1)
 })
@@ -119,7 +92,7 @@ observeEvent(input$multiple_tails, {
 	multiple_tails$multiple_tails <- input$multiple_tails
 })
 
-numbercoresglobal <- reactiveValues(ncore = detectCores()-1)
+numbercoresglobal <- reactiveValues(ncore = 1)
 observeEvent(input$numbercores, {
 	numbercoresglobal$ncore <- input$numbercores
 })
@@ -190,6 +163,17 @@ observeEvent(input$multiple_elements_pairmatch, {
 	multiple_ML$multiple_ML <- names(t2)
 })
 
+output$multiple_elements_association_a <- renderUI({
+	selectInput(inputId = "multiple_elements_association_a", label = "Dependent", choices = elements$elements)
+})
+
+observeEvent(input$multiple_elements_association_a, {
+	output$multiple_elements_association_b <- renderUI({
+		selectInput(inputId = "multiple_elements_association_b", label = "Independent", choices = elements$elements[elements$elements != input$multiple_elements_association_a])
+	})
+})
+
+
 observeEvent(input$pro, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
 	withProgress(message = 'Calculation has started',
@@ -224,7 +208,11 @@ observeEvent(input$pro, {
 		temp1 <- which(multiple_art_elements$df == input$multiple_element_non_antimere)
 		tempa <- multiple_art_measurements_a$df[temp1][!duplicated(multiple_art_measurements_a$df[temp1])]
 		tempb <- multiple_art_measurements_b$df[temp1][!duplicated(multiple_art_measurements_b$df[temp1])]
-		art.d1 <- art.input(side = input$multiple_non_antimere_side, ref = multiple_reference_imported$multiple_reference_imported, sort = tempdata1, bones = c(strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1], strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2]), measurementsa = tempa, measurementsb = tempb)
+		tempdata1$Element <- tolower(tempdata1$Element)
+		sorta = tempdata1[tempdata1$Element == strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1],]
+		sortb = tempdata1[tempdata1$Element == strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2],]
+
+		art.d1 <- art.input(side = input$multiple_non_antimere_side, ref = multiple_reference_imported$multiple_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2], measurementsa = tempa, measurementsb = tempb)
 		d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}

@@ -29,15 +29,10 @@ pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL,
 	ref <- cbind(ref[,c(1:3)], ref[measurements])
 	#orders and sorts by duplicate entries (i.e. pair-matches)
 	ref <- ref[order(ref$id),]
-	n_ref <- data.frame()
-
-	for(i in seq(from = 1, to = nrow(ref)-1, by = 2)) {
-		if(ref[i,1] == ref[i+1,1] && ref[i,2] == "left" && ref[i+1,2] == "right" || ref[i,1] == ref[i+1,1] && ref[i,2] == "right" && ref[i+1,2] == "left") {
-			n_ref <- rbind(n_ref, ref[i,], ref[i+1,])
-		}
-	}
-	refleft <- n_ref[n_ref$Side == "left",]
-	refright <- n_ref[n_ref$Side == "right",]
+	refleft <- ref[ref$Side == "left",]
+	refright <- ref[ref$Side == "right",]
+	refleft <- refleft[refleft$id %in% refright$id,]
+	refright <- refright[refright$id %in% refleft$id,]
 
 	#case data sorting
 	sort$Side <- tolower(sort$Side)

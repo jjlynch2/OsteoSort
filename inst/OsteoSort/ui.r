@@ -218,7 +218,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					 		tabsetPanel(id="single_tab",
 								tabPanel("Output Parameters",
 									uiOutput("single_file_output1"),
-									conditionalPanel(condition = "!input.single_ztransform || input.single_analysis != 'Antimere t-test'", 
+									conditionalPanel(condition = "!input.single_ztransform || input.single_analysis == 'Non_antimere t-test'", 
 										uiOutput("single_file_output2")
 									)
 						 		),
@@ -227,30 +227,21 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 										column(8, 
 											conditionalPanel(condition = "input.single_analysis == 'Non_antimere regression'", 
 												uiOutput("association_types"),
-												uiOutput("association_alpha_prediction"),
-												conditionalPanel(condition = "!input.association_alpha_prediction",
-													uiOutput("association_prediction")
-												),
-												conditionalPanel(condition = "input.association_types == 'PCA-CCA'",
+												conditionalPanel(condition = "input.association_types == 'CCA Ordination'",
 													uiOutput("association_pca"),
-													conditionalPanel(condition = "input.association_pca == 'Select'",
-														uiOutput("association_pca_select")
-													),
-													conditionalPanel(condition = "input.association_pca == 'Variance'",
+													conditionalPanel(condition = "input.association_pca",
 														uiOutput("association_pca_variance")
 													)
 												)
 											),
-											conditionalPanel(condition = "input.single_analysis != 'Non_antimere regression'", 
-												conditionalPanel(condition = "input.single_analysis == 'Antimere t-test'", 
-													uiOutput("single_ztransform")
-												),
-												conditionalPanel(condition = "!input.single_ztransform || input.single_analysis != 'Antimere t-test'",
-													uiOutput("single_absolute_value"),
-													uiOutput("single_boxcox"),
-													uiOutput("single_mean"),
-													uiOutput("single_tails")
-												)
+											conditionalPanel(condition = "input.single_analysis == 'Antimere t-test' || input.single_analysis == 'Non_antimere regression' && input.association_types == 'CCA Ordination'", 
+												uiOutput("single_ztransform")
+											),
+											conditionalPanel(condition = "!input.single_ztransform && input.single_analysis != 'Non_antimere regression' || input.single_analysis == 'Non_antimere t-test'",
+												uiOutput("single_absolute_value"),
+												uiOutput("single_boxcox"),
+												uiOutput("single_mean"),
+												uiOutput("single_tails")
 											),
 											uiOutput("common_alpha_level")
 										)#column
@@ -275,6 +266,18 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						conditionalPanel(condition = "input.multiple_analysis == 'Non-Antimere t-test'",
 							selectInput("multiple_non_antimere_side", "Side", c(Left='Left', Right='Right')),
 							uiOutput("multiple_element_non_antimere")
+						),
+						conditionalPanel(condition = "input.multiple_analysis == 'Non-Antimere regression'",
+							fluidRow(
+								column(6,
+									selectInput("multiple_association_side_a", "Side", c(Left='Left', Right='Right')),
+									uiOutput("multiple_elements_association_a")
+								),
+								column(6,
+									selectInput("multiple_association_side_b", "Side", c(Left='Left', Right='Right')),
+									uiOutput("multiple_elements_association_b")
+								)
+							)
 						),
 						fluidRow(
 							column(6,
@@ -316,34 +319,25 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 									tabPanel("Statistical Parameters",
 										fluidRow(
 											column(8,
-												conditionalPanel(condition = "input.multiple_analysis == 'Non-Antimere regression'", 
-													uiOutput("multiple_association_types"),
-													uiOutput("multiple_association_alpha_prediction"),
-													conditionalPanel(condition = "!input.multiple_association_alpha_prediction",
-														uiOutput("multiple_association_prediction")
-													),
-													conditionalPanel(condition = "input.multiple_association_types == 'PCA-CCA'",
-														uiOutput("multiple_association_pca"),
-														conditionalPanel(condition = "input.multiple_association_pca == 'Select'",
-															uiOutput("multiple_association_pca_select")
-														),
-														conditionalPanel(condition = "input.multiple_association_pca == 'Variance'",
-															uiOutput("multiple_association_pca_variance")
-														)
+											conditionalPanel(condition = "input.multiple_analysis == 'Non-Antimere regression'", 
+												uiOutput("multiple_association_types"),
+												conditionalPanel(condition = "input.multiple_association_types == 'CCA Ordination'",
+													uiOutput("multiple_association_pca"),
+													conditionalPanel(condition = "input.multiple_association_pca",
+														uiOutput("multiple_association_pca_variance")
 													)
-												),
-												conditionalPanel(condition = "input.multiple_analysis != 'Non-Antimere regression'", 
-													conditionalPanel(condition = "input.multiple_analysis == 'Antimere t-test'", 
-														uiOutput("multiple_ztransform")
-													),
-													conditionalPanel(condition = "!input.multiple_ztransform || input.multiple_analysis != 'Antimere t-test'",
-														uiOutput("multiple_absolute_value"),
-														uiOutput("multiple_boxcox"),
-														uiOutput("multiple_mean"),
-														uiOutput("multiple_tails")
-													)
-												),
-												uiOutput("multiple_common_alpha_level")
+												)
+											),
+											conditionalPanel(condition = "input.multiple_analysis == 'Antimere t-test' || input.multiple_analysis == 'Non-Antimere regression' && input.multiple_association_types == 'CCA Ordination'", 
+												uiOutput("multiple_ztransform")
+											),
+											conditionalPanel(condition = "!input.multiple_ztransform && input.multiple_analysis != 'Non-Antimere regression'",
+												uiOutput("multiple_absolute_value"),
+												uiOutput("multiple_boxcox"),
+												uiOutput("multiple_mean"),
+												uiOutput("multiple_tails")
+											),
+											uiOutput("multiple_common_alpha_level")
 											)#column
 										)#fr
 									),#tp

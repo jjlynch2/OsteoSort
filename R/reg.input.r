@@ -42,16 +42,8 @@ reg.input <- function(ref = NULL, sorta = NULL, sortb = NULL, bonea = NULL, bone
 	refb <- cbind(refb[,c(1:3)], refb[measurementsb])
 	refb <- refb[order(refb$id),]
 
-	n_refa <- data.frame()
-	n_refb <- data.frame()
-	for(i in 1:nrow(refa)) {
-		for(j in 1:nrow(refb)) {
-			if(refa[i,1] == refb[j,1]) {
-				n_refa <- rbind(n_refa, refa[i,])
-				n_refb <- rbind(n_refb, refb[j,])
-			}
-		}
-	}
+	n_refa <- refa[refa$id %in% refb$id,]
+	n_refb <- refb[refb$id %in% refa$id,]
 
 	sorta$Side <- tolower(sorta$Side)
 	sorta$Element <- tolower(sorta$Element)
@@ -89,8 +81,8 @@ reg.input <- function(ref = NULL, sorta = NULL, sortb = NULL, bonea = NULL, bone
 
 	sort_A[is.na(sort_A)] <- 0
 	sort_B[is.na(sort_B)] <- 0
-	refa[is.na(refa)] <- 0
-	refb[is.na(refb)] <- 0
+	n_refa[is.na(n_refa)] <- 0
+	n_refb[is.na(n_refb)] <- 0
 
 	options(stringsAsFactors = TRUE) #restore default R  
 	print("Finished...")

@@ -16,7 +16,9 @@
 #' ttest()
 
 ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, output_options = c(TRUE, FALSE), threads = 1, tails = 2, boxcox = TRUE, ztest = FALSE) {
-	JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
+	if(threads > 1) {
+		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
+	}
 	force(alphalevel)
 	force(absolute)
 	force(zmean)
@@ -27,10 +29,10 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	force(sessiontempdir)
 
 	#appends a variable with 0 to make sure the data structure stays the same in Julia
-	refa <- cbind(refa,0)
-	refb <- cbind(refb,0)
-	sorta <- cbind(sorta,0)
-	sortb <- cbind(sortb,0)
+	refa <- cbind(refa,fa = 0)
+	refb <- cbind(refb,fa = 0)
+	sorta <- cbind(sorta,fa = 0)
+	sortb <- cbind(sortb,fa = 0)
 
 	options(stringsAsFactors = FALSE)
 	print("Comparisons are running...")
@@ -102,7 +104,13 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	}else {
 		measurements <- data.frame(t(results[c(8:length(results))]))
 	}
-	measurement_names <- colnames(sorta[,-c(1:3)])
+	measurement_names <- unique(c(colnames(sorta[,-c(1:3)]), colnames(sortb[,-c(1:3)])))
+
+	if(length(measurements) == 2 && measurements[1] == 1 && measurements[2] == 0) {
+		measurements[2] = 1
+		measurement_names = c(measurement_names[1], measurement_names[3])
+	} #if non-antimere test hack
+
 	for(i in 1:ncol(measurements)) {
 		measurements[measurements[,i] == 1,i] <- paste(measurement_names[i], " ", sep="")
 		measurements[measurements[,i] == 0,i] <- ""
@@ -132,7 +140,9 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	gc()
 	setwd(workingdir)
 	options(stringsAsFactors = TRUE) #restore default R
-	JuliaSetup(remove_cores = TRUE)
+	if(threads > 1) {
+		JuliaSetup(remove_cores = TRUE)
+	}
 	print("Finished.")
 	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",]))
 }
