@@ -7,10 +7,14 @@
 #' match.3d()
 
 match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 1, transformation = "rigid", threads = 1, test = "Hausdorff", n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
-	print("Form comparisons started")		
-	options(stringsAsFactors = FALSE)  	
+	if(threads != julia_call("nprocs")) {
+		print("Setting up Julia workers...")
+		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
+		print("Finished.")
+	}
 
-	JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
+	print("Form comparisons started")
+	options(stringsAsFactors = FALSE)
 
 	if(fragment == "Complete") {fragment <- FALSE}
 	if(fragment == "Fragmented") {fragment <- TRUE} 	
@@ -293,7 +297,6 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 
 	print("Form comparisons completed")	
 	options(stringsAsFactors = TRUE) #restore default R  
-	JuliaSetup(remove_cores = TRUE) #clean up workers
 	return(list(pairwise_coords, resmatches, direc, comparisons, matches, renderlist))
 
 }

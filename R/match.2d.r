@@ -22,10 +22,14 @@
 #' match.2d()
 
 match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", threads=1, test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
+	if(threads != julia_call("nprocs")) {
+		print("Setting up Julia workers...")
+		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
+		print("Finished.")
+	}
+
 	print("Form comparisons started")		
 	options(stringsAsFactors = FALSE) 
-
-	JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
 
 	dist <- tolower(dist)
 	transformation <- tolower(transformation)
@@ -158,7 +162,6 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 	comparisons <- length(outlinedata[[2]]) * length(outlinedata[[3]]) #number of comparisons
 
 	print("Form comparisons completed")	
-	JuliaSetup(remove_cores = TRUE) #clean up workers
 	options(stringsAsFactors = TRUE) #restore default R  
 	return(list(coords,resmatches,direc,comparisons,matches))
 

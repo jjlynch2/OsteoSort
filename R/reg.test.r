@@ -18,9 +18,11 @@
 #' reg.multitest()
 
 reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, output_options = c(TRUE,FALSE), threads = 1, type = "Logarithm Composite", pca = 0.99, alphalevel = 0.05) {	
-	if(threads > 1) {
+	if(threads != julia_call("nprocs")) {
+		print("Setting up Julia workers...")
 		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
-	}	
+		print("Finished.")
+	}
 	force(alphalevel)
 	force(threads)
 	force(type)
@@ -84,18 +86,15 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	}
 
 	if(output_options[1]) {
-		no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="csv")
+		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}
 	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,2], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot2")
+		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,2], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot")
 	}
 
 	gc()
 	setwd(workingdir)
 	options(stringsAsFactors = TRUE) #restore default R
-	if(threads > 1) {
-		JuliaSetup(remove_cores = TRUE)
-	}
 	print("Finished.")
 	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",]))
 }

@@ -154,6 +154,22 @@ observeEvent(input$multiple_reference, {
 	})
 })
 
+multiple_MLA <- reactiveValues(multiple_ML = c("temp"))
+observeEvent(input$multiple_elements_association_a, {
+	temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_association_a,]
+	t1 <- temp[,c(1:6)]
+	t2 <- temp[,-c(1:6)]
+	multiple_MLA$multiple_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
+})
+
+multiple_MLB <- reactiveValues(multiple_ML = c("temp"))
+observeEvent(input$multiple_elements_association_b, {
+	temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_association_b,]
+	t1 <- temp[,c(1:6)]
+	t2 <- temp[,-c(1:6)]
+	multiple_MLB$multiple_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
+})
+
 multiple_ML <- reactiveValues(multiple_ML = c("temp"))
 observeEvent(input$multiple_elements_pairmatch, {
 	temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_pairmatch,]
@@ -164,12 +180,12 @@ observeEvent(input$multiple_elements_pairmatch, {
 })
 
 output$multiple_elements_association_a <- renderUI({
-	selectInput(inputId = "multiple_elements_association_a", label = "Dependent", choices = elements$elements)
+	selectInput(inputId = "multiple_elements_association_a", label = "Independent", choices = elements$elements)
 })
 
 observeEvent(input$multiple_elements_association_a, {
 	output$multiple_elements_association_b <- renderUI({
-		selectInput(inputId = "multiple_elements_association_b", label = "Independent", choices = elements$elements[elements$elements != input$multiple_elements_association_a])
+		selectInput(inputId = "multiple_elements_association_b", label = "Dependent", choices = elements$elements[elements$elements != input$multiple_elements_association_a])
 	})
 })
 
@@ -215,11 +231,24 @@ observeEvent(input$pro, {
 		art.d1 <- art.input(side = input$multiple_non_antimere_side, ref = multiple_reference_imported$multiple_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2], measurementsa = tempa, measurementsb = tempb)
 		d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
-	}
-	if(input$multiple_analysis == "Antimere t-test") {
+	} else if(input$multiple_analysis == "Antimere t-test") {
 		pm.d1 <- pm.input(sort = tempdata1, bone = input$multiple_elements_pairmatch, measurements = multiple_ML$multiple_ML, ref = multiple_reference_imported$multiple_reference_imported)
 		d2 <- ttest(ztest = multiple_ztransform$multiple_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
+	} else if(input$multiple_analysis == "Non-Antimere regression") {
+		if(multiple_association_pca$multiple_association_pca) {
+			pca = multiple_association_pca_variance$multiple_association_pca_variance
+		} else {
+			pca = NULL
+		}
+
+		tempdata1$Element <- tolower(tempdata1$Element)
+		sorta = tempdata1[tempdata1$Element == input$multiple_elements_association_a,]
+		sortb = tempdata1[tempdata1$Element == input$multiple_elements_association_b,]
+
+		reg.d1 <<- reg.input(sorta = sorta, sortb = sortb, sidea = input$multiple_association_side_a, sideb = input$multiple_association_side_b, bonea = input$multiple_elements_association_a, boneb = input$multiple_elements_association_b, measurementsa = multiple_MLA$multiple_ML, measurementsb = multiple_MLB$multiple_ML, ref = multiple_reference_imported$multiple_reference_imported)
+		d2 <- reg.test(threads = numbercoresglobal$ncore, ztest = multiple_ztransform$multiple_ztransform, type = multiple_association_types$multiple_association_types, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, output_options = multiple_file_output1$multiple_file_output1, pca = pca)
+		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}
 
 	#if combinations exist, produces output

@@ -14,7 +14,7 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 			JuliaCall::julia_install_package_if_needed(i)
 			JuliaCall::julia_library(i)
 		}
-		julia_source(system.file("jl", "Set_Procs.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "Clean_cores.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "t_test_plot_MC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "t_test_MC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "Euclidean_Distance_Operations_MC.jl", package = "OsteoSort"))
@@ -23,10 +23,18 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 		julia_source(system.file("jl", "regression_MC.jl", package = "OsteoSort"))
 	}
 
-	if(add_cores > 1) {
-		julia_call("Set_Procs", add_cores)
-	} else if (remove_cores) {
-		julia_call("Set_Procs", 0)
+	sycores <- detectCores()
+	jcores <- julia_call("nprocs")
+
+	if(add_cores > jcores && add_cores <= sycores) {
+		julia_call("addprocs", add_cores - jcores)
+	}
+	if(add_cores < jcores) {
+		julia_call("clean_cores")
+		julia_call("addprocs", add_cores-1)
+	}
+	if(remove_cores) {
+		julia_call("clean_cores")
 	}
 
 	if (source) {

@@ -56,7 +56,7 @@ end
 					ref_dsum_2 += RR[i,j]
 				end
 			end
-			if size(m_counter_1[2:end], 1) == res_1 && size(m_counter_2[2:end], 1) == res_2 #if ref 1 and ref 2 both match the sort comparisons
+			if length(m_counter_1)-1 == res_1 && length(m_counter_2)-1 == res_2 #if ref 1 and ref 2 both match the sort comparisons
 				m_counter_1_o = m_counter_1[2:end] #indices of measurements being used
 				m_counter_2_o = m_counter_2[2:end] #indices of measurements being used
 				refd_1 = vcat(refd_1, log(ref_dsum_1))
@@ -67,7 +67,7 @@ end
 		refd_2 = refd_2[2:end,1] #remove first row
 		X = hcat(fill(1, size(refd_1, 1)), refd_1)
 		OLS = fit(LinearModel, X, refd_2, false)
-		cX = hcat(1, dsum_2)
+		cX = hcat(1, dsum_1)
 		POLS = predict(OLS, cX)
 		POLS = POLS[1]
 		sigma = res_std_err(OLS)
@@ -75,7 +75,7 @@ end
 		mean_ref = mean(refd_2)
 		sd_ref = std(refd_2)
 		n = size(refd_2,1)
-		tStat = reg_t_stat(sigma, r2, POLS, dsum_1, dsum_2, mean_ref, sd_ref, n)
+		tStat = reg_t_stat(sigma, r2, POLS, dsum_2, dsum_1, mean_ref, sd_ref, n)
 		pVal = 2 * pt(-abs(tStat), n-2) #always uses 2-tails with 2 degrees of freedom
 		res[x,1] = li #index of left
 		res[x,2] = x #index of right
@@ -84,14 +84,12 @@ end
 		res[x,5] = mean_ref #mean sample
 		res[x,6] = sd_ref #sd sample
 		res[x,7] = n #reference sample size
-#		for j in m_counter_1_o
-#println(j)
-#			res[x,j+7] = 1
-#		end
-#		for j in m_counter_2_o
-#println(j)
-		#	res[x,j+7+size(v1,1)] = 1
-		#end
+		for j in m_counter_1_o
+			res[x,j+7] = 1
+		end
+		for j in m_counter_2_o
+			res[x,j+7+size(v1,1)] = 1
+		end
 	end
 	return res
 end
