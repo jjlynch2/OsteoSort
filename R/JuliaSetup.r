@@ -11,10 +11,11 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 		julia <- JuliaCall::julia_setup()
 		pkg = c("Pkg","Statistics","Distributed","SharedArrays", "Optim", "Rmath")
 		for(i in pkg) {
+			print(paste("Loading Julia package: ", i, sep=""))
 			JuliaCall::julia_install_package_if_needed(i)
 			JuliaCall::julia_library(i)
 		}
-		julia_source(system.file("jl", "Clean_cores.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "cores.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "t_test_plot_MC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "t_test_MC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "Euclidean_Distance_Operations_MC.jl", package = "OsteoSort"))
@@ -27,11 +28,11 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 	jcores <- julia_call("nprocs")
 
 	if(add_cores > jcores && add_cores <= sycores) {
-		julia_call("addprocs", add_cores - jcores)
+		julia_call("add_cores", add_cores - jcores)
 	}
 	if(add_cores < jcores) {
 		julia_call("clean_cores")
-		julia_call("addprocs", add_cores-1)
+		julia_call("add_cores", add_cores-1)
 	}
 	if(remove_cores) {
 		julia_call("clean_cores")

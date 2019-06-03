@@ -25,7 +25,7 @@ end
 	end
 	return res
 end
-
+#######implement caching... can save regression models in a vector!! EASY!
 @everywhere function REGS_worker(v1, m2, li, RL, RR)
 	res = zeros(size(m2,1),size(m2,2)+7+size(v1,1)) #plus 7 and size of measurements for v1 m2?
 	res_1 = measurement_counter(v1) #transposes and counts
