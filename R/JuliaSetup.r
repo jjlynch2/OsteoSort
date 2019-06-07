@@ -18,10 +18,11 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 		julia_source(system.file("jl", "cores.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "t_test_plot_MC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "t_test_MC.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "regression_MC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "Euclidean_Distance_Operations_MC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "Hausdorff_MC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "z_test_MC.jl", package = "OsteoSort"))
-		julia_source(system.file("jl", "regression_MC.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "regression_plot_MC.jl", package = "OsteoSort"))
 	}
 
 	sycores <- detectCores()

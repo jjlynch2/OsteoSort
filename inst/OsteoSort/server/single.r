@@ -298,14 +298,14 @@ observeEvent(input$proc, {
 
 		sorta <- data.frame(id = input$ID1, Side = input$single_association_side_a, Element = input$single_elements_association_a, single_input_list_A$single_input_list_A, stringsAsFactors = FALSE)
 		sortb <- data.frame(id = input$ID2, Side = input$single_association_side_b, Element = input$single_elements_association_b, single_input_list_B$single_input_list_B, stringsAsFactors = FALSE)
-		reg.d1 <<- reg.input(sorta = sorta, sortb = sortb, sidea = input$single_association_side_a, sideb = input$single_association_side_b, bonea = input$single_elements_association_a, boneb = input$single_elements_association_b, measurementsa = single_MLA$single_ML, measurementsb = single_MLB$single_ML, ref = single_reference_imported$single_reference_imported)
+		reg.d1 <- reg.input(sorta = sorta, sortb = sortb, sidea = input$single_association_side_a, sideb = input$single_association_side_b, bonea = input$single_elements_association_a, boneb = input$single_elements_association_b, measurementsa = single_MLA$single_ML, measurementsb = single_MLB$single_ML, ref = single_reference_imported$single_reference_imported)
 		d2 <- reg.test(ztest = single_ztransform$single_ztransform, type = association_types$association_types, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2), pca = pca)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}
 
 	#output table
 	output$table2 <- DT::renderDataTable({
-		DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1), rownames = FALSE)
+		DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1, dom = 't'), rownames = FALSE)
 	})
 
 	if(single_file_output1$single_file_output1 || single_file_output2$single_file_output2) {  

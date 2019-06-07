@@ -24,7 +24,7 @@ if(system_name == "Windows") {
 }
 if(system_name == "Darwin") {
 	system_name <- paste(icon = icon("apple", lib="font-awesome"), system_name, sep = " ")
-	system_name <- "not available"
+	system_mem <- "not available"
 }
 
 output$system_info <- renderUI({

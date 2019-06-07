@@ -1,16 +1,12 @@
 @everywhere function res_std_err(model)
 	resd = residuals(model)
-	resd .^=2 #is equal correct?
+	resd .^=2
 	samples = size(resd,1)
 	resd = sum(resd)
-	nK = samples - 2 #is this correct? i think so
+	nK = samples - 2
 	temp = resd / nK
-	return sqrt(Complex(temp)) #is complex needed?
+	return sqrt(Complex(temp))
 end
-#########residua lstandard error function needs fixing
-#########residua lstandard error function needs fixing
-#########residua lstandard error function needs fixing
-#########residua lstandard error function needs fixing
 
 @everywhere function reg_t_stat(sigma, r2, predicted, comparison, comparison_p, mean, sd, n)
 	return abs(predicted - comparison) / sigma * sqrt(1+(1/n)) + (comparison_p - mean) ^2 / n*sd^2
@@ -57,7 +53,7 @@ end
 	return false
 end
 
-@everywhere function REGS_worker(v1, m2, li, RL, RR)
+@everywhere function REGSL_worker(v1, m2, li, RL, RR)
 	res = zeros(size(m2,1),size(m2,2)+7+size(v1,1)) #plus 7 and size of measurements for v1 m2?
 	res_1 = measurement_counter(v1) #transposes and counts
 	dsum_1 = log(sum(v1)) #should work outside of the loops since 0 

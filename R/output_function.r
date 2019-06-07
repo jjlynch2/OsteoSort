@@ -32,21 +32,25 @@ output_function <- function(hera1, method = "exclusion", type = "csv", return_pl
 		}
 		if(type == "plot2") {
 				if(!return_plot) {
-					jpeg(paste("graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''),height = 600, width = 600)
+					jpeg(paste("graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''),height = 400, width = 400)
 					dev.control('enable')
 				}
 
+g1 <<- hera1
+
+
 				plot(hera1[[3]],hera1[[4]], xlab = "", ylab = "", pch=1, cex.axis=1.7); box(lwd=2)
 				points(hera1[[5]],hera1[[6]],col="blue",pch=16, cex=2)
-				lines(hera1[[8]],hera1[[7]][,1],  col=c("red"), lwd=2,lty=1)
-				lines(hera1[[8]],hera1[[7]][,2],  col=c("blue"),lwd=2,lty=1)
-				lines(hera1[[8]], hera1[[7]][,3], col=c("blue"),lwd=2,lty=1)
-
+				OLS = lm(hera1[[4]] ~ hera1[[3]])
+				pm1 <- predict(OLS, interval = "prediction", level = 0.95)
+				lines(hera1[[3]], pm1[,1],  col=c("red"), lwd=2,lty=1)
+				lines(hera1[[3]], pm1[,2],  col=c("blue"),lwd=2,lty=1)
+				lines(hera1[[3]], pm1[,3], col=c("blue"),lwd=2,lty=1)
 				if(!return_plot) { dev.off() }
 		}
 		if(type == "plot3") {
 			if(!return_plot) {
-				jpeg(paste("graph",hera1[[1]],"-", hera1[[2]],".jpg",sep=''),height = 600, width = 600)
+				jpeg(paste("graph",hera1[[1]],"-", hera1[[2]],".jpg",sep=''),height = 400, width = 400)
 				dev.control('enable')
 			}
 
