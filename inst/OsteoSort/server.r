@@ -7,7 +7,7 @@
 library(shiny)
 options(rgl.useNULL=TRUE) #required to avoid rgl device opening 
 library(rgl)
-options(shiny.maxRequestSize=200*1024^2) #30MB file size limit
+options(shiny.maxRequestSize=10*1024^2) #10MB file size limit
 options(warn = -1) #disables warnings
 
 shinyServer(function(input, output, session) {

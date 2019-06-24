@@ -21,7 +21,11 @@ pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL,
 	}
 
 	bone <- tolower(bone)
-
+rref <<- ref
+ssort <<- sort
+bbone <<- bone
+mmeasurements <<- measurements
+tthreshold <<- threshold
 	#reference data sorting
 	ref$Side <- tolower(ref$Side)
 	ref$Element <- tolower(ref$Element)
