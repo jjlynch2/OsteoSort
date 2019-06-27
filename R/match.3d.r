@@ -1,7 +1,7 @@
 #' three-dimensional pair-match function
 #' 
 #'
-#' @keywords match.2d
+#' @keywords match.3d
 #' @export
 #' @examples
 #' match.3d()
