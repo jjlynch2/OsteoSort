@@ -6,7 +6,6 @@
 options(warn = -1)
 library(shiny)
 library(rgl)
-#Navigation bar interface
 shinyUI(
 navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 	tags$script(HTML(paste("var header = $('.navbar > .container-fluid');header.append('<div style=\"float:left\"><img src=\"osteosort_new.png\" alt=\"alt\" style=\"float:right; width:200px;padding-top:0px;\"></div><div style=\"float:right; padding-top:15px\">", 
@@ -184,25 +183,25 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						),
 						fluidRow(
 							column(6,
-								textInput(inputId = 'ID1', label = '1st ID #', value = 'X1')	
+								textInput(inputId = 'ID1', label = '1st ID #', value = 'X1')
 							),
 							column(6,
-								textInput(inputId = 'ID2', label = '2nd ID #', value = 'X2')		
+								textInput(inputId = 'ID2', label = '2nd ID #', value = 'X2')
 							)
 						),
 						fluidRow(
 							column(6,
-								actionButton("settings2","settings", icon=icon("keyboard-o"))
+								actionButton("settings2","Settings", icon=icon("keyboard-o"))
 							),
 							column(6,
-								actionButton("proc","process ", icon = icon("cog"))
+								actionButton("proc","Process ", icon = icon("cog"))
 							)
 						),
 						fluidRow(br()),
 						fluidRow(
 							column(6),
 							column(6,
-								downloadButton("downloadData2", "save")
+								downloadButton("downloadData2", "Save")
 							)
 						),
 						tags$style(type = "text/css", "#downloadData2 { width:100%; font-size:85%; background-color:#126a8f }"),
@@ -293,7 +292,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 								actionButton("clearFile1", "clear   ", icon = icon("window-close"))
 							),
 							column(6,
-								downloadButton("downloadData", "save    ")
+								downloadButton("downloadData", "Save    ")
 							)
 						),
 						tags$style(type = "text/css", "#settings1 { width:100%; font-size:85%; background-color:#126a8f  }"),
@@ -354,25 +353,25 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 		navbarMenu("Outlier",icon = icon("sort-amount-asc", lib="font-awesome"),
 			tabPanel("Metric",icon = icon("line-chart", lib="font-awesome"),	
 				sidebarLayout(
-					sidebarPanel(					
+					sidebarPanel(
 						uiOutput("testtype3"),
 						selectInput("outlierside", "Side", c(Left='Left', Right='Right', Both='Both'), 'Both'),
 						uiOutput('resettableInput3'),	
 						fluidRow(
 							column(6,
-								actionButton("settings3","settings", icon=icon("keyboard-o"))
+								actionButton("settings3","Settings", icon=icon("keyboard-o"))
 							),
 							column(6,
-								actionButton("pro3","process ", icon = icon("cog"))
+								actionButton("pro3","Process ", icon = icon("cog"))
 							)
 						),
 						fluidRow(br()),
 						fluidRow(
 							column(6,
-								actionButton("clearFile3", "clear   ", icon = icon("window-close"))
+								actionButton("clearFile3", "Clear   ", icon = icon("window-close"))
 							),
 							column(6,
-								downloadButton("outlierdownload", "save    ")
+								downloadButton("outlierdownload", "Save    ")
 							)
 						),
 						tags$style(type = "text/css", "#settings3 { width:100%; font-size:85%; background-color:#126a8f }"),
@@ -446,14 +445,14 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 										column(12,
 											radioButtons(inputId = 'fibulameasurements', 'Fibula', c('Fib_01','Fib_02','Fib_03','Fib_04','Fib_05'), inline = TRUE, selected = 'Fib_01')
 										)
-									)					
+									)
 								),
 								tabPanel("Statistical Parameters",
 									fluidRow(
 										column(6,
 											radioButtons('method', '', c(standard_deviation='Standard_deviation', quartiles='Quartiles'),'Standard_deviation')
 										),
-										column(6,									
+										column(6,
 											conditionalPanel(condition = "input.method == 'Standard_deviation'",
 												sliderInput(inputId = "standard_dev", label = "Standard Deviation Cutoff", min=0.5, max=10, value=c(2.0,2), step = 0.1)
 											),
@@ -483,19 +482,19 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							uiOutput('resettableInput4'),	
 							fluidRow(
 								column(6,
-									actionButton("settings4","settings", icon=icon("keyboard-o"))
+									actionButton("settings4","Settings", icon=icon("keyboard-o"))
 								),
 								column(6,
-									actionButton("pro4","process ", icon = icon("cog"))
+									actionButton("pro4","Process ", icon = icon("cog"))
 								)
 							),
 							fluidRow(br()),
 							fluidRow(
 								column(6,
-									actionButton("clearFile4", "clear   ", icon = icon("window-close"))
+									actionButton("clearFile4", "Clear   ", icon = icon("window-close"))
 								),
 								column(6,
-									downloadButton("outlierdownload4", "save    ")
+									downloadButton("outlierdownload4", "Save    ")
 								)
 							),
 							tags$style(type = "text/css", "#settings4 { width:100%; font-size:85%; background-color:#126a8f }"),
@@ -523,7 +522,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 								tabPanel("Output Paramters",
 									checkboxInput(inputId = "fileoutputstature1", label = "Output csv file", value = TRUE),
 									checkboxInput(inputId = "fileoutputstature2", label = "Output plot", value = TRUE)
-								),					 			
+								),
 								tabPanel("Measurements",
 			 						fluidRow(
 										column(12,
@@ -554,7 +553,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 										column(12,
 											radioButtons(inputId = 'fibulameasurements4', 'Fibula', c('Fib_01'), inline = TRUE, selected = 'Fib_01')
 										)
-									)					
+									)
 								),
 								tabPanel("Statistical Parameters",
 									fluidRow(
@@ -568,7 +567,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 											conditionalPanel(condition = "input.method4 == 'Quartiles'",
 												sliderInput(inputId = "Quartiles4", label = "Interquartile Cutoff", min=0.5, max=10, value=c(1.5,1.5), step = 0.1)
 											)
-										)	
+										)
 									)
 								)
 							)
@@ -590,19 +589,19 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							),
 							fluidRow(
 								column(6,
-									actionButton("settings2D","settings", icon=icon("keyboard-o"))
+									actionButton("settings2D","Settings", icon=icon("keyboard-o"))
 								),
 								column(6,
-									actionButton("pro2D","process ", icon = icon("cog"))
+									actionButton("pro2D","Process ", icon = icon("cog"))
 								)
 							),
 							fluidRow(br()),
 							fluidRow(
 								column(6,
-									actionButton("clearFile2D", "clear   ", icon = icon("window-close"))
+									actionButton("clearFile2D", "Clear   ", icon = icon("window-close"))
 								),
 								column(6,
-									downloadButton("downloadData2D", "save    ")
+									downloadButton("downloadData2D", "Save    ")
 								)
 							),
 							tags$style(type = "text/css", "#settings2D { width:100%; font-size:85%; background-color:#126a8f }"),
@@ -659,7 +658,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 									tabPanel("Computational Parameters",
 										uiOutput('ncores2D')
 									)
-								)		
+								)
 							)
 						)
 					)
@@ -671,19 +670,19 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							uiOutput('resettableInput3Da'),
 							fluidRow(
 								column(6,
-									actionButton("previous"," previous", icon=icon("arrow-left"))
+									actionButton("previous"," Previous", icon=icon("arrow-left"))
 								),
 								column(6,
-									actionButton("nnext"," next    ", icon = icon("arrow-right"))
+									actionButton("nnext"," Next    ", icon = icon("arrow-right"))
 								)
 							),
 							fluidRow(br()),
 							fluidRow(
 								column(6,
-									actionButton("start"," digitize", icon=icon("edit"))
+									actionButton("start"," Digitize", icon=icon("edit"))
 								),
 								column(6,
-									actionButton("start2"," fracture", icon=icon("scissors"))
+									actionButton("start2"," Fracture", icon=icon("scissors"))
 								)
 							),	
 							fluidRow(br()),
@@ -704,19 +703,19 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							fluidRow(br()),
 							fluidRow(
 								column(6,
-									actionButton("pcset","settings", icon=icon("keyboard-o"))
+									actionButton("pcset","Settings", icon=icon("keyboard-o"))
 								),
 								column(6,
-									actionButton("simplify","simplify", icon=icon("cloud-download"))
+									actionButton("simplify","Simplify", icon=icon("cloud-download"))
 								)
 							),
 							fluidRow(br()),
 							fluidRow(
 								column(6,
-									actionButton("clearFile3Da", " clear   ", icon = icon("window-close"))
+									actionButton("clearFile3Da", " Clear   ", icon = icon("window-close"))
 								),
 								column(6,
-									downloadButton("savedata", " save    ")
+									downloadButton("savedata", " Save    ")
 								)
 							),
 							fluidRow(br()),
@@ -760,14 +759,12 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 												uiOutput('fracturet')
 											)
 										)
-
 									),
 									tabPanel("Computational Parameters",
 										uiOutput('ncorespc')
 									)
 								)
 							)#modal
-
 						)#main
 					)#		
 			),
@@ -781,19 +778,19 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							uiOutput("mspec3D"),
 							fluidRow(
 								column(6,
-									actionButton("settings3D","settings", icon=icon("keyboard-o"))
+									actionButton("settings3D","Settings", icon=icon("keyboard-o"))
 								),
 								column(6,
-									actionButton("pro3D","process ", icon = icon("cog"))
+									actionButton("pro3D","Process ", icon = icon("cog"))
 								)
 							),
 							fluidRow(br()),
 							fluidRow(
 								column(6,
-									actionButton("clearFile3D", "clear   ", icon = icon("window-close"))
+									actionButton("clearFile3D", "Clear   ", icon = icon("window-close"))
 								),
 								column(6,
-									downloadButton("downloadData3D", "save    ")
+									downloadButton("downloadData3D", "Save    ")
 								)
 							),
 							tags$style(type = "text/css", "#settings3D { width:100%; font-size:85%; background-color:#126a8f }"),
@@ -804,10 +801,6 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						),
 						mainPanel(
 							uiOutput("contents3D"),
-
-
-
-
 							tabsetPanel(id="tabSelected3D",
 								tabPanel("Results ",
 									DT::dataTableOutput('table3D')
@@ -816,8 +809,6 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 									rglwidgetOutput('webgl3D', width = "1200px", height = "1200px")
 								)
 						 	),
-
-
 							bsModal("settings3DD", title = "Settings", trigger = "settings3D", size = "large", 
 								tabsetPanel(id="tabSelected33",
 									tabPanel("Output Parameters",
@@ -852,56 +843,55 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 									tabPanel("Computational Parameters",
 										uiOutput('ncores3D')
 									)
-								)		
+								)
 							)
 						)
 					)
-			)		
-
+			)
 		),
 		navbarMenu("Antemortem", icon = icon("users", lib="font-awesome"),
 			tabPanel("Single",icon = icon("gear", lib="font-awesome"),
 				sidebarLayout(
-					sidebarPanel(	
+					sidebarPanel(
 						selectInput(inputId = 'metric_type', 'Stature metric', c(Millimeters = "mm", Centimeters = "cm", Inches = "in"), selected = 'in'),
 						uiOutput("antestat_test"),
 						selectInput("antestat_population", "Population", c(DPAA_any_male = "DPAA-any-male", DPAA_white_male = "DPAA-white-male", DPAA_black_male = "DPAA-black-male",FDB_20th_FStat_any='20th-FStat-any', FDB_20th_FStat_white_male='20th-FStat-white-male', FDB_20th_FStat_white_female='20th-FStat-white-female', FDB_20th_FStat_black_male='20th-FStat-black-male', FDB_20th_FStat_black_female='20th-FStat-black-female', Trotter_any_male='Trotter-any-male', Trotter_black_male='Trotter-black-male', Trotter_white_male='Trotter-white-male'), 'Trotter-any-male'),
-						selectInput("ante_side", "Side", c(Left='Left', Right='Right')),									
+						selectInput("ante_side", "Side", c(Left='Left', Right='Right')),
 							fluidRow(
 								column(6,
 									conditionalPanel(condition = "input.antestat == 'humerus'",
-										numericInput(inputId = 'hu_antestat', label = 'Hum_01', value = '')																															
+										numericInput(inputId = 'hu_antestat', label = 'Hum_01', value = '')
 									),
 									conditionalPanel(condition = "input.antestat == 'radius'",
-										numericInput(inputId = 'ra_antestat', label = 'Rad_01', value = '')																															
+										numericInput(inputId = 'ra_antestat', label = 'Rad_01', value = '')
 									),
 									conditionalPanel(condition = "input.antestat == 'ulna'",
-										numericInput(inputId = 'ul_antestat', label = 'Uln_01', value = '')																															
+										numericInput(inputId = 'ul_antestat', label = 'Uln_01', value = '')
 									),
 									conditionalPanel(condition = "input.antestat == 'femur'",
-										numericInput(inputId = 'fe_antestat', label = 'Fem_01', value = '')																															
+										numericInput(inputId = 'fe_antestat', label = 'Fem_01', value = '')
 									),
 									conditionalPanel(condition = "input.antestat == 'tibia'",
-										numericInput(inputId = 'ti_antestat', label = 'Tib_01', value = '')																															
+										numericInput(inputId = 'ti_antestat', label = 'Tib_01', value = '')
 									),
 									conditionalPanel(condition = "input.antestat == 'fibula'",
-										numericInput(inputId = 'fi_antestat', label = 'Fib_01', value = '')																															
+										numericInput(inputId = 'fi_antestat', label = 'Fib_01', value = '')
 									),
-									textInput(inputId = 'Postmortem_ID', label = 'Postmortem ID', value = 'X2')	
+									textInput(inputId = 'Postmortem_ID', label = 'Postmortem ID', value = 'X2')
 
 								),
 								column(6,
 									numericInput(inputId = 'antestat_input', label = 'Stature', value = ''),
-									textInput(inputId = 'Antemortem_ID', label = 'Antemortem ID', value = 'X1')							
+									textInput(inputId = 'Antemortem_ID', label = 'Antemortem ID', value = 'X1')
 
 								)
 							),
 							fluidRow(
 								column(6,
-									actionButton("settingsante","settings", icon=icon("keyboard-o"))
+									actionButton("settingsante","Settings", icon=icon("keyboard-o"))
 								),
 								column(6,
-									actionButton("proantestat","process ", icon = icon("cog"))
+									actionButton("proantestat","Process ", icon = icon("cog"))
 								)
 							),
 							fluidRow(br()),
@@ -910,7 +900,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 
 								),
 								column(6,
-									downloadButton("downloadantestat", "save    ")
+									downloadButton("downloadantestat", "Save    ")
 								)
 							),
 							tags$style(type = "text/css", "#settingsante { width:100%; font-size:85%; background-color:#126a8f }"),
@@ -933,11 +923,11 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 											sliderInput(inputId = "predlevelantestat", label = "Prediction interval level", min=0.01, max=1, value=0.95, step = 0.01),
 											sliderInput(inputId = "alphalevelsantestat", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
 										),
-										column(6,									
+										column(6,
 											radioButtons(inputId = "alphatest1s", label = "Test type", choices = c(Alpha = "Alpha", PI = "PI"),"Alpha")
 										)
 									)
-								)								
+								)
 							)
 						)
 					)
@@ -949,23 +939,23 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						selectInput(inputId = 'metric_typem', 'Stature metric', c(Millimeters = "mm", Centimeters = "cm", Inches = "in"), selected = 'in'),
 						uiOutput("antestat_testm"),
 						selectInput("antestat_populationm", "Population", c(DPAA_any_male = "DPAA-any-male", DPAA_white_male = "DPAA-white-male", DPAA_black_male = "DPAA-black-male",FDB_20th_FStat_any='20th-FStat-any', FDB_20th_FStat_white_male='20th-FStat-white-male', FDB_20th_FStat_white_female='20th-FStat-white-female', FDB_20th_FStat_black_male='20th-FStat-black-male', FDB_20th_FStat_black_female='20th-FStat-black-female', Trotter_any_male='Trotter-any-male', Trotter_black_male='Trotter-black-male', Trotter_white_male='Trotter-white-male'), 'Trotter-any-male'),
-						uiOutput('resettableInputante1'),	
-						uiOutput('resettableInputante2'),	
+						uiOutput('resettableInputante1'),
+						uiOutput('resettableInputante2'),
 						fluidRow(
 							column(6,
-								actionButton("settingsantem","settings", icon=icon("keyboard-o"))
+								actionButton("settingsantem","Settings", icon=icon("keyboard-o"))
 							),
 							column(6,
-								actionButton("proantestatm","process ", icon = icon("cog"))
+								actionButton("proantestatm","Process ", icon = icon("cog"))
 							)
 						),
 						fluidRow(br()),
 						fluidRow(
 							column(6,
-								actionButton("clearFile1ante", "clear   ", icon = icon("window-close"))
+								actionButton("clearFile1ante", "Clear   ", icon = icon("window-close"))
 							),
 							column(6,
-								downloadButton("downloadantestatm", "save    ")
+								downloadButton("downloadantestatm", "Save    ")
 							)
 						),
 						tags$style(type = "text/css", "#settingsantem { width:100%; font-size:85%; background-color:#126a8f }"),
@@ -992,8 +982,8 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 										sliderInput(inputId = "predlevelantestatm", label = "Prediction interval level", min=0.01, max=1, value=0.95, step = 0.01),
 										sliderInput(inputId = "alphalevelsantestatm", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
 										),
-										column(6,									
-											radioButtons(inputId = "alphatest1m", label = "Test type", choices = c(Alpha = "Alpha", PI = "PI"), "Alpha"),								
+										column(6,
+											radioButtons(inputId = "alphatest1m", label = "Test type", choices = c(Alpha = "Alpha", PI = "PI"), "Alpha"),
 											checkboxInput(inputId = "research_mm", label = "Calculate research statistics", value = FALSE)
 										)
 									)
