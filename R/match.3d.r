@@ -91,7 +91,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 
 				tt <- L1[L1[,3] <= centroid[3]+band_threshold, ]
 				a3 <- tt[tt[,3] >= centroid[3]-band_threshold, ]
-				a <- rbind(a1, a2, a3)
+				a <- unique(rbind(a1, a2, a3))
 
 
 				tt <- L2[L2[,1] <= centroid[1]+band_threshold, ]
@@ -102,7 +102,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 
 				tt <- L2[L2[,3] <= centroid[3]+band_threshold, ]
 				b3 <- tt[tt[,3] >= centroid[3]-band_threshold, ]
-				b <- rbind(b1, b2, b3)
+				b <- unique(rbind(b1, b2, b3))
 
 				moving_indices <- matrix(which(a[,4] == 1))
 				target_indices <- matrix(which(b[,4] == 1))
@@ -147,7 +147,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 				test2 <- t2[t2[,2] >= centroid[2]-band_threshold, ]
 				t3 <- A[A[,3] <= centroid[3]+band_threshold, ]
 				test3 <- t3[t3[,3] >= centroid[3]-band_threshold, ]
-				lista[[i]] <- rbind(test1, test2, test3)
+				lista[[i]] <- unique(rbind(test1, test2, test3))
 			}
 			if(band == FALSE) {
 				lista[[i]] <- as.matrix(A)
@@ -167,7 +167,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 				test2 <- t2[t2[,2] >= centroid[2]-band_threshold, ]
 				t3 <- B[B[,3] <= centroid[3]+band_threshold, ]
 				test3 <- t3[t3[,3] >= centroid[3]-band_threshold, ]
-				listb[[i]] <- rbind(test1, test2, test3)
+				listb[[i]] <- unique(rbind(test1, test2, test3))
 			}
 			if(band == FALSE) {
 				listb[[i]] <- as.matrix(B)
