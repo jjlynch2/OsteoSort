@@ -30,19 +30,15 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 
 	print("Form comparisons started")		
 	options(stringsAsFactors = FALSE) 
-
 	dist <- tolower(dist)
 	transformation <- tolower(transformation)
 	workingdir = getwd()
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
-
 	specmatrix <- outlinedata[[1]]
 	matches1 <- array(NA,c((length(outlinedata[[2]])*length(outlinedata[[3]])), 3)) #side 1
 	matches2 <- array(NA,c((length(outlinedata[[2]])*length(outlinedata[[3]])), 3)) #side 2
 	matches <- array(NA,c((length(outlinedata[[2]])*length(outlinedata[[3]]))*2, 3)) #combines sides
 	nz <- 1 #comparison counter
-
-
 	if(!fragment){
 		meann <- specmatrix[,,temporary_mean_specimen]
 		homolog <- specmatrix
@@ -92,21 +88,19 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 		for(z in 1:length(outlinedata[[2]])) {
 			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
 				zzz <- 0
-				if(nrow(specmatrix[[z]]) >= nrow(specmatrix[[x]])) {moving <- specmatrix[[x]]; target <- specmatrix[[z]];zzz <- 1}		
-				if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}	
-	
+				if(nrow(specmatrix[[z]]) >= nrow(specmatrix[[x]])) {moving <- specmatrix[[x]]; target <- specmatrix[[z]];zzz <- 1}
+				if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}
 				moving <- Morpho::icpmat(moving, target, iterations = iteration, mindist = min, type = transformation, threads=threads) 
-				
 				#identifies indices of fragmented ends
 				r1 <- fragment_margins(moving)
 				moving <- r1[[1]]
 				moving_indices <- r1[[2]]
-
 				r1 <- fragment_margins(target)
 				target <- r1[[1]]
 				target_indices <- r1[[2]]
 
 				distance <- hausdorff_dist(moving, target, test = test, dist = dist, indices = list(moving_indices, target_indices))
+
 				matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
 				matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
 				print(paste("Specimens: ", names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", test, " distance: ", distance, sep=""))
@@ -120,6 +114,7 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 				pwc <- pwc + 2 #skips by 2 since we use two indices
 			}
 		}
+
 		coords <- pairwise_coords 
 		matches <- rbind(matches1, matches2) #combine both directions
 	}#fragment

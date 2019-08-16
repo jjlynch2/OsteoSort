@@ -13,7 +13,7 @@ output$tabpanpan <- renderUI({
 })
 
 output$contents2D <- renderUI({
-   HTML(paste(""))
+	HTML(paste(""))
 })	
 
 output$resettableInput2D <- renderUI({
@@ -35,6 +35,7 @@ observeEvent(input$clearFile2D, {
 		file.remove(input$rightimages$datapath)
 		file.remove(input$rightimages$name)
 	}
+	file.remove(list.files(full.names=TRUE, recursive = TRUE))
 	fileInput('leftimages', 'Upload first image set', accept=c('jpeg', "jpg"), multiple = TRUE)
 	fileInput('rightimages', 'Upload second image set', accept=c('jpeg', "jpg"), multiple = TRUE)
 })
@@ -95,7 +96,7 @@ output$ncores2D <- renderUI({
 	sliderInput(inputId = "ncores2D", label = "Number of threads", min=1, max=detectCores(), value=detectCores()-1, step =1)
 })
 
-meanit2D <- reactiveValues(meanit2D = 4)
+meanit2D <- reactiveValues(meanit2D = 2)
 observeEvent(input$meanit2D, {
 	meanit2D$meanit2D <- input$meanit2D
 })
@@ -120,7 +121,7 @@ output$efa_options2 <- renderUI({
 })
 
 
-scale2D <- reactiveValues(scale2D = TRUE)
+scale2D <- reactiveValues(scale2D = FALSE)
 observeEvent(input$scale2D, {
 	scale2D$scale2D <- input$scale2D
 })
@@ -144,7 +145,7 @@ output$max_avg_distance <- renderUI({
 	radioButtons(inputId = "max_avg_distance", label = "Distance type:", choices = c("maximum",  "average", "dilated"), selected = "average")
 })
 
-icp2D <- reactiveValues(icp2D = "20")
+icp2D <- reactiveValues(icp2D = 20)
 observeEvent(input$icp2D, {
 	icp2D$icp2D <- input$icp2D
 })
@@ -152,13 +153,6 @@ output$icp2D <- renderUI({
 	sliderInput(inputId = "icp2D", label = "Number of iterative closest point iterations", min=1, max=1000, value=20, step=1)
 })
 
-trans2D <- reactiveValues(trans2D = "rigid")
-observeEvent(input$trans2D, {
-	trans2D$trans2D <- input$trans2D
-})
-output$trans2D <- renderUI({
-	radioButtons(inputId = "trans2D", label = "Transformation type:", choices = c("rigid", "similarity", "affine"), selected = "rigid")
-})
 
 distance2D <- reactiveValues(distance2D = "Hausdorff")
 observeEvent(input$distance2D, {
@@ -168,10 +162,10 @@ output$distance2D <- renderUI({
 	radioButtons(inputId = "distance2D", label = "Distance calculation:", choices = c("Segmented-Hausdorff", "Hausdorff"), selected = "Hausdorff")
 })
 
-shortlistn <- reactiveValues(shortlistn = "1")
+shortlistn <- reactiveValues(shortlistn = 1)
 observeEvent(input$shortlistn, {
 	shortlistn$shortlistn <- input$shortlistn
-})							
+})
 output$shortlistn <- renderUI({
 	sliderInput(inputId = "shortlistn", label = "Number of shorest distance matches", min = 1, max = 100, value = 1, step = 1)
 })
@@ -179,17 +173,17 @@ output$shortlistn <- renderUI({
 hidedist <- reactiveValues(hidedist = FALSE)
 observeEvent(input$hidedist, {
 	hidedist$hidedist <- input$hidedist
-})	
+})
 output$hidedist <- renderUI({
 	checkboxInput(inputId = "hidedist", label = "Hide distance from results", value = FALSE)
 })
-								
+
 #renders temporary mean
 observeEvent(input$rightimages, {
 	output$mspec <- renderUI({
 		sliderInput(inputId = "mspec", label = "Choose specimen # for temporary mean", min=1, max=nrow(input$leftimages) + nrow(input$rightimages), value = 1, step = 1)
 	})
-})			
+})
 
 observeEvent(input$mspec, {
 	nimages <- rbind(input$leftimages$datapath, input$rightimages$datapath)
@@ -223,8 +217,9 @@ observeEvent(input$pro2D, {
 		file.copy(input$rightimages$datapath, input$rightimages$name)
 		if(input$fragcomp == "Complete") {fragment <- FALSE}
 		if(input$fragcomp == "Fragmented") {fragment <- TRUE}
+
 		out1 <- outline.images(imagelist1 = input$rightimages$name, imagelist2 = input$leftimages$name, fragment = fragment, threshold =nthreshold$nthreshold, scale = scale2D$scale2D, mirror = mirror2D$mirror2D, npoints = npoints2D$npoints2D, nharmonics = efaH2D$efaH2D)
-		out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, fragment = fragment, dist = max_avg_distance$max_avg_distance, n_regions = n_regions$n_regions, n_lowest_distances = shortlistn$shortlistn, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps), sessiontempdir = sessiontemp, transformation = trans2D$trans2D, threads = ncores2D$ncores2D, test = distance2D$distance2D, temporary_mean_specimen = input$mspec, mean_iterations = meanit2D$meanit2D)
+		out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, fragment = fragment, dist = max_avg_distance$max_avg_distance, n_regions = n_regions$n_regions, n_lowest_distances = shortlistn$shortlistn, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D, test = distance2D$distance2D, temporary_mean_specimen = input$mspec, mean_iterations = meanit2D$meanit2D)
 		direc <- out2[[3]]
 		if(fileoutput2Dplot$fileoutput2Dplot && input$fragcomp == "Complete") {
 			setwd(sessiontemp)
@@ -237,6 +232,13 @@ observeEvent(input$pro2D, {
 					alt = "A"
 				)
 			}, deleteFile = FALSE)
+		}
+		if(!fileoutput2Dplot$fileoutput2Dplot && input$fragcomp == "Complete") {
+			output$plotplottd <- renderImage({
+				list(src = "",
+					contentType = 'image/jpg',
+					alt = ""
+				)})
 		}
 		if(is.null(nrow(out2[[2]]))) {pm <- 1; out2[[2]] <- rbind(out2[[2]],c(NA,NA,NA)) }
 		if(!is.null(nrow(out2[[2]]))) {pm <- nrow(as.matrix(out2[[2]][,1]))}
@@ -254,11 +256,11 @@ observeEvent(input$pro2D, {
 			output$downloadData2D <- downloadHandler(
 				filename <- function() {
 					paste("results.zip")
-				},      
+				},
 				content <- function(file) {
 					setwd(direc)
 					file.copy(paste(direc,'.zip',sep=''), file)  
-					setwd(sessiontemp)    
+					setwd(sessiontemp)
 				},
 				contentType = "application/zip"
 			)

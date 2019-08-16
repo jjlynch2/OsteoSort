@@ -67,7 +67,7 @@ end
 end
 
 #Two-dimensional
-@everywhere function MDI3D(v1, m2)
+@everywhere function MDI2D(v1, m2)
 	dsum = Inf
 	dsum_ind = 0
 	Dist = zeros(1,2)

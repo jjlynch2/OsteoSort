@@ -4,7 +4,7 @@
 #' @param second_configuration The second pointcloud
 #'
 #' Modified from the distmat() function in the pracma package for R
-#' 
+#'
 #' @keywords e_dist
 #' @export
 #' examples

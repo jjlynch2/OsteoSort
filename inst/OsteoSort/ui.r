@@ -593,8 +593,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 												conditionalPanel(condition = "input.fragcomp == 'Complete'",
 														uiOutput('comp_options')
 												),
-												uiOutput('icp2D'),
-												uiOutput('trans2D')
+												uiOutput('icp2D')
 											),
 											column(4,
 												h4("Distance"),
