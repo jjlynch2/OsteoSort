@@ -351,9 +351,14 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 			tabPanel("Metric",icon = icon("line-chart", lib="font-awesome"),	
 				sidebarLayout(
 					sidebarPanel(
-						uiOutput("testtype3"),
-						selectInput("outlierside", "Side", c(Left='Left', Right='Right', Both='Both'), 'Both'),
+
+
 						uiOutput('resettableInput3'),	
+
+						uiOutput("testtype3"),
+						uiOutput("testtypem"),
+						uiOutput("testtypes"),
+
 						fluidRow(
 							column(6,
 								actionButton("settings3","Settings", icon=icon("keyboard-o"))
@@ -391,58 +396,11 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						 		DT::dataTableOutput('tjbingworkc')
 						 	)
 					 	),
-					 	bsModal("settingsoutlier", title = "Settings", trigger = "settings3", size = "large", 
+					 	bsModal("settingsoutlier", title = "Settings", trigger = "settings3", size = "medium", 
 					 		tabsetPanel(id="tabSelected2",
 								tabPanel("Output Paramters",
 									checkboxInput(inputId = "fileoutputl1", label = "Output csv file", value = TRUE),
 									checkboxInput(inputId = "fileoutputl2", label = "Output plot", value = TRUE)
-								),	
-					 			tabPanel("Measurements",
-			 						fluidRow(
-			 							column(12,
-											radioButtons(inputId = 'claviclemeasurements', 'Clavicle', c('Cla_01','Cla_04','Cla_05','Cla_06','Cla_07','Cla_08','Cla_09'), inline = TRUE, selected = 'Cla_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'scapulameasurements', 'Scapula', c('Sca_01','Sca_02','Sca_03','Sca_04','Sca_05'), inline = TRUE, selected = 'Sca_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'humerusmeasurements', 'Humerus', c('Hum_01','Hum_02','Hum_03','Hum_04','Hum_05','Hum_06','Hum_07','Hum_08','Hum_09'), inline = TRUE, selected = 'Hum_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'radiusmeasurements', 'Radius', c('Rad_01','Rad_05','Rad_06','Rad_07','Rad_08','Rad_09','Rad_04','Rad_10'), inline = TRUE, selected = 'Rad_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'ulnameasurements', 'Ulna', c('Uln_01','Uln_04','Uln_05','Uln_06','Uln_07','Uln_09','Uln_10','Uln_11'), inline = TRUE, selected = 'Uln_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'os_coxameasurements', 'Os_coxa', c('Osc_01','Osc_02', 'Osc_05', 'Osc_14','Osc_15','Osc_16','Osc_05','Osc_17'), inline = TRUE, selected = 'Osc_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'femurmeasurements', 'Femur', c('Fem_01','Fem_02','Fem_03','Fem_04','Fem_06','Fem_05','Fem_07','Fem_08','Fem_11','Fem_14','Fem_15','Fem_16','Fem_17'), inline = TRUE, selected = 'Fem_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'tibiameasurements', 'Tibia', c('Tib_01','Tib_02','Tib_03','Tib_04','Tib_05','Tib_06','Tib_10','Tib_11','Tib_12'), inline = TRUE, selected = 'Tib_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'fibulameasurements', 'Fibula', c('Fib_01','Fib_02','Fib_03','Fib_04','Fib_05'), inline = TRUE, selected = 'Fib_01')
-										)
-									)
 								),
 								tabPanel("Statistical Parameters",
 									fluidRow(

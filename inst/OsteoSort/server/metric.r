@@ -1,12 +1,8 @@
-output$testtype3 <- renderUI({
-	selectInput('zz3', 'Elements', c(Humerus='humerus', Ulna='ulna', Radius='radius', Femur='femur', Tibia='tibia', Fibula='fibula', Scapula='scapula', Os_coxa='os_coxa', Clavicle='clavicle'),'humerus')
-})
-
 #upload GUI for resettable input
 output$resettableInput3 <- renderUI({
-	            input$clearFile3
-	            input$uploadFormat
-	            fileInput('file3', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+	input$clearFile3
+	input$uploadFormat
+	fileInput('file3', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 })
 
 output$outliercontent <- renderUI({
@@ -16,6 +12,37 @@ output$outliercontent <- renderUI({
 #clears session for multiple comparison
 observeEvent(input$clearFile3, {
 	fileInput('file3', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+})
+
+
+
+
+OSmethod <- reactiveValues(OSmethod = "Standard_deviation")
+observeEvent(input$method, {
+	OSmethod$OSmethod <- input$method
+})
+
+OSsd <- reactiveValues(OSsd = c(2.0, 2))
+observeEvent(input$standard_dev, {
+	OSsd$OSsd <- input$standard_dev
+})
+
+OSqt <- reactiveValues(OSqt = c(1.5, 1.5))
+observeEvent(input$Quartiles, {
+	OSqt$OSqt <- input$Quartiles
+})
+
+datafile3 <- reactiveValues(datafile3 = TRUE)
+observeEvent(input$file3, {
+	tempdata3 <- read.csv(input$file3$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA", "-","*"), stringsAsFactors = FALSE)## see na.strings forces NA for blanks, spaces, etc
+	tempdataaa <- tempdata3[,1:3]
+	tempdataba <- lapply(tempdata3[,-(1:3)], function(x) { as.numeric(as.character(x))})
+	tempdata3 <- c(tempdataaa, tempdataba)
+	tempdata3 <- as.data.frame(tempdata3) #combines first four columns with now numeric measurements
+	output$testtypem <- renderUI({
+		selectInput('zzm', 'Measurements', c(colnames(tempdata3)[-c(1:3)]))
+	})
+	datafile3$datafile3 <- tempdata3
 })
 
 observeEvent(input$pro3, {
@@ -28,44 +55,24 @@ observeEvent(input$pro3, {
 	     }
 	})
 	
-	#Upload CSV file
-	inFile3 <- input$file3
-   
-	 #return null if not uploaded
-	if (is.null(inFile3)){
-		removeModal()                             
+	if (is.null(input$file3)){
+		removeModal()
 		return(NULL) 
 	}
-	#return null if empty file
-	if (!file.size(inFile3$datapath) > 1)
-		{
-		removeModal()                             
+	if (!file.size(input$file3$datapath) > 1){
+		removeModal()
 		return(NULL)
 	}
-	tempdata3 <- read.csv(inFile3$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA", "-","*"))## see na.strings forces NA for blanks, spaces, etc
 
-	#checks if measurements are numeric and converts alpha characters to numeric   
-	tempdataaa <- tempdata3[,1:4]
-	tempdataba <- lapply(tempdata3[,-(1:4)], function(x) { as.numeric(as.character(x))})
-   
-	tempdata3 <- c(tempdataaa, tempdataba)
-	tempdata3 <- as.data.frame(tempdata3) #combines first four columns with now numeric measurements
-	
-	#defines measurements and methods from user input
-	if(input$zz3 == "scapula") {outliermeasurements <- input$scapulameasurements}
-	if(input$zz3 == "clavicle") {outliermeasurements <- input$claviclemeasurements}
-	if(input$zz3 == "humerus") {outliermeasurements <- input$humerusmeasurements}
-	if(input$zz3 == "radius") {outliermeasurements <- input$radiusmeasurements}
-	if(input$zz3 == "ulna") {outliermeasurements <- input$ulnameasurements}
-	if(input$zz3 == "os_coxa") {outliermeasurements <- input$os_coxameasurements}
-	if(input$zz3 == "femur") {outliermeasurements <- input$femurmeasurements}
-	if(input$zz3 == "tibia") {outliermeasurements <- input$tibiameasurements}
-	if(input$zz3 == "fibula") {outliermeasurements <- input$fibulameasurements}
-	if(input$method == "Standard_deviation") {cutoffvalue <- input$standard_dev}
-	if(input$method == "Quartiles") {cutoffvalue <- input$Quartiles}
-	
+
+	if(OSmethod$OSmethod == "Standard_deviation") {
+		cutoffvalue <- OSsd$OSsd
+	} else {
+		cutoffvalue <- OSqt$OSqt
+	}
+
 	#calls sorting function
-	outtemp <- metricsort(sort = tempdata3, side = input$outlierside, bone = input$zz3, method = input$method, measurements = outliermeasurements, cutoff = cutoffvalue, sessiontempdir = sessiontemp, output_options = c(input$fileoutputl1, input$fileoutputl2))
+	outtemp <- metricsort(sort = datafile3$datafile3, method = OSmethod$OSmethod, measurements = input$zzm, cutoff = cutoffvalue, sessiontempdir = sessiontemp, output_options = c(input$fileoutputl1, input$fileoutputl2))
 	
 	#counts number of outliers discovered
 	outliercount <- 0
@@ -79,7 +86,7 @@ observeEvent(input$pro3, {
 					"<br/>", "Standard Deviation: ",  "<font color=\"#00688B\">",outtemp[[6]], "</font>",
 					"<br/>", "Median: ",              "<font color=\"#00688B\">",outtemp[[7]], "</font>",
 					"<br/>", "Interquartile: ",       "<font color=\"#00688B\">",outtemp[[8]], "</font>","</strong>"))
-	})   
+	})
 	
 	
 	output$tjbingworkb <- DT::renderDataTable({
