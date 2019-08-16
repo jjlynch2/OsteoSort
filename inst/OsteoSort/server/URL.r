@@ -8,6 +8,6 @@ output$URL <- renderUI({
 	"<p></p>",
 	"<strong>Source Code: </strong>",
 	a(img(" Repository", src='github.png',width='20px'), href='https://github.com/jjlynch2/OsteoSort', target='_blank'),
-	"<br><br><br><br>p></p>"
+	"<br><br><br><br><p></p>"
 	,sep=""))
 })
