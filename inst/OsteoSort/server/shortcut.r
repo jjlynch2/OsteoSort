@@ -13,7 +13,7 @@ observeEvent(input$Create_Desktop_Icon, {
 			paste(
 				"[Desktop Entry]\nEncoding=UTF-8\nTerminal=true\nType=Application\nCategories=Application\nName=OsteoSort\n",
 				"Version=",	packageVersion("OsteoSort"),"\n",
-				"Icon=",		system.file("OsteoSort/www/OsteoSort.png", package = "OsteoSort"),"\n",
+				"Icon=",		system.file("OsteoSort/www/OsteoSortIcon.png", package = "OsteoSort"),"\n",
 				"Exec=",		paste(file.path(R.home("bin"), "R"), "-e", "library(OsteoSort);OsteoSort()", sep=" ")
 			,sep=""),#paste
 			file = paste(file.path(path.expand("~"), "Desktop"), "OsteoSort.desktop", sep = "/")

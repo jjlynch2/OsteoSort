@@ -67,14 +67,6 @@ output$fileoutput3Dexcel2 <- renderUI({
 	checkboxInput(inputId = "fileoutput3Dexcel2", label = "Output all distances to excel file ", value = TRUE)
 })
 
-fileoutput3Dplot <- reactiveValues(fileoutput3Dplot = FALSE)
-observeEvent(input$fileoutput3Dplot, {
-	fileoutput3Dplot$fileoutput3Dplot <- input$fileoutput3Dplot
-})
-output$fileoutput3Dplot <- renderUI({
-	checkboxInput(inputId = "fileoutput3Dplot", label = "Plot specimen distance dot charts (WARNING: This option will generate a plot for every comparison)", value = FALSE)
-})	
-
 
 
 fileoutput3Dtps <- reactiveValues(fileoutput3Dtps = TRUE)
@@ -207,7 +199,7 @@ observeEvent(input$pro3D, {
 	if(!is.null(input$leftimages3D$datapath) && !is.null(input$leftimages3D$datapath)) { #prevents crashing
 
 		out1 <- input.3d(list1 = input$rightimages3D$name, list2 = input$leftimages3D$name)
-		out2 <<- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, fileoutput3Dplot$fileoutput3Dplot), sessiontempdir = sessiontemp, transformation = trans3D$trans3D, threads = ncores3D$ncores3D, test = distance3D$distance3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
+		out2 <<- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps), sessiontempdir = sessiontemp, transformation = trans3D$trans3D, threads = ncores3D$ncores3D, test = distance3D$distance3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
 		direc <- out2[[3]]
 
 		if(is.null(nrow(out2[[2]]))) {pm <- 1; out2[[2]] <- rbind(out2[[2]],c(NA,NA,NA)) }

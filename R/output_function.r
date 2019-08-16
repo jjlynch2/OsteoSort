@@ -35,10 +35,6 @@ output_function <- function(hera1, method = "exclusion", type = "csv", return_pl
 					jpeg(paste("graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''),height = 400, width = 400)
 					dev.control('enable')
 				}
-
-g1 <<- hera1
-
-
 				plot(hera1[[3]],hera1[[4]], xlab = "", ylab = "", pch=1, cex.axis=1.7); box(lwd=2)
 				points(hera1[[5]],hera1[[6]],col="blue",pch=16, cex=2)
 				OLS = lm(hera1[[4]] ~ hera1[[3]])
@@ -74,26 +70,6 @@ g1 <<- hera1
 		}
 		if(type == "coord") {
 			writetps(hera1, file = "Coordinates.tps")
-		}
-
-
-
-###########finish this???????????????????????????????????
-###########
-###########
-		if(type == "dot") {
-			jpeg(paste("dotchart",hera1[1,1],".jpg",sep=''),height = 1200, width = 300)
-			dev.control('enable')
-
-			a <- hera1
-			b <- hera1[-1,]
-			c <- hera1[1,]
-			stripchart(as.numeric(a[,3]) ~ a[,1], vertical = TRUE, method = "jitter", pch = 16, ylab ="", xlab = a[1,1], col = "white", cex.axis = 1.7, cex.main=1.7, cex.lab=1.7)
-
-			stripchart(as.numeric(b[,3]) ~ b[,1], vertical = TRUE, method = "jitter", pch = 16, col = "black", add = TRUE, cex = 2)
-
-stripchart(as.numeric(c[3]) ~ c[1], vertical = TRUE, method = "jitter", pch = 16, col = "dodgerblue", add = TRUE, cex = 2)
-			dev.off()
 		}
 	}
 	if(method == "2D") {

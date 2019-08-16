@@ -20,7 +20,8 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						uiOutput("update_gh")
 					,width = 3),
 					sidebarPanel(
-						uiOutput("system_info")
+						uiOutput("system_info"),
+						actionButton('Create_Desktop_Icon', 'Desktop Shortcut', icon = icon("gears"))
 					,width=3),
 					sidebarPanel(
 						uiOutput("URL")
@@ -55,12 +56,8 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					fluidRow(br()),
 					fluidRow(
 						downloadButton('example_data', "Example data")
-					),
-					fluidRow(br()),
-					fluidRow(
-						actionButton('Create_Desktop_Icon', 'Desktop shortcut', icon = icon("gears"))
 					)
-				,width = 2),
+				,width = 3),
 				tags$style(type = "text/css", "#Create_Desktop_Icon { width:100%; font-size:85%; background-color:#126a8f }"),
 				tags$style(type = "text/css", "#postmortem_template { width:100%; font-size:85%; background-color:#126a8f }"),
 				tags$style(type = "text/css", "#antemortem_template { width:100%; font-size:85%; background-color:#126a8f }"),
@@ -98,7 +95,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 								tags$style(type = "text/css", "#config_delete { width:100%; font-size:85%; background-color:#126a8f }")
 							)
 						)
-					,width = 2),
+					,width = 3),
 					mainPanel(
 						tabsetPanel(id="tabSelectedreference",
 							tabPanel("Reference",
@@ -207,7 +204,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						tags$style(type = "text/css", "#downloadData2 { width:100%; font-size:85%; background-color:#126a8f }"),
 						tags$style(type = "text/css", "#settings2 { width:100%; font-size:85%; background-color:#126a8f }"),
 						tags$style(type = "text/css", "#proc { width:100%; font-size:85%; background-color:#126a8f }"),
-						width=2
+						width=3
 					),
 					mainPanel(
 						htmlOutput('single_contents'),
@@ -299,7 +296,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						tags$style(type = "text/css", "#pro { width:100%; font-size:85%; background-color:#126a8f  }"),
 						tags$style(type = "text/css", "#clearFile1 { width:100%; font-size:85%; background-color:#126a8f }"),
 						tags$style(type = "text/css", "#downloadData { width:100%; font-size:85%; background-color:#126a8f }"),
-						width=2
+						width=3
 					),
 					mainPanel(
 						htmlOutput('multiple_contents'),
@@ -378,7 +375,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						tags$style(type = "text/css", "#pro3 { width:100%; font-size:85%; background-color:#126a8f }"),
 						tags$style(type = "text/css", "#clearFile3 { width:100%; font-size:85%; background-color:#126a8f }"),
 						tags$style(type = "text/css", "#outlierdownload { width:100%; font-size:85%; background-color:#126a8f }"),
-						width=2
+						width=3
 					),
 					mainPanel(
 						htmlOutput('outliercontent'),
@@ -501,7 +498,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							tags$style(type = "text/css", "#pro4 { width:100%; font-size:85%; background-color:#126a8f }"),
 							tags$style(type = "text/css", "#clearFile4 { width:100%; font-size:85%; background-color:#126a8f }"),
 							tags$style(type = "text/css", "#outlierdownload4 { width:100%; font-size:85%; background-color:#126a8f }"),
-							width=2
+							width=3
 					),
 					mainPanel(
 						htmlOutput('outliercontent4'),
@@ -608,7 +605,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							tags$style(type = "text/css", "#pro2D { width:100%; font-size:85%; background-color:#126a8f }"),
 							tags$style(type = "text/css", "#clearFile2D { width:100%; font-size:85%; background-color:#126a8f }"),
 							tags$style(type = "text/css", "#downloadData2D { width:100%; font-size:85%; background-color:#126a8f }"),
-							width = 2
+							width = 3
 						),
 						mainPanel(
 							uiOutput("contents2D"),
@@ -741,7 +738,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							tags$style(type = "text/css", "#nnext { width:100%; font-size:85%; background-color:#126a8f }"),
 							tags$style(type = "text/css", "#clearFile3Da { width:100%; font-size:85%; background-color:#126a8f }"),
 							tags$style(type = "text/css", "#savedata { width:100%; font-size:85%; background-color:#126a8f }"),
-							width = 2
+							width = 3
 						),
 						mainPanel(
 							rglwidgetOutput('webgl3Dalign', width = "1200px", height = "1200px"),
@@ -797,7 +794,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							tags$style(type = "text/css", "#pro3D { width:100%; font-size:85%; background-color:#126a8f }"),
 							tags$style(type = "text/css", "#clearFile3D { width:100%; font-size:85%; background-color:#126a8f }"),
 							tags$style(type = "text/css", "#downloadData3D { width:100%; font-size:85%; background-color:#126a8f }"),
-							width = 2
+							width = 3
 						),
 						mainPanel(
 							uiOutput("contents3D"),
@@ -814,8 +811,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 									tabPanel("Output Parameters",
 										uiOutput('fileoutput3Dexcel1'),
 										uiOutput('fileoutput3Dexcel2'),
-										uiOutput('fileoutput3Dtps'),
-										uiOutput('fileoutput3Dplot')
+										uiOutput('fileoutput3Dtps')
 									),
 									tabPanel("Statistical Parameters",
 										fluidRow(
@@ -906,7 +902,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							tags$style(type = "text/css", "#settingsante { width:100%; font-size:85%; background-color:#126a8f }"),
 							tags$style(type = "text/css", "#proantestat { width:100%; font-size:85%; background-color:#126a8f }"),
 							tags$style(type = "text/css", "#downloadantestat { width:100%; font-size:85%; background-color:#126a8f }"),
-							width=2
+							width=3
 					),
 					mainPanel(
 						htmlOutput('antestat_output'),
@@ -962,7 +958,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						tags$style(type = "text/css", "#proantestatm { width:100%; font-size:85%; background-color:#126a8f }"),
 						tags$style(type = "text/css", "#clearFile1ante { width:100%; font-size:85%; background-color:#126a8f }"),
 						tags$style(type = "text/css", "#downloadantestatm { width:100%; font-size:85%; background-color:#126a8f }"),
-						width=2
+						width=3
 					),
 					mainPanel(
 						htmlOutput('antestat_outputm'),
