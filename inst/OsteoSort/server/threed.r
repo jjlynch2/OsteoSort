@@ -69,12 +69,12 @@ output$fileoutput3Dexcel2 <- renderUI({
 
 
 
-fileoutput3Dtps <- reactiveValues(fileoutput3Dtps = TRUE)
+fileoutput3Dtps <- reactiveValues(fileoutput3Dtps = FALSE)
 observeEvent(input$fileoutput3Dtps, {
 	fileoutput3Dtps$fileoutput3Dtps <- input$fileoutput3Dtps
 })
 output$fileoutput3Dtps <- renderUI({
-	checkboxInput(inputId = "fileoutput3Dtps", label = "Output TPS registered coordinates", value = TRUE)
+	checkboxInput(inputId = "fileoutput3Dtps", label = "Output TPS registered coordinates", value = FALSE)
 })
 					 			
 								
@@ -208,7 +208,7 @@ observeEvent(input$pro3D, {
 			DT::datatable(out2[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 		})
 		output$contents3D <- renderUI({
-			HTML(paste("<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong"))
+			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[7]], " seconds</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
 		})
 
 
