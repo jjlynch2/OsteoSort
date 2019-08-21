@@ -3,5 +3,5 @@ start_time <- function() {
 }
 
 end_time <- function(start_time) {
-	return(round(as.numeric(gsub("*.of", "", (Sys.time() - start_time))), digits=2))
+	return(round(as.numeric(gsub("*.of", "", difftime(Sys.time(), start_time, units="mins"))), digits=2))
 }

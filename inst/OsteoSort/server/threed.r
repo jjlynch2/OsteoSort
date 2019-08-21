@@ -208,7 +208,7 @@ observeEvent(input$pro3D, {
 			DT::datatable(out2[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 		})
 		output$contents3D <- renderUI({
-			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[7]], " seconds</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
+			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[7]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
 		})
 
 
