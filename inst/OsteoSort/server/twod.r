@@ -246,7 +246,7 @@ observeEvent(input$pro2D, {
 			DT::datatable(out2[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 		})
 		output$contents2D <- renderUI({
-			HTML(paste("<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong"))
+			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[7]], " seconds</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
 		})
 		if(fileoutput2Dexcel1$fileoutput2Dexcel1 || fileoutput2Dexcel2$fileoutput2Dexcel2 || fileoutput2Dplot$fileoutput2Dplot || fileoutput2Dtps$fileoutput2Dtps) {
 			setwd(sessiontemp)

@@ -6,16 +6,14 @@
 #' @examples
 #' match.3d()
 
-match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 1, transformation = "rigid", threads = 1, test = "Hausdorff", n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE, time = TRUE) {
+match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 1, transformation = "rigid", threads = 1, test = "Hausdorff", n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
 	if(threads != julia_call("nprocs")) {
 		print("Setting up Julia workers...")
 		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
 		print("Finished.")
 	}
 	print("Form comparisons started")
-	if(time) {
-		start_time <- Sys.time()
-	}
+	start_time <- start_time()
 	options(stringsAsFactors = FALSE)
 	if(fragment == "Complete") {fragment <- FALSE}
 	if(fragment == "Fragmented") {fragment <- TRUE}
@@ -175,10 +173,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 	gc()
 	setwd(workingdir)
 	print("Form comparisons completed")
-	if(time) {
-		end_time <- Sys.time()
-		t_time <- round(as.numeric(gsub("*.of", "", (end_time - start_time))), digits=2)
-	}
+	t_time <- end_time(start_time)
 	options(stringsAsFactors = TRUE) #restore default R  
 	return(list(pairwise_coords, resmatches, direc, comparisons, matches, renderlist, t_time))
 }
