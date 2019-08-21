@@ -31,10 +31,6 @@ OsteoSort()
 
 ## Changes for OsteoSort version : 1.3.0
 
-## Minor changes:
-* Deprecated unidirectional Hausdorff distances
-* Deprecated Robject example data tables
-
 ## Other Windows Dependencies
 * Julia must be in your Windows environrment PATH to run.
 
