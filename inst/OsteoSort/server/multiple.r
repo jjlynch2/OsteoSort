@@ -267,9 +267,12 @@ observeEvent(input$pro, {
 		ll <- nrow(d2[[2]]) + nrow(d2[[3]])
 		nmatch <- nrow(d2[[2]])
 		samplesize <- length(unique(c(d2[[2]]$id_1, d2[[2]]$id_2, d2[[3]]$id_1, d2[[3]]$id_2)))
+		t_time <- d1[[4]]
 	}
 	output$multiple_contents <- renderUI({
-		HTML(paste("<strong>","<br/>","Comparisons: ",   "<font color=\"#00688B\">", ll, "</font>", 
+		HTML(paste("<strong>",
+					"Completed in: ", "<font color=\"#00688B\">", t_time, " minutes</font>", 
+					"<br/>","Comparisons: ",   "<font color=\"#00688B\">", ll, "</font>", 
                         "<br/>", "Specimens: ",           "<font color=\"#00688B\">",samplesize, "</font>", 
                         '<br/>', "Potential matches: ",  "<font color=\"#00688B\">",nmatch , "</font>",
                         '<br/>', "Exclusions: ",         "<font color=\"#00688B\">",ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)",  "</font>",'</strong>'))

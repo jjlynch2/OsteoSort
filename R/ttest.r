@@ -37,7 +37,8 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	sortb <- cbind(sortb,fa = 0)
 
 	options(stringsAsFactors = FALSE)
-	print("Comparisons are running...")
+	print("Comparisons started")
+	start_time <- start_time()
 	options(warn = -1) #disables warnings
 	if(is.na(sorta) || is.null(sorta)) {return(NULL)}
 	if(is.na(sortb) || is.null(sortb)) {return(NULL)}
@@ -144,5 +145,6 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	setwd(workingdir)
 	options(stringsAsFactors = TRUE) #restore default R
 	print("Finished.")
-	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",]))
+	t_time <- end_time(start_time)
+	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",], t_time))
 }

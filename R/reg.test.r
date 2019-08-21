@@ -38,7 +38,8 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	sortb <- cbind(sortb,fa = 0)
 
 	print("Comparisons are running...")
-	options(stringsAsFactors = FALSE)    
+	start_time <- start_time()
+	options(stringsAsFactors = FALSE)
 
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
@@ -99,5 +100,6 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	setwd(workingdir)
 	options(stringsAsFactors = TRUE) #restore default R
 	print("Finished.")
-	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",]))
+	t_time <- end_time(start_time)
+	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",], t_time))
 }
