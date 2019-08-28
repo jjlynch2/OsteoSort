@@ -1,6 +1,3 @@
-
-
-#upload GUI for resettable input
 output$resettableInput4 <- renderUI({
 	input$clearFile4
 	input$uploadFormat
@@ -49,17 +46,37 @@ observeEvent(input$file4, {
 	tempdata3 <- c(tempdataaa, tempdataba)
 	tempdata3 <- as.data.frame(tempdata3) #combines first four columns with now numeric measurements
 	datafile4$datafile4 <- tempdata3
-	output$testtypem1 <- renderUI({
-		selectInput('zzm1', 'Measurements', c(colnames(datafile4$datafile4)[-c(1:3)]))
-	})
 })
+
+
+observeEvent(input$custom, {
+	if(input$custom) {
+		output$testtypem1 <- renderUI({
+			selectInput('zzm1', 'Measurements', c(colnames(datafile4$datafile4)[-c(1:3)]))
+		})
+	} else {
+		output$testtypem1 <- renderUI({
+			t1 <- unique(config_df$config_df[config_df$config_df$Method == "Stature",1])
+			t2 <- unique(c(colnames(datafile4$datafile4)[-c(1:3)]))
+			mlist <- c()
+			for(x in t2) {
+				for(i in t1) {
+					if(x == i) {mlist <- c(mlist, x)}
+				}
+			}
+			selectInput('zzm1', 'Measurements', mlist)
+		})
+	}
+})
+
+
 
 stature_reference <- reactiveValues(stature_reference = c("temp"))
 observeEvent(input$stature_reference, {
 	stature_reference$stature_reference <- input$stature_reference
 })
 output$stature_reference <- renderUI({
-	selectInput(inputId = "stature_reference", label = "Reference", choices = c("Custom", reference_name_list$reference_name_list))
+	selectInput(inputId = "stature_reference", label = "Reference", choices = reference_name_list$reference_name_list)
 })
 
 stature_reference_imported <- reactiveValues(stature_reference_imported = data.frame())
@@ -94,7 +111,7 @@ observeEvent(input$pro4, {
 		cutoffvalue <- OSqt1$OSqt1
 	}
 
-	if(input$stature_reference == "Custom") {
+	if(input$custom) {
 		reference <- c("Custom", input$slope, input$intercept)
 	} else {
 		reference <- stature_reference_imported$stature_reference_imported
@@ -133,8 +150,6 @@ observeEvent(input$pro4, {
 		output$plotoutlier4 <- renderImage({
 			list(src = nimages,
 				contentType = 'image/jpg',
-				width = 400,
-				height = 400,
 				alt = "A"
 			)
 		}, deleteFile = FALSE)
@@ -147,7 +162,7 @@ observeEvent(input$pro4, {
 		setwd(direc6)
 		zip:::zip(zipfile = paste(direc6,'.zip',sep=''), files = files)
 		setwd(sessiontemp)  #restores session
-		#Download handler       
+		#Download handler
 		output$outlierdownload4 <- downloadHandler(
 			filename <- function() {
 				paste("results.zip")

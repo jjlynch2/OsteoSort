@@ -369,7 +369,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					),
 					mainPanel(
 						htmlOutput('outliercontent'),
-						imageOutput('plotoutlier', width=400, height=400),
+						imageOutput('plotoutlier'),
 						tabsetPanel(id="tabSelectedoutlier",
 							tabPanel("Upper outliers",
 								DT::dataTableOutput('tjbingworka')
@@ -410,13 +410,16 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 			tabPanel("Stature",icon = icon("user", lib="font-awesome"),
 				sidebarLayout(
 					sidebarPanel(
-							uiOutput("stature_reference"),
-							uiOutput("testtypem1"),
-							conditionalPanel(condition = "input.stature_reference == 'Custom'",
+							uiOutput('resettableInput4'),
+							checkboxInput("custom", "Specify Slope and Intercept", TRUE),
+							conditionalPanel(condition = "input.custom",
 								numericInput("slope", label = "Slope", value = "", min=0,max=999,step=0.01),
 								numericInput("intercept", label = "Intercept", value = "", min=0,max=999,step=0.01)
 							),
-							uiOutput('resettableInput4'),
+							conditionalPanel(condition = "!input.custom",
+								uiOutput("stature_reference")
+							),
+							uiOutput("testtypem1"),
 							fluidRow(
 								column(6,
 									actionButton("settings4","Settings", icon=icon("keyboard-o"))
@@ -442,7 +445,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					),
 					mainPanel(
 						htmlOutput('outliercontent4'),
-						imageOutput('plotoutlier4', width=400, height=400),
+						imageOutput('plotoutlier4'),
 						tabsetPanel(id="tabSelectedoutlier",
 							tabPanel("Upper outliers",
 								DT::dataTableOutput('tjbingworka4')
@@ -454,7 +457,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					 			DT::dataTableOutput('tjbingworkc4')
 						 	)
 					 	),
-					 	bsModal("settingsoutlier4", title = "Settings", trigger = "settings4", size = "large", 
+					 	bsModal("settingsoutlier4", title = "Settings", trigger = "settings4", size = "medium", 
 					 		tabsetPanel(id="tabSelected2",
 								tabPanel("Output Paramters",
 									uiOutput("fileoutputstature1"),
@@ -649,7 +652,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 						),
 						mainPanel(
 							rglwidgetOutput('webgl3Dalign', width = "1200px", height = "1200px"),
-							bsModal("pcset3D", title = "Settings", trigger = "pcset", size = "large", 
+							bsModal("pcset3D", title = "Settings", trigger = "pcset", size = "medium", 
 								tabsetPanel(id="pcset33",
 									tabPanel("Statistical Parameters",
 										fluidRow(
@@ -813,7 +816,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					),
 					mainPanel(
 						htmlOutput('antestat_output'),
-						imageOutput('plotplotante', width=400, height=400),
+						imageOutput('plotplotante'),
 						DT::dataTableOutput('antestat_table'),
 					 	bsModal("settingsante2", title = "Settings", trigger = "settingsante", size = "large", 
 					 		tabsetPanel(id="tabSelected2s",

@@ -218,7 +218,7 @@ observeEvent(input$pro, {
 		sortb = tempdata1[tempdata1$Element == input$multiple_elements_association_b,]
 
 		reg.d1 <<- reg.input(sorta = sorta, sortb = sortb, sidea = input$multiple_association_side_a, sideb = input$multiple_association_side_b, bonea = input$multiple_elements_association_a, boneb = input$multiple_elements_association_b, measurementsa = multiple_MLA$multiple_ML, measurementsb = multiple_MLB$multiple_ML, ref = multiple_reference_imported$multiple_reference_imported)
-		d2 <- reg.test(threads = numbercoresglobal$ncore, ztest = multiple_ztransform$multiple_ztransform, type = multiple_association_types$multiple_association_types, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, output_options = multiple_file_output1$multiple_file_output1)
+		d2 <- reg.test(threads = numbercoresglobal$ncore, ztest = multiple_ztransform$multiple_ztransform, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, output_options = multiple_file_output1$multiple_file_output1)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}
 

@@ -56,7 +56,7 @@ cutoffg <<- cutoff
 			pointestimate[i,1] <- sort[i,1] #id name
 			pointestimate[i,2] <- sort[i,2] #Side name
 			pointestimate[i,3] <- sort[i,3] #Bone name
-			pointestimate[i,4] <- round( as.numeric(sort[i,4]) * slope + intercept, digits=2) #PE name #add *0.1 for trotter shit when testing
+			pointestimate[i,4] <- round( as.numeric(sort[i,4]) * slope + intercept, digits=2)
 		}
 	} else {
 		refdata <- array(NA,c(length(ref[,1]),5)) 
@@ -66,19 +66,16 @@ cutoffg <<- cutoff
 		refdata[,4] <- tolower(ref[["Element"]])
 		refdata[,5] <- ref[[paste(measurements)]]
 		ref <- na.omit(refdata)
-
 		sort_left <- sort[sort[,2] == "left",]
 		sort_right <- sort[sort[,2] == "right",]
 		ref_left <- ref[ref[,2] == "left",]
 		ref_right <- ref[ref[,2] == "right",]
-
 		if(nrow(sort_left) >= 1) {
-			OLSL <- lm(X3 ~ X5, data = data.frame(ref_left))
+			OLSL <- lm(as.numeric(X3) ~ as.numeric(X5), data = data.frame(ref_left))
 		}
 		if(nrow(sort_right) >= 1) {
-			OLSR <- lm(X3 ~ X5, data = data.frame(ref_right))
+			OLSR <- lm(as.numeric(X3) ~ as.numeric(X5), data = data.frame(ref_right))
 		}
-
 		pointestimate <- array(NA,c(length(sort[,1]),4))
 		for(i in 1:nrow(sort)) {
 			if(sort[i,2] == "left") {
@@ -87,7 +84,6 @@ cutoffg <<- cutoff
 			if(sort[i,2] == "right") {
 				model <- OLSR
 			}
-
 			pointestimate[i,1] <- sort[i,1] #id name
 			pointestimate[i,2] <- sort[i,2] #Side name
 			pointestimate[i,3] <- sort[i,3] #Bone name
