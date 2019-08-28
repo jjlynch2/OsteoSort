@@ -54,7 +54,7 @@ end
 end
 
 @everywhere function REGSL_worker(v1, m2, li, RL, RR)
-	res = zeros(size(m2,1),size(m2,2)+7+size(v1,1)) #plus 7 and size of measurements for v1 m2?
+	res = zeros(size(m2,1),size(m2,2)+8+size(v1,1)) #plus 8 and size of measurements for v1 m2?
 	res_1 = measurement_counter(v1) #transposes and counts
 	dsum_1 = log(sum(v1)) #should work outside of the loops since 0 
 	refd_a = zeros(1,1)
@@ -117,8 +117,8 @@ end
 			sigma = sigma_ref_cache[cache_i]
 			OLS = OLS_ref_cache[cache_i]
 		else
-			refd_1 = refd_1[2:end,1] #remove first row
-			refd_2 = refd_2[2:end,1] #remove first row
+			refd_1 = refd_1[2:end,1] #remove first row 0
+			refd_2 = refd_2[2:end,1] #remove first row 0
 			X = hcat(fill(1, size(refd_1, 1)), refd_1)
 			OLS = fit(LinearModel, X, refd_2, false)
 			sigma = res_std_err(OLS)
@@ -147,11 +147,12 @@ end
 		res[x,5] = mean_ref #mean sample
 		res[x,6] = sd_ref #sd sample
 		res[x,7] = n #reference sample size
+		res[x,8] = r2 #r-square
 		for j in m_counter_1_o
-			res[x,j+7] = 1
+			res[x,j+8] = 1
 		end
 		for j in m_counter_2_o
-			res[x,j+7+size(v1,1)] = 1
+			res[x,j+8+size(v1,1)] = 1
 		end
 	end
 	return res

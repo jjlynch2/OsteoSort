@@ -51,7 +51,7 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
 	if(type == "Logarithm Composite") { #true PCA CCA regression
-		results <- julia_call("REGSL", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
+		results <<- julia_call("REGSL", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("REGSL_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
@@ -66,9 +66,9 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	}
 	#transform numerical T/F to measurement names
 	if(nrow(results) > 1) {
-		measurements <- data.frame(results[,c(8:ncol(results))])
+		measurements <- data.frame(results[,c(9:ncol(results))])
 	}else {
-		measurements <- data.frame(t(results[c(8:length(results))]))
+		measurements <- data.frame(t(results[c(9:length(results))]))
 	}
 	measurement_names <- unique(c(colnames(sorta[,-c(1:3)]), colnames(sortb[,-c(1:3)])))
 	for(i in 1:ncol(measurements)) {
@@ -77,15 +77,15 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	}
 	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
 	#format data.frame to return
-	results_formatted <- data.frame(cbind(id_1 = sorta[results[,1],1], element_1 = sorta[results[,1],3], side_1 = sorta[results[,1],2], id_2 = sortb[results[,2],1], element_2 = sortb[results[,2],3], side_2 = sortb[results[,2],2], measurements = measurements, p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
+	results_formatted <- data.frame(cbind(id_1 = sorta[results[,1],1], element_1 = sorta[results[,1],3], side_1 = sorta[results[,1],2], id_2 = sortb[results[,2],1], element_2 = sortb[results[,2],3], side_2 = sortb[results[,2],2], measurements = measurements, p_value = round(results[,4], digits = 4), r2 = round(results[,8], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
 
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {
-		if(results_formatted[i,8] > alphalevel) {
-			results_formatted[i,12] <- c("Cannot Exclude")
+		if(results_formatted[i,9] > alphalevel) {
+			results_formatted[i,13] <- c("Cannot Exclude")
 		}
-		if(results_formatted[i,8] <= alphalevel) {
-			results_formatted[i,12] <- c("Excluded")
+		if(results_formatted[i,9] <= alphalevel) {
+			results_formatted[i,13] <- c("Excluded")
 		}
 	}
 
@@ -93,7 +93,7 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}
 	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[1:nrow(plot_data)-1,1],plot_data[1:nrow(plot_data)-1,2], plot_data[nrow(plot_data),1], plot_data[nrow(plot_data),2]), method="exclusion", type="plot2")
+		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[[1]],plot_data[[2]], plot_data[[3]], plot_data[[4]]), method="exclusion", type="plot2")
 	}
 
 	gc()

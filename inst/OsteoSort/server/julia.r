@@ -1,4 +1,4 @@
 #load Julia environment
-showModal(modalDialog(title = "Loading Analytical environment...", easyClose = FALSE, footer = NULL))
+showModal(modalDialog(title = "Loading analytical environment...", easyClose = FALSE, footer = NULL))
 JV <- JuliaSetup(libraries = TRUE, source = TRUE)
 removeModal()

@@ -3,7 +3,7 @@ function REGSL(SL, SR, RL, RR)
 	n2 = size(SR,1)
 	n3 = size(SL,2)
 	n4 = size(SR,2)
-	Results = SharedArray{Float64}(n2*n1,n3+n4+7)
+	Results = SharedArray{Float64}(n2*n1,n3+n4+8)
 	@sync @distributed for k in 1:n1
 		Results[((k*n2) - n2+1):(k*n2),:] = REGSL_worker(SL[k,:], SR, k, RL, RR)
 	end
