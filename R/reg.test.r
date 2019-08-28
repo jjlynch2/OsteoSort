@@ -17,7 +17,7 @@
 #' @examples 
 #' reg.multitest()
 
-reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, output_options = c(TRUE,FALSE), threads = 1, type = "Logarithm Composite", pca = 0.99, alphalevel = 0.05) {	
+reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, output_options = c(TRUE,FALSE), threads = 1, type = "Logarithm Composite", alphalevel = 0.05) {	
 	if(threads != julia_call("nprocs")) {
 		print("Setting up Julia workers...")
 		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
@@ -26,7 +26,6 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	force(alphalevel)
 	force(threads)
 	force(type)
-	force(pca)
 	force(ztest)
 	force(output_options)
 	force(sessiontempdir)
@@ -54,14 +53,6 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 		results <<- julia_call("REGSL", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("REGSL_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
-		}
-	} else if (type == "CCA Ordination") { #false simple regression
-		if(is.numeric(pca) && ztest) {
-
-		} else if (ztest) {
-			output_options[2] = FALSE
-		} else if (is.numeric(pca)) {
-
 		}
 	}
 	#transform numerical T/F to measurement names

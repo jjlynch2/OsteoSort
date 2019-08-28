@@ -14,8 +14,15 @@ observeEvent(input$clearFile3, {
 	fileInput('file3', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 })
 
+fileoutputl1 <- reactiveValues(fileoutputl1 = TRUE)
+output$fileoutputl1 <- renderUI({
+	checkboxInput(inputId = "fileoutputl1", label = "Output csv file", value = TRUE)
+})
 
-
+fileoutputl2 <- reactiveValues(fileoutputl2 = TRUE)
+output$fileoutputl2 <- renderUI({
+	checkboxInput(inputId = "fileoutputl2", label = "Output plot", value = TRUE)
+})
 
 OSmethod <- reactiveValues(OSmethod = "Standard_deviation")
 observeEvent(input$method, {
@@ -72,7 +79,7 @@ observeEvent(input$pro3, {
 	}
 
 	#calls sorting function
-	outtemp <- metricsort(sort = datafile3$datafile3, method = OSmethod$OSmethod, measurements = input$zzm, cutoff = cutoffvalue, sessiontempdir = sessiontemp, output_options = c(input$fileoutputl1, input$fileoutputl2))
+	outtemp <- metricsort(sort = datafile3$datafile3, method = OSmethod$OSmethod, measurements = input$zzm, cutoff = cutoffvalue, sessiontempdir = sessiontemp, output_options = c(fileoutputl1$fileoutputl1, fileoutputl2$fileoutputl2))
 	
 	#counts number of outliers discovered
 	outliercount <- 0
@@ -99,7 +106,7 @@ observeEvent(input$pro3, {
 		DT::datatable(outtemp[[4]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 
-	if(input$fileoutputl2) {
+	if(fileoutputl2$fileoutputl2) {
 		nimages <- list.files(outtemp[[1]])
 		nimages <- paste(sessiontemp, "/", outtemp[[1]], "/", nimages[grep(".jpg", nimages)], sep="")
 
@@ -113,8 +120,8 @@ observeEvent(input$pro3, {
 		}, deleteFile = FALSE)
 	}
 	removeModal() #removes modal
-	if(input$fileoutputl1 || input$fileoutputl2) {
-		#Zip handler       
+	if(fileoutputl1$fileoutputl1 || fileoutputl2$fileoutputl2) {
+		#Zip handler
 		direc6 <- outtemp[[1]] #direc temp
 		files <- list.files(direc6, recursive = TRUE)
 		setwd(direc6)

@@ -18,30 +18,6 @@ observeEvent(input$single_file_output2, {
 	single_file_output2$single_file_output2 <- input$single_file_output2
 })
 
-association_types <- reactiveValues(association_types = "Logarithm Composite") 
-output$association_types <- renderUI({
-	radioButtons(inputId ="association_types", label = "Regression type", choices = c("CCA Ordination", "Logarithm Composite"), selected = "Logarithm Composite")
-})
-observeEvent(input$association_types, {
-	association_types$association_types <- input$association_types
-})
-
-association_pca <- reactiveValues(association_pca = TRUE) 
-output$association_pca <- renderUI({
-	checkboxInput(inputId ="association_pca", label = "Principal Component Analysis", value = TRUE)
-})
-observeEvent(input$association_pca, {
-	association_pca$association_pca <- input$association_pca
-})
-
-association_pca_variance <- reactiveValues(association_pca_variance = 0.99) 
-output$association_pca_variance <- renderUI({
-	sliderInput(inputId = "association_pca_variance", label = "Cumulative Variance", min=0.1, max = 0.99, value = 0.99)
-})
-observeEvent(input$association_pca_variance, {
-	association_pca_variance$association_pca_variance <- input$association_pca_variance
-})
-
 common_alpha_level <- reactiveValues(common_alpha_level = 0.05) 
 output$common_alpha_level <- renderUI({
 	sliderInput(inputId = "common_alpha_level", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
@@ -276,11 +252,6 @@ observeEvent(input$proc, {
 		d2 <- ttest(ztest = single_ztransform$single_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 	} else if(input$single_analysis == "Non_antimere regression") {
-		if(association_pca$association_pca) {
-			pca = association_pca_variance$association_pca_variance
-		} else {
-			pca = NULL
-		}
 
 		single_input_list_A <- reactiveValues(single_input_list_A = c())
 		lapply(single_MLA$single_ML, function(i) {
@@ -299,7 +270,7 @@ observeEvent(input$proc, {
 		sorta <- data.frame(id = input$ID1, Side = input$single_association_side_a, Element = input$single_elements_association_a, single_input_list_A$single_input_list_A, stringsAsFactors = FALSE)
 		sortb <- data.frame(id = input$ID2, Side = input$single_association_side_b, Element = input$single_elements_association_b, single_input_list_B$single_input_list_B, stringsAsFactors = FALSE)
 		reg.d1 <- reg.input(sorta = sorta, sortb = sortb, sidea = input$single_association_side_a, sideb = input$single_association_side_b, bonea = input$single_elements_association_a, boneb = input$single_elements_association_b, measurementsa = single_MLA$single_ML, measurementsb = single_MLB$single_ML, ref = single_reference_imported$single_reference_imported)
-		d2 <- reg.test(ztest = single_ztransform$single_ztransform, type = association_types$association_types, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2), pca = pca)
+		d2 <- reg.test(ztest = single_ztransform$single_ztransform, type = association_types$association_types, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}
 

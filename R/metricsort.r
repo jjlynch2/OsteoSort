@@ -15,12 +15,6 @@
 #' metricsort()
 
 metricsort <- function (sort, method = "Quartiles", measurements = NULL, sessiontempdir = NULL, cutoff = c(1.5,2), output_options = c(TRUE, TRUE)) {
-
-GS <<- sort
-SM <<- method
-SMM <<- measurements
-SC <<- cutoff
-
 	print("Outlier analysis started")
 	options(stringsAsFactors = FALSE)  
 	upperfile = "upper.csv"
@@ -65,11 +59,10 @@ SC <<- cutoff
 		plotme <- median(as.numeric(sort[,4]))
 	}
 	
-	
 	outlierdfupper <- array(NA,c(length(sort[,1]),4))
 	outlierdflower <- array(NA,c(length(sort[,1]),4))
 	nonoutliersdf <- array(NA,c(length(sort[,1]),4))
-	#shitty forloop
+
 	for(i in 1:length(sort[,1])) {
 		if(nocut) {
 			if(as.numeric(sort[i,4]) > upper) {
@@ -127,8 +120,6 @@ SC <<- cutoff
 			}
 		}
 	}
-	
-	
 	if(output_options[2]) {
 		no <- OsteoSort:::output_function(hera1 = list(sort[,4], measurements, plotme, upper, lower, lowermax, uppermax, nocut), method = "OS", type = "plot")
 	}

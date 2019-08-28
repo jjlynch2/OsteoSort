@@ -20,30 +20,6 @@ observeEvent(input$multiple_file_output1, {
 	multiple_file_output1$multiple_file_output1 <- input$multiple_file_output1
 })
 
-multiple_association_types <- reactiveValues(multiple_association_types = "Logarithm Composite") 
-output$multiple_association_types <- renderUI({
-	radioButtons(inputId ="multiple_association_types", label = "Regression type", choices = c("CCA Ordination", "Logarithm Composite"), selected = "Logarithm Composite")
-})
-observeEvent(input$multiple_association_types, {
-	multiple_association_types$multiple_association_types <- input$multiple_association_types
-})
-
-multiple_association_pca <- reactiveValues(multiple_association_pca = TRUE) 
-output$multiple_association_pca <- renderUI({
-	checkboxInput(inputId ="multiple_association_pca", label = "Principal Component Analysis", value = TRUE)
-})
-observeEvent(input$multiple_association_pca, {
-	multiple_association_pca$multiple_association_pca <- input$multiple_association_pca
-})
-
-multiple_association_pca_variance <- reactiveValues(multiple_association_pca_variance = 0.99) 
-output$multiple_association_pca_variance <- renderUI({
-	sliderInput(inputId = "multiple_association_pca_variance", label = "Cumulative Variance", min=0.1, max = 0.99, value = 0.99)
-})
-observeEvent(input$multiple_association_pca_variance, {
-	multiple_association_pca_variance$multiple_association_pca_variance <- input$multiple_association_pca_variance
-})
-
 multiple_common_alpha_level <- reactiveValues(multiple_common_alpha_level = 0.05) 
 output$multiple_common_alpha_level <- renderUI({
 	sliderInput(inputId = "multiple_common_alpha_level", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
@@ -236,18 +212,13 @@ observeEvent(input$pro, {
 		d2 <- ttest(ztest = multiple_ztransform$multiple_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = multiple_file_output1$multiple_file_output1, threads = numbercoresglobal$ncore)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 	} else if(input$multiple_analysis == "Non-Antimere regression") {
-		if(multiple_association_pca$multiple_association_pca) {
-			pca = multiple_association_pca_variance$multiple_association_pca_variance
-		} else {
-			pca = NULL
-		}
 
 		tempdata1$Element <- tolower(tempdata1$Element)
 		sorta = tempdata1[tempdata1$Element == input$multiple_elements_association_a,]
 		sortb = tempdata1[tempdata1$Element == input$multiple_elements_association_b,]
 
 		reg.d1 <<- reg.input(sorta = sorta, sortb = sortb, sidea = input$multiple_association_side_a, sideb = input$multiple_association_side_b, bonea = input$multiple_elements_association_a, boneb = input$multiple_elements_association_b, measurementsa = multiple_MLA$multiple_ML, measurementsb = multiple_MLB$multiple_ML, ref = multiple_reference_imported$multiple_reference_imported)
-		d2 <- reg.test(threads = numbercoresglobal$ncore, ztest = multiple_ztransform$multiple_ztransform, type = multiple_association_types$multiple_association_types, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, output_options = multiple_file_output1$multiple_file_output1, pca = pca)
+		d2 <- reg.test(threads = numbercoresglobal$ncore, ztest = multiple_ztransform$multiple_ztransform, type = multiple_association_types$multiple_association_types, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, output_options = multiple_file_output1$multiple_file_output1)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}
 

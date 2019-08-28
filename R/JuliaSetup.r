@@ -9,7 +9,7 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 
 	if (libraries) {
 		julia <- JuliaCall::julia_setup()
-		pkg = c("Pkg","Statistics","Distributed","SharedArrays", "Optim", "Rmath", "GLM")
+		pkg = c("Pkg","Statistics", "Distributed","SharedArrays", "Optim", "Rmath", "GLM")
 		for(i in pkg) {
 			print(paste("Loading Julia package: ", i, sep=""))
 			JuliaCall::julia_install_package_if_needed(i)

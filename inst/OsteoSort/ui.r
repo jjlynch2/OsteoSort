@@ -222,15 +222,9 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 									fluidRow(
 										column(8, 
 											conditionalPanel(condition = "input.single_analysis == 'Non_antimere regression'", 
-												uiOutput("association_types"),
-												conditionalPanel(condition = "input.association_types == 'CCA Ordination'",
-													uiOutput("association_pca"),
-													conditionalPanel(condition = "input.association_pca",
-														uiOutput("association_pca_variance")
-													)
-												)
+												uiOutput("association_types")
 											),
-											conditionalPanel(condition = "input.single_analysis == 'Antimere t-test' || input.single_analysis == 'Non_antimere regression' && input.association_types == 'CCA Ordination'", 
+											conditionalPanel(condition = "input.single_analysis == 'Antimere t-test'", 
 												uiOutput("single_ztransform")
 											),
 											conditionalPanel(condition = "!input.single_ztransform && input.single_analysis != 'Non_antimere regression' || input.single_analysis == 'Non_antimere t-test'",
@@ -316,15 +310,9 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 										fluidRow(
 											column(8,
 											conditionalPanel(condition = "input.multiple_analysis == 'Non-Antimere regression'", 
-												uiOutput("multiple_association_types"),
-												conditionalPanel(condition = "input.multiple_association_types == 'CCA Ordination'",
-													uiOutput("multiple_association_pca"),
-													conditionalPanel(condition = "input.multiple_association_pca",
-														uiOutput("multiple_association_pca_variance")
-													)
-												)
+												uiOutput("multiple_association_types")
 											),
-											conditionalPanel(condition = "input.multiple_analysis == 'Antimere t-test' || input.multiple_analysis == 'Non-Antimere regression' && input.multiple_association_types == 'CCA Ordination'", 
+											conditionalPanel(condition = "input.multiple_analysis == 'Antimere t-test'", 
 												uiOutput("multiple_ztransform")
 											),
 											conditionalPanel(condition = "!input.multiple_ztransform && input.multiple_analysis != 'Non-Antimere regression'",
@@ -353,11 +341,8 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					sidebarPanel(
 
 
-						uiOutput('resettableInput3'),	
-
-						uiOutput("testtype3"),
+						uiOutput('resettableInput3'),
 						uiOutput("testtypem"),
-						uiOutput("testtypes"),
 
 						fluidRow(
 							column(6,
@@ -399,8 +384,8 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					 	bsModal("settingsoutlier", title = "Settings", trigger = "settings3", size = "medium", 
 					 		tabsetPanel(id="tabSelected2",
 								tabPanel("Output Paramters",
-									checkboxInput(inputId = "fileoutputl1", label = "Output csv file", value = TRUE),
-									checkboxInput(inputId = "fileoutputl2", label = "Output plot", value = TRUE)
+									uiOutput("fileoutputl1"),
+									uiOutput("fileoutputl2")
 								),
 								tabPanel("Statistical Parameters",
 									fluidRow(
@@ -424,17 +409,14 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 			),
 			tabPanel("Stature",icon = icon("user", lib="font-awesome"),
 				sidebarLayout(
-					sidebarPanel(					
-							selectInput(inputId = 'metric_type2', 'Stature metric', c(Millimeters = "mm", Centimeters = "cm", Inches = "in"), selected = 'in'),
-							uiOutput("testtype4"),
-							selectInput("outlierside4", "Side", c(Left='Left', Right='Right', Both='Both'), 'Both'),
-							conditionalPanel(condition ="input.zz4 == 'tibia' || input.zz4 == 'femur'",
-								selectInput("population5G", "Population", c(Genoves_cstat_mexican_female='genoves-cstat-mexican-female',Genoves_cstat_mexican_male='genoves-cstat-mexican-male',FDB_19th_cstat_any='19th-cstat-any',FDB_19th_cstat_white_male='19th-cstat-white-male',FDB_19th_cstat_white_female='19th-cstat-white-female',FDB_19th_cstat_black_male='19th-cstat-black-male',FDB_19th_cstat_black_female='19th-cstat-black-female',FDB_20th_FStat_any='20th-FStat-any', FDB_20th_FStat_white_male='20th-FStat-white-male', FDB_20th_FStat_white_female='20th-FStat-white-female', FDB_20th_FStat_black_male='20th-FStat-black-male', FDB_20th_FStat_black_female='20th-FStat-black-female', FDB_20th_FStat_hispanic_male='20th-FStat-hispanic-male', Trotter_any_male='Trotter-any-male', Trotter_black_male='Trotter-black-male', Trotter_white_male='Trotter-white-male'), 'genoves-cstat-mexican-female')
+					sidebarPanel(
+							uiOutput("stature_reference"),
+							uiOutput("testtypem1"),
+							conditionalPanel(condition = "input.stature_reference == 'Custom'",
+								numericInput("slope", label = "Slope", value = "", min=0,max=999,step=0.01),
+								numericInput("intercept", label = "Intercept", value = "", min=0,max=999,step=0.01)
 							),
-							conditionalPanel(condition ="input.zz4 != 'tibia' && input.zz4 != 'femur'",
-								selectInput("population4", "Population", c(FDB_19th_cstat_any='19th-cstat-any',FDB_19th_cstat_white_male='19th-cstat-white-male',FDB_19th_cstat_white_female='19th-cstat-white-female',FDB_19th_cstat_black_male='19th-cstat-black-male',FDB_19th_cstat_black_female='19th-cstat-black-female',FDB_20th_FStat_any='20th-FStat-any', FDB_20th_FStat_white_male='20th-FStat-white-male', FDB_20th_FStat_white_female='20th-FStat-white-female', FDB_20th_FStat_black_male='20th-FStat-black-male', FDB_20th_FStat_black_female='20th-FStat-black-female', FDB_20th_FStat_hispanic_male='20th-FStat-hispanic-male', Trotter_any_male='Trotter-any-male', Trotter_black_male='Trotter-black-male', Trotter_white_male='Trotter-white-male'), 'Trotter-any-male')
-							),
-							uiOutput('resettableInput4'),	
+							uiOutput('resettableInput4'),
 							fluidRow(
 								column(6,
 									actionButton("settings4","Settings", icon=icon("keyboard-o"))
@@ -475,40 +457,8 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					 	bsModal("settingsoutlier4", title = "Settings", trigger = "settings4", size = "large", 
 					 		tabsetPanel(id="tabSelected2",
 								tabPanel("Output Paramters",
-									checkboxInput(inputId = "fileoutputstature1", label = "Output csv file", value = TRUE),
-									checkboxInput(inputId = "fileoutputstature2", label = "Output plot", value = TRUE)
-								),
-								tabPanel("Measurements",
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'humerusmeasurements4', 'Humerus', c('Hum_01'), inline = TRUE, selected = 'Hum_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'radiusmeasurements4', 'Radius', c('Rad_01'), inline = TRUE, selected = 'Rad_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'ulnameasurements4', 'Ulna', c('Uln_01'), inline = TRUE, selected = 'Uln_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'femurmeasurements4', 'Femur', c('Fem_01'), inline = TRUE, selected = 'Fem_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'tibiameasurements4', 'Tibia', c('Tib_01'), inline = TRUE, selected = 'Tib_01')
-										)
-									),
-			 						fluidRow(
-										column(12,
-											radioButtons(inputId = 'fibulameasurements4', 'Fibula', c('Fib_01'), inline = TRUE, selected = 'Fib_01')
-										)
-									)
+									uiOutput("fileoutputstature1"),
+									uiOutput("fileoutputstature2")
 								),
 								tabPanel("Statistical Parameters",
 									fluidRow(

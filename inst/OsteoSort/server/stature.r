@@ -1,6 +1,4 @@
-output$testtype4 <- renderUI({
-	selectInput('zz4', 'Elements', c(Humerus='humerus', Ulna='ulna', Radius='radius', Femur='femur', Tibia='tibia', Fibula='fibula'),'humerus')
-})
+
 
 #upload GUI for resettable input
 output$resettableInput4 <- renderUI({
@@ -10,60 +8,100 @@ output$resettableInput4 <- renderUI({
 })
 
 output$outliercontent4 <- renderUI({
-   HTML(paste(""))
-})	
+	HTML(paste(""))
+})
 
 #clears session for multiple comparison
 observeEvent(input$clearFile4, {
 	fileInput('file4', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 })
 
+fileoutputstature1 <- reactiveValues(fileoutputstature1 = TRUE)
+output$fileoutputstature1 <- renderUI({
+	checkboxInput(inputId = "fileoutputstature1", label = "Output csv file", value = TRUE)
+})
+
+fileoutputstature2 <- reactiveValues(fileoutputstature2 = TRUE)
+output$fileoutputstature2 <- renderUI({
+	checkboxInput(inputId = "fileoutputstature2", label = "Output plot", value = TRUE)
+})
+
+OSmethod1 <- reactiveValues(OSmethod1 = "Standard_deviation")
+observeEvent(input$method4, {
+	OSmethod1$OSmethod1 <- input$method4
+})
+
+OSsd1 <- reactiveValues(OSsd1 = c(2.0, 2))
+observeEvent(input$standard_dev4, {
+	OSsd1$OSsd1 <- input$standard_dev4
+})
+
+OSqt1 <- reactiveValues(OSqt1 = c(1.5, 1.5))
+observeEvent(input$Quartiles4, {
+	OSqt1$OSqt1 <- input$Quartiles4
+})
+
+datafile4 <- reactiveValues(datafile4 = TRUE)
+observeEvent(input$file4, {
+	tempdata3 <- read.csv(input$file4$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA", "-","*"), stringsAsFactors = FALSE)## see na.strings forces NA for blanks, spaces, etc
+	tempdataaa <- tempdata3[,1:3]
+	tempdataba <- lapply(tempdata3[,-(1:3)], function(x) { as.numeric(as.character(x))})
+	tempdata3 <- c(tempdataaa, tempdataba)
+	tempdata3 <- as.data.frame(tempdata3) #combines first four columns with now numeric measurements
+	datafile4$datafile4 <- tempdata3
+	output$testtypem1 <- renderUI({
+		selectInput('zzm1', 'Measurements', c(colnames(datafile4$datafile4)[-c(1:3)]))
+	})
+})
+
+stature_reference <- reactiveValues(stature_reference = c("temp"))
+observeEvent(input$stature_reference, {
+	stature_reference$stature_reference <- input$stature_reference
+})
+output$stature_reference <- renderUI({
+	selectInput(inputId = "stature_reference", label = "Reference", choices = c("Custom", reference_name_list$reference_name_list))
+})
+
+stature_reference_imported <- reactiveValues(stature_reference_imported = data.frame())
+observeEvent(input$stature_reference, {
+	if(input$stature_reference != "Custom") {
+		stature_reference_imported$stature_reference_imported <- reference_list$reference_list[[stature_reference$stature_reference]]
+	}
+})
+
 observeEvent(input$pro4, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
 	withProgress(message = 'Calculation has started',
-	            detail = '', value = 0, {       
-	            for (i in 1:10) {
-	       incProgress(1/10)
-	       Sys.sleep(0.05)
-	     }
+		detail = '', value = 0, {
+		for (i in 1:10) {
+			incProgress(1/10)
+			Sys.sleep(0.05)
+		}
 	})
 	
-	#Upload CSV file
-	inFile4 <- input$file4
-   
-	 #return null if not uploaded
-	if (is.null(inFile4)){
-		removeModal()                             
+	if (is.null(input$file4)){
+		removeModal()
 		return(NULL) 
 	}
-	#return null if empty file
-	if (!file.size(inFile4$datapath) > 1)
-		{
-		removeModal()                             
+	if (!file.size(input$file4$datapath) > 1){
+		removeModal()
 		return(NULL)
 	}
-	tempdata3 <- read.csv(inFile4$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA", "-","*"))## see na.strings forces NA for blanks, spaces, etc
 
-	#checks if measurements are numeric and converts alpha characters to numeric   
-	tempdataaa <- tempdata3[,1:4]
-	tempdataba <- lapply(tempdata3[,-(1:4)], function(x) { as.numeric(as.character(x))})
-   
-	tempdata3 <- c(tempdataaa, tempdataba)
-	tempdata3 <- as.data.frame(tempdata3) #combines first four columns with now numeric measurements
-	
-	#defines measurements and methods from user input
-	if(input$zz4 == "humerus") {outliermeasurements <- input$humerusmeasurements4; poppop <- input$population4}
-	if(input$zz4 == "radius") {outliermeasurements <- input$radiusmeasurements4; poppop <- input$population4}
-	if(input$zz4 == "ulna") {outliermeasurements <- input$ulnameasurements4; poppop <- input$population4}
-	if(input$zz4 == "femur") {outliermeasurements <- input$femurmeasurements4; poppop <- input$population5G}
-	if(input$zz4 == "tibia") {outliermeasurements <- input$tibiameasurements4; poppop <- input$population5G}
-	if(input$zz4 == "fibula") {outliermeasurements <- input$fibulameasurements4; poppop <- input$population4}
-	if(input$method4 == "Standard_deviation") {cutoffvalue <- input$standard_dev4}
-	if(input$method4 == "Quartiles") {cutoffvalue <- input$Quartiles4}
-	
-	#calls sorting function
-	outtemp <- statsort(metric = input$metric_type2, sort = tempdata3, side = input$outlierside4, bone = input$zz4, method = input$method4, measurements = outliermeasurements, cutoff = cutoffvalue, sessiontempdir = sessiontemp, population = poppop, output_options = c(input$fileoutputstature1, input$fileoutputstature2))
-	
+	if(OSmethod1$OSmethod1 == "Standard_deviation") {
+		cutoffvalue <- OSsd1$OSsd1
+	} else {
+		cutoffvalue <- OSqt1$OSqt1
+	}
+
+	if(input$stature_reference == "Custom") {
+		reference <- c("Custom", input$slope, input$intercept)
+	} else {
+		reference <- stature_reference_imported$stature_reference_imported
+	}
+
+	outtemp <- statsort(sort = datafile4$datafile4, ref = reference, method = OSmethod1$OSmethod1, measurements = input$zzm1, cutoff = cutoffvalue, sessiontempdir = sessiontemp, output_options = c(fileoutputstature1$fileoutputstature1, fileoutputstature2$fileoutputstature2))
+
 	#counts number of outliers discovered
 	outliercount <- 0
 	if(!is.null(outtemp[[2]])) {outliercount <- nrow(outtemp[[2]])}
@@ -76,7 +114,7 @@ observeEvent(input$pro4, {
 					"<br/>", "Standard Deviation: ",  "<font color=\"#00688B\">",outtemp[[6]], "</font>",
 					"<br/>", "Median: ",              "<font color=\"#00688B\">",outtemp[[7]], "</font>",
 					"<br/>", "Interquartile: ",       "<font color=\"#00688B\">",outtemp[[8]], "</font>","</strong>"))
-	})   
+	})
 
 	output$tjbingworkb4 <- DT::renderDataTable({
 		DT::datatable(outtemp[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
@@ -88,7 +126,7 @@ observeEvent(input$pro4, {
 		DT::datatable(outtemp[[4]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 
-	if(input$fileoutputstature2) {
+	if(fileoutputstature2$fileoutputstature2) {
 		nimages <- list.files(outtemp[[1]])
 		nimages <- paste(sessiontemp, "/", outtemp[[1]], "/", nimages[grep(".jpg", nimages)], sep="")
 
@@ -102,7 +140,7 @@ observeEvent(input$pro4, {
 		}, deleteFile = FALSE)
 	}
 	removeModal() #removes modal
-	if(input$fileoutputstature1 || input$fileoutputstature2) {
+	if(fileoutputstature1$fileoutputstature1 || fileoutputstature2$fileoutputstature2) {
 		#Zip handler       
 		direc6 <- outtemp[[1]] #direc temp
 		files <- list.files(direc6, recursive = TRUE)
@@ -113,7 +151,7 @@ observeEvent(input$pro4, {
 		output$outlierdownload4 <- downloadHandler(
 			filename <- function() {
 				paste("results.zip")
-			},      
+			},
 			content <- function(file) {
 				setwd(direc6)
 				file.copy(paste(direc6,'.zip',sep=''), file) 
