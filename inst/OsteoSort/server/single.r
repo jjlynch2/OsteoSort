@@ -4,7 +4,7 @@ output$single_contents <- renderUI({
 
 single_file_output1 <- reactiveValues(single_file_output1 = TRUE) 
 output$single_file_output1 <- renderUI({
-	checkboxInput(inputId = "single_file_output1", label = "Output excel file", value = TRUE)
+	checkboxInput(inputId = "single_file_output1", label = "Output csv file", value = TRUE)
 })
 observeEvent(input$single_file_output1, {
 	single_file_output1$single_file_output1 <- input$single_file_output1

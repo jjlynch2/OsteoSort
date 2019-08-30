@@ -22,7 +22,6 @@ reg.input <- function(ref = NULL, sorta = NULL, sortb = NULL, bonea = NULL, bone
 	options(stringsAsFactors = FALSE)
 	options(as.is = TRUE)
 	options(warn = -1)
-	#if(is.null(bones) || is.null(sort)){return(NULL)}
 
 	sidea <- tolower(sidea)
 	sideb <- tolower(sideb)

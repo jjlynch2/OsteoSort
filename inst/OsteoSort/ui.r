@@ -759,78 +759,55 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 			tabPanel("Single",icon = icon("gear", lib="font-awesome"),
 				sidebarLayout(
 					sidebarPanel(
-						selectInput(inputId = 'metric_type', 'Stature metric', c(Millimeters = "mm", Centimeters = "cm", Inches = "in"), selected = 'in'),
-						uiOutput("antestat_test"),
-						selectInput("antestat_population", "Population", c(DPAA_any_male = "DPAA-any-male", DPAA_white_male = "DPAA-white-male", DPAA_black_male = "DPAA-black-male",FDB_20th_FStat_any='20th-FStat-any', FDB_20th_FStat_white_male='20th-FStat-white-male', FDB_20th_FStat_white_female='20th-FStat-white-female', FDB_20th_FStat_black_male='20th-FStat-black-male', FDB_20th_FStat_black_female='20th-FStat-black-female', Trotter_any_male='Trotter-any-male', Trotter_black_male='Trotter-black-male', Trotter_white_male='Trotter-white-male'), 'Trotter-any-male'),
-						selectInput("ante_side", "Side", c(Left='Left', Right='Right')),
-							fluidRow(
-								column(6,
-									conditionalPanel(condition = "input.antestat == 'humerus'",
-										numericInput(inputId = 'hu_antestat', label = 'Hum_01', value = '')
-									),
-									conditionalPanel(condition = "input.antestat == 'radius'",
-										numericInput(inputId = 'ra_antestat', label = 'Rad_01', value = '')
-									),
-									conditionalPanel(condition = "input.antestat == 'ulna'",
-										numericInput(inputId = 'ul_antestat', label = 'Uln_01', value = '')
-									),
-									conditionalPanel(condition = "input.antestat == 'femur'",
-										numericInput(inputId = 'fe_antestat', label = 'Fem_01', value = '')
-									),
-									conditionalPanel(condition = "input.antestat == 'tibia'",
-										numericInput(inputId = 'ti_antestat', label = 'Tib_01', value = '')
-									),
-									conditionalPanel(condition = "input.antestat == 'fibula'",
-										numericInput(inputId = 'fi_antestat', label = 'Fib_01', value = '')
-									),
-									textInput(inputId = 'Postmortem_ID', label = 'Postmortem ID', value = 'X2')
-
-								),
-								column(6,
-									numericInput(inputId = 'antestat_input', label = 'Stature', value = ''),
-									textInput(inputId = 'Antemortem_ID', label = 'Antemortem ID', value = 'X1')
-
-								)
+						uiOutput("stature_reference_ante"),
+						fluidRow(
+							column(12,
+								selectInput("state_reference_ante_side", "Side", c(Left='Left', Right='Right'))
 							),
-							fluidRow(
-								column(6,
-									actionButton("settingsante","Settings", icon=icon("keyboard-o"))
-								),
-								column(6,
-									actionButton("proantestat","Process ", icon = icon("cog"))
-								)
+							column(12,
+								uiOutput("single_ante_elements")
 							),
-							fluidRow(br()),
-							fluidRow(
-								column(6
-
-								),
-								column(6,
-									downloadButton("downloadantestat", "Save    ")
-								)
+							column(6,
+								uiOutput("single_measurements_ante"),
+								textInput(inputId = 'Postmortem_ID_ante', label = 'Postmortem ID', value = 'X1')
 							),
-							tags$style(type = "text/css", "#settingsante { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#proantestat { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#downloadantestat { width:100%; font-size:85%; background-color:#126a8f }"),
-							width=3
+							column(6,
+								numericInput(inputId = 'antestat_input', label = 'Stature', value = ''),
+								textInput(inputId = 'Antemortem_ID_ante', label = 'Antemortem ID', value = 'X2')
+							)
+						),
+						fluidRow(
+							column(6,
+								actionButton("settingsante","Settings", icon=icon("keyboard-o"))
+							),
+							column(6,
+								actionButton("proantestat","Process ", icon = icon("cog"))
+							)
+						),
+						fluidRow(br()),
+						fluidRow(
+							column(6,
+								downloadButton("downloadantestat", "Save    ")
+							)
+						),
+						tags$style(type = "text/css", "#settingsante { width:100%; font-size:85%; background-color:#126a8f }"),
+						tags$style(type = "text/css", "#proantestat { width:100%; font-size:85%; background-color:#126a8f }"),
+						tags$style(type = "text/css", "#downloadantestat { width:100%; font-size:85%; background-color:#126a8f }"),
+						width=3
 					),
 					mainPanel(
 						htmlOutput('antestat_output'),
 						imageOutput('plotplotante'),
 						DT::dataTableOutput('antestat_table'),
-					 	bsModal("settingsante2", title = "Settings", trigger = "settingsante", size = "large", 
+					 	bsModal("settingsante2", title = "Settings", trigger = "settingsante", size = "medium", 
 					 		tabsetPanel(id="tabSelected2s",
 								tabPanel("Output Paramters",
-									checkboxInput(inputId = "fileoutputant1", label = "Output csv file", value = TRUE),
-									checkboxInput(inputId = "fileoutputant2", label = "Output plot", value = TRUE)
+									uiOutput("fileoutputant1"),
+									uiOutput("fileoutputant2")
 								),	
 								tabPanel("Statistical Parameters",
 									fluidRow(column(6,
-											sliderInput(inputId = "predlevelantestat", label = "Prediction interval level", min=0.01, max=1, value=0.95, step = 0.01),
-											sliderInput(inputId = "alphalevelsantestat", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
-										),
-										column(6,
-											radioButtons(inputId = "alphatest1s", label = "Test type", choices = c(Alpha = "Alpha", PI = "PI"),"Alpha")
+											uiOutput("alphalevelsantestat")
 										)
 									)
 								)

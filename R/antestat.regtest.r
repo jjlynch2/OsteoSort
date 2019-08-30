@@ -17,84 +17,61 @@
 #' @examples 
 #' antestat.regtest()
 
-antestat.regtest <- function(sort = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(TRUE,FALSE), prediction_interval = 0.95, tails = 2, alphalevel = 0.05, alphatest = TRUE, threads = 1) {
+antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(TRUE,FALSE), alphalevel = 0.05, threads = 1) {
+	force(alphalevel)
+	force(threads)
+	force(output_options)
+	force(sessiontempdir)
+	if(threads != julia_call("nprocs")) {
+		print("Setting up Julia workers...")
+		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
+		print("Finished.")
+	}
 
-	sessiontempdir
-	output_options
-	prediction_interval
-	tails
-	alphalevel
-	alphatest
-	threads
-
-     print("Statistical comparisons started")   	
-	options(stringsAsFactors = FALSE) 
-
+	print("Comparisons are running...")
+	start_time <- start_time()
+	options(stringsAsFactors = FALSE)
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
-	if(is.na(ref) || is.null(ref)) {return(NULL)} #input san
-	if(is.na(sort) || is.null(sort)) {return(NULL)} #input san
+
+	if(is.na(antemortem) || is.null(antemortem)) {return(NULL)}
+	if(is.na(postmortem) || is.null(postmortem)) {return(NULL)}
+	if(is.na(ref) || is.null(ref)) {return(NULL)}
 
 	workingdir = getwd()
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
-	#reference regression model
-     mes <- ref[,1]
-	sta <- ref[,2]
-	lm1 <- lm(mes~sta)
-	nref <- length(sta) #reference size
+	results <<- julia_call("REGS_Ante",)
+	#if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
+		plot_data <- julia_call("REGS_Ante_plot", )
+	#}
 
-	myfunante <- function(X){
-		pm1m <- predict(lm1, newdata = data.frame(sta = as.numeric(X[2])), interval = "prediction", level = prediction_interval)
 
-		tt <- abs(round(pm1m[1,1], digits=2) - X[6]) / ( summary.lm((lm1))$sigma * sqrt( 1+(1/nref) + ((X[2] - mean(sta))^2) / (nref * sd(sta)^2) ) )
-		tt <- tt[,1] #wtf why is this required Why a data.frame conversion? 
 
-		pp <- tails * pt(-abs(tt), df = nref - 2)
+	#format data.frame to return
+	results_formatted <- data.frame(cbind(id_1 = sorta[results[,1],1], element_1 = sorta[results[,1],3], side_1 = sorta[results[,1],2], id_2 = sortb[results[,2],1], element_2 = sortb[results[,2],3], side_2 = sortb[results[,2],2], measurements = measurements, p_value = round(results[,4], digits = 4), r2 = round(results[,6], digits = 4), sample = results[,5]), Result = NA, stringsAsFactors = FALSE)
 
-		if(alphatest) {
-			if(pp > alphalevel) { #checks if predicted falls within prediction interval for the predictors
-				within <- "Cannot Exclude"
-			}
-			else within <- "Excluded"
+	#Append exclusion results
+	for(i in 1:nrow(results_formatted)) {
+		if(results_formatted[i,7] > alphalevel) {
+			results_formatted[i,11] <- c("Cannot Exclude")
 		}
-		if(!alphatest) {
-			if(X[6] <= pm1m[1,3] && X[6] >= pm1m[1,2]) { #checks if predicted falls within prediction interval for the predictors
-				within <- "Cannot Exclude"
-			}
-			else within <- "Excluded"
+		if(results_formatted[i,7] <= alphalevel) {
+			results_formatted[i,11] <- c("Excluded")
 		}
-		if(output_options[2]) {
-			lmp1 <- predict(lm1, interval = "prediction", level = prediction_interval)
-			no_return_value <- OsteoSort:::output_function(hera1=list(X[1], X[3], sta, mes, pm1m[1,1], X[6], X[2], lmp1), method="exclusion", type="plot3")
-		}
-		data.frame(X[1],X[2],X[3],X[4],X[5], X[6], round(tt, digits = 2), round(pp, digits=2), nref, round(pm1m[1,2], digits=2), round(pm1m[1,1], digits=2), round(pm1m[1,3], digits=2), round(summary(lm1)$r.squared, digits = 2), within, stringsAsFactors = FALSE)
 	}
-
-
-	if(Sys.info()[['sysname']] == "Windows") {
-		cl <- makeCluster(threads)
-		clusterExport(cl, list("ref", "alphalevel", "prediction_interval", "alphatest", "output_options", "tails", "lm1", "nref", "mes", "sta"), envir = environment())
-		op <- system.time ( hera1m <- parLapply(cl=cl, fun = myfunante, X = sort) )
-		print(op)
-		stopCluster(cl)
-
-	}
-	else {
-		op <- system.time ( hera1m <- mclapply(FUN = myfunante, X = sort, mc.cores = threads, mc.preschedule = TRUE) )
-		print(op)
-	}
-
-	hera1m = as.data.frame(data.table::rbindlist(hera1m))
-	colnames(hera1m) <- c("id","am_stature", "id","side","element","pm_measurement", "t-statistic", "p-value","sample_size", "lower_PI","point_estimate","upper_PI", "Rsquared", "Result")
 
 	if(output_options[1]) {
-		no_return_value <- OsteoSort:::output_function(hera1m, method="exclusion", type="csv")
+		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
+	}
+	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
+		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[[1]],plot_data[[2]], plot_data[[3]], plot_data[[4]]), method="exclusion", type="plot2")
 	}
 
 	gc()
 	setwd(workingdir)
-	options(stringsAsFactors = TRUE) #restore default R  
-     print("Statistical comparisons completed")
-	return(list(direc,hera1m[hera1m$Result == "Cannot Exclude",], hera1m[hera1m$Result == "Excluded",]))
+	options(stringsAsFactors = TRUE) #restore default R
+	print("Finished.")
+	t_time <- end_time(start_time)
+	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",], t_time))
 }

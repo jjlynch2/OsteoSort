@@ -14,7 +14,7 @@ output$multiple_contents <- renderUI({
 
 multiple_file_output1 <- reactiveValues(multiple_file_output1 = TRUE) 
 output$multiple_file_output1 <- renderUI({
-	checkboxInput(inputId = "multiple_file_output1", label = "Output excel file", value = TRUE)
+	checkboxInput(inputId = "multiple_file_output1", label = "Output csv file", value = TRUE)
 })
 observeEvent(input$multiple_file_output1, {
 	multiple_file_output1$multiple_file_output1 <- input$multiple_file_output1

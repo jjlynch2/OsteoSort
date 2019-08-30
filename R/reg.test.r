@@ -18,17 +18,17 @@
 #' reg.multitest()
 
 reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, output_options = c(TRUE,FALSE), threads = 1, type = "Logarithm Composite", alphalevel = 0.05) {	
-	if(threads != julia_call("nprocs")) {
-		print("Setting up Julia workers...")
-		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
-		print("Finished.")
-	}
 	force(alphalevel)
 	force(threads)
 	force(type)
 	force(ztest)
 	force(output_options)
 	force(sessiontempdir)
+	if(threads != julia_call("nprocs")) {
+		print("Setting up Julia workers...")
+		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
+		print("Finished.")
+	}
 
 	#appends a variable with 0 to make sure the data structure stays the same in Julia
 	refa <- cbind(refa,fa = 0)
@@ -68,15 +68,15 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	}
 	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
 	#format data.frame to return
-	results_formatted <- data.frame(cbind(id_1 = sorta[results[,1],1], element_1 = sorta[results[,1],3], side_1 = sorta[results[,1],2], id_2 = sortb[results[,2],1], element_2 = sortb[results[,2],3], side_2 = sortb[results[,2],2], measurements = measurements, p_value = round(results[,4], digits = 4), r2 = round(results[,8], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
+	results_formatted <- data.frame(cbind(id_1 = sorta[results[,1],1], element_1 = sorta[results[,1],3], side_1 = sorta[results[,1],2], id_2 = sortb[results[,2],1], element_2 = sortb[results[,2],3], side_2 = sortb[results[,2],2], measurements = measurements, p_value = round(results[,4], digits = 4), r2 = round(results[,6], digits = 4), sample = results[,5]), Result = NA, stringsAsFactors = FALSE)
 
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {
-		if(results_formatted[i,9] > alphalevel) {
-			results_formatted[i,13] <- c("Cannot Exclude")
+		if(results_formatted[i,7] > alphalevel) {
+			results_formatted[i,11] <- c("Cannot Exclude")
 		}
-		if(results_formatted[i,9] <= alphalevel) {
-			results_formatted[i,13] <- c("Excluded")
+		if(results_formatted[i,7] <= alphalevel) {
+			results_formatted[i,11] <- c("Excluded")
 		}
 	}
 

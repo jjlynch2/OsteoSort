@@ -17,10 +17,16 @@ fileoutputstature1 <- reactiveValues(fileoutputstature1 = TRUE)
 output$fileoutputstature1 <- renderUI({
 	checkboxInput(inputId = "fileoutputstature1", label = "Output csv file", value = TRUE)
 })
+observeEvent(input$fileoutputstature1, {
+	fileoutputstature1$fileoutputstature1 <- input$fileoutputstature1
+})
 
 fileoutputstature2 <- reactiveValues(fileoutputstature2 = TRUE)
 output$fileoutputstature2 <- renderUI({
 	checkboxInput(inputId = "fileoutputstature2", label = "Output plot", value = TRUE)
+})
+observeEvent(input$fileoutputstature2, {
+	fileoutputstature2$fileoutputstature2 <- input$fileoutputstature2
 })
 
 OSmethod1 <- reactiveValues(OSmethod1 = "Standard_deviation")
