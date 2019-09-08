@@ -74,24 +74,34 @@ observeEvent(input$proantestat, {
 		}
 	})
 
-	if(is.numeric(input$antestat_input) && is.numeric(pmm)) {
-		#calls sorting function
-		antemortem_data_frame <- cbind.data.frame(input$Antemortem_ID, input$antestat_input, stringsAsFactors = FALSE)
-		colnames(antemortem_data_frame) <- c("id","Stature")
-		postmortem_data_frame <- cbind.data.frame(input$Postmortem_ID, input$ante_side, input$antestat, pmm, stringsAsFactors = FALSE)
-		colnames(postmortem_data_frame) <- c("id","Side","Element",bonemeasurementm)
 
-		outtemp1 <- antestat.input(bone = input$antestat, metric = input$metric_type, antemortem_stature = antemortem_data_frame, postmortem_measurement = postmortem_data_frame, population = input$antestat_population)
-		outtemp2 <- antestat.regtest(sort = outtemp1[[1]], ref = outtemp1[[2]], prediction_interval = input$predlevelantestat, alphalevel = input$alphalevelsantestat, alphatest = temptest, output_options = c(input$fileoutputant1, input$fileoutputant2), sessiontempdir = sessiontemp)
+	if(is.numeric(input$antestat_input) && is.numeric(input[[paste0(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], "_ante")]])) {
+		ante <- data.frame(id = input$Antemortem_ID_ante, stature = input$antestat_input)
+		post <- data.frame(id = input$Postmortem_ID_ante, side = input$state_reference_ante_side, element = input$single_ante_elements, input[[paste0(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], "_ante")]])
+		colnames(ante) <- c("id", "Stature")
+		colnames(post) <- c("id", "Side", "Element",ante_measurements$df[which(ante_elements$df == input$single_ante_elements)])
+		outtemp1 <- antestat.input(bone = input$single_ante_elements,
+							  antemortem_stature = ante,
+							  postmortem_measurement = post,
+							  ref = stature_reference_imported_ante$stature_reference_imported_ante,
+							  measurement = ante_measurements$df[which(ante_elements$df == input$single_ante_elements)],
+							  side = input$state_reference_ante_side
+		)
+
+		outtemp2 <- antestat.regtest(antemortem = outtemp1[[1]],
+								postmortem = outtemp1[[2]],
+								ref = outtemp1[[3]],
+								alphalevel = alphalevelsantestat$alphalevelsantestat,
+								output_options = c(fileoutputant1$fileoutputant1, fileoutputant2$fileoutputant2),
+								sessiontempdir = sessiontemp
+		)
 		#display output
 
-		#Fix for using exclusion in multiple. Switches to which ever has a result for single
-		if(nrow(outtemp2[[2]]) == 0) {table_out_single <- outtemp2[[3]]}
-		if(nrow(outtemp2[[3]]) == 0) {table_out_single <- outtemp2[[2]]}
+		tempDF <- rbind(outtemp2[[2]], outtemp2[[3]]) #combines excluded and not excluded for results
 		output$antestat_table <- DT::renderDataTable({
-			DT::datatable(table_out_single, options = list(lengthMenu = c(1), pageLength = 10), rownames = FALSE)
+			DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1, dom = 't'), rownames = FALSE)
 		})
-		if(input$fileoutputant1 || input$fileoutputant2) {
+		if(fileoutputant1$fileoutputant1 || fileoutputant2$fileoutputant2) {
 			#Zip handler       
 			direc6 <- outtemp2[[1]] #direc temp
 			files <- list.files(direc6, recursive = TRUE)
@@ -103,8 +113,6 @@ observeEvent(input$proantestat, {
 				output$plotplotante <- renderImage({
 					list(src = nimages,
 						contentType = 'image/jpg',
-						width = 400,
-						height = 400,
 						alt = "A"
 					)
 				}, deleteFile = FALSE)

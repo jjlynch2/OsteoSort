@@ -24,7 +24,7 @@ shinyServer(function(input, output, session) {
 	source(system.file("OsteoSort/server", 'threed.r', package = "OsteoSort"), local=TRUE) ###imports three-dimensional comparison server code
 	source(system.file("OsteoSort/server", 'threedalignment.r', package = "OsteoSort"), local=TRUE) ###imports three-dimensional alignment tool
 	source(system.file("OsteoSort/server", 'antestat_single.r', package = "OsteoSort"), local=TRUE) ###imports single comparison antemortem stature code
-	source(system.file("OsteoSort/server", 'antestat_multiple.r', package = "OsteoSort"), local=TRUE) ###imports multiple comparison antemortem stature code
+	#source(system.file("OsteoSort/server", 'antestat_multiple.r', package = "OsteoSort"), local=TRUE) ###imports multiple comparison antemortem stature code
 	source(system.file("OsteoSort/server", 'files.r', package = "OsteoSort"), local=TRUE) ###imports code to save supplemental files from help menu
 	source(system.file("OsteoSort/server", 'shortcut.r', package = "OsteoSort"), local=TRUE) ###imports code to create shortcut from help menu
 	source(system.file("OsteoSort/server", 'measurement_standards.r', package = "OsteoSort"), local=TRUE) ###imports code to create measurement conversion data table

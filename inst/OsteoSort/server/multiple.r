@@ -56,8 +56,8 @@ multiple_ztransform <- reactiveValues(multiple_ztransform = FALSE)
 output$multiple_ztransform <- renderUI({
 	checkboxInput(inputId = "multiple_ztransform", label = "Z-transform", value = FALSE)
 })
-observeEvent(input$single_ztransform, {
-	single_ztransform$single_ztransform <- input$single_ztransform
+observeEvent(input$multiple_ztransform, {
+	multiple_ztransform$multiple_ztransform <- input$multiple_ztransform
 })
 
 multiple_tails <- reactiveValues(multiple_tails = TRUE) 
@@ -238,7 +238,7 @@ observeEvent(input$pro, {
 		ll <- nrow(d2[[2]]) + nrow(d2[[3]])
 		nmatch <- nrow(d2[[2]])
 		samplesize <- length(unique(c(d2[[2]]$id_1, d2[[2]]$id_2, d2[[3]]$id_1, d2[[3]]$id_2)))
-		t_time <- d1[[4]]
+		t_time <- d2[[4]]
 	}
 	output$multiple_contents <- renderUI({
 		HTML(paste("<strong>",

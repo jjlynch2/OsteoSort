@@ -1,3 +1,63 @@
+
+fileoutputant1m <- reactiveValues(fileoutputant1m = TRUE)
+output$fileoutputant1m <- renderUI({
+	checkboxInput(inputId = "fileoutputant1m", label = "Output csv file", value = TRUE)
+})
+observeEvent(input$fileoutputant1m, {
+	fileoutputant1m$fileoutputant1m <- input$fileoutputant1m
+})
+
+fileoutputant2m <- reactiveValues(fileoutputant2m = TRUE)
+output$fileoutputant2m <- renderUI({
+	checkboxInput(inputId = "fileoutputant2m", label = "Output plot", value = TRUE)
+})
+observeEvent(input$fileoutputant2m, {
+	fileoutputant2m$fileoutputant2m <- input$fileoutputant2m
+})
+
+alphalevelsantestatm <- reactiveValues(alphalevelsantestatm = 0.05) 
+output$alphalevelsantestatm <- renderUI({
+	sliderInput(inputId = "alphalevelsantestatm", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
+})
+observeEvent(input$alphalevelsantestatm, {
+	alphalevelsantestatm$alphalevelsantestatm <- input$alphalevelsantestatm
+})
+
+stature_reference_antem <- reactiveValues(stature_reference_antem = c("temp"))
+observeEvent(input$stature_reference_antem, {
+	stature_reference_antem$stature_reference_antem <- input$stature_reference_antem
+})
+output$stature_reference_antem <- renderUI({
+	selectInput(inputId = "stature_reference_antem", label = "Reference", choices = reference_name_list$reference_name_list)
+})
+
+elements_antem <- reactiveValues(elements_antem = c("temp") )
+stature_reference_imported_antem <- reactiveValues(stature_reference_imported_antem = data.frame())
+
+ante_elementsm <- reactiveValues(df = c())
+ante_measurementsm <- reactiveValues(df = c())
+observeEvent(input$stature_reference_antem, {
+	stature_reference_imported_antem$stature_reference_imported_antem <- reference_list$reference_list[[stature_reference_antem$stature_reference_antem]]
+	ante <- config_df$config_df[config_df$config_df$Method == 'Stature',]
+	ref_col_names <- colnames(stature_reference_imported_antem$stature_reference_imported_antem)
+	for(i in 1:nrow(ante)) {
+		a = FALSE
+		b = FALSE
+		for(x in 1:length(ref_col_names)) {
+			if(ante$Measurementa[i] == ref_col_names[x]) {
+				ante_measurements$df <- c(ante_measurements$df, ante$Measurementa[i])
+				temp1 <- na.omit(unique(stature_reference_imported_antem$stature_reference_imported_antem[!is.na(stature_reference_imported_antem$stature_reference_imported_antem[[ante$Measurementa[i]]]),]$Element))[1]
+				ante_elements$df <- c(ante_elements$df, temp1)
+				break
+			}
+		}
+	}
+})
+
+output$multiple_ante_elements <- renderUI({
+	selectInput(inputId = "multiple_ante_elements", label = "Elements", choices = ante_elementsm$df)
+})
+
 numbercoresglobalm <- reactiveValues(ncorem = detectCores()-1)
 observeEvent(input$numbercoresm, {
 	numbercoresglobalm$ncorem <- input$numbercoresm
@@ -6,13 +66,7 @@ output$ncoresm <- renderUI({
 	sliderInput(inputId = "numbercoresm", label = "Number of threads", min=1, max=detectCores(), value=detectCores()-1, step =1)
 })
 
-output$antestat_testm <- renderUI({
-	selectInput('antestatm', 'Elements', c(Humerus='humerus', Ulna='ulna', Radius='radius', Femur='femur', Tibia='tibia', Fibula='fibula'),'humerus')
-})
 
-output$antestat_outputm <- renderUI({
-   HTML(paste(""))
-})	
 
 #file upload render for multiple comparison
 output$resettableInputante1 <- renderUI({
@@ -35,11 +89,11 @@ observeEvent(input$clearFile1ante, {
 observeEvent(input$proantestatm, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
 	withProgress(message = 'Calculation has started',
-	            detail = '', value = 0, {       
-	            for (i in 1:10) {
-	       incProgress(1/10)
-	       Sys.sleep(0.05)
-	     }
+		detail = '', value = 0, {
+		for (i in 1:10) {
+			incProgress(1/10)
+			Sys.sleep(0.05)
+		}
 	})
 
 	#Upload CSV file
@@ -54,9 +108,7 @@ observeEvent(input$proantestatm, {
 	tempdata1m <- read.csv(inFile1$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))## see na.strings forces NA for blanks, spaces, etc
 	tempdata2m <- read.csv(inFile2$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))## see na.strings forces NA for blanks, spaces, etc		
 
-	#calls sorting function
-	if(input$alphatest1m == "Alpha") {temptest = TRUE}
-	if(input$alphatest1m == "PI") {temptest = FALSE}
+
 	outtemp1m <- antestat.input(bone = input$antestatm, metric = input$metric_typem, antemortem_stature = tempdata1m, postmortem_measurement = tempdata2m, population = input$antestat_populationm)
 	outtemp2m <- antestat.regtest(threads = numbercoresglobalm$ncorem, sort = outtemp1m[[1]], ref = outtemp1m[[2]], prediction_interval = input$predlevelantestatm, alphalevel = input$alphalevelsantestatm, alphatest = temptest, output_options = c(input$fileoutputant1m, input$fileoutputant2m), sessiontempdir = sessiontemp)
 	  
@@ -75,26 +127,7 @@ observeEvent(input$proantestatm, {
 		 for(i in 1:nrow(global1)) {
 		 	if(global1[i] == global2[i]) {co <- co + 1}
 		 }		
-		#used to assess accuracy of methodology
-		nmatch <- nrow(outtemp2m[[2]])
-		ll <- nrow(outtemp2m[[2]]) + nrow(outtemp2m[[3]])
-		TP <- (ll - cn) - nmatch
-		FP <- cn
-		FN <- nmatch - co
-		TN <- co
-		coo <- paste("TP: ", 				"<font color=\"#00688B\">",TP, "</font>", 
-				"<br/>","FP: ", 			"<font color=\"#00688B\">",FP, "</font>", 
-				"<br/>","FN: ", 			"<font color=\"#00688B\">",FN, "</font>", 
-				"<br/>","TN: ", 			"<font color=\"#00688B\">", TN, "</font>", 
-				"<br/>","FPR: ", 			"<font color=\"#00688B\">",1 - round(TN/(TN+FP), digits = 3) ,"</font>", 
-				"<br/>","Sens: ", 			"<font color=\"#00688B\">",round(TP/(TP+FN), digits = 3), "</font>", 
-				"<br/>","Spec: ", 			"<font color=\"#00688B\">",round(TN/(TN+FP), digits = 3),"</font>", 
-				"<br/>","PPV: ", 			"<font color=\"#00688B\">",round(TP/(TP+FP), digits = 3), "</font>", 
-				"<br/>","NPV: ", 			"<font color=\"#00688B\">",round(TN/(TN+FN), digits = 3),"</font>", 
-				"<br/>","FDR: ", 			"<font color=\"#00688B\">",round(FP/(FP+TP), digits = 3), "</font>", 
-				"<br/>","EFF: ", 			"<font color=\"#00688B\">",round((TP+TN) / (TP+TN+FN+FP), digits = 3),"</font>", 
-				"<br/>", sep = "")
-	}
+
 
 	temp1 <- outtemp2m[[2]][1]
 	temp2 <- outtemp2m[[3]][1]

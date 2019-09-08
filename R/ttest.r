@@ -50,7 +50,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	if(ztest) {
 		#ztest no plot
 		results <- julia_call("ZTEST", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
-		output_options[2] <- FALSE #force false as a safety check	
+		output_options[2] <- FALSE #force false as a safety check
 	}
 	else if(absolute && zmean && boxcox) {
 		results <- julia_call("TTESTABM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)

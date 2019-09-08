@@ -27,6 +27,9 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
 		print("Finished.")
 	}
+	measurements <- colnames(postmortem)[4]
+	antemortem <- rbind(antemortem, 0)
+	postmortem <- rbind(postmortem, 0)
 
 	print("Comparisons are running...")
 	start_time <- start_time()
@@ -41,15 +44,12 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 	workingdir = getwd()
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
-	results <<- julia_call("REGS_Ante",)
-	#if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
-		plot_data <- julia_call("REGS_Ante_plot", )
-	#}
+	results <<- julia_call("REGS_Ante", as.matrix(antemortem[,2]), as.matrix(postmortem[,4]), as.matrix(ref[c(4,5)]))
 
 
 
 	#format data.frame to return
-	results_formatted <- data.frame(cbind(id_1 = sorta[results[,1],1], element_1 = sorta[results[,1],3], side_1 = sorta[results[,1],2], id_2 = sortb[results[,2],1], element_2 = sortb[results[,2],3], side_2 = sortb[results[,2],2], measurements = measurements, p_value = round(results[,4], digits = 4), r2 = round(results[,6], digits = 4), sample = results[,5]), Result = NA, stringsAsFactors = FALSE)
+	results_formatted <- data.frame(cbind(id_1 = antemortem[results[,1],1], element_1 = antemortem[results[,1],3], side_1 = antemortem[results[,1],2], id_2 = postmortem[results[,2],1], Stature = postmortem[results[,2],3], measurements = measurements, p_value = round(results[,3], digits = 4), r2 = round(results[,5], digits = 4), sample = results[,4]), Result = NA, stringsAsFactors = FALSE)
 
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {
@@ -64,8 +64,8 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}
-	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[[1]],plot_data[[2]], plot_data[[3]], plot_data[[4]]), method="exclusion", type="plot2")
+	if(output_options[2] && nrow(as.matrix(antemortem[,2])) == 1 && nrow(as.matrix(postmortem[,4])) == 1) { 
+		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], ref[,4],ref[,5], antemortem[,2], results[[6]]), method="exclusion", type="plot2")
 	}
 
 	gc()

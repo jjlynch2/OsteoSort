@@ -47,6 +47,7 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 		julia_source(system.file("jl", "Box_Cox_WC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "regression_WC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "antemortem_WC.jl", package = "OsteoSort"))
+		julia_source(system.file("jl", "regression_helpers_WC.jl", package = "OsteoSort"))
 		julia_source(system.file("jl", "Euclidean_Distance_Operations_WC.jl", package = "OsteoSort"))
 	}
 
