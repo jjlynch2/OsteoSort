@@ -93,7 +93,7 @@ observeEvent(input$single_reference, {
 	single_reference_imported$single_reference_imported <- reference_list$reference_list[[single_reference$single_reference]]
 	elements$elements <- unique(single_reference_imported$single_reference_imported$Element)
 
-	art <- config_df$config_df[config_df$config_df$Method == 'Non_antimere',]
+	art <- config_df$config_df[config_df$config_df$Method == 'Non_antimere_t-test',]
 	ref_col_names <- colnames(single_reference_imported$single_reference_imported)
 	for(i in 1:nrow(art)) {
 		a = FALSE

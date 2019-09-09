@@ -35,7 +35,7 @@
 			end
 		end
 		wZ = sum(t_temp_comp .* z_temp_comp) / sqrt(sum(t_temp_comp .^ 2) + (wA * 2)) #combined Z-score
-		wZP = pnorm(-abs(wZ)) #combined P-value fromn normal distribution
+		wZP = pnorm(-abs(wZ)) #combined P-value from normal distribution
 		res[j,1] = li #index of left
 		res[j,2] = j #index of right
 		res[j,3] = 0 #no needed but left here so array columns match in R

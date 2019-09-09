@@ -106,7 +106,7 @@ multiple_art_measurements_b <- reactiveValues(df = c())
 observeEvent(input$multiple_reference, {
 	multiple_reference_imported$multiple_reference_imported <- reference_list$reference_list[[multiple_reference$multiple_reference]]
 	elements$elements <- unique(multiple_reference_imported$multiple_reference_imported$Element)
-	art <- config_df$config_df[config_df$config_df$Method == 'Non_antimere',]
+	art <- config_df$config_df[config_df$config_df$Method == 'Non_antimere_t-test',]
 	ref_col_names <- colnames(multiple_reference_imported$multiple_reference_imported)
 	for(i in 1:nrow(art)) {
 		a = FALSE

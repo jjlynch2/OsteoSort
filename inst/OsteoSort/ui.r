@@ -80,7 +80,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 								uiOutput("config_a")
 							),
 							column(6,
-								conditionalPanel(condition = "input.config_options == 'Non_antimere'",
+								conditionalPanel(condition = "input.config_options == 'Non_antimere_t-test'",
 									uiOutput("config_b")
 								)
 							)

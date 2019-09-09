@@ -1,5 +1,4 @@
 function REGSL_plot(SL, SR, RL, RR)
-	#res = zeros(size(RL,1)+1,2)
 	res_1 = measurement_counter(SL)
 	res_2 = measurement_counter(SR)
 	dsum_1 = log(sum(SL))

@@ -51,17 +51,20 @@ observeEvent(input$refdel, {
 	reference_name_list$reference_name_list <- reference_name_list$reference_name_list[reference_name_list$reference_name_list != input$Reference_Sample]
 })
 
-output$reference_table <- DT::renderDataTable ({
-	DT::datatable(reference_list$reference_list[[input$Reference_Sample]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20, scrollX=TRUE), rownames = FALSE)
-})
+observeEvent(input$Reference_Sample, {
+	output$reference_table <- DT::renderDataTable ({
+		DT::datatable(reference_list$reference_list[[input$Reference_Sample]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20, scrollX=TRUE), rownames = FALSE)
+	})
 
-output$reference_config <- DT::renderDataTable ({
-	DT::datatable(config_df$config_df, options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20), rowname = FALSE)
-})
+	output$config_a <- renderUI({
+		tempcona <- colnames(reference_list$reference_list[[input$Reference_Sample]][,-c(1:6)])
+		selectInput(inputId = "config_a_input", label = "", choices = tempcona)
+	})
 
-output$config_a <- renderUI({
-	tempcona <- colnames(reference_list$reference_list[[input$Reference_Sample]][,-c(1:6)])
-	selectInput(inputId = "config_a_input", label = "", choices = tempcona)
+	output$reference_config <- DT::renderDataTable ({
+		DT::datatable(config_df$config_df, options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20), rowname = FALSE)
+	})
+
 })
 
 observeEvent(input$config_a_input, {
@@ -73,7 +76,7 @@ observeEvent(input$config_a_input, {
 })
 
 output$config_render <- renderUI({
-	radioButtons(inputId = "config_options", label = "", choices = c("Non_antimere","Stature"), selected = "Non_antimere")
+	radioButtons(inputId = "config_options", label = "", choices = c("Non_antimere_t-test","Stature"), selected = "Non_antimere_t-test")
 })
 
 observeEvent(input$config_add, {
@@ -83,7 +86,7 @@ observeEvent(input$config_add, {
 			skip = TRUE
 		}
 	}
-	if(input$config_options == "Non_antimere" && !skip) {
+	if(input$config_options == "Non_antimere_t-test" && !skip) {
 		config_df$config_df <- rbind(config_df$config_df, data.frame(Measurementa = input$config_a_input, Measurementb = input$config_b_input, Method = input$config_options))
 	}
 	if(input$config_options == "Stature" && !skip) {

@@ -46,18 +46,31 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 
 	results <<- julia_call("REGS_Ante", as.matrix(antemortem[,2]), as.matrix(postmortem[,4]), as.matrix(ref[c(4,5)]))
 
-
+aa <<- antemortem
+pp <<- postmortem
+rr <<- ref
 
 	#format data.frame to return
-	results_formatted <- data.frame(cbind(id_1 = antemortem[results[,1],1], element_1 = antemortem[results[,1],3], side_1 = antemortem[results[,1],2], id_2 = postmortem[results[,2],1], Stature = postmortem[results[,2],3], measurements = measurements, p_value = round(results[,3], digits = 4), r2 = round(results[,5], digits = 4), sample = results[,4]), Result = NA, stringsAsFactors = FALSE)
+	results_formatted <- data.frame(cbind(id_1 = postmortem[results[,1],1],       #1
+								side_1 = postmortem[results[,1],2],        #2
+								element_1 = postmortem[results[,1],3],     #3
+								id_2 = antemortem[results[,2],1],          #4
+								Stature = antemortem[results[,2],2],       #5
+								measurements = colnames(ref)[5],           #6
+								p_value = round(results[,3], digits = 4),  #7
+								r2 = round(results[,5], digits = 4),       #8
+								sample = results[,4]),                     #9
+								Result = NA,                               #10
+								stringsAsFactors = FALSE
+	)
 
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {
 		if(results_formatted[i,7] > alphalevel) {
-			results_formatted[i,11] <- c("Cannot Exclude")
+			results_formatted[i,10] <- c("Cannot Exclude")
 		}
 		if(results_formatted[i,7] <= alphalevel) {
-			results_formatted[i,11] <- c("Excluded")
+			results_formatted[i,10] <- c("Excluded")
 		}
 	}
 
@@ -65,7 +78,7 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}
 	if(output_options[2] && nrow(as.matrix(antemortem[,2])) == 1 && nrow(as.matrix(postmortem[,4])) == 1) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], ref[,4],ref[,5], antemortem[,2], results[[6]]), method="exclusion", type="plot2")
+		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], ref[,4], ref[,5], antemortem[1,2]), method="exclusion", type="plot2")
 	}
 
 	gc()
