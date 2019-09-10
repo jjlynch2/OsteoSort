@@ -31,7 +31,6 @@ output$stature_reference_ante <- renderUI({
 	selectInput(inputId = "stature_reference_ante", label = "Reference", choices = reference_name_list$reference_name_list)
 })
 
-elements_ante <- reactiveValues(elements_ante = c("temp") )
 stature_reference_imported_ante <- reactiveValues(stature_reference_imported_ante = data.frame())
 
 ante_elements <- reactiveValues(df = c())

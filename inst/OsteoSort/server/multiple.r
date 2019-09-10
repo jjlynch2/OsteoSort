@@ -73,7 +73,7 @@ observeEvent(input$numbercores, {
 	numbercoresglobal$ncore <- input$numbercores
 })
 output$ncores <- renderUI({
-	sliderInput(inputId = "numbercores", label = "Number of threads", min=1, max=detectCores(), value=1, step =1)
+	sliderInput(inputId = "numbercores", label = "Number of cores", min=1, max=detectCores(), value=1, step =1)
 })
 
 multiple_analysis <- reactiveValues(multiple_analysis = "Antimere t-test")

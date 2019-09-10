@@ -77,7 +77,7 @@ observeEvent(input$nthreshold, {
 	nthreshold$nthreshold <- input$nthreshold
 })
 output$nthreshold <- renderUI({
-	sliderInput(inputId = "nthreshold", label = "Threshold level for converting images to binary matrices", min=0.01, max=1, value=0.8, step=0.01)
+	sliderInput(inputId = "nthreshold", label = "Threshold for binary matrices", min=0.01, max=1, value=0.8, step=0.01)
 })
 
 mirror2D <- reactiveValues(mirror2D = TRUE)
@@ -93,7 +93,7 @@ observeEvent(input$ncores2D, {
 	ncores2D$ncores2D <- input$ncores2D
 })
 output$ncores2D <- renderUI({
-	sliderInput(inputId = "ncores2D", label = "Number of threads", min=1, max=detectCores(), value=detectCores()-1, step =1)
+	sliderInput(inputId = "ncores2D", label = "Number of cores", min=1, max=detectCores(), value=detectCores()-1, step =1)
 })
 
 meanit2D <- reactiveValues(meanit2D = 2)
@@ -101,7 +101,7 @@ observeEvent(input$meanit2D, {
 	meanit2D$meanit2D <- input$meanit2D
 })
 output$comp_options <- renderUI({
-	sliderInput(inputId = "meanit2D", label = "Number of mean iterations", min=1, max=100, value=2, step=1)
+	sliderInput(inputId = "meanit2D", label = "Mean iterations", min=1, max=100, value=2, step=1)
 })
 
 efaH2D <- reactiveValues(efaH2D = 40)
@@ -109,7 +109,7 @@ observeEvent(input$efaH2D, {
 	efaH2D$efaH2D <- input$efaH2D
 })
 output$efa_options1 <- renderUI({
-	sliderInput(inputId = "efaH2D", label = "Number of elliptical Fourier analysis harmonics", min=1, max=1000, value=40, step=1)
+	sliderInput(inputId = "efaH2D", label = "EFA harmonics", min=1, max=1000, value=40, step=1)
 })
 
 npoints2D <- reactiveValues(npoints2D = 200)
@@ -117,7 +117,7 @@ observeEvent(input$npoints2D, {
 	npoints2D$npoints2D <- input$npoints2D
 })
 output$efa_options2 <- renderUI({
-	sliderInput(inputId = "npoints2D", label = "Number of landmarks during inverse Elliptical Fourier Analysis transformation", min=20, max=1000, value=200, step=1)
+	sliderInput(inputId = "npoints2D", label = "Landmarks for inverse EFA", min=20, max=1000, value=200, step=1)
 })
 
 
@@ -134,7 +134,7 @@ observeEvent(input$n_regions, {
 	n_regions$n_regions <- input$n_regions
 })
 output$n_regions <- renderUI({			
-	sliderInput(inputId = "n_regions", label = "Number of segmented regions", min = 2, max = input$npoints2D, value = 6, step = 1)										
+	sliderInput(inputId = "n_regions", label = "Segmented regions", min = 2, max = input$npoints2D, value = 6, step = 1)										
 })
 
 max_avg_distance <- reactiveValues(max_avg_distance = "average")
@@ -150,7 +150,7 @@ observeEvent(input$icp2D, {
 	icp2D$icp2D <- input$icp2D
 })
 output$icp2D <- renderUI({
-	sliderInput(inputId = "icp2D", label = "Number of iterative closest point iterations", min=1, max=1000, value=20, step=1)
+	sliderInput(inputId = "icp2D", label = "ICP iterations", min=1, max=1000, value=20, step=1)
 })
 
 
@@ -167,7 +167,7 @@ observeEvent(input$shortlistn, {
 	shortlistn$shortlistn <- input$shortlistn
 })
 output$shortlistn <- renderUI({
-	sliderInput(inputId = "shortlistn", label = "Number of shorest distance matches", min = 1, max = 100, value = 1, step = 1)
+	sliderInput(inputId = "shortlistn", label = "Shorest distance matches", min = 1, max = 100, value = 1, step = 1)
 })
 
 hidedist <- reactiveValues(hidedist = FALSE)

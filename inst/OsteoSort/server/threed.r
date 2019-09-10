@@ -83,7 +83,7 @@ observeEvent(input$nthreshold3D, {
 	nthreshold3D$nthreshold3D <- input$nthreshold3D
 })
 output$nthreshold3D <- renderUI({
-	sliderInput(inputId = "nthreshold3D", label = "Threshold level for principal bands", min=0.5, max=100, value=4, step=0.5)
+	sliderInput(inputId = "nthreshold3D", label = "Threshold for principal bands", min=0.5, max=100, value=4, step=0.5)
 })
 
 
@@ -93,7 +93,7 @@ observeEvent(input$shortlistn3D, {
 	shortlistn3D$shortlistn3D <- input$shortlistn3D
 })
 output$shortlistn3D <- renderUI({
-	sliderInput(inputId = "shortlistn3D", label = "Number of shortest distance matches", min = 1, max = 100, value = 1, step = 1)
+	sliderInput(inputId = "shortlistn3D", label = "Shortest distance matches", min = 1, max = 100, value = 1, step = 1)
 })
 
 
@@ -103,9 +103,8 @@ observeEvent(input$hidedist3D, {
 	hidedist3D$hidedist3D <- input$hidedist3D
 })
 output$hidedist3D <- renderUI({
-	checkboxInput(inputId = "hidedist3D", label = "Hide distance from results", value = FALSE)	
+	checkboxInput(inputId = "hidedist3D", label = "Hide distance from results", value = FALSE)
 })
-
 
 
 banding <- reactiveValues(banding = TRUE)
@@ -123,7 +122,7 @@ observeEvent(input$ncores3D, {
 	ncores2D$ncores3D <- input$ncores3D
 })
 output$ncores3D <- renderUI({
-	sliderInput(inputId = "ncores3D", label = "Number of threads", min=1, max=detectCores(), value=detectCores()-1, step =1)
+	sliderInput(inputId = "ncores3D", label = "Number of cores", min=1, max=detectCores(), value=detectCores()-1, step =1)
 })
 
 
@@ -135,46 +134,14 @@ output$max_avg_distance3D <- renderUI({
 	radioButtons(inputId = "max_avg_distance3D", label = "Distance type:", choices = c("maximum",  "average", "dilated"), selected = "average")
 })
 
-icp3D <- reactiveValues(icp3D = "1")
+icp3D <- reactiveValues(icp3D = 1)
 observeEvent(input$icp3D, {
 	icp3D$icp3D <- input$icp3D
 })
 output$icp3D <- renderUI({
-	sliderInput(inputId = "icp3D", label = "Number of iterative closest point iterations", min=1, max=1000, value=10, step=1)
+	sliderInput(inputId = "icp3D", label = "ICP iterations", min=1, max=1000, value=10, step=1)
 })
 
-trans3D <- reactiveValues(trans3D = "rigid")
-observeEvent(input$trans3D, {
-	trans3D$trans3D <- input$trans3D
-})
-output$trans3D <- renderUI({
-	radioButtons(inputId = "trans3D", label = "Transformation type:", choices = c("rigid", "similarity", "affine"), selected = "rigid")
-})
-
-distance3D <- reactiveValues(distance3D = "Hausdorff")
-observeEvent(input$distance3D, {
-	distance3D$distance3D <- input$distance3D
-})
-output$distance3D <- renderUI({
-	radioButtons(inputId = "distance3D", label = "Distance calculation:", choices = c("Hausdorff"), selected = "Hausdorff")
-})
-
-
-shortlistn3D <- reactiveValues(shortlistn3D = "1")
-observeEvent(input$shortlistn3D, {
-	shortlistn3D$shortlistn3D <- input$shortlistn3D
-})							
-output$shortlistn3D <- renderUI({
-	sliderInput(inputId = "shortlistn3D", label = "Number of shorest distance matches", min = 1, max = 100, value = 1, step = 1)
-})
-
-hidedist3D <- reactiveValues(hidedist3D = FALSE)
-observeEvent(input$hidedist3D, {
-	hidedist3D$hidedist3D <- input$hidedist3D
-})	
-output$hidedist3D <- renderUI({
-	checkboxInput(inputId = "hidedist3D", label = "Hide distance from results", value = FALSE)
-})
 				
 observeEvent(input$leftimages3D$datapath, {
 	file.copy(input$leftimages3D$datapath, input$leftimages3D$name)
@@ -199,7 +166,7 @@ observeEvent(input$pro3D, {
 	if(!is.null(input$leftimages3D$datapath) && !is.null(input$leftimages3D$datapath)) { #prevents crashing
 
 		out1 <- input.3d(list1 = input$rightimages3D$name, list2 = input$leftimages3D$name)
-		out2 <<- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps), sessiontempdir = sessiontemp, transformation = trans3D$trans3D, threads = ncores3D$ncores3D, test = distance3D$distance3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
+		out2 <<- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps), sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
 		direc <- out2[[3]]
 
 		if(is.null(nrow(out2[[2]]))) {pm <- 1; out2[[2]] <- rbind(out2[[2]],c(NA,NA,NA)) }

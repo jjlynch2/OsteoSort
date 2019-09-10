@@ -13,7 +13,7 @@ observeEvent(input$ncorespc, {
 	ncorespc$ncorespc <- input$ncorespc
 })
 output$ncorespc <- renderUI({
-	sliderInput(inputId = "ncorespc", label = "Number of threads", min=1, max=detectCores(), value=detectCores()-1, step =1)
+	sliderInput(inputId = "ncorespc", label = "Number of cores", min=1, max=detectCores(), value=detectCores()-1, step =1)
 })
 
 

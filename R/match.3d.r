@@ -6,7 +6,7 @@
 #' @examples
 #' match.3d()
 
-match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 1, transformation = "rigid", threads = 1, test = "Hausdorff", n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
+match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 1, transformation = "rigid", threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
 	if(threads != julia_call("nprocs")) {
 		print("Setting up Julia workers...")
 		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
@@ -79,7 +79,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 				pwc <- pwc + 2 #skips by 2 since we use two indices
 				matches1[nz,] <- c(names(list1)[i], names(list2)[x], dd)
 				matches2[nz,] <- c(names(list2)[x], names(list1)[i], dd)
-				print(paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", test, " distance: ", dd, sep=""))
+				print(paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", "Hausdorff", " distance: ", dd, sep=""))
 				nz <- nz + 1
 			}
 		}
@@ -120,7 +120,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 					else if (k == 7) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2]*-1,lista[[i]][,3])}
 					else if(k == 8) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2],lista[[i]][,3])}
 					lt <- icpmat(lt1, listb[[x]], iterations = iteration, type = transformation, threads = threads)
-					d1t <- hausdorff_dist(lt, listb[[x]], test = test, dist = dist)
+					d1t <- hausdorff_dist(lt, listb[[x]], test = "Hausdorff", dist = dist)
 					if(d1t < d1) {
 						pairwise_coords[[pwc]] <- lt
 						d1 <- d1t
@@ -133,7 +133,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 				pwc <- pwc + 2 #skips by 2 since we use two indices
 				matches1[nz,] <- c(names(list1)[i], names(list2)[x], d1)
 				matches2[nz,] <- c(names(list2)[x], names(list1)[i], d1)
-				print(paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", test, " distance: ", d1, sep=""))
+				print(paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", "Hausdorff", " distance: ", d1, sep=""))
 				nz <- nz + 1
 			}
 		}

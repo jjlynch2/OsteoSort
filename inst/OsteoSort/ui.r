@@ -335,6 +335,399 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 				)#main
 			)#sidebar
 		),#navbar osteometric
+		navbarMenu("Osteoshape", icon = icon("cloud", lib="font-awesome"),
+			tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"),
+				titlePanel(""),
+					sidebarLayout(
+						sidebarPanel(
+							selectInput(inputId ="fragcomp", label = "Analysis:", choices = c("Complete", "Fragmented"), selected = "Complete"),
+							uiOutput('resettableInput2D'),	
+							uiOutput('resettableInput2DD'),
+							conditionalPanel(condition = "input.fragcomp == 'Complete'",
+								uiOutput('mspec')
+							),
+							fluidRow(
+								column(6,
+									actionButton("settings2D","Settings", icon=icon("keyboard-o"))
+								),
+								column(6,
+									actionButton("pro2D","Process ", icon = icon("cog"))
+								)
+							),
+							fluidRow(br()),
+							fluidRow(
+								column(6,
+									actionButton("clearFile2D", "Clear   ", icon = icon("window-close"))
+								),
+								column(6,
+									downloadButton("downloadData2D", "Save    ")
+								)
+							),
+							tags$style(type = "text/css", "#settings2D { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#pro2D { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#clearFile2D { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#downloadData2D { width:100%; font-size:85%; background-color:#126a8f }"),
+							width = 3
+						),
+						mainPanel(
+							uiOutput("contents2D"),
+							uiOutput("tabpanpan"),
+							bsModal("settings2DD", title = "Settings", trigger = "settings2D", size = "large", 
+								tabsetPanel(id="tabSelected2",
+									tabPanel("Output Parameters",
+										uiOutput('fileoutput2Dexcel1'),
+										uiOutput('fileoutput2Dexcel2'),
+										uiOutput('fileoutput2Dplot'),
+										uiOutput('fileoutput2Dtps')
+									),
+									tabPanel("Statistical Parameters",
+										fluidRow(
+											column(4,
+												h4("Outline"),
+												uiOutput('nthreshold'),
+												uiOutput('mirror2D'),
+												uiOutput('efa_options3'),
+								 				conditionalPanel(condition = "input.fragcomp == 'Complete'",
+													uiOutput('efa_options1'),
+													uiOutput('efa_options2')
+												)
+											),
+											column(4, 
+												h4("Registration"),
+												conditionalPanel(condition = "input.fragcomp == 'Complete'",
+														uiOutput('comp_options')
+												),
+												uiOutput('icp2D')
+											),
+											column(4,
+												h4("Distance"),
+												uiOutput('distance2D'),
+								 				conditionalPanel(condition = "input.distance2D == 'Segmented-Hausdorff' || input.distance2D == 'Hausdorff'",
+													uiOutput('max_avg_distance')
+												),
+								 				conditionalPanel(condition = "input.distance2D == 'Segmented-Hausdorff'",
+													uiOutput('n_regions')
+												),
+												uiOutput('shortlistn'),
+												uiOutput('hidedist')
+											)
+										)
+									),
+									tabPanel("Computational Parameters",
+										uiOutput('ncores2D')
+									)
+								)
+							)
+						)
+					)
+			),
+			tabPanel("3D Antimere",icon = icon("sort-by-order", lib="glyphicon"),
+				titlePanel(""),
+					sidebarLayout(
+						sidebarPanel(
+							selectInput(inputId ="fragcomp3d", label = "Analysis:", choices = c("Complete", "Fragmented"), selected = "Complete"),
+							uiOutput('resettableInput3D'),	
+							uiOutput('resettableInput3DD'),
+							uiOutput("mspec3D"),
+							fluidRow(
+								column(6,
+									actionButton("settings3D","Settings", icon=icon("keyboard-o"))
+								),
+								column(6,
+									actionButton("pro3D","Process ", icon = icon("cog"))
+								)
+							),
+							fluidRow(br()),
+							fluidRow(
+								column(6,
+									actionButton("clearFile3D", "Clear   ", icon = icon("window-close"))
+								),
+								column(6,
+									downloadButton("downloadData3D", "Save    ")
+								)
+							),
+							tags$style(type = "text/css", "#settings3D { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#pro3D { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#clearFile3D { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#downloadData3D { width:100%; font-size:85%; background-color:#126a8f }"),
+							width = 3
+						),
+						mainPanel(
+							uiOutput("contents3D"),
+							tabsetPanel(id="tabSelected3D",
+								tabPanel("Results ",
+									DT::dataTableOutput('table3D')
+								),
+								tabPanel("Render ",
+									rglwidgetOutput('webgl3D', width = "1200px", height = "1200px")
+								)
+						 	),
+							bsModal("settings3DD", title = "Settings", trigger = "settings3D", size = "large", 
+								tabsetPanel(id="tabSelected33",
+									tabPanel("Output Parameters",
+										uiOutput('fileoutput3Dexcel1'),
+										uiOutput('fileoutput3Dexcel2'),
+										uiOutput('fileoutput3Dtps')
+									),
+									tabPanel("Statistical Parameters",
+										fluidRow(
+											column(4,
+												h4("Outline"),
+												uiOutput('banding'),
+												conditionalPanel(condition = "input.banding",
+													uiOutput('nthreshold3D')
+												)
+											),
+											column(4, 
+												h4("Registration"),
+												uiOutput('icp3D'),
+												uiOutput('trans3D')
+											),
+											column(4,
+												h4("Distance"),
+												uiOutput('max_avg_distance3D'),
+												uiOutput('shortlistn3D'),
+												uiOutput('hidedist3D')
+											)
+										)
+									),
+									tabPanel("Computational Parameters",
+										uiOutput('ncores3D')
+									)
+								)
+							)
+						)
+					)
+			),
+			tabPanel("3D Point Cloud Tools",icon = icon("cloud-download", lib="glyphicon"),
+				titlePanel(""),
+					sidebarLayout(
+						sidebarPanel(
+							uiOutput('resettableInput3Da'),
+							fluidRow(
+								column(6,
+									actionButton("previous"," Previous", icon=icon("arrow-left"))
+								),
+								column(6,
+									actionButton("nnext"," Next    ", icon = icon("arrow-right"))
+								)
+							),
+							fluidRow(br()),
+							fluidRow(
+								column(6,
+									actionButton("start"," Digitize", icon=icon("edit"))
+								),
+								column(6,
+									actionButton("start2"," Fracture", icon=icon("scissors"))
+								)
+							),	
+							fluidRow(br()),
+							fluidRow(
+								column(6,
+									actionButton("RGB1"," RGB landmark", icon=icon("tint"))
+								),
+								column(6,
+									actionButton("RGB2"," RGB fracture", icon=icon("tint"))
+								)
+							),	
+							fluidRow(br()),
+							fluidRow(
+								column(12,
+									actionButton("RGB3"," RGB calibration", icon=icon("tint"))
+								)
+							),
+							fluidRow(br()),
+							fluidRow(
+								column(6,
+									actionButton("pcset","Settings", icon=icon("keyboard-o"))
+								),
+								column(6,
+									actionButton("simplify","Simplify", icon=icon("cloud-download"))
+								)
+							),
+							fluidRow(br()),
+							fluidRow(
+								column(6,
+									actionButton("clearFile3Da", " Clear   ", icon = icon("window-close"))
+								),
+								column(6,
+									downloadButton("savedata", " Save    ")
+								)
+							),
+							fluidRow(br()),
+							fluidRow(
+								column(12,
+									radioButtons(inputId ="alln", label = "Specimens", choices = c("All", "Present"), selected = "Present")
+								)
+							),
+							fluidRow(br()),
+							fluidRow(
+								column(12,
+									uiOutput("coordinates")
+								)
+							),
+							tags$style(type = "text/css", "#pcset { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#simplify { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#start2 { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#RGB1 { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#RGB2 { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#RGB3 { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#start { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#previous { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#nnext { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#clearFile3Da { width:100%; font-size:85%; background-color:#126a8f }"),
+							tags$style(type = "text/css", "#savedata { width:100%; font-size:85%; background-color:#126a8f }"),
+							width = 3
+						),
+						mainPanel(
+							rglwidgetOutput('webgl3Dalign', width = "1200px", height = "1200px"),
+							bsModal("pcset3D", title = "Settings", trigger = "pcset", size = "medium", 
+								tabsetPanel(id="pcset33",
+									tabPanel("Statistical Parameters",
+										fluidRow(
+											column(4,
+												h4("Simplification"),
+												uiOutput('vara'),
+												uiOutput('tva')
+											),
+											column(4,
+												h4("RGB"),
+												uiOutput('fracturet')
+											)
+										)
+									),
+									tabPanel("Computational Parameters",
+										uiOutput('ncorespc')
+									)
+								)
+							)#modal
+						)#main
+					)#		
+			)
+		),
+		navbarMenu("Antemortem", icon = icon("users", lib="font-awesome"),
+			tabPanel("Single",icon = icon("gear", lib="font-awesome"),
+				sidebarLayout(
+					sidebarPanel(
+						uiOutput("stature_reference_ante"),
+						fluidRow(
+							column(12,
+								selectInput("state_reference_ante_side", "Side", c(Left='Left', Right='Right'))
+							),
+							column(12,
+								uiOutput("single_ante_elements")
+							),
+							column(6,
+								uiOutput("single_measurements_ante"),
+								textInput(inputId = 'Postmortem_ID_ante', label = 'Postmortem ID', value = 'X1')
+							),
+							column(6,
+								numericInput(inputId = 'antestat_input', label = 'Stature', value = ''),
+								textInput(inputId = 'Antemortem_ID_ante', label = 'Antemortem ID', value = 'X2')
+							)
+						),
+						fluidRow(
+							column(6,
+								actionButton("settingsante","Settings", icon=icon("keyboard-o"))
+							),
+							column(6,
+								actionButton("proantestat","Process ", icon = icon("cog"))
+							)
+						),
+						fluidRow(br()),
+						fluidRow(
+							column(6),
+							column(6,
+								downloadButton("downloadantestat", "Save    ")
+							)
+						),
+						tags$style(type = "text/css", "#settingsante { width:100%; font-size:85%; background-color:#126a8f }"),
+						tags$style(type = "text/css", "#proantestat { width:100%; font-size:85%; background-color:#126a8f }"),
+						tags$style(type = "text/css", "#downloadantestat { width:100%; font-size:85%; background-color:#126a8f }"),
+						width=3
+					),
+					mainPanel(
+						htmlOutput('antestat_output'),
+						imageOutput('plotplotante'),
+						DT::dataTableOutput('antestat_table'),
+					 	bsModal("settingsante2", title = "Settings", trigger = "settingsante", size = "medium", 
+					 		tabsetPanel(id="tabSelected2s",
+								tabPanel("Output Paramters",
+									uiOutput("fileoutputant1"),
+									uiOutput("fileoutputant2")
+								),	
+								tabPanel("Statistical Parameters",
+									fluidRow(column(6,
+											uiOutput("alphalevelsantestat")
+										)
+									)
+								)
+							)
+						)
+					)
+				)	
+			),
+			tabPanel("Multiple",icon = icon("gears", lib="font-awesome"),
+				sidebarLayout(
+					sidebarPanel(
+						uiOutput("stature_reference_antem"),
+						fluidRow(
+							column(12,
+								selectInput("state_reference_ante_sidem", "Side", c(Left='Left', Right='Right'))
+							),
+							column(12,
+								uiOutput("multiple_ante_elements")
+							)
+						),
+						uiOutput('resettableInputante1'),
+						uiOutput('resettableInputante2'),
+						fluidRow(
+							column(6,
+								actionButton("settingsantem","Settings", icon=icon("keyboard-o"))
+							),
+							column(6,
+								actionButton("proantestatm","Process ", icon = icon("cog"))
+							)
+						),
+						fluidRow(br()),
+						fluidRow(
+							column(6,
+								actionButton("clearFile1ante", "Clear   ", icon = icon("window-close"))
+							),
+							column(6,
+								downloadButton("downloadantestatm", "Save    ")
+							)
+						),
+						tags$style(type = "text/css", "#settingsantem { width:100%; font-size:85%; background-color:#126a8f }"),
+						tags$style(type = "text/css", "#proantestatm { width:100%; font-size:85%; background-color:#126a8f }"),
+						tags$style(type = "text/css", "#clearFile1ante { width:100%; font-size:85%; background-color:#126a8f }"),
+						tags$style(type = "text/css", "#downloadantestatm { width:100%; font-size:85%; background-color:#126a8f }"),
+						width=3
+					),
+					mainPanel(
+						htmlOutput('antestat_outputm'),
+						tabsetPanel(id="tabSelected",
+							tabPanel("Not excluded",
+					 			DT::dataTableOutput('antestat_table1m')),
+					 		tabPanel("Excluded",
+					 			DT::dataTableOutput('antestat_table2m'))),
+					 	bsModal("settingsante2m", title = "Settings", trigger = "settingsantem", size = "medium", 
+					 		tabsetPanel(id="tabSelected2m",
+								tabPanel("Output Paramters",
+									uiOutput('fileoutputant1m')
+								),	
+								tabPanel("Statistical Parameters",
+									uiOutput("alphalevelsantestatm")
+								),
+								tabPanel("Computational Parameters",
+									uiOutput('ncoresm')
+								)
+							)
+						)
+					)
+				)
+			)	
+		),
 		navbarMenu("Outlier",icon = icon("sort-amount-asc", lib="font-awesome"),
 			tabPanel("Metric",icon = icon("line-chart", lib="font-awesome"),	
 				sidebarLayout(
@@ -483,402 +876,6 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 					)
 				)
 			)
-		),		
-		navbarMenu("Osteoshape", icon = icon("cloud", lib="font-awesome"),
-			tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"),
-				titlePanel(""),
-					sidebarLayout(
-						sidebarPanel(
-							selectInput(inputId ="fragcomp", label = "Analysis:", choices = c("Complete", "Fragmented"), selected = "Complete"),
-							uiOutput('resettableInput2D'),	
-							uiOutput('resettableInput2DD'),
-							conditionalPanel(condition = "input.fragcomp == 'Complete'",
-								uiOutput('mspec')
-							),
-							fluidRow(
-								column(6,
-									actionButton("settings2D","Settings", icon=icon("keyboard-o"))
-								),
-								column(6,
-									actionButton("pro2D","Process ", icon = icon("cog"))
-								)
-							),
-							fluidRow(br()),
-							fluidRow(
-								column(6,
-									actionButton("clearFile2D", "Clear   ", icon = icon("window-close"))
-								),
-								column(6,
-									downloadButton("downloadData2D", "Save    ")
-								)
-							),
-							tags$style(type = "text/css", "#settings2D { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#pro2D { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#clearFile2D { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#downloadData2D { width:100%; font-size:85%; background-color:#126a8f }"),
-							width = 3
-						),
-						mainPanel(
-							uiOutput("contents2D"),
-							uiOutput("tabpanpan"),
-							bsModal("settings2DD", title = "Settings", trigger = "settings2D", size = "large", 
-								tabsetPanel(id="tabSelected2",
-									tabPanel("Output Parameters",
-										uiOutput('fileoutput2Dexcel1'),
-										uiOutput('fileoutput2Dexcel2'),
-										uiOutput('fileoutput2Dplot'),
-										uiOutput('fileoutput2Dtps')
-									),
-									tabPanel("Statistical Parameters",
-										fluidRow(
-											column(4,
-												h4("Outline"),
-												uiOutput('nthreshold'),
-												uiOutput('mirror2D'),
-												uiOutput('efa_options3'),
-								 				conditionalPanel(condition = "input.fragcomp == 'Complete'",
-													uiOutput('efa_options1'),
-													uiOutput('efa_options2')
-												)
-											),
-											column(4, 
-												h4("Registration"),
-												conditionalPanel(condition = "input.fragcomp == 'Complete'",
-														uiOutput('comp_options')
-												),
-												uiOutput('icp2D')
-											),
-											column(4,
-												h4("Distance"),
-												uiOutput('distance2D'),
-								 				conditionalPanel(condition = "input.distance2D == 'Segmented-Hausdorff' || input.distance2D == 'Hausdorff'",
-													uiOutput('max_avg_distance')
-												),
-								 				conditionalPanel(condition = "input.distance2D == 'Segmented-Hausdorff'",
-													uiOutput('n_regions')
-												),
-												sliderInput(inputId = "shortlistn", label = "Number of shortest distance matches", min = 1, max = 100, value = 1, step = 1),
-												checkboxInput(inputId = "hidedist", label = "Hide distance from results", value = FALSE)
-											)
-										)
-									),
-									tabPanel("Computational Parameters",
-										uiOutput('ncores2D')
-									)
-								)
-							)
-						)
-					)
-			),
-			tabPanel("3D Point Cloud Tools",icon = icon("cloud-download", lib="glyphicon"),
-				titlePanel(""),
-					sidebarLayout(
-						sidebarPanel(
-							uiOutput('resettableInput3Da'),
-							fluidRow(
-								column(6,
-									actionButton("previous"," Previous", icon=icon("arrow-left"))
-								),
-								column(6,
-									actionButton("nnext"," Next    ", icon = icon("arrow-right"))
-								)
-							),
-							fluidRow(br()),
-							fluidRow(
-								column(6,
-									actionButton("start"," Digitize", icon=icon("edit"))
-								),
-								column(6,
-									actionButton("start2"," Fracture", icon=icon("scissors"))
-								)
-							),	
-							fluidRow(br()),
-							fluidRow(
-								column(6,
-									actionButton("RGB1"," RGB landmark", icon=icon("tint"))
-								),
-								column(6,
-									actionButton("RGB2"," RGB fracture", icon=icon("tint"))
-								)
-							),	
-							fluidRow(br()),
-							fluidRow(
-								column(12,
-									actionButton("RGB3"," RGB calibration", icon=icon("tint"))
-								)
-							),
-							fluidRow(br()),
-							fluidRow(
-								column(6,
-									actionButton("pcset","Settings", icon=icon("keyboard-o"))
-								),
-								column(6,
-									actionButton("simplify","Simplify", icon=icon("cloud-download"))
-								)
-							),
-							fluidRow(br()),
-							fluidRow(
-								column(6,
-									actionButton("clearFile3Da", " Clear   ", icon = icon("window-close"))
-								),
-								column(6,
-									downloadButton("savedata", " Save    ")
-								)
-							),
-							fluidRow(br()),
-							fluidRow(
-								column(12,
-									radioButtons(inputId ="alln", label = "Specimens", choices = c("All", "Present"), selected = "Present")
-								)
-							),
-							fluidRow(br()),
-							fluidRow(
-								column(12,
-									uiOutput("coordinates")
-								)
-							),
-							tags$style(type = "text/css", "#pcset { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#simplify { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#start2 { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#RGB1 { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#RGB2 { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#RGB3 { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#start { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#previous { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#nnext { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#clearFile3Da { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#savedata { width:100%; font-size:85%; background-color:#126a8f }"),
-							width = 3
-						),
-						mainPanel(
-							rglwidgetOutput('webgl3Dalign', width = "1200px", height = "1200px"),
-							bsModal("pcset3D", title = "Settings", trigger = "pcset", size = "medium", 
-								tabsetPanel(id="pcset33",
-									tabPanel("Statistical Parameters",
-										fluidRow(
-											column(4,
-												h4("Simplification"),
-												uiOutput('vara'),
-												uiOutput('tva')
-											),
-											column(4,
-												h4("RGB"),
-												uiOutput('fracturet')
-											)
-										)
-									),
-									tabPanel("Computational Parameters",
-										uiOutput('ncorespc')
-									)
-								)
-							)#modal
-						)#main
-					)#		
-			),
-			tabPanel("3D Antimere",icon = icon("sort-by-order", lib="glyphicon"),
-				titlePanel(""),
-					sidebarLayout(
-						sidebarPanel(
-							selectInput(inputId ="fragcomp3d", label = "Analysis:", choices = c("Complete", "Fragmented"), selected = "Complete"),
-							uiOutput('resettableInput3D'),	
-							uiOutput('resettableInput3DD'),
-							uiOutput("mspec3D"),
-							fluidRow(
-								column(6,
-									actionButton("settings3D","Settings", icon=icon("keyboard-o"))
-								),
-								column(6,
-									actionButton("pro3D","Process ", icon = icon("cog"))
-								)
-							),
-							fluidRow(br()),
-							fluidRow(
-								column(6,
-									actionButton("clearFile3D", "Clear   ", icon = icon("window-close"))
-								),
-								column(6,
-									downloadButton("downloadData3D", "Save    ")
-								)
-							),
-							tags$style(type = "text/css", "#settings3D { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#pro3D { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#clearFile3D { width:100%; font-size:85%; background-color:#126a8f }"),
-							tags$style(type = "text/css", "#downloadData3D { width:100%; font-size:85%; background-color:#126a8f }"),
-							width = 3
-						),
-						mainPanel(
-							uiOutput("contents3D"),
-							tabsetPanel(id="tabSelected3D",
-								tabPanel("Results ",
-									DT::dataTableOutput('table3D')
-								),
-								tabPanel("Render ",
-									rglwidgetOutput('webgl3D', width = "1200px", height = "1200px")
-								)
-						 	),
-							bsModal("settings3DD", title = "Settings", trigger = "settings3D", size = "large", 
-								tabsetPanel(id="tabSelected33",
-									tabPanel("Output Parameters",
-										uiOutput('fileoutput3Dexcel1'),
-										uiOutput('fileoutput3Dexcel2'),
-										uiOutput('fileoutput3Dtps')
-									),
-									tabPanel("Statistical Parameters",
-										fluidRow(
-											column(4,
-												h4("Outline"),
-												uiOutput('banding'),
-												conditionalPanel(condition = "input.banding",
-													uiOutput('nthreshold3D')
-												)
-											),
-											column(4, 
-												h4("Registration"),
-												uiOutput('icp3D'),
-												uiOutput('trans3D')
-											),
-											column(4,
-												h4("Distance"),
-												uiOutput('distance3D'),
-												uiOutput('max_avg_distance3D'),
-												uiOutput('shortlistn3D'),
-												uiOutput('hidedist3D')
-											)
-										)
-									),
-									tabPanel("Computational Parameters",
-										uiOutput('ncores3D')
-									)
-								)
-							)
-						)
-					)
-			)
-		),
-		navbarMenu("Antemortem", icon = icon("users", lib="font-awesome"),
-			tabPanel("Single",icon = icon("gear", lib="font-awesome"),
-				sidebarLayout(
-					sidebarPanel(
-						uiOutput("stature_reference_ante"),
-						fluidRow(
-							column(12,
-								selectInput("state_reference_ante_side", "Side", c(Left='Left', Right='Right'))
-							),
-							column(12,
-								uiOutput("single_ante_elements")
-							),
-							column(6,
-								uiOutput("single_measurements_ante"),
-								textInput(inputId = 'Postmortem_ID_ante', label = 'Postmortem ID', value = 'X1')
-							),
-							column(6,
-								numericInput(inputId = 'antestat_input', label = 'Stature', value = ''),
-								textInput(inputId = 'Antemortem_ID_ante', label = 'Antemortem ID', value = 'X2')
-							)
-						),
-						fluidRow(
-							column(6,
-								actionButton("settingsante","Settings", icon=icon("keyboard-o"))
-							),
-							column(6,
-								actionButton("proantestat","Process ", icon = icon("cog"))
-							)
-						),
-						fluidRow(br()),
-						fluidRow(
-							column(6,
-								downloadButton("downloadantestat", "Save    ")
-							)
-						),
-						tags$style(type = "text/css", "#settingsante { width:100%; font-size:85%; background-color:#126a8f }"),
-						tags$style(type = "text/css", "#proantestat { width:100%; font-size:85%; background-color:#126a8f }"),
-						tags$style(type = "text/css", "#downloadantestat { width:100%; font-size:85%; background-color:#126a8f }"),
-						width=3
-					),
-					mainPanel(
-						htmlOutput('antestat_output'),
-						imageOutput('plotplotante'),
-						DT::dataTableOutput('antestat_table'),
-					 	bsModal("settingsante2", title = "Settings", trigger = "settingsante", size = "medium", 
-					 		tabsetPanel(id="tabSelected2s",
-								tabPanel("Output Paramters",
-									uiOutput("fileoutputant1"),
-									uiOutput("fileoutputant2")
-								),	
-								tabPanel("Statistical Parameters",
-									fluidRow(column(6,
-											uiOutput("alphalevelsantestat")
-										)
-									)
-								)
-							)
-						)
-					)
-				)	
-			),
-			tabPanel("Multiple",icon = icon("gears", lib="font-awesome"),
-				sidebarLayout(
-					sidebarPanel(	
-						selectInput(inputId = 'metric_typem', 'Stature metric', c(Millimeters = "mm", Centimeters = "cm", Inches = "in"), selected = 'in'),
-						uiOutput("antestat_testm"),
-						selectInput("antestat_populationm", "Population", c(DPAA_any_male = "DPAA-any-male", DPAA_white_male = "DPAA-white-male", DPAA_black_male = "DPAA-black-male",FDB_20th_FStat_any='20th-FStat-any', FDB_20th_FStat_white_male='20th-FStat-white-male', FDB_20th_FStat_white_female='20th-FStat-white-female', FDB_20th_FStat_black_male='20th-FStat-black-male', FDB_20th_FStat_black_female='20th-FStat-black-female', Trotter_any_male='Trotter-any-male', Trotter_black_male='Trotter-black-male', Trotter_white_male='Trotter-white-male'), 'Trotter-any-male'),
-						uiOutput('resettableInputante1'),
-						uiOutput('resettableInputante2'),
-						fluidRow(
-							column(6,
-								actionButton("settingsantem","Settings", icon=icon("keyboard-o"))
-							),
-							column(6,
-								actionButton("proantestatm","Process ", icon = icon("cog"))
-							)
-						),
-						fluidRow(br()),
-						fluidRow(
-							column(6,
-								actionButton("clearFile1ante", "Clear   ", icon = icon("window-close"))
-							),
-							column(6,
-								downloadButton("downloadantestatm", "Save    ")
-							)
-						),
-						tags$style(type = "text/css", "#settingsantem { width:100%; font-size:85%; background-color:#126a8f }"),
-						tags$style(type = "text/css", "#proantestatm { width:100%; font-size:85%; background-color:#126a8f }"),
-						tags$style(type = "text/css", "#clearFile1ante { width:100%; font-size:85%; background-color:#126a8f }"),
-						tags$style(type = "text/css", "#downloadantestatm { width:100%; font-size:85%; background-color:#126a8f }"),
-						width=3
-					),
-					mainPanel(
-						htmlOutput('antestat_outputm'),
-						tabsetPanel(id="tabSelected",
-							tabPanel("Not excluded",
-					 			DT::dataTableOutput('antestat_table1m')),
-					 		tabPanel("Excluded",
-					 			DT::dataTableOutput('antestat_table2m'))),
-					 	bsModal("settingsante2m", title = "Settings", trigger = "settingsantem", size = "medium", 
-					 		tabsetPanel(id="tabSelected2m",
-								tabPanel("Output Paramters",
-									checkboxInput(inputId = "fileoutputant1m", label = "Output csv file", value = TRUE),
-									checkboxInput(inputId = "fileoutputant2m", label = "Output plot (WARNING: This option will generate a plot for every comparison)", value = FALSE)
-								),	
-								tabPanel("Statistical Parameters",
-									fluidRow(column(6,
-										sliderInput(inputId = "predlevelantestatm", label = "Prediction interval level", min=0.01, max=1, value=0.95, step = 0.01),
-										sliderInput(inputId = "alphalevelsantestatm", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
-										),
-										column(6,
-											radioButtons(inputId = "alphatest1m", label = "Test type", choices = c(Alpha = "Alpha", PI = "PI"), "Alpha"),
-											checkboxInput(inputId = "research_mm", label = "Calculate research statistics", value = FALSE)
-										)
-									)
-								),
-								tabPanel("Computational Parameters",
-									uiOutput('ncoresm')
-								)
-							)
-						)
-					)
-				)
-			)	
 		)
 	)
 )
