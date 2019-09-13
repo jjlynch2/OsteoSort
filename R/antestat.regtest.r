@@ -47,10 +47,10 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 	results <<- julia_call("REGS_Ante", as.matrix(antemortem[,2]), as.matrix(postmortem[,4]), as.matrix(ref[c(4,5)]))
 
 	#format data.frame to return
-	results_formatted <- data.frame(cbind(id_1 = postmortem[results[,1],1],       #1
-								side_1 = postmortem[results[,1],2],        #2
-								element_1 = postmortem[results[,1],3],     #3
-								id_2 = antemortem[results[,2],1],          #4
+	results_formatted <- data.frame(cbind(pm_id = postmortem[results[,1],1],       #1
+								side = postmortem[results[,1],2],        #2
+								element = postmortem[results[,1],3],     #3
+								am_id = antemortem[results[,2],1],          #4
 								Stature = antemortem[results[,2],2],       #5
 								measurements = colnames(ref)[5],           #6
 								p_value = round(results[,3], digits = 4),  #7

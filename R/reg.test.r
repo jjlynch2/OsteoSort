@@ -68,7 +68,19 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	}
 	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
 	#format data.frame to return
-	results_formatted <- data.frame(cbind(id_1 = sorta[results[,1],1], element_1 = sorta[results[,1],3], side_1 = sorta[results[,1],2], id_2 = sortb[results[,2],1], element_2 = sortb[results[,2],3], side_2 = sortb[results[,2],2], measurements = measurements, p_value = round(results[,4], digits = 4), r2 = round(results[,6], digits = 4), sample = results[,5]), Result = NA, stringsAsFactors = FALSE)
+	results_formatted <- data.frame(cbind(x_id = sorta[results[,1],1], 
+								x_element = sorta[results[,1],3], 
+								x_side = sorta[results[,1],2], 
+								y_id = sortb[results[,2],1], 
+								y_element = sortb[results[,2],3], 
+								y_side = sortb[results[,2],2], 
+								measurements = measurements, 
+								p_value = round(results[,4], digits = 4), 
+								r2 = round(results[,6], digits = 4), 
+								sample = results[,5]), 
+								Result = NA, 
+								stringsAsFactors = FALSE
+	)
 
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {

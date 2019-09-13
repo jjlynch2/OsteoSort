@@ -121,7 +121,20 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
 	#format data.frame to return
 
-	results_formatted <- data.frame(cbind(id_1 = data.frame(sorta[results[,1],1]), element_1 = sorta[results[,1],3], side_1 = sorta[results[,1],2], id_2 = data.frame(sortb[results[,2],1]), element_2 = sortb[results[,2],3], side_2 = sortb[results[,2],2], measurements = measurements, p_value = round(results[,4], digits = 4), mean = round(results[,5], digits = 4), sd = round(results[,6], digits =4), sample = results[,7]), Result = NA, stringsAsFactors = FALSE)
+	results_formatted <- data.frame(cbind(id_1 = data.frame(sorta[results[,1],1]), 
+									element_1 = sorta[results[,1],3], 
+									side_1 = sorta[results[,1],2], 
+									id_2 = data.frame(sortb[results[,2],1]), 
+									element_2 = sortb[results[,2],3], 
+									side_2 = sortb[results[,2],2], 
+									measurements = measurements, 
+									p_value = round(results[,4], digits = 4), 
+									mean = round(results[,5], digits = 4), 
+									sd = round(results[,6], digits =4), 
+									sample = results[,7]), 
+									Result = NA, 
+									stringsAsFactors = FALSE
+	)
 
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {
