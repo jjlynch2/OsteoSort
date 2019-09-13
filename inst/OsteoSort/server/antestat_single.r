@@ -105,7 +105,7 @@ observeEvent(input$proantestat, {
 			direc6 <- outtemp2[[1]] #direc temp
 			files <- list.files(direc6, recursive = TRUE)
 			setwd(direc6)
-			if(input$fileoutputant2) {
+			if(fileoutputant2$fileoutputant2) {
 				nimages <- list.files()
 				nimages <- paste(sessiontemp, "/", direc6, "/", nimages[grep(".jpg", nimages)], sep="")
 

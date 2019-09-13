@@ -9,5 +9,5 @@
 end
 
 @everywhere function reg_t_stat(sigma, r2, predicted, comparison, comparison_p, mean, sd, n)
-	return abs(predicted - comparison) / sigma * sqrt(1+(1/n)) + (comparison_p - mean) ^2 / n*sd^2
+	return abs(predicted - comparison) / (sigma * sqrt(1+(1/n) + ((comparison_p - mean) ^2) / (n*(sd^2))))
 end
