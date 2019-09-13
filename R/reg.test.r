@@ -83,7 +83,7 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}
-	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
+	if(output_options[2]) { 
 		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[[1]],plot_data[[2]], plot_data[[3]], plot_data[[4]]), method="exclusion", type="plot2")
 	}
 

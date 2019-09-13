@@ -676,7 +676,8 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 								selectInput("state_reference_ante_sidem", "Side", c(Left='Left', Right='Right'))
 							),
 							column(12,
-								uiOutput("multiple_ante_elements")
+								uiOutput("multiple_ante_elements"),
+								uiOutput("multiple_measurements_ante")
 							)
 						),
 						uiOutput('resettableInputante1'),

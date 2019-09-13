@@ -24,7 +24,6 @@ output$stature_reference_antem <- renderUI({
 })
 
 stature_reference_imported_antem <- reactiveValues(stature_reference_imported_antem = data.frame())
-
 ante_elementsm <- reactiveValues(df = c())
 ante_measurementsm <- reactiveValues(df = c())
 observeEvent(input$stature_reference_antem, {
@@ -49,15 +48,17 @@ output$multiple_ante_elements <- renderUI({
 	selectInput(inputId = "multiple_ante_elements", label = "Elements", choices = ante_elementsm$df)
 })
 
+output$multiple_measurements_ante <- renderUI({
+	selectInput("Measurement_ante_mm", label = "Measurement", choices = ante_measurementsm$df[which(ante_elementsm$df == input$multiple_ante_elements)])
+})
+
 numbercoresglobalm <- reactiveValues(ncorem = detectCores()-1)
 observeEvent(input$numbercoresm, {
 	numbercoresglobalm$ncorem <- input$numbercoresm
 })
 output$ncoresm <- renderUI({
-	sliderInput(inputId = "numbercoresm", label = "Number of cores", min=1, max=detectCores(), value=detectCores()-1, step =1)
+	sliderInput(inputId = "numbercoresm", label = "Number of cores", min=1, max=detectCores(), value=1, step =1)
 })
-
-
 
 #file upload render for multiple comparison
 output$resettableInputante1 <- renderUI({
@@ -87,51 +88,58 @@ observeEvent(input$proantestatm, {
 		}
 	})
 
-	#Upload CSV file
 	inFile1 <- input$file1ante
 	inFile2 <- input$file2ante
-	 #return null if not uploaded
 	if (is.null(inFile1) || is.null(inFile2)){
 		removeModal()                             
 		return(NULL) 
 	}
 
-	tempdata1m <- read.csv(inFile1$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))## see na.strings forces NA for blanks, spaces, etc
-	tempdata2m <- read.csv(inFile2$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))## see na.strings forces NA for blanks, spaces, etc		
+	tempdata1m <- read.csv(inFile1$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))
+	tempdata2m <- read.csv(inFile2$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))
 
+	outtemp1m <- antestat.input(bone = input$multiple_ante_elements, 
+							antemortem_stature = tempdata1m, 
+							postmortem_measurement = tempdata2m, 
+							side = input$state_reference_ante_sidem, 
+							measurement = input$Measurement_ante_mm,
+							ref = stature_reference_imported_antem$stature_reference_imported_antem
+	)
 
-	outtemp1m <- antestat.input(bone = input$antestatm, metric = input$metric_typem, antemortem_stature = tempdata1m, postmortem_measurement = tempdata2m, population = input$antestat_populationm)
-	outtemp2m <- antestat.regtest(threads = numbercoresglobalm$ncorem, sort = outtemp1m[[1]], ref = outtemp1m[[2]], prediction_interval = input$predlevelantestatm, alphalevel = input$alphalevelsantestatm, alphatest = temptest, output_options = c(input$fileoutputant1m, input$fileoutputant2m), sessiontempdir = sessiontemp)
+	outtemp2m <- antestat.regtest(threads = numbercoresglobalm$ncorem, 
+								antemortem = outtemp1m[[1]], 
+								postmortem = outtemp1m[[2]], 
+								ref = outtemp1m[[3]],
+								alphalevel = alphalevelsantestatm$alphalevelsantestatm, 
+								output_options = c(fileoutputant1m$fileoutputant1m, FALSE), 
+								sessiontempdir = sessiontemp
+	)
 
-		output$antestat_table1m <- DT::renderDataTable({
-			DT::datatable(outtemp2m[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
-		})
-		output$antestat_table2m <- DT::renderDataTable({
-			DT::datatable(outtemp2m[[3]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
-		})
+	output$antestat_table1m <- DT::renderDataTable({
+		DT::datatable(outtemp2m[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+	})
+	output$antestat_table2m <- DT::renderDataTable({
+		DT::datatable(outtemp2m[[3]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+	})
 
-		if(input$fileoutputant1m || input$fileoutputant2m) {
-			#Zip handler       
-			direc6 <- outtemp2m[[1]] #direc temp
-			files <- list.files(direc6, recursive = TRUE)
-			setwd(direc6)
-			zip:::zip(zipfile = paste(direc6,'.zip',sep=''), files = files)
-
-			setwd(sessiontemp)  #restores session
-	
-			#Download handler       
-			output$downloadantestatm <- downloadHandler(
-				filename <- function() {
-					paste("results.zip")
-				},      
-				content <- function(file) {
-					setwd(direc6)
-					file.copy(paste(direc6,'.zip',sep=''), file) 
-					setwd(sessiontemp)  
-				},
-				contentType = "application/zip"
-			)
-		}
-		setwd(sessiontemp) #restores session
-		removeModal() #removes modal
+	if(fileoutputant1m$fileoutputant1m) {
+		direc6 <- outtemp2m[[1]] #direc temp
+		files <- list.files(direc6, recursive = TRUE)
+		setwd(direc6)
+		zip:::zip(zipfile = paste(direc6,'.zip',sep=''), files = files)
+		setwd(sessiontemp)  #restores session
+		output$downloadantestatm <- downloadHandler(
+			filename <- function() {
+				paste("results.zip")
+			},      
+			content <- function(file) {
+				setwd(direc6)
+				file.copy(paste(direc6,'.zip',sep=''), file) 
+				setwd(sessiontemp)  
+			},
+			contentType = "application/zip"
+		)
+	}
+	setwd(sessiontemp) #restores session
+	removeModal() #removes modal
 })

@@ -46,10 +46,6 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 
 	results <<- julia_call("REGS_Ante", as.matrix(antemortem[,2]), as.matrix(postmortem[,4]), as.matrix(ref[c(4,5)]))
 
-aa <<- antemortem
-pp <<- postmortem
-rr <<- ref
-
 	#format data.frame to return
 	results_formatted <- data.frame(cbind(id_1 = postmortem[results[,1],1],       #1
 								side_1 = postmortem[results[,1],2],        #2
@@ -77,8 +73,8 @@ rr <<- ref
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}
-	if(output_options[2] && nrow(as.matrix(antemortem[,2])) == 1 && nrow(as.matrix(postmortem[,4])) == 1) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], ref[,4], ref[,5], antemortem[1,2]), method="exclusion", type="plot2")
+	if(output_options[2]) { 
+		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], ref[,4], ref[,5], antemortem[1,2]), method="exclusion", type="plot3")
 	}
 
 	gc()
