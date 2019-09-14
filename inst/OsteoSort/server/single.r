@@ -58,7 +58,7 @@ observeEvent(input$single_mean, {
 	single_mean$single_mean <- input$single_mean
 })
 
-single_tails <- reactiveValues(single_tails = TRUE) 
+single_tails <- reactiveValues(single_tails = 2) 
 output$single_tails <- renderUI({
 	sliderInput(inputId = "single_tails", label = "Tails", min=1, max=2, value=2, step=1)
 })
@@ -293,6 +293,7 @@ observeEvent(input$proc, {
 		output$single_plot <- renderImage({
 			list(src = nimages,
 				contentType = 'image/jpg',
+				height = 400,
 				alt = "A"
 			)
 		}, deleteFile = FALSE)

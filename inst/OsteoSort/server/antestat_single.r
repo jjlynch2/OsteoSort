@@ -112,6 +112,7 @@ observeEvent(input$proantestat, {
 				output$plotplotante <- renderImage({
 					list(src = nimages,
 						contentType = 'image/jpg',
+						height = 400,
 						alt = "A"
 					)
 				}, deleteFile = FALSE)

@@ -41,7 +41,7 @@ antestat.input <- function(antemortem_stature = NULL, postmortem_measurement = N
 	postmortem_measurement <- postmortem_measurement[rowSums(is.na(postmortem_measurement)) < 1,] #remove NA rows
 	postmortem_measurement[,4] <- as.numeric(postmortem_measurement[,4])
 	antemortem_stature <- antemortem_stature[rowSums(is.na(antemortem_stature)) < 1,] #remove NA rows
-	options(stringsAsFactors = TRUE) #restore default R
+	options(stringsAsFactors = TRUE) #restore default R  
 	print("Finished...")
 	return(list(antemortem_stature, postmortem_measurement, refa))
 }

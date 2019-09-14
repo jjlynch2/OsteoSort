@@ -60,7 +60,7 @@ observeEvent(input$multiple_ztransform, {
 	multiple_ztransform$multiple_ztransform <- input$multiple_ztransform
 })
 
-multiple_tails <- reactiveValues(multiple_tails = TRUE) 
+multiple_tails <- reactiveValues(multiple_tails = 2) 
 output$multiple_tails <- renderUI({
 	sliderInput(inputId = "multiple_tails", label = "Tails", min=1, max=2, value=2, step=1)
 })

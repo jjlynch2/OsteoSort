@@ -14,7 +14,8 @@ Depends:
 	zip,
 	rgl,
 	ClusterR,
-	JuliaCall
+	JuliaCall,
+	ggplot2
 License: GPL-2
 LazyData: true
 ByteCompile: true
@@ -28,4 +29,5 @@ Imports:
 	zip,
 	rgl,
 	ClusterR,
-	JuliaCall
+	JuliaCall,
+	ggplot2

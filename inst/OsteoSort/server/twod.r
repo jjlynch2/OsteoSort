@@ -61,7 +61,7 @@ observeEvent(input$fileoutput2Dplot, {
 	fileoutput2Dplot$fileoutput2Dplot <- input$fileoutput2Dplot
 })
 output$fileoutput2Dplot <- renderUI({
-	checkboxInput(inputId = "fileoutput2Dplot", label = "Output registered plot (WARNING: fragmented analysis will generate a plot for every comparison)", value = FALSE)
+	checkboxInput(inputId = "fileoutput2Dplot", label = "Output registered plot (WARNING: fragmented analysis will generate a plot for every comparison)", value = TRUE)
 })
 
 fileoutput2Dtps <- reactiveValues(fileoutput2Dtps = TRUE)
@@ -88,12 +88,12 @@ output$mirror2D <- renderUI({
 	checkboxInput(inputId = "mirror2D", label = "Mirror left images to right", value = TRUE)
 })
 
-ncores2D <- reactiveValues(ncores2D = detectCores()-1)
+ncores2D <- reactiveValues(ncores2D = 1)
 observeEvent(input$ncores2D, {
 	ncores2D$ncores2D <- input$ncores2D
 })
 output$ncores2D <- renderUI({
-	sliderInput(inputId = "ncores2D", label = "Number of cores", min=1, max=detectCores(), value=detectCores()-1, step =1)
+	sliderInput(inputId = "ncores2D", label = "Number of cores", min=1, max=detectCores(), value=1, step =1)
 })
 
 meanit2D <- reactiveValues(meanit2D = 2)
@@ -229,6 +229,7 @@ observeEvent(input$pro2D, {
 			output$plotplottd <- renderImage({
 				list(src = nimages,
 					contentType = 'image/jpg',
+					height = 600,
 					alt = "A"
 				)
 			}, deleteFile = FALSE)
@@ -246,7 +247,7 @@ observeEvent(input$pro2D, {
 			DT::datatable(out2[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 		})
 		output$contents2D <- renderUI({
-			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[7]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
+			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
 		})
 		if(fileoutput2Dexcel1$fileoutput2Dexcel1 || fileoutput2Dexcel2$fileoutput2Dexcel2 || fileoutput2Dplot$fileoutput2Dplot || fileoutput2Dtps$fileoutput2Dtps) {
 			setwd(sessiontemp)

@@ -156,6 +156,7 @@ observeEvent(input$pro4, {
 		output$plotoutlier4 <- renderImage({
 			list(src = nimages,
 				contentType = 'image/jpg',
+				height = 400,
 				alt = "A"
 			)
 		}, deleteFile = FALSE)

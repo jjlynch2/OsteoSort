@@ -183,7 +183,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 								textInput(inputId = 'ID1', label = '1st ID #', value = 'X1')
 							),
 							column(6,
-								textInput(inputId = 'ID2', label = '2nd ID #', value = 'X2')
+								textInput(inputId = 'ID2', label = '2nd ID #', value = 'Y1')
 							)
 						),
 						fluidRow(
@@ -623,7 +623,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 							),
 							column(6,
 								numericInput(inputId = 'antestat_input', label = 'Stature', value = ''),
-								textInput(inputId = 'Antemortem_ID_ante', label = 'Antemortem ID', value = 'X2')
+								textInput(inputId = 'Antemortem_ID_ante', label = 'Antemortem ID', value = 'Y1')
 							)
 						),
 						fluidRow(
