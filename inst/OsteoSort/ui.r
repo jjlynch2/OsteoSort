@@ -1,7 +1,3 @@
-options(warn = -1)
-library(shiny)
-library(rgl)
-
 source(system.file("OsteoSort/ui", 'dash.r', package = "OsteoSort"), local=TRUE) ###imports dashboard code
 source(system.file("OsteoSort/ui", 'files.r', package = "OsteoSort"), local=TRUE) ###imports files code
 source(system.file("OsteoSort/ui", 'reference.r', package = "OsteoSort"), local=TRUE) ###imports reference code

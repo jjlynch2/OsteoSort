@@ -1,12 +1,5 @@
-#' Shiny server.r file
-#' 
-#' This is the server.r file for the interface that utilizes all previous functions. 
-#' runApp("osteosort")
-#' shinyServer()
-
-library(shiny)
 options(rgl.useNULL=TRUE) #required to avoid rgl device opening 
-library(rgl)
+options(scipen = 999)
 options(shiny.maxRequestSize=100*1024^2) #10MB file size limit
 options(warn = -1) #disables warnings
 

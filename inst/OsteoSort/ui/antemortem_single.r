@@ -36,6 +36,7 @@ antemortem_single <- tabPanel("Single",icon = icon("gear", lib="font-awesome"),
 			tags$style(type = "text/css", "#settingsante { width:100%; font-size:85%; background-color:#126a8f }"),
 			tags$style(type = "text/css", "#proantestat { width:100%; font-size:85%; background-color:#126a8f }"),
 			tags$style(type = "text/css", "#downloadantestat { width:100%; font-size:85%; background-color:#126a8f }"),
+			tags$style(".well {border-width:1px; border-color:#126a8f;}"),
 			width=3
 		),
 		mainPanel(
