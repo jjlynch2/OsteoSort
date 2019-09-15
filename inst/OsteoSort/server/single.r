@@ -276,7 +276,7 @@ observeEvent(input$proc, {
 
 	#output table
 	output$table2 <- DT::renderDataTable({
-		DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1, dom = 't'), rownames = FALSE)
+		DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1, dom = 't', ordering=F), rownames = FALSE)
 	})
 
 	if(single_file_output1$single_file_output1 || single_file_output2$single_file_output2) {  

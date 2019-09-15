@@ -19,12 +19,12 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 			}
 		}
 		if(type == "plot") {
-			ptemp <- qplot(hera1[[3]], geom="histogram", xlab="", ylab="", col = I("grey"), fill = I("#126a8f")) + geom_vline(xintercept = hera1[[4]], linetype = "dashed", color="#ea6011") + theme_minimal() + theme(axis.text.x = element_text(size = 25), axis.text.y = element_text(size = 25))
+			ptemp <- qplot(hera1[[3]], geom="histogram", xlab="", ylab="", col = I("grey"), fill = I("#126a8f")) + geom_vline(xintercept = hera1[[4]], linetype = "dashed", color="#ea6011") + theme_minimal() + theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 20))
 			ggsave(paste("graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300)
 		}
 		if(type == "plot2") {
 			d <- data.frame(x = hera1[[3]], y = hera1[[4]])
-			ptemp <- ggplot(d, aes(x=x, y=y)) + theme_minimal() + geom_point(col = I("grey"), size = 2) + labs(x = hera1[[1]], y = hera1[[2]]) + theme(axis.title.x = element_text(size=25), axis.title.y = element_text(size=25), axis.text.x = element_text(size = 25), axis.text.y = element_text(size = 25))
+			ptemp <- ggplot(d, aes(x=x, y=y)) + theme_minimal() + geom_point(col = I("grey"), size = 2) + labs(x = hera1[[1]], y = hera1[[2]]) + theme(axis.title.x = element_text(size=20), axis.title.y = element_text(size=20), axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 20))
 			OLS = lm(hera1[[4]] ~ hera1[[3]])
 			pm1 <- predict(OLS, interval = "prediction", level = 1-hera1[[7]])
 			ptemp <- ptemp + geom_line(aes(y = pm1[,1]), linetype = "dashed", color = "#ea6011")
@@ -82,7 +82,7 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 			write.csv(hera1[[1]], file=hera1[[2]], row.names=FALSE)
 		}
 		if(type == "plot") {
-			ptemp <- qplot(as.numeric(hera1[[1]]), geom="histogram", xlab="", ylab="", col = I("grey"), fill = I("#126a8f")) + theme_minimal() + theme(axis.text.x = element_text(size = 25), axis.text.y = element_text(size = 25))
+			ptemp <- qplot(as.numeric(hera1[[1]]), geom="histogram", xlab="", ylab="", col = I("grey"), fill = I("#126a8f")) + theme_minimal() + theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 20))
 			ptemp <- ptemp + geom_vline(xintercept = hera1[[3]], linetype = "dashed", color="#ea6011") + geom_vline(xintercept = hera1[[4]], linetype = "dashed", color="darkgrey") + geom_vline(xintercept = hera1[[5]], linetype = "dashed", color="darkgrey") 
 			if(!hera1[[8]]) {
 				ptemp <- ptemp + geom_vline(xintercept = hera1[[6]], linetype = "dashed", color="black") + geom_vline(xintercept = hera1[[7]], linetype = "dashed", color="black") 

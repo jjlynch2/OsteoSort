@@ -109,7 +109,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	}
 	measurement_names <- unique(c(colnames(sorta[,-c(1:3)]), colnames(sortb[,-c(1:3)])))
 
-	if(length(measurements) == 2 && measurements[1] == 1 && measurements[2] == 0) {
+	if(sorta[results[,1],3] != sortb[results[,2],3]) {
 		measurements[2] = 1
 		measurement_names = c(measurement_names[1], measurement_names[3])
 	} #if non-antimere test hack
@@ -121,10 +121,10 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
 	#format data.frame to return
 
-	results_formatted <- data.frame(cbind(id_1 = data.frame(sorta[results[,1],1]), 
+	results_formatted <- data.frame(cbind(id_1 = sorta[results[,1],1], 
 									element_1 = sorta[results[,1],3], 
 									side_1 = sorta[results[,1],2], 
-									id_2 = data.frame(sortb[results[,2],1]), 
+									id_2 = sortb[results[,2],1], 
 									element_2 = sortb[results[,2],3], 
 									side_2 = sortb[results[,2],2], 
 									measurements = measurements, 
@@ -135,7 +135,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 									Result = NA, 
 									stringsAsFactors = FALSE
 	)
-
+globala <<- results_formatted
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {
 		if(results_formatted[i,8] > alphalevel) {

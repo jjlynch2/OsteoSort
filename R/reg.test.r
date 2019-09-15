@@ -50,16 +50,16 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 
 
-	results <- julia_call("REGSL", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
+	results <<- julia_call("REGSL", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 		plot_data <- julia_call("REGSL_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 	}
 
 	#transform numerical T/F to measurement names
 	if(nrow(results) > 1) {
-		measurements <- data.frame(results[,c(7:ncol(results))])
+		measurements <- data.frame(results[,c(6:ncol(results))])
 	}else {
-		measurements <- data.frame(t(results[c(7:length(results))]))
+		measurements <- data.frame(t(results[c(6:length(results))]))
 	}
 	measurement_names <- unique(c(colnames(sorta[,-c(1:3)]), colnames(sortb[,-c(1:3)])))
 	for(i in 1:ncol(measurements)) {
@@ -75,19 +75,19 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 								y_element = sortb[results[,2],3], 
 								y_side = sortb[results[,2],2], 
 								measurements = measurements, 
-								p_value = round(results[,4], digits = 4), 
-								r2 = round(results[,6], digits = 4), 
-								sample = results[,5]), 
+								p_value = round(results[,3], digits = 4), 
+								r2 = round(results[,5], digits = 4), 
+								sample = results[,4]), 
 								Result = NA, 
 								stringsAsFactors = FALSE
 	)
 
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {
-		if(results_formatted[i,7] > alphalevel) {
+		if(results_formatted[i,8] > alphalevel) {
 			results_formatted[i,11] <- c("Cannot Exclude")
 		}
-		if(results_formatted[i,7] <= alphalevel) {
+		if(results_formatted[i,8] <= alphalevel) {
 			results_formatted[i,11] <- c("Excluded")
 		}
 	}

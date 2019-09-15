@@ -98,7 +98,7 @@ observeEvent(input$proantestat, {
 
 		tempDF <- rbind(outtemp2[[2]], outtemp2[[3]]) #combines excluded and not excluded for results
 		output$antestat_table <- DT::renderDataTable({
-			DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1, dom = 't'), rownames = FALSE)
+			DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1, dom = 't', ordering=F), rownames = FALSE)
 		})
 		if(fileoutputant1$fileoutputant1 || fileoutputant2$fileoutputant2) {
 			#Zip handler       

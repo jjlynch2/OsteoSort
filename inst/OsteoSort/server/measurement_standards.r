@@ -1,1 +1,1 @@
-output$measurement_conversion_table <- DT::renderDataTable(read.table(system.file("extdata", "Standardized_Measurements.csv", package = "OsteoSort"), header = TRUE, sep=","), options = list(lengthMenu = c(10,20,30,40,50), pageLength = 20), rownames = FALSE)
+output$measurement_conversion_table <- DT::renderDataTable(DT::datatable(read.table(system.file("extdata", "Standardized_Measurements.csv", package = "OsteoSort"), header = TRUE, sep=","), options = list(lengthMenu = c(10,20,30,40,50), pageLength = 20), rownames = FALSE))

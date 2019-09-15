@@ -52,7 +52,7 @@ output$multiple_measurements_ante <- renderUI({
 	selectInput("Measurement_ante_mm", label = "Measurement", choices = ante_measurementsm$df[which(ante_elementsm$df == input$multiple_ante_elements)])
 })
 
-numbercoresglobalm <- reactiveValues(ncorem = detectCores()-1)
+numbercoresglobalm <- reactiveValues(ncorem = 1)
 observeEvent(input$numbercoresm, {
 	numbercoresglobalm$ncorem <- input$numbercoresm
 })
@@ -115,6 +115,24 @@ observeEvent(input$proantestatm, {
 								sessiontempdir = sessiontemp
 	)
 
+	if(!all(is.na(outtemp2m[[2]])) || !all(is.na(outtemp2m[[3]]))) {
+
+		ll <- nrow(outtemp2m[[2]]) + nrow(outtemp2m[[3]])
+		nmatch <- nrow(outtemp2m[[2]])
+		pmsize <- length(unique(c(outtemp2m[[2]][,1], outtemp2m[[3]][,1]))) 
+		amsize <- length(unique(c(outtemp2m[[2]][,4], outtemp2m[[3]][,4]))) 
+		t_time <- outtemp2m[[4]]
+		output$antestat_outputm <- renderUI({
+			HTML(paste("<strong>",
+						"Completed in: ", "<font color=\"#00688B\">", t_time, " minutes</font>", 
+						"<br/>","Comparisons: ",   "<font color=\"#00688B\">", ll, "</font>", 
+		                   "<br/>", "Postmortem Specimens: ",           "<font color=\"#00688B\">",pmsize, "</font>", 
+		                   "<br/>", "Antemortem Statures: ",           "<font color=\"#00688B\">",amsize, "</font>", 
+		                   '<br/>', "Potential matches: ",  "<font color=\"#00688B\">",nmatch , "</font>",
+		                   '<br/>', "Exclusions: ",         "<font color=\"#00688B\">",ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)",  "</font>",'</strong>'))
+		})
+	}
+
 	output$antestat_table1m <- DT::renderDataTable({
 		DT::datatable(outtemp2m[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
@@ -126,7 +144,7 @@ observeEvent(input$proantestatm, {
 		direc6 <- outtemp2m[[1]] #direc temp
 		files <- list.files(direc6, recursive = TRUE)
 		setwd(direc6)
-		zip:::zip(zipfile = paste(direc6,'.zip',sep=''), files = files)
+		zip:::zipr(zipfile = paste(direc6,'.zip',sep=''), files = files)
 		setwd(sessiontemp)  #restores session
 		output$downloadantestatm <- downloadHandler(
 			filename <- function() {

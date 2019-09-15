@@ -40,7 +40,7 @@ end
 end
 
 @everywhere function REGSL_worker(v1, m2, li, RL, RR)
-	res = zeros(size(m2,1),size(m2,2)+6+size(v1,1)) #plus 8 and size of measurements for v1 m2?
+	res = zeros(size(m2,1),size(m2,2)+5+size(v1,1)) #plus 8 and size of measurements for v1 m2?
 	res_1 = measurement_counter(v1) #transposes and counts
 	dsum_1 = log(sum(v1)) #should work outside of the loops since 0 
 	refd_a = zeros(1,1)
@@ -128,15 +128,15 @@ end
 		pVal = 2 * pt(-abs(tStat), n-2) #always uses 2-tails with 2 degrees of freedom
 		res[x,1] = li #index of left
 		res[x,2] = x #index of right
-		res[x,3] = 0 #not needed but left here so array columns match in R
-		res[x,4] = pVal #p-value
-		res[x,5] = n #reference sample size
-		res[x,6] = r2 #r-square
+
+		res[x,3] = pVal #p-value
+		res[x,4] = n #reference sample size
+		res[x,5] = r2 #r-square
 		for j in m_counter_1_o
-			res[x,j+6] = 1
+			res[x,j+5] = 1
 		end
 		for j in m_counter_2_o
-			res[x,j+6+size(v1,1)] = 1
+			res[x,j+5+size(v1,1)] = 1
 		end
 	end
 	return res

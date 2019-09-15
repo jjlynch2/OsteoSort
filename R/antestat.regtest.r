@@ -45,11 +45,18 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 	results <- julia_call("REGS_Ante", as.matrix(antemortem[,2]), as.matrix(postmortem[,4]), as.matrix(ref[c(4,5)]))
 	#format data.frame to return
-	results_formatted <- data.frame(cbind(pm_id = as.character(postmortem[results[,1],1]),       #1
-								side = postmortem[results[,1],2],        #2
-								element = postmortem[results[,1],3],     #3
-								am_id = as.character(antemortem[results[,2],1]),          #4
-								Stature = antemortem[results[,2],2],       #5
+
+	antemortem <- antemortem[-c(nrow(antemortem)),]
+	postmortem <- postmortem[-c(nrow(postmortem)),]
+
+	if(nrow(postmortem) == 1) { postmortem[results[,1],1] <- as.character(postmortem[results[,1],1])}
+	if(nrow(antemortem) == 1) { antemortem[results[,2],1] <- as.character(antemortem[results[,2],1])}
+
+	results_formatted <- data.frame(cbind(pm_id = as.character(postmortem[results[,2],1]),       #1
+								side = postmortem[results[,2],2],        #2
+								element = postmortem[results[,2],3],     #3
+								am_id = as.character(antemortem[results[,1],1]),          #4
+								Stature = antemortem[results[,1],2],       #5
 								measurements = colnames(ref)[5],           #6
 								p_value = round(results[,3], digits = 4),  #7
 								r2 = round(results[,5], digits = 4),       #8
