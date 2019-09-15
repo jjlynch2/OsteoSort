@@ -11,11 +11,11 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 	print("Writing output files")
 	if(method == "exclusion") {
 		if(type == "csv") {
-			if(nrow(hera1[hera1$Result == "Cannot Exclude",]) > 0) {
-				write.csv(hera1[hera1$Result == "Cannot Exclude",], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
+			if(nrow(hera1[hera1$result == "Cannot Exclude",]) > 0) {
+				write.csv(hera1[hera1$result == "Cannot Exclude",], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)
 			}
-			if(nrow(hera1[hera1$Result == "Excluded",]) > 0) {
-				write.csv(hera1[hera1$Result == "Excluded",], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
+			if(nrow(hera1[hera1$result == "Excluded",]) > 0) {
+				write.csv(hera1[hera1$result == "Excluded",], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 			}
 		}
 		if(type == "plot") {

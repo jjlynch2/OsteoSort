@@ -132,7 +132,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 									mean = round(results[,5], digits = 4), 
 									sd = round(results[,6], digits =4), 
 									sample = results[,7]), 
-									Result = NA, 
+									result = NA, 
 									stringsAsFactors = FALSE
 	)
 globala <<- results_formatted
@@ -159,5 +159,5 @@ globala <<- results_formatted
 	options(stringsAsFactors = TRUE) #restore default R
 	print("Finished.")
 	t_time <- end_time(start_time)
-	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",], t_time))
+	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time))
 }

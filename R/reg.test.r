@@ -78,7 +78,7 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 								p_value = round(results[,3], digits = 4), 
 								r2 = round(results[,5], digits = 4), 
 								sample = results[,4]), 
-								Result = NA, 
+								result = NA, 
 								stringsAsFactors = FALSE
 	)
 
@@ -96,7 +96,16 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}
 	if(output_options[2]) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[[1]],plot_data[[2]], plot_data[[3]], plot_data[[4]], alphalevel), method="exclusion", type="plot2")
+		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], 
+															results_formatted[1,4], 
+															plot_data[[1]],
+															plot_data[[2]], 
+															plot_data[[3]], 
+															plot_data[[4]], 
+															alphalevel), 
+															method="exclusion", 
+															type="plot2"
+						)
 	}
 
 	gc()
@@ -104,5 +113,5 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 	options(stringsAsFactors = TRUE) #restore default R
 	print("Finished.")
 	t_time <- end_time(start_time)
-	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",], t_time))
+	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time))
 }

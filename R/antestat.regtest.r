@@ -61,7 +61,7 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 								p_value = round(results[,3], digits = 4),  #7
 								r2 = round(results[,5], digits = 4),       #8
 								sample = results[,4]),                     #9
-								Result = NA,                               #10
+								result = NA,                               #10
 								stringsAsFactors = FALSE
 	)
 
@@ -97,5 +97,5 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 	options(stringsAsFactors = TRUE) #restore default R
 	print("Finished.")
 	t_time <- end_time(start_time)
-	return(list(direc,results_formatted[results_formatted$Result == "Cannot Exclude",],results_formatted[results_formatted$Result == "Excluded",], t_time))
+	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time))
 }
