@@ -19,7 +19,7 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 			}
 		}
 		if(type == "plot") {
-			ptemp <- qplot(hera1[[3]], geom="histogram", xlab="", ylab="", col = I("grey"), fill = I("#126a8f")) + geom_vline(xintercept = hera1[[4]], linetype = "dashed", color="#ea6011") + theme_minimal() + theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 20))
+			ptemp <- qplot(hera1[[3]], geom="histogram", xlab="", ylab="", col = I("grey"), fill = I("#126a8f")) + geom_vline(xintercept = hera1[[4]], linetype = "dashed", color="#ea6011", size=1) + theme_minimal() + theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 20))
 			ggsave(paste("graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300)
 		}
 		if(type == "plot2") {
@@ -27,9 +27,9 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 			ptemp <- ggplot(d, aes(x=x, y=y)) + theme_minimal() + geom_point(col = I("grey"), size = 2) + labs(x = hera1[[1]], y = hera1[[2]]) + theme(axis.title.x = element_text(size=20), axis.title.y = element_text(size=20), axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 20))
 			OLS = lm(hera1[[4]] ~ hera1[[3]])
 			pm1 <- predict(OLS, interval = "prediction", level = 1-hera1[[7]])
-			ptemp <- ptemp + geom_line(aes(y = pm1[,1]), linetype = "dashed", color = "#ea6011")
-			ptemp <- ptemp + geom_line(aes(y = pm1[,2]), linetype = "dashed", color = "black")
-			ptemp <- ptemp + geom_line(aes(y = pm1[,3]), linetype = "dashed", color = "black")
+			ptemp <- ptemp + geom_line(aes(y = pm1[,1]), linetype = "dashed", color = "#ea6011", size=1)
+			ptemp <- ptemp + geom_line(aes(y = pm1[,2]), linetype = "dashed", color = "black", size=1)
+			ptemp <- ptemp + geom_line(aes(y = pm1[,3]), linetype = "dashed", color = "black", size=1)
 			ptemp <- ptemp + geom_point(x = hera1[[5]], y = hera1[[6]], col = "#126a8f", size = 4)
 			ggsave(paste("graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300)
 		}
@@ -83,9 +83,9 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 		}
 		if(type == "plot") {
 			ptemp <- qplot(as.numeric(hera1[[1]]), geom="histogram", xlab="", ylab="", col = I("grey"), fill = I("#126a8f")) + theme_minimal() + theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 20))
-			ptemp <- ptemp + geom_vline(xintercept = hera1[[3]], linetype = "dashed", color="#ea6011") + geom_vline(xintercept = hera1[[4]], linetype = "dashed", color="darkgrey") + geom_vline(xintercept = hera1[[5]], linetype = "dashed", color="darkgrey") 
+			ptemp <- ptemp + geom_vline(xintercept = hera1[[3]], linetype = "dashed", color="#ea6011", size=1) + geom_vline(xintercept = hera1[[4]], linetype = "dashed", color="darkgrey", size=1) + geom_vline(xintercept = hera1[[5]], linetype = "dashed", color="darkgrey", size=1) 
 			if(!hera1[[8]]) {
-				ptemp <- ptemp + geom_vline(xintercept = hera1[[6]], linetype = "dashed", color="black") + geom_vline(xintercept = hera1[[7]], linetype = "dashed", color="black") 
+				ptemp <- ptemp + geom_vline(xintercept = hera1[[6]], linetype = "dashed", color="black", size=1) + geom_vline(xintercept = hera1[[7]], linetype = "dashed", color="black", size=1) 
 			}
 			ggsave(paste("graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300)
 		}
