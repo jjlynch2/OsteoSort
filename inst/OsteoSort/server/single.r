@@ -84,10 +84,12 @@ output$single_reference <- renderUI({
 
 single_reference_imported <- reactiveValues(single_reference_imported = data.frame())
 elements <- reactiveValues(elements = c("temp") )
-
 art_elements <- reactiveValues(df = c())
 art_measurements_a <- reactiveValues(df = c())
 art_measurements_b <- reactiveValues(df = c())
+single_MLB <- reactiveValues(single_ML = c("temp"))
+single_MLA <- reactiveValues(single_ML = c("temp"))
+single_ML <- reactiveValues(single_ML = c("temp"))
 
 observeEvent(input$single_reference, {
 	single_reference_imported$single_reference_imported <- reference_list$reference_list[[single_reference$single_reference]]
@@ -111,87 +113,86 @@ observeEvent(input$single_reference, {
 			}
 		}
 	}
-})
 
-output$single_element_non_antimere <- renderUI({
-	selectInput(inputId = "single_element_non_antimere", label = "Elements", choices = art_elements$df)
-})
 
-observeEvent(input$single_element_non_antimere, {
-	temp1 <- which(art_elements$df == input$single_element_non_antimere)
-	output$single_measurement_non_antimere_a <- renderUI({
-		lapply(art_measurements_a$df[temp1], function(i) {
-			numericInput(paste0(i,"_art_a"), label = i, value = "", min=0,max=999,step=0.01)
+	output$single_element_non_antimere <- renderUI({
+		selectInput(inputId = "single_element_non_antimere", label = "Elements", choices = art_elements$df)
+	})
+
+	output$single_element_pair_match <- renderUI({
+		selectInput(inputId = "single_elements_pairmatch", label = "Element", choices = elements$elements)
+	})
+	output$single_elements_association_a <- renderUI({
+		selectInput(inputId = "single_elements_association_a", label = "Independent", choices = elements$elements)
+	})
+
+	observeEvent(input$single_elements_association_a, {
+		output$single_elements_association_b <- renderUI({
+			selectInput(inputId = "single_elements_association_b", label = "Dependent", choices = elements$elements[elements$elements != input$single_elements_association_a])
 		})
 	})
-	output$single_measurement_non_antimere_b <- renderUI({
-		lapply(art_measurements_b$df[temp1], function(i) {
-			numericInput(paste0(i,"_art_b"), label = i, value = "", min=0,max=999,step=0.01)
+	output$list_numeric_inputs_single_left <- renderUI ({
+		lapply(single_ML$single_ML, function(i) {
+			numericInput(paste0(i,"_left"), label = i, value = "", min=0,max=999,step=0.01)
 		})
 	})
-})
 
-output$single_element_pair_match <- renderUI({
-	selectInput(inputId = "single_elements_pairmatch", label = "Element", choices = elements$elements)
-})
-
-single_ML <- reactiveValues(single_ML = c("temp"))
-observeEvent(input$single_elements_pairmatch, {
-	temp <- single_reference_imported$single_reference_imported[single_reference_imported$single_reference_imported$Element == input$single_elements_pairmatch,]
-	t1 <- temp[,c(1:6)]
-	t2 <- temp[,-c(1:6)]
-	single_ML$single_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
-})
-
-output$list_numeric_inputs_single_left <- renderUI ({
-	lapply(single_ML$single_ML, function(i) {
-		numericInput(paste0(i,"_left"), label = i, value = "", min=0,max=999,step=0.01)
+	output$list_numeric_inputs_single_right <- renderUI ({
+		lapply(single_ML$single_ML, function(i) {
+			numericInput(paste0(i,"_right"), label = i, value = "", min=0,max=999,step=0.01)
+		})
 	})
-})
 
-output$list_numeric_inputs_single_right <- renderUI ({
-	lapply(single_ML$single_ML, function(i) {
-		numericInput(paste0(i,"_right"), label = i, value = "", min=0,max=999,step=0.01)
+	output$list_numeric_inputs_single_A <- renderUI ({
+		lapply(single_MLA$single_ML, function(i) {
+			numericInput(paste0(i,"_A"), label = i, value = "", min=0,max=999,step=0.01)
+		})
 	})
-})
 
-output$single_elements_association_a <- renderUI({
-	selectInput(inputId = "single_elements_association_a", label = "Independent", choices = elements$elements)
-})
-
-observeEvent(input$single_elements_association_a, {
-	output$single_elements_association_b <- renderUI({
-		selectInput(inputId = "single_elements_association_b", label = "Dependent", choices = elements$elements[elements$elements != input$single_elements_association_a])
+	output$list_numeric_inputs_single_B <- renderUI ({
+		lapply(single_MLB$single_ML, function(i) {
+			numericInput(paste0(i,"_B"), label = i, value = "", min=0,max=999,step=0.01)
+		})
 	})
-})
 
-single_MLA <- reactiveValues(single_ML = c("temp"))
-observeEvent(input$single_elements_association_a, {
-	temp <- single_reference_imported$single_reference_imported[single_reference_imported$single_reference_imported$Element == input$single_elements_association_a,]
-	t1 <- temp[,c(1:6)]
-	t2 <- temp[,-c(1:6)]
-	single_MLA$single_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
-})
-
-single_MLB <- reactiveValues(single_ML = c("temp"))
-observeEvent(input$single_elements_association_b, {
-	temp <- single_reference_imported$single_reference_imported[single_reference_imported$single_reference_imported$Element == input$single_elements_association_b,]
-	t1 <- temp[,c(1:6)]
-	t2 <- temp[,-c(1:6)]
-	single_MLB$single_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
-})
-
-output$list_numeric_inputs_single_A <- renderUI ({
-	lapply(single_MLA$single_ML, function(i) {
-		numericInput(paste0(i,"_A"), label = i, value = "", min=0,max=999,step=0.01)
+	observeEvent(input$single_element_non_antimere, {
+		temp1 <- which(art_elements$df == input$single_element_non_antimere)
+		output$single_measurement_non_antimere_a <- renderUI({
+			lapply(art_measurements_a$df[temp1], function(i) {
+				numericInput(paste0(i,"_art_a"), label = i, value = "", min=0,max=999,step=0.01)
+			})
+		})
+		output$single_measurement_non_antimere_b <- renderUI({
+			lapply(art_measurements_b$df[temp1], function(i) {
+				numericInput(paste0(i,"_art_b"), label = i, value = "", min=0,max=999,step=0.01)
+			})
+		})
 	})
+
+	observeEvent(input$single_elements_pairmatch, {
+		temp <- single_reference_imported$single_reference_imported[single_reference_imported$single_reference_imported$Element == input$single_elements_pairmatch,]
+		t1 <- temp[,c(1:6)]
+		t2 <- temp[,-c(1:6)]
+		single_ML$single_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
+	})
+
+
+	observeEvent(input$single_elements_association_a, {
+		temp <- single_reference_imported$single_reference_imported[single_reference_imported$single_reference_imported$Element == input$single_elements_association_a,]
+		t1 <- temp[,c(1:6)]
+		t2 <- temp[,-c(1:6)]
+		single_MLA$single_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
+	})
+
+	observeEvent(input$single_elements_association_b, {
+		temp <- single_reference_imported$single_reference_imported[single_reference_imported$single_reference_imported$Element == input$single_elements_association_b,]
+		t1 <- temp[,c(1:6)]
+		t2 <- temp[,-c(1:6)]
+		single_MLB$single_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
+	})
+
 })
 
-output$list_numeric_inputs_single_B <- renderUI ({
-	lapply(single_MLB$single_ML, function(i) {
-		numericInput(paste0(i,"_B"), label = i, value = "", min=0,max=999,step=0.01)
-	})
-})
 
 observeEvent(input$proc, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))

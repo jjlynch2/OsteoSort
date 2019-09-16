@@ -12,7 +12,9 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 		pkg = c("Pkg","Statistics", "Distributed","SharedArrays", "Optim", "Rmath", "GLM")
 		for(i in pkg) {
 			print(paste("Loading Julia package: ", i, sep=""))
-			JuliaCall::julia_install_package_if_needed(i)
+			if(JuliaCall::julia_installed_package(i) == "nothing") {
+				JuliaCall::julia_install_package(i)
+			}
 			JuliaCall::julia_library(i)
 		}
 		julia_source(system.file("jl", "cores.jl", package = "OsteoSort"))

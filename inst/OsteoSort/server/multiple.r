@@ -102,6 +102,9 @@ elements <- reactiveValues(elements = c("temp") )
 multiple_art_elements <- reactiveValues(df = c())
 multiple_art_measurements_a <- reactiveValues(df = c())
 multiple_art_measurements_b <- reactiveValues(df = c())
+multiple_ML <- reactiveValues(multiple_ML = c("temp"))
+multiple_MLB <- reactiveValues(multiple_ML = c("temp"))
+multiple_MLA <- reactiveValues(multiple_ML = c("temp"))
 
 observeEvent(input$multiple_reference, {
 	multiple_reference_imported$multiple_reference_imported <- reference_list$reference_list[[multiple_reference$multiple_reference]]
@@ -128,42 +131,41 @@ observeEvent(input$multiple_reference, {
 	output$multiple_element_non_antimere <- renderUI({
 		selectInput(inputId = "multiple_element_non_antimere", label = "Elements", choices = multiple_art_elements$df)
 	})
-})
 
-multiple_MLA <- reactiveValues(multiple_ML = c("temp"))
-observeEvent(input$multiple_elements_association_a, {
-	temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_association_a,]
-	t1 <- temp[,c(1:6)]
-	t2 <- temp[,-c(1:6)]
-	multiple_MLA$multiple_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
-})
-
-multiple_MLB <- reactiveValues(multiple_ML = c("temp"))
-observeEvent(input$multiple_elements_association_b, {
-	temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_association_b,]
-	t1 <- temp[,c(1:6)]
-	t2 <- temp[,-c(1:6)]
-	multiple_MLB$multiple_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
-})
-
-multiple_ML <- reactiveValues(multiple_ML = c("temp"))
-observeEvent(input$multiple_elements_pairmatch, {
-	temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_pairmatch,]
-	t1 <- temp[,c(1:6)]
-	t2 <- temp[,-c(1:6)]
-	t2 <- t2[,colSums(is.na(t2)) < nrow(t2)]
-	multiple_ML$multiple_ML <- names(t2)
-})
-
-output$multiple_elements_association_a <- renderUI({
-	selectInput(inputId = "multiple_elements_association_a", label = "Independent", choices = elements$elements)
-})
-
-observeEvent(input$multiple_elements_association_a, {
-	output$multiple_elements_association_b <- renderUI({
-		selectInput(inputId = "multiple_elements_association_b", label = "Dependent", choices = elements$elements[elements$elements != input$multiple_elements_association_a])
+	observeEvent(input$multiple_elements_association_a, {
+		temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_association_a,]
+		t1 <- temp[,c(1:6)]
+		t2 <- temp[,-c(1:6)]
+		multiple_MLA$multiple_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
 	})
+
+	observeEvent(input$multiple_elements_association_b, {
+		temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_association_b,]
+		t1 <- temp[,c(1:6)]
+		t2 <- temp[,-c(1:6)]
+		multiple_MLB$multiple_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
+	})
+
+	observeEvent(input$multiple_elements_pairmatch, {
+		temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_pairmatch,]
+		t1 <- temp[,c(1:6)]
+		t2 <- temp[,-c(1:6)]
+		t2 <- t2[,colSums(is.na(t2)) < nrow(t2)]
+		multiple_ML$multiple_ML <- names(t2)
+	})
+
+	output$multiple_elements_association_a <- renderUI({
+		selectInput(inputId = "multiple_elements_association_a", label = "Independent", choices = elements$elements)
+	})
+
+	observeEvent(input$multiple_elements_association_a, {
+		output$multiple_elements_association_b <- renderUI({
+			selectInput(inputId = "multiple_elements_association_b", label = "Dependent", choices = elements$elements[elements$elements != input$multiple_elements_association_a])
+		})
+	})
+
 })
+
 
 
 observeEvent(input$pro, {
