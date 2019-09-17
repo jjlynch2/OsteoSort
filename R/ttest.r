@@ -135,7 +135,6 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 									result = NA, 
 									stringsAsFactors = FALSE
 	)
-globala <<- results_formatted
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {
 		if(results_formatted[i,8] > alphalevel) {

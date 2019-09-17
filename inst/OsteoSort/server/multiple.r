@@ -46,7 +46,7 @@ observeEvent(input$multiple_boxcox, {
 
 multiple_mean <- reactiveValues(multiple_mean = FALSE) 
 output$multiple_mean <- renderUI({
-	checkboxInput(inputId = "multiple_mean", label = "Zero mean", value = FALSE)					
+	checkboxInput(inputId = "multiple_mean", label = "Zero mean", value = FALSE)
 })
 observeEvent(input$multiple_mean, {
 	multiple_mean$multiple_mean <- input$multiple_mean
@@ -132,6 +132,16 @@ observeEvent(input$multiple_reference, {
 		selectInput(inputId = "multiple_element_non_antimere", label = "Elements", choices = multiple_art_elements$df)
 	})
 
+	output$multiple_elements_association_a <- renderUI({
+		selectInput(inputId = "multiple_elements_association_a", label = "Independent", choices = elements$elements)
+	})
+
+	observeEvent(input$multiple_elements_association_a, {
+		output$multiple_elements_association_b <- renderUI({
+			selectInput(inputId = "multiple_elements_association_b", label = "Dependent", choices = elements$elements[elements$elements != input$multiple_elements_association_a])
+		})
+	})
+
 	observeEvent(input$multiple_elements_association_a, {
 		temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_association_a,]
 		t1 <- temp[,c(1:6)]
@@ -153,17 +163,6 @@ observeEvent(input$multiple_reference, {
 		t2 <- t2[,colSums(is.na(t2)) < nrow(t2)]
 		multiple_ML$multiple_ML <- names(t2)
 	})
-
-	output$multiple_elements_association_a <- renderUI({
-		selectInput(inputId = "multiple_elements_association_a", label = "Independent", choices = elements$elements)
-	})
-
-	observeEvent(input$multiple_elements_association_a, {
-		output$multiple_elements_association_b <- renderUI({
-			selectInput(inputId = "multiple_elements_association_b", label = "Dependent", choices = elements$elements[elements$elements != input$multiple_elements_association_a])
-		})
-	})
-
 })
 
 

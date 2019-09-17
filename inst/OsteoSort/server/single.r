@@ -108,12 +108,11 @@ observeEvent(input$single_reference, {
 				art_measurements_b$df <- c(art_measurements_b$df, art$Measurementb[i])
 				temp1 <- na.omit(unique(single_reference_imported$single_reference_imported[!is.na(single_reference_imported$single_reference_imported[[art$Measurementa[i]]]),]$Element))[1]
 				temp2 <- na.omit(unique(single_reference_imported$single_reference_imported[!is.na(single_reference_imported$single_reference_imported[[art$Measurementb[i]]]),]$Element))[1]
-				art_elements$df <- c(art_elements$df, paste(temp1, temp2, sep="-"))
+				art_elements$df <- unique(c(art_elements$df, paste(temp1, temp2, sep="-")))
 				break
 			}
 		}
 	}
-
 
 	output$single_element_non_antimere <- renderUI({
 		selectInput(inputId = "single_element_non_antimere", label = "Elements", choices = art_elements$df)
@@ -155,17 +154,14 @@ observeEvent(input$single_reference, {
 		})
 	})
 
-	observeEvent(input$single_element_non_antimere, {
-		temp1 <- which(art_elements$df == input$single_element_non_antimere)
-		output$single_measurement_non_antimere_a <- renderUI({
-			lapply(art_measurements_a$df[temp1], function(i) {
-				numericInput(paste0(i,"_art_a"), label = i, value = "", min=0,max=999,step=0.01)
-			})
+	output$single_measurement_non_antimere_a <- renderUI({
+		lapply(art_measurements_a$df[which(art_elements$df == input$single_element_non_antimere)], function(i) {
+			numericInput(paste0(i,"_art_a"), label = i, value = "", min=0,max=999,step=0.01)
 		})
-		output$single_measurement_non_antimere_b <- renderUI({
-			lapply(art_measurements_b$df[temp1], function(i) {
-				numericInput(paste0(i,"_art_b"), label = i, value = "", min=0,max=999,step=0.01)
-			})
+	})
+	output$single_measurement_non_antimere_b <- renderUI({
+		lapply(art_measurements_b$df[which(art_elements$df == input$single_element_non_antimere)], function(i) {
+			numericInput(paste0(i,"_art_b"), label = i, value = "", min=0,max=999,step=0.01)
 		})
 	})
 
@@ -175,7 +171,6 @@ observeEvent(input$single_reference, {
 		t2 <- temp[,-c(1:6)]
 		single_ML$single_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
 	})
-
 
 	observeEvent(input$single_elements_association_a, {
 		temp <- single_reference_imported$single_reference_imported[single_reference_imported$single_reference_imported$Element == input$single_elements_association_a,]
@@ -227,31 +222,25 @@ observeEvent(input$proc, {
 
 		art.d1 <- art.input(side = input$single_non_antimere_side, ref = single_reference_imported$single_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$single_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], measurementsa = tempa, measurementsb = tempb)
 		d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
-		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
+		tempDF <- rbind(d2[[2]], d2[[3]])
 	} else if(input$single_analysis == "Antimere t-test") {
-		#concat left values
 		single_input_list_left <- reactiveValues(single_input_list_left = c())
 		lapply(single_ML$single_ML, function(i) {
 			single_input_list_left$single_input_list_left <- c(single_input_list_left$single_input_list_left, input[[paste0(i,"_left")]])
 		})
-		#concat right values
 		single_input_list_right <- reactiveValues(single_input_list_right = c())
 		lapply(single_ML$single_ML, function(i) {
 			single_input_list_right$single_input_list_right <- c(single_input_list_right$single_input_list_right, input[[paste0(i,"_right")]])
 		})
-
-		#transform into dataframe and name columns
 		single_input_list_left$single_input_list_left <- t(data.frame(single_input_list_left$single_input_list_left))
 		colnames(single_input_list_left$single_input_list_left) <- single_ML$single_ML
 		single_input_list_right$single_input_list_right <- t(data.frame(single_input_list_right$single_input_list_right))
 		colnames(single_input_list_right$single_input_list_right) <- single_ML$single_ML
-
-		#combine with id, bone, and side
 		sortleft <- data.frame(id = input$ID1, Side = "left", Element = input$single_elements_pairmatch, single_input_list_left$single_input_list_left, stringsAsFactors = FALSE)
 		sortright <- data.frame(id = input$ID2, Side = "right", Element = input$single_elements_pairmatch, single_input_list_right$single_input_list_right, stringsAsFactors = FALSE)
 		pm.d1 <- pm.input(sort = rbind(sortleft, sortright), bone = input$single_elements_pairmatch, measurements = single_ML$single_ML, ref = single_reference_imported$single_reference_imported)
 		d2 <- ttest(ztest = single_ztransform$single_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
-		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
+		tempDF <- rbind(d2[[2]], d2[[3]])
 	} else if(input$single_analysis == "Non_antimere regression") {
 
 		single_input_list_A <- reactiveValues(single_input_list_A = c())
@@ -272,16 +261,14 @@ observeEvent(input$proc, {
 		sortb <- data.frame(id = input$ID2, Side = input$single_association_side_b, Element = input$single_elements_association_b, single_input_list_B$single_input_list_B, stringsAsFactors = FALSE)
 		reg.d1 <- reg.input(sorta = sorta, sortb = sortb, sidea = input$single_association_side_a, sideb = input$single_association_side_b, bonea = input$single_elements_association_a, boneb = input$single_elements_association_b, measurementsa = single_MLA$single_ML, measurementsb = single_MLB$single_ML, ref = single_reference_imported$single_reference_imported)
 		d2 <- reg.test(ztest = single_ztransform$single_ztransform, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
-		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
+		tempDF <- rbind(d2[[2]], d2[[3]])
 	}
 
-	#output table
 	output$table2 <- DT::renderDataTable({
 		DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1, dom = 't', ordering=F), rownames = FALSE)
 	})
 
 	if(single_file_output1$single_file_output1 || single_file_output2$single_file_output2) {  
-		#Zip and download handler
 		direc <- d2[[1]]
 		setwd(sessiontemp)
 		setwd(direc)
@@ -313,5 +300,5 @@ observeEvent(input$proc, {
 	}
 	removeModal()
 	setwd(sessiontemp)
-	gc() #clean up 
+	gc()
 })
