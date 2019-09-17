@@ -46,22 +46,25 @@ observeEvent(input$stature_reference_ante, {
 			if(ante$Measurementa[i] == ref_col_names[x]) {
 				ante_measurements$df <- c(ante_measurements$df, ante$Measurementa[i])
 				temp1 <- na.omit(unique(stature_reference_imported_ante$stature_reference_imported_ante[!is.na(stature_reference_imported_ante$stature_reference_imported_ante[[ante$Measurementa[i]]]),]$Element))[1]
-				ante_elements$df <- c(ante_elements$df, temp1)
+				ante_elements$df <- unique(c(ante_elements$df, temp1))
 				break
 			}
 		}
 	}
-})
 
-output$single_ante_elements <- renderUI({
-	selectInput(inputId = "single_ante_elements", label = "Elements", choices = ante_elements$df)
-})
-
-output$single_measurements_ante <- renderUI({
-	lapply(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], function(i) {
-		numericInput(paste0(i,"_ante"), label = i, value = "", min=0,max=999,step=0.01)
+	output$single_ante_elements <- renderUI({
+		selectInput(inputId = "single_ante_elements", label = "Elements", choices = ante_elements$df)
 	})
+
+	output$single_measurements_ante <- renderUI({
+		lapply(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], function(i) {
+			numericInput(paste0(i,"_ante"), label = i, value = "", min=0,max=999,step=0.01)
+		})
+	})
+
+
 })
+
 
 observeEvent(input$proantestat, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
@@ -79,6 +82,7 @@ observeEvent(input$proantestat, {
 		post <- data.frame(id = input$Postmortem_ID_ante, side = input$state_reference_ante_side, element = input$single_ante_elements, input[[paste0(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], "_ante")]])
 		colnames(ante) <- c("id", "Stature")
 		colnames(post) <- c("id", "Side", "Element",ante_measurements$df[which(ante_elements$df == input$single_ante_elements)])
+
 		outtemp1 <- antestat.input(bone = input$single_ante_elements,
 							  antemortem_stature = ante,
 							  postmortem_measurement = post,

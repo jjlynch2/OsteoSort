@@ -28,7 +28,7 @@ antestat.input <- function(antemortem_stature = NULL, postmortem_measurement = N
 	ref$Element <- tolower(ref$Element)
 	refa <- ref[ref$Element == bone,]
 	refa <- refa[refa$Side == side,]
-	refa <- cbind(refa[,c(1:3)], refa[,6], refa[measurement])
+	refa <- cbind(refa[,c(1:3)], refa$Stature, refa[measurement])
 	refa <- refa[rowSums(is.na(refa)) < 1,] #remove NA rows
 	postmortem_measurement$Element <- tolower(postmortem_measurement$Element) #lower case bone name
 	postmortem_measurement$Side <- tolower(postmortem_measurement$Side) #lower case side

@@ -122,7 +122,7 @@ observeEvent(input$multiple_reference, {
 				multiple_art_measurements_b$df <- c(multiple_art_measurements_b$df, art$Measurementb[i])
 				temp1 <- na.omit(unique(multiple_reference_imported$multiple_reference_imported[!is.na(multiple_reference_imported$multiple_reference_imported[[art$Measurementa[i]]]),]$Element))[1]
 				temp2 <- na.omit(unique(multiple_reference_imported$multiple_reference_imported[!is.na(multiple_reference_imported$multiple_reference_imported[[art$Measurementb[i]]]),]$Element))[1]
-				multiple_art_elements$df <- c(multiple_art_elements$df, paste(temp1, temp2, sep="-"))
+				multiple_art_elements$df <- unique(c(multiple_art_elements$df, paste(temp1, temp2, sep="-")))
 				break
 			}
 		}

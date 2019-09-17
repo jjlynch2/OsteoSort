@@ -37,19 +37,19 @@ observeEvent(input$stature_reference_antem, {
 			if(antem$Measurementa[i] == ref_col_namesm[x]) {
 				ante_measurementsm$df <- c(ante_measurementsm$df, antem$Measurementa[i])
 				temp1 <- na.omit(unique(stature_reference_imported_antem$stature_reference_imported_antem[!is.na(stature_reference_imported_antem$stature_reference_imported_antem[[antem$Measurementa[i]]]),]$Element))[1]
-				ante_elementsm$df <- c(ante_elementsm$df, temp1)
+				ante_elementsm$df <- unique(c(ante_elementsm$df, temp1))
 				break
 			}
 		}
 	}
-})
+	output$multiple_ante_elements <- renderUI({
+		selectInput(inputId = "multiple_ante_elements", label = "Elements", choices = ante_elementsm$df)
+	})
 
-output$multiple_ante_elements <- renderUI({
-	selectInput(inputId = "multiple_ante_elements", label = "Elements", choices = ante_elementsm$df)
-})
+	output$multiple_measurements_ante <- renderUI({
+		selectInput("Measurement_ante_mm", label = "Measurement", choices = ante_measurementsm$df[which(ante_elementsm$df == input$multiple_ante_elements)])
+	})
 
-output$multiple_measurements_ante <- renderUI({
-	selectInput("Measurement_ante_mm", label = "Measurement", choices = ante_measurementsm$df[which(ante_elementsm$df == input$multiple_ante_elements)])
 })
 
 numbercoresglobalm <- reactiveValues(ncorem = 1)
