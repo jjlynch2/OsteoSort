@@ -250,10 +250,44 @@ observeEvent(input$pro, {
 	})
 
 	output$table <- DT::renderDataTable({
-		DT::datatable(d2[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		DT::datatable(d2[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
+
 	output$tablen <- DT::renderDataTable({
-		DT::datatable(d2[[3]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		DT::datatable(d2[[3]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+	})
+
+	observeEvent(input$table_rows_selected,{
+		if(multiple_file_output1$multiple_file_output1) {
+			setwd(direc)
+			file.remove(paste(direc,'.zip',sep=''))
+			no_return_value <- OsteoSort:::output_function(d2[[2]][input$table_rows_selected,], method="exclusion", type="csv2")
+			setwd(sessiontemp)
+
+			files <- list.files(direc, recursive = TRUE)
+			setwd(direc)
+			zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
+			for(file_na in files[-1]) {
+				zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
+			}
+			setwd(sessiontemp)
+		}
+	})
+	observeEvent(input$tablen_rows_selected,{
+		if(multiple_file_output1$multiple_file_output1) {
+			setwd(direc)
+			file.remove(paste(direc,'.zip',sep=''))
+			no_return_value <- OsteoSort:::output_function(d2[[3]][input$table_rows_selected,], method="exclusion", type="csv2")
+			setwd(sessiontemp)
+
+			files <- list.files(direc, recursive = TRUE)
+			setwd(direc)
+			zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
+			for(file_na in files[-1]) {
+				zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
+			}
+			setwd(sessiontemp)
+		}
 	})
 
 	if(multiple_file_output1$multiple_file_output1) {

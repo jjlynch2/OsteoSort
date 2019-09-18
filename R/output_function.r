@@ -7,7 +7,7 @@
 #' @examples
 #' output_function()
 
-output_function <- function(hera1, method = "exclusion", type = "csv") {
+output_function <- function(hera1, method = "exclusion", type = "csv", uln = NULL) {
 	print("Writing output files")
 	if(method == "exclusion") {
 		if(type == "csv") {
@@ -17,6 +17,20 @@ output_function <- function(hera1, method = "exclusion", type = "csv") {
 			if(nrow(hera1[hera1$result == "Excluded",]) > 0) {
 				write.csv(hera1[hera1$result == "Excluded",], file = "excluded-list.csv",row.names=FALSE, col.names = TRUE)
 			}
+		}
+		if(type == "csv2") {
+			if(nrow(hera1[hera1$result == "Cannot Exclude",]) > 0) {
+				write.csv(hera1[hera1$result == "Cannot Exclude",], file = "not-excluded-selected-list.csv", row.names=FALSE, col.names = TRUE)
+			}
+			if(nrow(hera1[hera1$result == "Excluded",]) > 0) {
+				write.csv(hera1[hera1$result == "Excluded",], file = "excluded-selected-list.csv",row.names=FALSE, col.names = TRUE)
+			}
+		}
+		if(type == "csv3") {
+			if(uln == "u") {con = "upper"}
+			if(uln == "l") {con = "lower"}
+			if(uln == "n") {con = "non"}
+			write.csv(hera1, file = paste(con,"-selected-list.csv",sep=""), row.names=FALSE, col.names = TRUE)
 		}
 		if(type == "plot") {
 			ptemp <- qplot(hera1[[3]], geom="histogram", xlab="", ylab="", col = I("grey"), fill = I("#126a8f")) + geom_vline(xintercept = hera1[[4]], linetype = "dashed", color="#ea6011", size=1) + theme_minimal() + theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 20))

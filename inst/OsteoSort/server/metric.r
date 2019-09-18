@@ -103,14 +103,71 @@ observeEvent(input$pro3, {
 	
 	
 	output$tjbingworkb <- DT::renderDataTable({
-		DT::datatable(outtemp[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		DT::datatable(outtemp[[2]],selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 	output$tjbingworka <- DT::renderDataTable({
-		DT::datatable(outtemp[[3]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		DT::datatable(outtemp[[3]],selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 	output$tjbingworkc <- DT::renderDataTable({
-		DT::datatable(outtemp[[4]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		DT::datatable(outtemp[[4]],selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
+
+	observeEvent(input$tjbingworkb_rows_selected,{
+		if(fileoutputl2$fileoutputl2) {
+			setwd(outtemp[[1]])
+			file.remove(paste(outtemp[[1]],'.zip',sep=''))
+			no_return_value <- OsteoSort:::output_function(outtemp[[2]][input$tjbingworkb_rows_selected,], method="exclusion", type="csv3", uln = "l")
+			setwd(sessiontemp)
+
+			files <- list.files(outtemp[[1]], recursive = TRUE)
+			setwd(outtemp[[1]])
+			zip:::zipr(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
+			for(file_na in files[-1]) {
+				zip:::zipr_append(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
+			}
+			setwd(sessiontemp)
+		}
+	})
+	observeEvent(input$tjbingworka_rows_selected,{
+		if(fileoutputl2$fileoutputl2) {
+			setwd(outtemp[[1]])
+			file.remove(paste(outtemp[[1]],'.zip',sep=''))
+			no_return_value <- OsteoSort:::output_function(outtemp[[3]][input$tjbingworka_rows_selected,], method="exclusion", type="csv3", uln = "u")
+			setwd(sessiontemp)
+
+			files <- list.files(outtemp[[1]], recursive = TRUE)
+			setwd(outtemp[[1]])
+			zip:::zipr(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
+			for(file_na in files[-1]) {
+				zip:::zipr_append(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
+			}
+			setwd(sessiontemp)
+		}
+	})
+	observeEvent(input$tjbingworkc_rows_selected,{
+		if(fileoutputl2$fileoutputl2) {
+			setwd(outtemp[[1]])
+			file.remove(paste(outtemp[[1]],'.zip',sep=''))
+			no_return_value <- OsteoSort:::output_function(outtemp[[4]][input$tjbingworkc_rows_selected,], method="exclusion", type="csv3", uln = "n")
+			setwd(sessiontemp)
+
+			files <- list.files(outtemp[[1]], recursive = TRUE)
+			setwd(outtemp[[1]])
+			zip:::zipr(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
+			for(file_na in files[-1]) {
+				zip:::zipr_append(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
+			}
+			setwd(sessiontemp)
+		}
+	})
+
+
+
+
+
+
+
+
 
 	if(fileoutputl2$fileoutputl2) {
 		nimages <- list.files(outtemp[[1]])
@@ -130,7 +187,7 @@ observeEvent(input$pro3, {
 		direc6 <- outtemp[[1]] #direc temp
 		files <- list.files(direc6, recursive = TRUE)
 		setwd(direc6)
-		zip:::zip(zipfile = paste(direc6,'.zip',sep=''), files = files)
+		zip:::zipr(zipfile = paste(direc6,'.zip',sep=''), files = files)
 		setwd(sessiontemp)  #restores session
 		
 		#Download handler       

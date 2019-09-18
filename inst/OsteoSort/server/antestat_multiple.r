@@ -134,10 +134,43 @@ observeEvent(input$proantestatm, {
 	}
 
 	output$antestat_table1m <- DT::renderDataTable({
-		DT::datatable(outtemp2m[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		DT::datatable(outtemp2m[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 	output$antestat_table2m <- DT::renderDataTable({
-		DT::datatable(outtemp2m[[3]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		DT::datatable(outtemp2m[[3]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+	})
+
+	observeEvent(input$antestat_table1m_rows_selected,{
+		if(fileoutputant1m$fileoutputant1m) {
+			setwd(outtemp2m[[1]])
+			file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
+			no_return_value <- OsteoSort:::output_function(outtemp2m[[2]][input$antestat_table1m_rows_selected,], method="exclusion", type="csv2")
+			setwd(sessiontemp)
+
+			files <- list.files(outtemp2m[[1]], recursive = TRUE)
+			setwd(outtemp2m[[1]])
+			zip:::zipr(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = files[1], compression = 1)
+			for(file_na in files[-1]) {
+				zip:::zipr_append(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
+			}
+			setwd(sessiontemp)
+		}
+	})
+	observeEvent(input$antestat_table2m_rows_selected,{
+		if(fileoutputant1m$fileoutputant1m) {
+			setwd(outtemp2m[[1]])
+			file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
+			no_return_value <- OsteoSort:::output_function(outtemp2m[[3]][input$antestat_table2m_rows_selected,], method="exclusion", type="csv2")
+			setwd(sessiontemp)
+
+			files <- list.files(outtemp2m[[1]], recursive = TRUE)
+			setwd(outtemp2m[[1]])
+			zip:::zipr(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = files[1], compression = 1)
+			for(file_na in files[-1]) {
+				zip:::zipr_append(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
+			}
+			setwd(sessiontemp)
+		}
 	})
 
 	if(fileoutputant1m$fileoutputant1m) {
