@@ -11,6 +11,6 @@ output$changes <- renderUI({
 		"Monitor system resources",
 		"<p></p>",
 		"Import and data reference data",
-		"<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><p></p>"
+		"<br><br><br><br><br><br><p></p>"
 		,sep=""))
 })

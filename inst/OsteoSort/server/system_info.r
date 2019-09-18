@@ -32,6 +32,6 @@ output$system_info <- renderUI({
 	"<strong>Platform:  </strong>", system_name, "<p></p>",
 	"<strong>Cores: </strong>", OsteoSort:::detectCores(), "<p></p>",
 	"<strong>Memory: </strong>", system_mem,
-	"<br><br><p></p>"
+	"<br><br><br><br><p></p>"
 	,sep=""))
 })
