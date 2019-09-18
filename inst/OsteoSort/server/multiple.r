@@ -269,7 +269,7 @@ observeEvent(input$pro, {
 		if(multiple_file_output1$multiple_file_output1) {
 			setwd(direc)
 			file.remove(paste(direc,'.zip',sep=''))
-			no_return_value <- OsteoSort:::output_function(d2[[3]][input$table_rows_selected,], method="exclusion", type="csv2")
+			no_return_value <- OsteoSort:::output_function(d2[[3]][input$tablen_rows_selected,], method="exclusion", type="csv2")
 			setwd(sessiontemp)
 		}
 	})
