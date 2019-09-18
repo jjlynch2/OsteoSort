@@ -128,7 +128,6 @@ end
 		pVal = 2 * pt(-abs(tStat), n-2) #always uses 2-tails with 2 degrees of freedom
 		res[x,1] = li #index of left
 		res[x,2] = x #index of right
-
 		res[x,3] = pVal #p-value
 		res[x,4] = n #reference sample size
 		res[x,5] = r2 #r-square

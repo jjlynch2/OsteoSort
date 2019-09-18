@@ -1,6 +1,16 @@
+@everywhere function measurement_counter_plot(v1)
+	res = 0
+	for i in 1:size(v1,2)
+		if v1[i] != 0
+			res += 1
+		end
+	end
+	return res
+end
+
 function REGSL_plot(SL, SR, RL, RR)
-	res_1 = measurement_counter(SL)
-	res_2 = measurement_counter(SR)
+	res_1 = measurement_counter_plot(SL)
+	res_2 = measurement_counter_plot(SR)
 	dsum_1 = log(sum(SL))
 	dsum_2 = log(sum(SR))
 	refd_1 = zeros(1,1)
@@ -10,13 +20,13 @@ function REGSL_plot(SL, SR, RL, RR)
 		m_counter_2 = 0
 		ref_dsum_1 = 0
 		ref_dsum_2 = 0
-		for j in 1:size(SL,1)
+		for j in 1:size(SL,2)
 			if SL[j] != 0 && RL[i,j] != 0
 				m_counter_1 += 1
 				ref_dsum_1 += RL[i,j]
 			end
 		end
-		for j in 1:size(SR,1)
+		for j in 1:size(SR,2)
 			if SR[j] != 0 && RR[i,j] != 0
 				m_counter_2 += 1
 				ref_dsum_2 += RR[i,j]
