@@ -140,40 +140,26 @@ observeEvent(input$proantestatm, {
 		DT::datatable(outtemp2m[[3]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 
-	observeEvent(input$antestat_table1m_rows_selected,{
-		if(fileoutputant1m$fileoutputant1m) {
-			setwd(outtemp2m[[1]])
-			file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
-			no_return_value <- OsteoSort:::output_function(outtemp2m[[2]][input$antestat_table1m_rows_selected,], method="exclusion", type="csv2")
-			setwd(sessiontemp)
-		}
-	})
-	observeEvent(input$antestat_table2m_rows_selected,{
-		if(fileoutputant1m$fileoutputant1m) {
-			setwd(outtemp2m[[1]])
-			file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
-			no_return_value <- OsteoSort:::output_function(outtemp2m[[3]][input$antestat_table2m_rows_selected,], method="exclusion", type="csv2")
-			setwd(sessiontemp)
-		}
-	})
-
 	if(fileoutputant1m$fileoutputant1m) {
-		direc6 <- outtemp2m[[1]] #direc temp
-		files <- list.files(direc6, recursive = TRUE)
-		setwd(direc6)
-		zip:::zipr(zipfile = paste(direc6,'.zip',sep=''), files = files)
-		setwd(sessiontemp)  #restores session
 		output$downloadantestatm <- downloadHandler(
 			filename <- function() {
 				paste("results.zip")
 			},      
 			content <- function(file) {
+				setwd(outtemp2m[[1]])
+				if(is.numeric(input$antestat_table1m_rows_selected)) {
+					no_return_value <- OsteoSort:::output_function(outtemp2m[[2]][input$antestat_table1m_rows_selected,], method="exclusion", type="csv2")
+				}
+				if(is.numeric(input$antestat_table2m_rows_selected)) {
+					no_return_value <- OsteoSort:::output_function(outtemp2m[[3]][input$antestat_table2m_rows_selected,], method="exclusion", type="csv2")
+				}
+				setwd(sessiontemp)
 				files <- list.files(outtemp2m[[1]], recursive = TRUE)
-				setwd(direc6)
+				setwd(outtemp2m[[1]])
 				for(file_na in files[-1]) {
 					zip:::zipr_append(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
 				}
-				file.copy(paste(direc6,'.zip',sep=''), file) 
+				file.copy(paste(outtemp2m[[1]],'.zip',sep=''), file) 
 				setwd(sessiontemp)  
 			},
 			contentType = "application/zip"

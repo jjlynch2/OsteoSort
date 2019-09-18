@@ -226,15 +226,6 @@ observeEvent(input$pro, {
 	#if combinations exist, produces output
 	if(!all(is.na(d2[[2]])) || !all(is.na(d2[[3]]))) {
 		direc <- d2[[1]]
-		if(multiple_file_output1$multiple_file_output1) {
-			files <- list.files(direc, recursive = TRUE)
-			setwd(direc)
-			zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
-			for(file_na in files[-1]) {
-				zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
-			}
-			setwd(sessiontemp)
-		}
 		ll <- nrow(d2[[2]]) + nrow(d2[[3]])
 		nmatch <- nrow(d2[[2]])
 		samplesize <- length(unique(c(d2[[2]][,1], d2[[2]][,4], d2[[3]][,1], d2[[3]][,4])))
@@ -257,29 +248,20 @@ observeEvent(input$pro, {
 		DT::datatable(d2[[3]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 
-	observeEvent(input$table_rows_selected,{
-		if(multiple_file_output1$multiple_file_output1) {
-			setwd(direc)
-			file.remove(paste(direc,'.zip',sep=''))
-			no_return_value <- OsteoSort:::output_function(d2[[2]][input$table_rows_selected,], method="exclusion", type="csv2")
-			setwd(sessiontemp)
-		}
-	})
-	observeEvent(input$tablen_rows_selected,{
-		if(multiple_file_output1$multiple_file_output1) {
-			setwd(direc)
-			file.remove(paste(direc,'.zip',sep=''))
-			no_return_value <- OsteoSort:::output_function(d2[[3]][input$tablen_rows_selected,], method="exclusion", type="csv2")
-			setwd(sessiontemp)
-		}
-	})
-
 	if(multiple_file_output1$multiple_file_output1) {
 		output$downloadData <- downloadHandler(
 			filename <- function() {
 			paste("results.zip")
 			},
 			content = function(file) {
+				setwd(direc)
+				if(is.numeric(input$tablen_rows_selected)) {
+					no_return_value <- OsteoSort:::output_function(d2[[3]][input$tablen_rows_selected,], method="exclusion", type="csv2")
+				}
+				if(is.numeric(input$table_rows_selected)) {
+					no_return_value <- OsteoSort:::output_function(d2[[2]][input$table_rows_selected,], method="exclusion", type="csv2")
+				}
+				setwd(sessiontemp)
 				files <- list.files(direc, recursive = TRUE)
 				setwd(direc)
 				zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)

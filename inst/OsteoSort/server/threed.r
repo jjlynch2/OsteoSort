@@ -174,14 +174,6 @@ observeEvent(input$pro3D, {
 		output$table3D <- DT::renderDataTable({
 			DT::datatable(out2[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 		})
-		observeEvent(input$table3D_rows_selected,{
-			if(fileoutput3Dexcel1$fileoutput3Dexcel1) {
-				setwd(direc)
-				file.remove(paste(direc,'.zip',sep=''))
-				no_return_value <- OsteoSort:::output_function(out2[[2]][input$table3D_rows_selected,], method="exclusion", type="csv4")
-				setwd(sessiontemp)
-			}
-		})
 
 		output$contents3D <- renderUI({
 			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[7]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
@@ -192,15 +184,16 @@ observeEvent(input$pro3D, {
 
 
 		if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps) {
-			setwd(sessiontemp)
-			files <- list.files(direc, recursive = TRUE)
-			setwd(direc)
-			zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files)
 			output$downloadData3D <- downloadHandler(
 				filename <- function() {
 					paste("results.zip")
 				},      
 				content <- function(file) {
+					setwd(direc)
+					if(is.numeric(input$table3D_rows_selected)) {
+						no_return_value <- OsteoSort:::output_function(out2[[2]][input$table3D_rows_selected,], method="exclusion", type="csv4")
+					}
+					setwd(sessiontemp)
 					files <- list.files(direc, recursive = TRUE)
 					setwd(direc)
 					zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)

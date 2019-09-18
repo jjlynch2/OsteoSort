@@ -246,27 +246,21 @@ observeEvent(input$pro2D, {
 		output$table2D <- DT::renderDataTable({
 			DT::datatable(out2[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 		})
-		observeEvent(input$table2D_rows_selected,{
-			if(fileoutput2Dexcel1$fileoutput2Dexcel1) {
-				setwd(direc)
-				file.remove(paste(direc,'.zip',sep=''))
-				no_return_value <- OsteoSort:::output_function(out2[[2]][input$table2D_rows_selected,], method="exclusion", type="csv4")
-				setwd(sessiontemp)
-			}
-		})
+
 		output$contents2D <- renderUI({
 			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
 		})
 		if(fileoutput2Dexcel1$fileoutput2Dexcel1 || fileoutput2Dexcel2$fileoutput2Dexcel2 || fileoutput2Dplot$fileoutput2Dplot || fileoutput2Dtps$fileoutput2Dtps) {
-			setwd(sessiontemp)
-			files <- list.files(direc, recursive = TRUE)
-			setwd(direc)
-			zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files)
 			output$downloadData2D <- downloadHandler(
 				filename <- function() {
 					paste("results.zip")
 				},
 				content <- function(file) {
+					setwd(direc)
+					if(is.numeric(input$table2D_rows_selected)) {
+						no_return_value <- OsteoSort:::output_function(out2[[2]][input$table2D_rows_selected,], method="exclusion", type="csv4")
+					}
+					setwd(sessiontemp)
 					files <- list.files(direc, recursive = TRUE)
 					setwd(direc)
 					zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
