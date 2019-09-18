@@ -47,7 +47,13 @@ dash <- tabPanel("About",icon = icon("question", lib="font-awesome"),
 	fluidRow(
 		sidebarPanel(
 			uiOutput("about_refs")
-		,width = 12)
+		,width = 6),
+		sidebarPanel(
+			fluidRow(
+				HTML("<p><h3>Measurement Conversion</h3></p>")
+			),
+			DT::dataTableOutput('measurement_conversion_table')
+		,width = 6)
 	),
 	tags$style(type = "text/css", "#Create_Desktop_Icon { width:100%; font-size:85%; background-color:#126a8f }"),
 	tags$style(type = "text/css", "#postmortem_template { width:100%; font-size:85%; background-color:#126a8f }"),

@@ -15,7 +15,7 @@ output$about_refs <- renderUI({
 		Lynch JJ, Stephan CN. Computational Tools in Forensic Anthropology: The Value of Open-Source Licensing as a Standard. <br>Forensic Anthropology <br><a href='http://dx.doi.org/10.5744/fa.2018.0025', target='_blank'>http://dx.doi.org/10.5744/fa.2018.0025</a>
 		<p>&nbsp;</p>
 		Warnke-Sommer JD, Lynch JJ, Pawaskar SS, Z-Transform Method for Pairwise Osteometric Pair-matching.<br>Journal of Forensic Sciences<br><a href='http://dx.doi.org/10.1111/1556-4029.13813', target='_blank'>http://dx.doi.org/10.1111/1556-4029.13813</a>
-		<p>&nbsp;</p>
+		<p></p>
 		</p>
 	")
 })
