@@ -35,12 +35,18 @@ art.input <- function (bonea = NULL, boneb = NULL, side = NULL, ref = NULL, sort
 	sorta$Element <- tolower(sorta$Element)
 	sorta <- sorta[sorta$Element == bonea,]
 	sorta <- sorta[sorta$Side == side,]
+	cnsb <- colnames(sorta)
+	cb <- duplicated(c(measurementsa, cnsb), fromLast = TRUE)
+	measurementsa <- measurementsa[cb[1:length(measurementsa)]]
 	sorta <- cbind(sorta[,c(1:3)], sorta[measurementsa])
 
 	sortb$Side <- tolower(sortb$Side)
 	sortb$Element <- tolower(sortb$Element)
 	sortb <- sortb[sortb$Element == boneb,]
 	sortb <- sortb[sortb$Side == side,]
+	cnsb <- colnames(sortb)
+	cb <- duplicated(c(measurementsb, cnsb), fromLast = TRUE)
+	measurementsb <- measurementsb[cb[1:length(measurementsb)]]
 	sortb <- cbind(sortb[,c(1:3)], sortb[measurementsb])
 
 	sort_A <- data.frame()

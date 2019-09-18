@@ -37,6 +37,10 @@ pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL,
 	sort$Side <- tolower(sort$Side)
 	sort$Element <- tolower(sort$Element)
 	sort <- sort[sort$Element == bone,]
+
+	cnsb <- colnames(sort)
+	cb <- duplicated(c(measurements, cnsb), fromLast = TRUE)
+	measurements <- measurements[cb[1:length(measurements)]]
 	sort <- cbind(sort[,c(1:3)], sort[measurements])
 	sortleft_t <- sort[sort$Side == "left",]
 	sortright_t <- sort[sort$Side == "right",]

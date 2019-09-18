@@ -49,10 +49,17 @@ reg.input <- function(ref = NULL, sorta = NULL, sortb = NULL, bonea = NULL, bone
 	sortb$Side <- tolower(sortb$Side)
 	sortb$Element <- tolower(sortb$Element)
 
+	cnsb <- colnames(sorta)
+	cb <- duplicated(c(measurementsa, cnsb), fromLast = TRUE)
+	measurementsa <- measurementsa[cb[1:length(measurementsa)]]
 	sorta <- sorta[sorta$Element == bonea,]
 	sorta <- sorta[sorta$Side == sidea,]
 	sorta <- cbind(sorta[,c(1:3)], sorta[measurementsa])
 
+
+	cnsb <- colnames(sortb)
+	cb <- duplicated(c(measurementsb, cnsb), fromLast = TRUE)
+	measurementsb <- measurementsb[cb[1:length(measurementsb)]]
 	sortb <- sortb[sortb$Element == boneb,]
 	sortb <- sortb[sortb$Side == sideb,]
 	sortb <- cbind(sortb[,c(1:3)], sortb[measurementsb])

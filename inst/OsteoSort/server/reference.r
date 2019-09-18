@@ -53,7 +53,7 @@ observeEvent(input$refdel, {
 
 observeEvent(input$Reference_Sample, {
 	output$reference_table <- DT::renderDataTable ({
-		DT::datatable(reference_list$reference_list[[input$Reference_Sample]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20, scrollX=TRUE), rownames = FALSE)
+		DT::datatable(reference_list$reference_list[[input$Reference_Sample]], extensions = "Buttons", options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20, scrollX=TRUE, dom = "Bfrtip", buttons = "csv"), rownames = FALSE)
 	})
 
 	output$config_a <- renderUI({

@@ -1,16 +1,16 @@
 output$changes <- renderUI({
 	HTML(paste("<p><h3>Version Changes</h3></p>",
-		"Deprecated unidirectional Hausdorff distances",
+		"The Julia programming language is now integrated as the new analytical platform.",
 		"<p></p>",
-		"Deprecated Robject example data.tables",
+		"Reference data can be imported and exported.",
 		"<p></p>",
-		"Integrated Julia environment",
+		"The user interface is now dynamic and generates based on the reference data and user input.",
 		"<p></p>",
-		"Check for updates",
+		"The ability to check for updates on GitHub.",
 		"<p></p>",
-		"Monitor system resources",
+		"Memory usage is provided in the navbar.",
 		"<p></p>",
-		"Import and data reference data",
+		"Z-transform method is now implemeneted.",
 		"<br><br><br><br><br><br><p></p>"
 		,sep=""))
 })
