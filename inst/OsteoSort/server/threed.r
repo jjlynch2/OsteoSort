@@ -180,14 +180,6 @@ observeEvent(input$pro3D, {
 				file.remove(paste(direc,'.zip',sep=''))
 				no_return_value <- OsteoSort:::output_function(out2[[2]][input$table3D_rows_selected,], method="exclusion", type="csv4")
 				setwd(sessiontemp)
-
-				files <- list.files(direc, recursive = TRUE)
-				setwd(direc)
-				zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
-				for(file_na in files[-1]) {
-					zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
-				}
-				setwd(sessiontemp)
 			}
 		})
 
@@ -209,7 +201,12 @@ observeEvent(input$pro3D, {
 					paste("results.zip")
 				},      
 				content <- function(file) {
+					files <- list.files(direc, recursive = TRUE)
 					setwd(direc)
+					zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
+					for(file_na in files[-1]) {
+						zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
+					}
 					file.copy(paste(direc,'.zip',sep=''), file)  
 					setwd(sessiontemp)    
 				},

@@ -146,14 +146,6 @@ observeEvent(input$proantestatm, {
 			file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
 			no_return_value <- OsteoSort:::output_function(outtemp2m[[2]][input$antestat_table1m_rows_selected,], method="exclusion", type="csv2")
 			setwd(sessiontemp)
-
-			files <- list.files(outtemp2m[[1]], recursive = TRUE)
-			setwd(outtemp2m[[1]])
-			zip:::zipr(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = files[1], compression = 1)
-			for(file_na in files[-1]) {
-				zip:::zipr_append(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
-			}
-			setwd(sessiontemp)
 		}
 	})
 	observeEvent(input$antestat_table2m_rows_selected,{
@@ -161,14 +153,6 @@ observeEvent(input$proantestatm, {
 			setwd(outtemp2m[[1]])
 			file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
 			no_return_value <- OsteoSort:::output_function(outtemp2m[[3]][input$antestat_table2m_rows_selected,], method="exclusion", type="csv2")
-			setwd(sessiontemp)
-
-			files <- list.files(outtemp2m[[1]], recursive = TRUE)
-			setwd(outtemp2m[[1]])
-			zip:::zipr(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = files[1], compression = 1)
-			for(file_na in files[-1]) {
-				zip:::zipr_append(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
-			}
 			setwd(sessiontemp)
 		}
 	})
@@ -184,7 +168,11 @@ observeEvent(input$proantestatm, {
 				paste("results.zip")
 			},      
 			content <- function(file) {
+				files <- list.files(outtemp2m[[1]], recursive = TRUE)
 				setwd(direc6)
+				for(file_na in files[-1]) {
+					zip:::zipr_append(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
+				}
 				file.copy(paste(direc6,'.zip',sep=''), file) 
 				setwd(sessiontemp)  
 			},

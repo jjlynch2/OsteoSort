@@ -155,14 +155,6 @@ observeEvent(input$pro4, {
 			file.remove(paste(outtemp[[1]],'.zip',sep=''))
 			no_return_value <- OsteoSort:::output_function(outtemp[[2]][input$tjbingworkb4_rows_selected,], method="exclusion", type="csv3", uln = "l")
 			setwd(sessiontemp)
-
-			files <- list.files(outtemp[[1]], recursive = TRUE)
-			setwd(outtemp[[1]])
-			zip:::zipr(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
-			for(file_na in files[-1]) {
-				zip:::zipr_append(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
-			}
-			setwd(sessiontemp)
 		}
 	})
 	observeEvent(input$tjbingworka4_rows_selected,{
@@ -171,14 +163,6 @@ observeEvent(input$pro4, {
 			file.remove(paste(outtemp[[1]],'.zip',sep=''))
 			no_return_value <- OsteoSort:::output_function(outtemp[[3]][input$tjbingworka4_rows_selected,], method="exclusion", type="csv3", uln = "u")
 			setwd(sessiontemp)
-
-			files <- list.files(outtemp[[1]], recursive = TRUE)
-			setwd(outtemp[[1]])
-			zip:::zipr(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
-			for(file_na in files[-1]) {
-				zip:::zipr_append(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
-			}
-			setwd(sessiontemp)
 		}
 	})
 	observeEvent(input$tjbingworkc4_rows_selected,{
@@ -186,14 +170,6 @@ observeEvent(input$pro4, {
 			setwd(outtemp[[1]])
 			file.remove(paste(outtemp[[1]],'.zip',sep=''))
 			no_return_value <- OsteoSort:::output_function(outtemp[[4]][input$tjbingworkc4_rows_selected,], method="exclusion", type="csv3", uln = "n")
-			setwd(sessiontemp)
-
-			files <- list.files(outtemp[[1]], recursive = TRUE)
-			setwd(outtemp[[1]])
-			zip:::zipr(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
-			for(file_na in files[-1]) {
-				zip:::zipr_append(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
-			}
 			setwd(sessiontemp)
 		}
 	})
@@ -224,7 +200,12 @@ observeEvent(input$pro4, {
 				paste("results.zip")
 			},
 			content <- function(file) {
+				files <- list.files(outtemp[[1]], recursive = TRUE)
 				setwd(direc6)
+				zip:::zipr(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
+				for(file_na in files[-1]) {
+					zip:::zipr_append(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
+				}
 				file.copy(paste(direc6,'.zip',sep=''), file) 
 				setwd(sessiontemp)  
 			},
