@@ -244,7 +244,23 @@ observeEvent(input$pro2D, {
 		if(is.null(nrow(out2[[2]]))) {pm <- 1; out2[[2]] <- rbind(out2[[2]],c(NA,NA,NA)) }
 		if(!is.null(nrow(out2[[2]]))) {pm <- nrow(as.matrix(out2[[2]][,1]))}
 		output$table2D <- DT::renderDataTable({
-			DT::datatable(out2[[2]], options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+			DT::datatable(out2[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		})
+		observeEvent(input$table2D_rows_selected,{
+			if(fileoutput2Dexcel1$fileoutput2Dexcel1) {
+				setwd(direc)
+				file.remove(paste(direc,'.zip',sep=''))
+				no_return_value <- OsteoSort:::output_function(out2[[2]][input$table2D_rows_selected,], method="exclusion", type="csv4")
+				setwd(sessiontemp)
+
+				files <- list.files(direc, recursive = TRUE)
+				setwd(direc)
+				zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
+				for(file_na in files[-1]) {
+					zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
+				}
+				setwd(sessiontemp)
+			}
 		})
 		output$contents2D <- renderUI({
 			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))

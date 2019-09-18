@@ -32,6 +32,9 @@ output_function <- function(hera1, method = "exclusion", type = "csv", uln = NUL
 			if(uln == "n") {con = "non"}
 			write.csv(hera1, file = paste(con,"-selected-list.csv",sep=""), row.names=FALSE, col.names = TRUE)
 		}
+		if(type == "csv4") {
+			write.csv(hera1, file = "selected-list.csv", row.names=FALSE, col.names = TRUE)
+		}
 		if(type == "plot") {
 			ptemp <- qplot(hera1[[3]], geom="histogram", xlab="", ylab="", col = I("grey"), fill = I("#126a8f")) + geom_vline(xintercept = hera1[[4]], linetype = "dashed", color="#ea6011", size=1) + theme_minimal() + theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 20))
 			ggsave(paste("graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300)
