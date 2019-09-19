@@ -53,7 +53,7 @@ observeEvent(input$refdel, {
 
 observeEvent(input$Reference_Sample, {
 	output$reference_table <- DT::renderDataTable ({
-		DT::datatable(reference_list$reference_list[[input$Reference_Sample]], extensions = "Buttons", options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20, scrollX=TRUE, dom = "Bfrtip", buttons = "csv"), rownames = FALSE)
+		DT::datatable(reference_list$reference_list[[input$Reference_Sample]], selection = list(mode="multiple"), extensions = "Buttons", options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20, scrollX=TRUE, dom = "Bfrtip", buttons = "csv"), rownames = FALSE)
 	})
 
 	output$config_a <- renderUI({
@@ -106,3 +106,24 @@ observeEvent(input$config_delete, {
 		}
 	}
 })
+
+observeEvent(input$refsel, {
+	if(is.numeric(input$reference_table_rows_selected)) {
+
+		index = NULL
+		for (i in 1:length(reference_name_list$reference_name_list)) {
+			if(reference_name_list$reference_name_list[i] == "Custom_Selected") {
+				index = i
+			}
+		}
+		if(is.null(index)) {
+			index <- 		index <- (length(reference_name_list$reference_name_list)+1)
+		}
+
+		reference_name_list$reference_name_list[index] <- "Custom_Selected"
+		reference_list$reference_list[[index]] <- reference_list$reference_list[[input$Reference_Sample]][input$reference_table_rows_selected,]
+		reference_name_list$reference_name_list <- unique(reference_name_list$reference_name_list)
+		names(reference_list$reference_list) <- reference_name_list$reference_name_list
+	}
+})
+

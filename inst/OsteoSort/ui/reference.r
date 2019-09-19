@@ -7,6 +7,8 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 			HTML("<p><h3>Delete Reference</h3></p>"),
 			uiOutput("reference_data_interface"),
 			actionButton("refdel", "delete   ", icon = icon("window-close")),
+			HTML("<p><h3>Select Reference</h3></p>"),
+			actionButton("refsel", "Add Selected   ", icon = icon("plus-square")),
 			HTML("<p><h3>Configuration</h3></p>"),
 			fluidRow(
 				uiOutput("config_render"),
