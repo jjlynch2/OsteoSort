@@ -1,15 +1,23 @@
 reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 	sidebarLayout(
 		sidebarPanel(
-			HTML("<p><h3>Import Reference</h3></p>"),
-			uiOutput("importRefR"),
-			actionButton("clearFileRef", "clear   ", icon = icon("window-close")),
-			HTML("<p><h3>Delete Reference</h3></p>"),
-			uiOutput("reference_data_interface"),
-			actionButton("refdel", "delete   ", icon = icon("window-close")),
-			HTML("<p><h3>Select Reference</h3></p>"),
-			actionButton("refsel", "Add Selected   ", icon = icon("plus-square")),
-			HTML("<p><h3>Configuration</h3></p>"),
+			fluidRow(
+				column(12,
+					HTML("<p><h3>Reference</h3></p>"),
+					uiOutput("importRefR")
+				)
+			),
+			fluidRow(
+				column(12,
+					actionButton("clearFileRef", "Clear import  ", icon = icon("window-close")),
+					tags$style(type = "text/css", "#clearFileRef { width:100%; font-size:85%; background-color:#126a8f }")
+				)
+			),
+			fluidRow(
+				column(12,
+					uiOutput("reference_data_interface")
+				)
+			),
 			fluidRow(
 				uiOutput("config_render"),
 				column(6,
@@ -23,15 +31,37 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 			),
 			fluidRow(
 				column(6,
-					actionButton('config_add', 'Add', icon = icon("plus-square")),
+					actionButton('config_add', 'Add Config', icon = icon("plus-square")),
 					tags$style(type = "text/css", "#config_add { width:100%; font-size:85%; background-color:#126a8f }")
 				),
 				column(6,
-					actionButton('config_delete', 'Delete', icon = icon("minus-square")),
+					actionButton('config_delete', 'Delete Config', icon = icon("minus-square")),
 					tags$style(type = "text/css", "#config_delete { width:100%; font-size:85%; background-color:#126a8f }")
 				)
-			)
-		,width = 3),
+			),
+			br(),
+			fluidRow(
+				column(12,
+					actionButton("refdel", "Delete Reference  ", icon = icon("window-close")),
+					tags$style(type = "text/css", "#refdel { width:100%; font-size:85%; background-color:#126a8f }")
+				)
+			),
+			br(),
+			fluidRow(
+				column(12,
+					downloadButton("refdown", "Download Reference"),
+					tags$style(type = "text/css", "#refdown { width:100%; font-size:85%; background-color:#126a8f }")
+				)
+			),
+			br(),
+			fluidRow(
+				column(12,
+					actionButton("refsel", "Add Selected Rows  ", icon = icon("plus-square")),
+					tags$style(type = "text/css", "#refsel { width:100%; font-size:85%; background-color:#126a8f }")
+				)
+			),
+
+		width = 3),
 		mainPanel(
 			tabsetPanel(id="tabSelectedreference",
 				tabPanel("Reference",

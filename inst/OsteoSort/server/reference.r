@@ -53,7 +53,7 @@ observeEvent(input$refdel, {
 
 observeEvent(input$Reference_Sample, {
 	output$reference_table <- DT::renderDataTable ({
-		DT::datatable(reference_list$reference_list[[input$Reference_Sample]], selection = list(mode="multiple"), extensions = "Buttons", options = list(lengthMenu = c(5,15,25,50,100), pageLength = 25, scrollX=TRUE, dom = "lBfrtip", buttons = "csv"), rownames = FALSE)
+		DT::datatable(reference_list$reference_list[[input$Reference_Sample]],selection = list(mode="multiple"), options = list(pageLength = 25, scrollX=TRUE, dom = "frtip"), rownames = FALSE)
 	})
 
 	output$config_a <- renderUI({
@@ -126,4 +126,14 @@ observeEvent(input$refsel, {
 		names(reference_list$reference_list) <- reference_name_list$reference_name_list
 	}
 })
+
+
+output$refdown <- downloadHandler(
+	filename <- function() {
+		"Reference.csv"
+	},
+	content <- function(file) {
+		write.csv(reference_list$reference_list[[input$Reference_Sample]], file, row.names=FALSE, col.names=TRUE)
+	}
+)
 
