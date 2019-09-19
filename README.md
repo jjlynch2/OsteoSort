@@ -4,7 +4,7 @@
 ```javascript
 install.packages("devtools")
 library(devtools)
-install_github("jjlynch2/OsteoSort", ref="v1.3.0")
+install_github("jjlynch2/OsteoSort", ref="Development-1.3.0")
 library(OsteoSort)
 OsteoSort()
 ```
@@ -19,7 +19,8 @@ OsteoSort()
 * zip
 * rgl
 * ClusterR
-* JuliaCall 
+* JuliaCall
+* shinyalerts
 
 ## Julia Dependencies
 * Pkg

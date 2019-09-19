@@ -3,40 +3,19 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 		sidebarPanel(
 			fluidRow(
 				column(12,
-					HTML("<p><h3>Reference</h3></p>"),
+					HTML("<p><h5>Import Reference</h5></p>"),
 					uiOutput("importRefR")
 				)
 			),
 			fluidRow(
 				column(12,
-					actionButton("clearFileRef", "Clear import  ", icon = icon("window-close")),
+					actionButton("clearFileRef", "Clear Import  ", icon = icon("window-close")),
 					tags$style(type = "text/css", "#clearFileRef { width:100%; font-size:85%; background-color:#126a8f }")
 				)
 			),
 			fluidRow(
 				column(12,
 					uiOutput("reference_data_interface")
-				)
-			),
-			fluidRow(
-				uiOutput("config_render"),
-				column(6,
-					uiOutput("config_a")
-				),
-				column(6,
-					conditionalPanel(condition = "input.config_options == 'Non_antimere_t-test'",
-						uiOutput("config_b")
-					)
-				)
-			),
-			fluidRow(
-				column(6,
-					actionButton('config_add', 'Add Config', icon = icon("plus-square")),
-					tags$style(type = "text/css", "#config_add { width:100%; font-size:85%; background-color:#126a8f }")
-				),
-				column(6,
-					actionButton('config_delete', 'Delete Config', icon = icon("minus-square")),
-					tags$style(type = "text/css", "#config_delete { width:100%; font-size:85%; background-color:#126a8f }")
 				)
 			),
 			br(),
@@ -60,7 +39,28 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 					tags$style(type = "text/css", "#refsel { width:100%; font-size:85%; background-color:#126a8f }")
 				)
 			),
-
+			fluidRow(
+				HTML("<p><h5>Configuration</h5></p>"),
+				uiOutput("config_render"),
+				column(6,
+					uiOutput("config_a")
+				),
+				column(6,
+					conditionalPanel(condition = "input.config_options == 'Non_antimere_t-test'",
+						uiOutput("config_b")
+					)
+				)
+			),
+			fluidRow(
+				column(6,
+					actionButton('config_add', 'Add', icon = icon("plus-square")),
+					tags$style(type = "text/css", "#config_add { width:100%; font-size:85%; background-color:#126a8f }")
+				),
+				column(6,
+					actionButton('config_delete', 'Delete', icon = icon("minus-square")),
+					tags$style(type = "text/css", "#config_delete { width:100%; font-size:85%; background-color:#126a8f }")
+				)
+			),
 		width = 3),
 		mainPanel(
 			tabsetPanel(id="tabSelectedreference",
