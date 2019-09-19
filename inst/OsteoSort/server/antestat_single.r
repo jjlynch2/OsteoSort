@@ -76,66 +76,67 @@ observeEvent(input$proantestat, {
 		}
 	})
 
+	if(is.na(input$antestat_input) || is.na(input[[paste0(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], "_ante")]])) {removeModal();shinyalert(title = "ERROR!", text="Problem exists between chair and keyboard",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 
-	if(is.numeric(input$antestat_input) && is.numeric(input[[paste0(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], "_ante")]])) {
-		ante <- data.frame(id = input$Antemortem_ID_ante, stature = input$antestat_input)
-		post <- data.frame(id = input$Postmortem_ID_ante, side = input$state_reference_ante_side, element = input$single_ante_elements, input[[paste0(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], "_ante")]])
-		colnames(ante) <- c("id", "Stature")
-		colnames(post) <- c("id", "Side", "Element",ante_measurements$df[which(ante_elements$df == input$single_ante_elements)])
+	ante <- data.frame(id = input$Antemortem_ID_ante, stature = input$antestat_input)
+	post <- data.frame(id = input$Postmortem_ID_ante, side = input$state_reference_ante_side, element = input$single_ante_elements, input[[paste0(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], "_ante")]])
+	colnames(ante) <- c("id", "Stature")
+	colnames(post) <- c("id", "Side", "Element",ante_measurements$df[which(ante_elements$df == input$single_ante_elements)])
 
-		outtemp1 <- antestat.input(bone = input$single_ante_elements,
-							  antemortem_stature = ante,
-							  postmortem_measurement = post,
-							  ref = stature_reference_imported_ante$stature_reference_imported_ante,
-							  measurement = ante_measurements$df[which(ante_elements$df == input$single_ante_elements)],
-							  side = input$state_reference_ante_side
-		)
 
-		outtemp2 <- antestat.regtest(antemortem = outtemp1[[1]],
-								postmortem = outtemp1[[2]],
-								ref = outtemp1[[3]],
-								alphalevel = alphalevelsantestat$alphalevelsantestat,
-								output_options = c(fileoutputant1$fileoutputant1, fileoutputant2$fileoutputant2),
-								sessiontempdir = sessiontemp
-		)
-		#display output
 
-		tempDF <- rbind(outtemp2[[2]], outtemp2[[3]]) #combines excluded and not excluded for results
-		output$antestat_table <- DT::renderDataTable({
-			DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1, dom = 't', ordering=F), rownames = FALSE)
-		})
-		if(fileoutputant1$fileoutputant1 || fileoutputant2$fileoutputant2) {
-			#Zip handler       
-			direc6 <- outtemp2[[1]] #direc temp
-			files <- list.files(direc6, recursive = TRUE)
-			setwd(direc6)
-			if(fileoutputant2$fileoutputant2) {
-				nimages <- list.files()
-				nimages <- paste(sessiontemp, "/", direc6, "/", nimages[grep(".jpg", nimages)], sep="")
+	outtemp1 <- antestat.input(bone = input$single_ante_elements,
+						  antemortem_stature = ante,
+						  postmortem_measurement = post,
+						  ref = stature_reference_imported_ante$stature_reference_imported_ante,
+						  measurement = ante_measurements$df[which(ante_elements$df == input$single_ante_elements)],
+						  side = input$state_reference_ante_side
+	)
+	if(is.null(outtemp1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+	outtemp2 <- antestat.regtest(antemortem = outtemp1[[1]],
+							postmortem = outtemp1[[2]],
+							ref = outtemp1[[3]],
+							alphalevel = alphalevelsantestat$alphalevelsantestat,
+							output_options = c(fileoutputant1$fileoutputant1, fileoutputant2$fileoutputant2),
+							sessiontempdir = sessiontemp
+	)
+	#display output
 
-				output$plotplotante <- renderImage({
-					list(src = nimages,
-						contentType = 'image/jpg',
-						height = 400,
-						alt = "A"
-					)
-				}, deleteFile = FALSE)
-			}
-			zip:::zip(zipfile = paste(direc6,'.zip',sep=''), files = files)
-			setwd(sessiontemp)  #restores session
-			#Download handler
-			output$downloadantestat <- downloadHandler(
-				filename <- function() {
-					paste("results.zip")
-				},
-				content <- function(file) {
-					setwd(direc6)
-					file.copy(paste(direc6,'.zip',sep=''), file) 
-					setwd(sessiontemp)  
-				},
-				contentType = "application/zip"
-			)
+	tempDF <- rbind(outtemp2[[2]], outtemp2[[3]]) #combines excluded and not excluded for results
+	output$antestat_table <- DT::renderDataTable({
+		DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1, dom = 't', ordering=F), rownames = FALSE)
+	})
+	if(fileoutputant1$fileoutputant1 || fileoutputant2$fileoutputant2) {
+		#Zip handler       
+		direc6 <- outtemp2[[1]] #direc temp
+		files <- list.files(direc6, recursive = TRUE)
+		setwd(direc6)
+		if(fileoutputant2$fileoutputant2) {
+			nimages <- list.files()
+			nimages <- paste(sessiontemp, "/", direc6, "/", nimages[grep(".jpg", nimages)], sep="")
+
+			output$plotplotante <- renderImage({
+				list(src = nimages,
+					contentType = 'image/jpg',
+					height = 400,
+					alt = "A"
+				)
+			}, deleteFile = FALSE)
 		}
+		zip:::zip(zipfile = paste(direc6,'.zip',sep=''), files = files)
+		setwd(sessiontemp)  #restores session
+		#Download handler
+		output$downloadantestat <- downloadHandler(
+			filename <- function() {
+				paste("results.zip")
+			},
+			content <- function(file) {
+				setwd(direc6)
+				file.copy(paste(direc6,'.zip',sep=''), file) 
+				setwd(sessiontemp)  
+			},
+			contentType = "application/zip"
+		)
 	}
 	setwd(sessiontemp) #restores session
 	removeModal() #removes modal

@@ -18,6 +18,16 @@ art.input <- function (bonea = NULL, boneb = NULL, side = NULL, ref = NULL, sort
 	side <- tolower(side)
 	ref$Side <- tolower(ref$Side)
 	ref$Element <- tolower(ref$Element)
+
+	cnsb <- colnames(sortb)
+	cb <- duplicated(c(measurementsb, cnsb), fromLast = TRUE)
+	if(!any(cb)) {return(NULL)}
+	measurementsb <- measurementsb[cb[1:length(measurementsb)]]
+	cnsb <- colnames(sorta)
+	cb <- duplicated(c(measurementsa, cnsb), fromLast = TRUE)
+	if(!any(cb)) {return(NULL)}
+	measurementsa <- measurementsa[cb[1:length(measurementsa)]]
+
 	refa <- ref[ref$Element == bonea,]
 	refb <- ref[ref$Element == boneb,]
 
@@ -31,23 +41,21 @@ art.input <- function (bonea = NULL, boneb = NULL, side = NULL, ref = NULL, sort
 	n_refa <- refa[refa$id %in% refb$id,]
 	n_refb <- refb[refb$id %in% refa$id,]
 
+	if(nrow(n_refa) == 0 || nrow(n_refb) == 0) {return(NULL)}
+
 	sorta$Side <- tolower(sorta$Side)
 	sorta$Element <- tolower(sorta$Element)
 	sorta <- sorta[sorta$Element == bonea,]
 	sorta <- sorta[sorta$Side == side,]
-	cnsb <- colnames(sorta)
-	cb <- duplicated(c(measurementsa, cnsb), fromLast = TRUE)
-	measurementsa <- measurementsa[cb[1:length(measurementsa)]]
 	sorta <- cbind(sorta[,c(1:3)], sorta[measurementsa])
 
 	sortb$Side <- tolower(sortb$Side)
 	sortb$Element <- tolower(sortb$Element)
 	sortb <- sortb[sortb$Element == boneb,]
 	sortb <- sortb[sortb$Side == side,]
-	cnsb <- colnames(sortb)
-	cb <- duplicated(c(measurementsb, cnsb), fromLast = TRUE)
-	measurementsb <- measurementsb[cb[1:length(measurementsb)]]
 	sortb <- cbind(sortb[,c(1:3)], sortb[measurementsb])
+
+	if(nrow(sorta) == 0 || nrow(sortb) == 0) {return(NULL)}
 
 	sort_A <- data.frame()
 	sort_B <- data.frame()

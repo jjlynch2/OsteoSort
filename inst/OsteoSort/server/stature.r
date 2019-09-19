@@ -104,10 +104,12 @@ observeEvent(input$pro4, {
 	
 	if (is.null(input$file4)){
 		removeModal()
-		return(NULL) 
+		shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
+		return(NULL)
 	}
 	if (!file.size(input$file4$datapath) > 1){
 		removeModal()
+		shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
 		return(NULL)
 	}
 
@@ -116,8 +118,8 @@ observeEvent(input$pro4, {
 	} else {
 		cutoffvalue <- OSqt1$OSqt1
 	}
-
 	if(input$custom) {
+		if(is.na(input$slope) || is.na(input$intercept)) {removeModal();	shinyalert(title = "ERROR!", text="y = a + bx",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		reference <- c("Custom", input$slope, input$intercept)
 	} else {
 		reference <- stature_reference_imported$stature_reference_imported

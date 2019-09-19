@@ -11,7 +11,7 @@
 #' @examples
 #' pm.input()
 
-pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL, threshold = 1) {	
+pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL, threshold = 1) {
 	print("Filtering data by element type, specified measurements, and threshold value...")
 	options(stringsAsFactors = FALSE)
 	options(warn = -1) #disables warnings
@@ -19,6 +19,10 @@ pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL,
 	if(is.null(bone) || is.null(sort) || is.null(ref) || is.null(threshold) || is.null(measurements)) {
 		return(NULL)
 	}
+	cnsb <- colnames(sort)
+	cb <- duplicated(c(measurements, cnsb), fromLast = TRUE)
+	if(!any(cb)) {return(NULL)}
+	measurements <- measurements[cb[1:length(measurements)]]
 
 	bone <- tolower(bone)
 	#reference data sorting
@@ -33,17 +37,17 @@ pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL,
 	refleft <- refleft[refleft$id %in% refright$id,]
 	refright <- refright[refright$id %in% refleft$id,]
 
+	if(nrow(refleft) == 0 || nrow(refright) == 0) {return(NULL)}
+
 	#case data sorting
 	sort$Side <- tolower(sort$Side)
 	sort$Element <- tolower(sort$Element)
 	sort <- sort[sort$Element == bone,]
-
-	cnsb <- colnames(sort)
-	cb <- duplicated(c(measurements, cnsb), fromLast = TRUE)
-	measurements <- measurements[cb[1:length(measurements)]]
 	sort <- cbind(sort[,c(1:3)], sort[measurements])
 	sortleft_t <- sort[sort$Side == "left",]
 	sortright_t <- sort[sort$Side == "right",]
+
+	if(nrow(sortleft_t) == 0 || nrow(sortright_t) == 0) {return(NULL)}
 
 	sortleft <- data.frame()
 	sortright <- data.frame()

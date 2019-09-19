@@ -183,15 +183,17 @@ observeEvent(input$pro, {
 	 #return null if not uploaded
 	if (is.null(inFile)) {
 		removeModal()
+		shinyalert(title = "ERROR!", text="Task failed successfully",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
 		return(NULL)
 	}
 	#return null if empty file
 	if (!file.size(inFile$datapath) > 1) {
 		removeModal()
+		shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
 		return(NULL)
 	}
 
-	tempdata1 <- read.csv(inFile$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))## see na.strings forces NA for blanks, spaces, etc
+	tempdata1 <<- read.csv(inFile$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))## see na.strings forces NA for blanks, spaces, etc
 	#checks if measurements are numeric and converts alpha characters to numeric   
 	tempdataa <- tempdata1[,1:3]
 	tempdatab <- lapply(tempdata1[,-(1:3)], function(x) { as.numeric(as.character(x))})
@@ -206,10 +208,12 @@ observeEvent(input$pro, {
 		sortb = tempdata1[tempdata1$Element == strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2],]
 
 		art.d1 <- art.input(side = input$multiple_non_antimere_side, ref = multiple_reference_imported$multiple_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2], measurementsa = tempa, measurementsb = tempb)
+		if(is.null(art.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = c(multiple_file_output1$multiple_file_output1, FALSE), threads = numbercoresglobal$ncore)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	} else if(input$multiple_analysis == "Antimere t-test") {
 		pm.d1 <- pm.input(sort = tempdata1, bone = input$multiple_elements_pairmatch, measurements = multiple_ML$multiple_ML, ref = multiple_reference_imported$multiple_reference_imported)
+		if(is.null(pm.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		d2 <- ttest(ztest = multiple_ztransform$multiple_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = c(multiple_file_output1$multiple_file_output1, FALSE), threads = numbercoresglobal$ncore)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 	} else if(input$multiple_analysis == "Non-Antimere regression") {
@@ -219,6 +223,7 @@ observeEvent(input$pro, {
 		sortb = tempdata1[tempdata1$Element == input$multiple_elements_association_b,]
 
 		reg.d1 <<- reg.input(sorta = sorta, sortb = sortb, sidea = input$multiple_association_side_a, sideb = input$multiple_association_side_b, bonea = input$multiple_elements_association_a, boneb = input$multiple_elements_association_b, measurementsa = multiple_MLA$multiple_ML, measurementsb = multiple_MLB$multiple_ML, ref = multiple_reference_imported$multiple_reference_imported)
+		if(is.null(reg.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		d2 <- reg.test(threads = numbercoresglobal$ncore, ztest = multiple_ztransform$multiple_ztransform, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, output_options = c(multiple_file_output1$multiple_file_output1, FALSE))
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}

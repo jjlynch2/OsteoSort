@@ -1,4 +1,5 @@
 dash <- tabPanel("About",icon = icon("question", lib="font-awesome"),
+	useShinyalert(),
 	fluidRow(
 		sidebarPanel(
 			uiOutput("version_numbers")

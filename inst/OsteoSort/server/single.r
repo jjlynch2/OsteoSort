@@ -191,7 +191,7 @@ observeEvent(input$single_reference, {
 
 observeEvent(input$proc, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
-	withProgress(message = 'Calculation has started', detail = '', value = 0, {       
+	withProgress(message = 'Calculation has started', detail = '', value = 0, {
 		for (i in 1:10) {
 			incProgress(1/10)
 			Sys.sleep(0.05)
@@ -217,10 +217,13 @@ observeEvent(input$proc, {
 		single_input_art_b$single_input_art_b <- t(data.frame(single_input_art_b$single_input_art_b))
 		colnames(single_input_art_b$single_input_art_b) <- tempb
 
+		if(is.na(single_input_art_a$single_input_art_a[1]) || is.na(single_input_art_b$single_input_art_b[1])) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+
 		sorta <- data.frame(id = input$ID1, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][1], single_input_art_a$single_input_art_a, stringsAsFactors = FALSE)
 		sortb <- data.frame(id = input$ID2, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
 
 		art.d1 <- art.input(side = input$single_non_antimere_side, ref = single_reference_imported$single_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$single_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], measurementsa = tempa, measurementsb = tempb)
+		if(is.null(art.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 		tempDF <- rbind(d2[[2]], d2[[3]])
 	} else if(input$single_analysis == "Antimere t-test") {
@@ -236,9 +239,13 @@ observeEvent(input$proc, {
 		colnames(single_input_list_left$single_input_list_left) <- single_ML$single_ML
 		single_input_list_right$single_input_list_right <- t(data.frame(single_input_list_right$single_input_list_right))
 		colnames(single_input_list_right$single_input_list_right) <- single_ML$single_ML
+
+		if(all(is.na(single_input_list_left$single_input_list_left)) || all(is.na(single_input_list_right$single_input_list_right))) {removeModal();shinyalert(title = "ERROR!", text="user error - please replace user",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+
 		sortleft <- data.frame(id = input$ID1, Side = "left", Element = input$single_elements_pairmatch, single_input_list_left$single_input_list_left, stringsAsFactors = FALSE)
 		sortright <- data.frame(id = input$ID2, Side = "right", Element = input$single_elements_pairmatch, single_input_list_right$single_input_list_right, stringsAsFactors = FALSE)
 		pm.d1 <- pm.input(sort = rbind(sortleft, sortright), bone = input$single_elements_pairmatch, measurements = single_ML$single_ML, ref = single_reference_imported$single_reference_imported)
+		if(is.null(pm.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		d2 <- ttest(ztest = single_ztransform$single_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 		tempDF <- rbind(d2[[2]], d2[[3]])
 	} else if(input$single_analysis == "Non_antimere regression") {
@@ -257,9 +264,12 @@ observeEvent(input$proc, {
 		colnames(single_input_list_A$single_input_list_A) <- single_MLA$single_ML
 		colnames(single_input_list_B$single_input_list_B) <- single_MLB$single_ML
 
+		if(all(is.na(single_input_list_A$single_input_list_A)) || all(is.na(single_input_list_B$single_input_list_B))) {removeModal();shinyalert(title = "ERROR!", text="Pssst... you forgot to enter data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+
 		sorta <- data.frame(id = input$ID1, Side = input$single_association_side_a, Element = input$single_elements_association_a, single_input_list_A$single_input_list_A, stringsAsFactors = FALSE)
 		sortb <- data.frame(id = input$ID2, Side = input$single_association_side_b, Element = input$single_elements_association_b, single_input_list_B$single_input_list_B, stringsAsFactors = FALSE)
 		reg.d1 <- reg.input(sorta = sorta, sortb = sortb, sidea = input$single_association_side_a, sideb = input$single_association_side_b, bonea = input$single_elements_association_a, boneb = input$single_elements_association_b, measurementsa = single_MLA$single_ML, measurementsb = single_MLB$single_ML, ref = single_reference_imported$single_reference_imported)
+		if(is.null(reg.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		d2 <- reg.test(ztest = single_ztransform$single_ztransform, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 		tempDF <- rbind(d2[[2]], d2[[3]])
 	}
@@ -268,7 +278,7 @@ observeEvent(input$proc, {
 		DT::datatable(tempDF, options = list(lengthMenu = c(1), pageLength = 1, dom = 't', ordering=F), rownames = FALSE)
 	})
 
-	if(single_file_output1$single_file_output1 || single_file_output2$single_file_output2) {  
+	if(single_file_output1$single_file_output1 || single_file_output2$single_file_output2) {
 		direc <- d2[[1]]
 		setwd(sessiontemp)
 		setwd(direc)

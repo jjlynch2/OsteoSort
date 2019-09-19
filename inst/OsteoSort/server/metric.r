@@ -70,10 +70,12 @@ observeEvent(input$pro3, {
 	
 	if (is.null(input$file3)){
 		removeModal()
+		shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
 		return(NULL) 
 	}
 	if (!file.size(input$file3$datapath) > 1){
 		removeModal()
+		shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
 		return(NULL)
 	}
 

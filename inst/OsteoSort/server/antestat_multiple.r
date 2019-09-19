@@ -91,7 +91,8 @@ observeEvent(input$proantestatm, {
 	inFile1 <- input$file1ante
 	inFile2 <- input$file2ante
 	if (is.null(inFile1) || is.null(inFile2)){
-		removeModal()                             
+		removeModal()
+		shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
 		return(NULL) 
 	}
 
@@ -105,7 +106,7 @@ observeEvent(input$proantestatm, {
 							measurement = input$Measurement_ante_mm,
 							ref = stature_reference_imported_antem$stature_reference_imported_antem
 	)
-
+	if(is.null(outtemp1m)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 	outtemp2m <- antestat.regtest(threads = numbercoresglobalm$ncorem, 
 								antemortem = outtemp1m[[1]], 
 								postmortem = outtemp1m[[2]], 

@@ -28,6 +28,15 @@ reg.input <- function(ref = NULL, sorta = NULL, sortb = NULL, bonea = NULL, bone
 	bonea <- tolower(bonea)
 	boneb <- tolower(boneb)
 
+	cnsb <- colnames(sorta)
+	cb <- duplicated(c(measurementsa, cnsb), fromLast = TRUE)
+	if(!any(cb)) {return(NULL)}
+	measurementsa <- measurementsa[cb[1:length(measurementsa)]]
+	cnsb <- colnames(sortb)
+	cb <- duplicated(c(measurementsb, cnsb), fromLast = TRUE)
+	if(!any(cb)) {return(NULL)}
+	measurementsb <- measurementsb[cb[1:length(measurementsb)]]
+
 	ref$Side <- tolower(ref$Side)
 	ref$Element <- tolower(ref$Element)
 
@@ -44,25 +53,22 @@ reg.input <- function(ref = NULL, sorta = NULL, sortb = NULL, bonea = NULL, bone
 	n_refa <- refa[refa$id %in% refb$id,]
 	n_refb <- refb[refb$id %in% refa$id,]
 
+	if(nrow(n_refa) == 0 || nrow(n_refb) == 0) {return(NULL)}
+
 	sorta$Side <- tolower(sorta$Side)
 	sorta$Element <- tolower(sorta$Element)
 	sortb$Side <- tolower(sortb$Side)
 	sortb$Element <- tolower(sortb$Element)
 
-	cnsb <- colnames(sorta)
-	cb <- duplicated(c(measurementsa, cnsb), fromLast = TRUE)
-	measurementsa <- measurementsa[cb[1:length(measurementsa)]]
 	sorta <- sorta[sorta$Element == bonea,]
 	sorta <- sorta[sorta$Side == sidea,]
 	sorta <- cbind(sorta[,c(1:3)], sorta[measurementsa])
 
-
-	cnsb <- colnames(sortb)
-	cb <- duplicated(c(measurementsb, cnsb), fromLast = TRUE)
-	measurementsb <- measurementsb[cb[1:length(measurementsb)]]
 	sortb <- sortb[sortb$Element == boneb,]
 	sortb <- sortb[sortb$Side == sideb,]
 	sortb <- cbind(sortb[,c(1:3)], sortb[measurementsb])
+
+	if(nrow(sorta) == 0 || nrow(sortb) == 0) {return(NULL)}
 
 	sort_A <- data.frame()
 	sort_B <- data.frame()
