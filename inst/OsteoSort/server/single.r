@@ -52,7 +52,7 @@ observeEvent(input$single_boxcox, {
 
 single_mean <- reactiveValues(single_mean = FALSE) 
 output$single_mean <- renderUI({
-	checkboxInput(inputId = "single_mean", label = "Zero mean", value = FALSE)					
+	checkboxInput(inputId = "single_mean", label = "Zero mean", value = FALSE)
 })
 observeEvent(input$single_mean, {
 	single_mean$single_mean <- input$single_mean
@@ -189,7 +189,6 @@ observeEvent(input$single_reference, {
 	})
 
 })
-
 
 observeEvent(input$proc, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))

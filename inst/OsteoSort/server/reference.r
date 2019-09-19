@@ -82,7 +82,7 @@ output$config_render <- renderUI({
 observeEvent(input$config_add, {
 	skip = FALSE
 	for(i in 1:nrow(config_df$config_df)) {
-		if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == input$config_options || config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,3] == input$config_options) {
+		if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Non_antimere_t-test" || config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Stature") {
 			skip = TRUE
 		}
 	}
@@ -99,7 +99,7 @@ observeEvent(input$config_add, {
 
 observeEvent(input$config_delete, {
 	for(i in 1:nrow(config_df$config_df)) {
-		if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == input$config_options || config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,3] == input$config_options) {
+		if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Non_antimere_t-test" || config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Stature") {
 			config_df$config_df <- config_df$config_df[-i,]
 			write.csv(config_df$config_df, file = system.file("extdata/data", 'config', package = "OsteoSort"), col.names = TRUE, sep=",", row.names = FALSE)
 			break
@@ -117,7 +117,7 @@ observeEvent(input$refsel, {
 			}
 		}
 		if(is.null(index)) {
-			index <- 		index <- (length(reference_name_list$reference_name_list)+1)
+			index <- length(reference_name_list$reference_name_list)+1
 		}
 
 		reference_name_list$reference_name_list[index] <- "Custom_Selected"
