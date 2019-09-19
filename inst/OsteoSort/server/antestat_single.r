@@ -46,7 +46,9 @@ observeEvent(input$stature_reference_ante, {
 			if(ante$Measurementa[i] == ref_col_names[x]) {
 				ante_measurements$df <- c(ante_measurements$df, ante$Measurementa[i])
 				temp1 <- na.omit(unique(stature_reference_imported_ante$stature_reference_imported_ante[!is.na(stature_reference_imported_ante$stature_reference_imported_ante[[ante$Measurementa[i]]]),]$Element))[1]
-				ante_elements$df <- unique(c(ante_elements$df, temp1))
+				if(!is.na(temp1)) {
+					ante_elements$df <- unique(c(ante_elements$df, temp1))
+				}
 				break
 			}
 		}

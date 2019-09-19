@@ -108,7 +108,9 @@ observeEvent(input$single_reference, {
 				art_measurements_b$df <- c(art_measurements_b$df, art$Measurementb[i])
 				temp1 <- na.omit(unique(single_reference_imported$single_reference_imported[!is.na(single_reference_imported$single_reference_imported[[art$Measurementa[i]]]),]$Element))[1]
 				temp2 <- na.omit(unique(single_reference_imported$single_reference_imported[!is.na(single_reference_imported$single_reference_imported[[art$Measurementb[i]]]),]$Element))[1]
-				art_elements$df <- unique(c(art_elements$df, paste(temp1, temp2, sep="-")))
+				if(!is.na(temp1) && !is.na(temp2)) {
+					art_elements$df <- unique(c(art_elements$df, paste(temp1, temp2, sep="-")))
+				}
 				break
 			}
 		}
