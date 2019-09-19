@@ -130,7 +130,8 @@ observeEvent(input$proantestatm, {
 		                   "<br/>", "Postmortem Specimens: ",           "<font color=\"#00688B\">",pmsize, "</font>", 
 		                   "<br/>", "Antemortem Statures: ",           "<font color=\"#00688B\">",amsize, "</font>", 
 		                   '<br/>', "Potential matches: ",  "<font color=\"#00688B\">",nmatch , "</font>",
-		                   '<br/>', "Exclusions: ",         "<font color=\"#00688B\">",ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)",  "</font>",'</strong>'))
+		                   '<br/>', "Exclusions: ",         "<font color=\"#00688B\">",ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)",  "</font>",
+						'</strong>'))
 		})
 	}
 
@@ -148,6 +149,7 @@ observeEvent(input$proantestatm, {
 			},      
 			content <- function(file) {
 				setwd(outtemp2m[[1]])
+				file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
 				if(is.numeric(input$antestat_table1m_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(outtemp2m[[2]][input$antestat_table1m_rows_selected,], method="exclusion", type="csv2")
 				}

@@ -33,9 +33,6 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 
 	print("Comparisons are running...")
 	start_time <- start_time()
-	options(stringsAsFactors = FALSE)
-	options(warn = -1) #disables warnings
-	options(as.is = TRUE)
 
 	if(is.na(antemortem) || is.null(antemortem)) {return(NULL)}
 	if(is.na(postmortem) || is.null(postmortem)) {return(NULL)}
@@ -60,7 +57,8 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 								measurements = colnames(ref)[5],           #6
 								p_value = round(results[,3], digits = 4),  #7
 								r2 = round(results[,5], digits = 4),       #8
-								sample = results[,4]),                     #9
+								sample = results[,4]
+								),                     #9
 								result = NA,                               #10
 								stringsAsFactors = FALSE
 	)
@@ -94,7 +92,6 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 
 	gc()
 	setwd(workingdir)
-	options(stringsAsFactors = TRUE) #restore default R
 	print("Finished.")
 	t_time <- end_time(start_time)
 	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time))

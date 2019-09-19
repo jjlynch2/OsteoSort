@@ -14,7 +14,6 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 	}
 	print("Form comparisons started")
 	start_time <- start_time()
-	options(stringsAsFactors = FALSE)
 	if(fragment == "Complete") {fragment <- FALSE}
 	if(fragment == "Fragmented") {fragment <- TRUE}
 	dist <- tolower(dist)
@@ -174,6 +173,5 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 	setwd(workingdir)
 	print("Form comparisons completed")
 	t_time <- end_time(start_time)
-	options(stringsAsFactors = TRUE) #restore default R  
 	return(list(pairwise_coords, resmatches, direc, comparisons, matches, renderlist, t_time))
 }

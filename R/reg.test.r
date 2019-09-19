@@ -38,7 +38,6 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 
 	print("Comparisons are running...")
 	start_time <- start_time()
-	options(stringsAsFactors = FALSE)
 
 	options(warn = -1) #disables warnings
 	options(as.is = TRUE)
@@ -77,10 +76,14 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 								measurements = measurements, 
 								p_value = round(results[,3], digits = 4), 
 								r2 = round(results[,5], digits = 4), 
-								sample = results[,4]), 
+								sample = results[,4]
+								), 
 								result = NA, 
 								stringsAsFactors = FALSE
 	)
+
+	rejected <- results_formatted[results_formatted$measurements == "",]
+	results_formatted <- results_formatted[results_formatted$measurements != "",]
 
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {
@@ -110,8 +113,7 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 
 	gc()
 	setwd(workingdir)
-	options(stringsAsFactors = TRUE) #restore default R
 	print("Finished.")
 	t_time <- end_time(start_time)
-	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time))
+	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time, rejected))
 }

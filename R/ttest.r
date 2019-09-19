@@ -36,7 +36,6 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	sorta <- cbind(sorta,fa = 0)
 	sortb <- cbind(sortb,fa = 0)
 
-	options(stringsAsFactors = FALSE)
 	print("Comparisons started")
 	start_time <- start_time()
 	options(warn = -1) #disables warnings
@@ -131,10 +130,14 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 									p_value = round(results[,4], digits = 4), 
 									mean = round(results[,5], digits = 4), 
 									sd = round(results[,6], digits =4), 
-									sample = results[,7]), 
+									sample = results[,7]
+									), 
 									result = NA, 
 									stringsAsFactors = FALSE
 	)
+	rejected <- results_formatted[results_formatted$measurements == "",1:7]
+	results_formatted <- results_formatted[results_formatted$measurements != "",]
+
 	#Append exclusion results
 	for(i in 1:nrow(results_formatted)) {
 		if(results_formatted[i,8] > alphalevel) {
@@ -146,7 +149,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	}
 
 	if(output_options[1]) {
-		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
+		no_return_value <- OsteoSort:::output_function(results_formatted, rejected = rejected, method="exclusion", type="csv")
 	}
 	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot")
@@ -155,8 +158,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	#cleanup
 	gc()
 	setwd(workingdir)
-	options(stringsAsFactors = TRUE) #restore default R
 	print("Finished.")
 	t_time <- end_time(start_time)
-	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time))
+	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time, rejected))
 }

@@ -57,6 +57,9 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 				tabPanel("Excluded",
 					DT::dataTableOutput('tablen')
 				),
+				tabPanel("Rejected",
+					DT::dataTableOutput('tablenr')
+				),
 				bsModal("settingsmultiple", title = "Settings", trigger = "settings1", size = "medium", 
 					tabsetPanel(id="multiple_tab",
 						tabPanel("Output Parameters",

@@ -10,9 +10,6 @@
 
 art.input <- function (bonea = NULL, boneb = NULL, side = NULL, ref = NULL, sorta = NULL, sortb = NULL, measurementsa = NULL, measurementsb = NULL, threshold = 1) {
 	print("Filtering data by element types, specified measurements, and threshold value...")
-	options(stringsAsFactors = FALSE)
-	options(as.is = TRUE)
-	options(warn = -1)
 	if(is.null(bonea) || is.null(boneb) || is.null(sort)){return(NULL)}
 
 	side <- tolower(side)
@@ -83,7 +80,6 @@ art.input <- function (bonea = NULL, boneb = NULL, side = NULL, ref = NULL, sort
 	n_refa[is.na(n_refa)] <- 0
 	n_refb[is.na(n_refb)] <- 0
 
-	options(stringsAsFactors = TRUE) #restore default R  
 	print("Finished...")
 	return(list(n_refa, n_refb, sort_A, sort_B, rejected))
 }

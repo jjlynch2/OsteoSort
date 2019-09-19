@@ -30,7 +30,6 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 
 	print("Form comparisons started")
 	start_time <- start_time()
-	options(stringsAsFactors = FALSE)
 	dist <- tolower(dist)
 	transformation <- tolower(transformation)
 	workingdir = getwd()
@@ -159,7 +158,6 @@ match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fra
 
 	print("Form comparisons completed")
 	t_time <- end_time(start_time)
-	options(stringsAsFactors = TRUE) #restore default R  
 	return(list(coords,resmatches,direc,comparisons,matches,t_time))
 
 }

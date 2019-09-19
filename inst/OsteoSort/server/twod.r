@@ -257,6 +257,7 @@ observeEvent(input$pro2D, {
 				},
 				content <- function(file) {
 					setwd(direc)
+					file.remove(paste(direc,'.zip',sep=''))
 					if(is.numeric(input$table2D_rows_selected)) {
 						no_return_value <- OsteoSort:::output_function(out2[[2]][input$table2D_rows_selected,], method="exclusion", type="csv4")
 					}

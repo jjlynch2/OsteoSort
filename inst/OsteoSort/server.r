@@ -2,7 +2,8 @@ options(rgl.useNULL=TRUE) #required to avoid rgl device opening
 options(scipen = 999)
 options(shiny.maxRequestSize=100*1024^2) #10MB file size limit
 options(warn = -1) #disables warnings
-
+options(as.is = TRUE)
+options(stringsAsFactors = FALSE)
 shinyServer(function(input, output, session) {
 	#defines which modules to include
 	source(system.file("OsteoSort/server", 'temp_dir.r', package = "OsteoSort"), local=TRUE) ###imports temporary directory code

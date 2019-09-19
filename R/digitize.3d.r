@@ -7,8 +7,6 @@
 #' digitize.3d()
 
 digitize.3d <- function(align_data, type = "single") {
-
-
 	if(ncol(align_data) >5) {
 				if(any(is.na(align_data[,c(4:6)]))) { 
 					cc <- "dimgrey"

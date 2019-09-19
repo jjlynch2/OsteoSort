@@ -240,7 +240,13 @@ observeEvent(input$proc, {
 		single_input_list_right$single_input_list_right <- t(data.frame(single_input_list_right$single_input_list_right))
 		colnames(single_input_list_right$single_input_list_right) <- single_ML$single_ML
 
-		if(all(is.na(single_input_list_left$single_input_list_left)) || all(is.na(single_input_list_right$single_input_list_right))) {removeModal();shinyalert(title = "ERROR!", text="user error - please replace user",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+		for(x in 1:length(single_input_list_left$single_input_list_left)) {
+			if(!is.na(single_input_list_left$single_input_list_left[x]) && !is.na(single_input_list_right$single_input_list_right[x])) {
+				break #break if at least 1 pair is present
+			} else if(x == length(single_input_list_left$single_input_list_left)) {
+				removeModal();shinyalert(title = "ERROR!", text="user error - please replace user",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)
+			}
+		}
 
 		sortleft <- data.frame(id = input$ID1, Side = "left", Element = input$single_elements_pairmatch, single_input_list_left$single_input_list_left, stringsAsFactors = FALSE)
 		sortright <- data.frame(id = input$ID2, Side = "right", Element = input$single_elements_pairmatch, single_input_list_right$single_input_list_right, stringsAsFactors = FALSE)

@@ -15,9 +15,6 @@
 
 antestat.input <- function(antemortem_stature = NULL, postmortem_measurement = NULL, ref = NULL, measurement = NULL, side = NULL, bone = NULL) {
 	print("Filtering data by element type and specified measurement...")
-	options(stringsAsFactors = FALSE)
-	options(as.is = TRUE)
-	options(warn = -1)
 	if(is.na(antemortem_stature) || is.null(antemortem_stature)) {return(NULL)} #input san
 	if(is.na(postmortem_measurement) || is.null(postmortem_measurement)) {return(NULL)} #input san	
 	antemortem_stature <- data.frame(antemortem_stature, stringsAsFactors = FALSE)
@@ -51,7 +48,6 @@ antestat.input <- function(antemortem_stature = NULL, postmortem_measurement = N
 	antemortem_stature <- antemortem_stature[rowSums(is.na(antemortem_stature)) < 1,] #remove NA rows
 	if(nrow(postmortem_measurement) == 0) {return(NULL)}
 	if(nrow(antemortem_stature) == 0) {return(NULL)}
-	options(stringsAsFactors = TRUE) #restore default R  
 	print("Finished...")
 	return(list(antemortem_stature, postmortem_measurement, refa))
 }

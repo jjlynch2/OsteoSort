@@ -193,7 +193,7 @@ observeEvent(input$pro, {
 		return(NULL)
 	}
 
-	tempdata1 <<- read.csv(inFile$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))## see na.strings forces NA for blanks, spaces, etc
+	tempdata1 <- read.csv(inFile$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))## see na.strings forces NA for blanks, spaces, etc
 	#checks if measurements are numeric and converts alpha characters to numeric   
 	tempdataa <- tempdata1[,1:3]
 	tempdatab <- lapply(tempdata1[,-(1:3)], function(x) { as.numeric(as.character(x))})
@@ -235,15 +235,17 @@ observeEvent(input$pro, {
 		nmatch <- nrow(d2[[2]])
 		samplesize <- length(unique(c(d2[[2]][,1], d2[[2]][,4], d2[[3]][,1], d2[[3]][,4])))
 		t_time <- d2[[4]]
+		output$multiple_contents <- renderUI({
+			HTML(paste("<strong>",
+						"Completed in: ", "<font color=\"#00688B\">", t_time, " minutes</font>", 
+						"<br/>","Comparisons: ",   "<font color=\"#00688B\">", ll, "</font>", 
+		                   "<br/>", "Specimens: ",           "<font color=\"#00688B\">",samplesize, "</font>", 
+		                   '<br/>', "Potential matches: ",  "<font color=\"#00688B\">",nmatch , "</font>",
+		                   '<br/>', "Exclusions: ",         "<font color=\"#00688B\">",ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)",  "</font>",
+						'<br/>', "Rejected: ","<font color=\"#00688B\">",nrow(d2[[5]]),"</font>",
+						'</strong>'))
+		})
 	}
-	output$multiple_contents <- renderUI({
-		HTML(paste("<strong>",
-					"Completed in: ", "<font color=\"#00688B\">", t_time, " minutes</font>", 
-					"<br/>","Comparisons: ",   "<font color=\"#00688B\">", ll, "</font>", 
-                        "<br/>", "Specimens: ",           "<font color=\"#00688B\">",samplesize, "</font>", 
-                        '<br/>', "Potential matches: ",  "<font color=\"#00688B\">",nmatch , "</font>",
-                        '<br/>', "Exclusions: ",         "<font color=\"#00688B\">",ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)",  "</font>",'</strong>'))
-	})
 
 	output$table <- DT::renderDataTable({
 		DT::datatable(d2[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
@@ -253,6 +255,10 @@ observeEvent(input$pro, {
 		DT::datatable(d2[[3]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 
+	output$tablenr <- DT::renderDataTable({
+		DT::datatable(d2[[5]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+	})
+
 	if(multiple_file_output1$multiple_file_output1) {
 		output$downloadData <- downloadHandler(
 			filename <- function() {
@@ -260,11 +266,15 @@ observeEvent(input$pro, {
 			},
 			content = function(file) {
 				setwd(direc)
+				file.remove(paste(direc,'.zip',sep=''))
 				if(is.numeric(input$tablen_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(d2[[3]][input$tablen_rows_selected,], method="exclusion", type="csv2")
 				}
 				if(is.numeric(input$table_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(d2[[2]][input$table_rows_selected,], method="exclusion", type="csv2")
+				}
+				if(is.numeric(input$tablenr_rows_selected)) {
+					no_return_value <- OsteoSort:::output_function(rejected = d2[[5]][input$tablenr_rows_selected,], method="exclusion", type="csv2")
 				}
 				setwd(sessiontemp)
 				files <- list.files(direc, recursive = TRUE)
@@ -274,7 +284,7 @@ observeEvent(input$pro, {
 					zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
 				}
 				file.copy(paste(direc,'.zip',sep=''), file)
-				setwd(sessiontemp)    
+				setwd(sessiontemp)
 			},
 			contentType = "application/zip"
 		)

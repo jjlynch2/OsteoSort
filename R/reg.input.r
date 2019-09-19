@@ -19,10 +19,6 @@
 
 reg.input <- function(ref = NULL, sorta = NULL, sortb = NULL, bonea = NULL, boneb = NULL, sidea = NULL, sideb = NULL, threshold = 1, measurementsa = NULL, measurementsb = NULL) {
 	print("Filtering data by element types, specified measurements, and threshold value...")
-	options(stringsAsFactors = FALSE)
-	options(as.is = TRUE)
-	options(warn = -1)
-
 	sidea <- tolower(sidea)
 	sideb <- tolower(sideb)
 	bonea <- tolower(bonea)
@@ -96,7 +92,6 @@ reg.input <- function(ref = NULL, sorta = NULL, sortb = NULL, bonea = NULL, bone
 	n_refa[is.na(n_refa)] <- 0
 	n_refb[is.na(n_refb)] <- 0
 
-	options(stringsAsFactors = TRUE) #restore default R  
 	print("Finished...")
 	return(list(n_refa, n_refb, sort_A, sort_B, rejected))
 }

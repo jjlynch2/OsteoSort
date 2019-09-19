@@ -135,6 +135,7 @@ observeEvent(input$pro3, {
 			},      
 			content <- function(file) {
 				setwd(outtemp[[1]])
+				file.remove(paste(outtemp[[1]],'.zip',sep=''))
 				if(is.numeric(input$tjbingworka_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(outtemp[[3]][input$tjbingworka_rows_selected,], method="exclusion", type="csv3", uln = "u")
 				}
