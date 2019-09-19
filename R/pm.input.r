@@ -70,6 +70,8 @@ pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL,
 		}
 	}
 
+	if(nrow(sortleft_t) == 0 || nrow(sortright_t) == 0) {return(NULL)}
+
 	#replace NA with zero
 	sortleft[is.na(sortleft)] <- 0
 	sortright[is.na(sortright)] <- 0
