@@ -126,7 +126,21 @@ observeEvent(input$multiple_reference, {
 				temp1 <- na.omit(unique(multiple_reference_imported$multiple_reference_imported[!is.na(multiple_reference_imported$multiple_reference_imported[[art$Measurementa[i]]]),]$Element))[1]
 				temp2 <- na.omit(unique(multiple_reference_imported$multiple_reference_imported[!is.na(multiple_reference_imported$multiple_reference_imported[[art$Measurementb[i]]]),]$Element))[1]
 				if(!is.na(temp1) && !is.na(temp2)) {
-					multiple_art_elements$df <- unique(c(multiple_art_elements$df, paste(temp1, temp2, sep="-")))
+					cf <- function(a, b) {
+						for(t in 1:length(a)) {
+							if(a[t] == b) {return(TRUE)}
+						}
+						return(FALSE)
+					}
+					n <- 0
+					temp3 <- paste(temp1, temp2, sep="-")
+					if(!is.null(multiple_art_elements$df)) {
+						while(cf(multiple_art_elements$df, temp3)) {
+							n <- n + 1
+							temp3 <- paste(temp1, temp2,n+1, sep="-")
+						}
+					}
+					multiple_art_elements$df <- c(multiple_art_elements$df, temp3)
 				}
 				break
 			}
