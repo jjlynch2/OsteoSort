@@ -97,6 +97,9 @@ observeEvent(input$single_reference, {
 
 	art <- config_df$config_df[config_df$config_df$Method == 'Non_antimere_t-test',]
 	ref_col_names <- colnames(single_reference_imported$single_reference_imported)
+	art_elements$df <- NULL
+	art_measurements_a$df <- NULL
+	art_measurements_b$df <- NULL
 	for(i in 1:nrow(art)) {
 		a = FALSE
 		b = FALSE
@@ -104,8 +107,8 @@ observeEvent(input$single_reference, {
 			if(art$Measurementa[i] == ref_col_names[x]) {a=TRUE}
 			if(art$Measurementb[i] == ref_col_names[x]) {b=TRUE}
 			if(a && b) {
-				art_measurements_a$df <- c(art_measurements_a$df, art$Measurementa[i])
-				art_measurements_b$df <- c(art_measurements_b$df, art$Measurementb[i])
+				art_measurements_a$df <- na.omit(c(art_measurements_a$df, art$Measurementa[i]))
+				art_measurements_b$df <- na.omit(c(art_measurements_b$df, art$Measurementb[i]))
 				temp1 <- na.omit(unique(single_reference_imported$single_reference_imported[!is.na(single_reference_imported$single_reference_imported[[art$Measurementa[i]]]),]$Element))[1]
 				temp2 <- na.omit(unique(single_reference_imported$single_reference_imported[!is.na(single_reference_imported$single_reference_imported[[art$Measurementb[i]]]),]$Element))[1]
 				if(!is.na(temp1) && !is.na(temp2)) {

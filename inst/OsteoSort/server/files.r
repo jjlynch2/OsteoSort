@@ -16,15 +16,6 @@ output$antemortem_template <- downloadHandler(
 	},
 )
 
-output$osteoguide <- downloadHandler(
-	filename <- function() {
-		"OsteoSort_User_Manual.pdf"
-	},
-	content <- function(file) {
-		file.copy(system.file("extdata", 'OsteoSort_User_Manual.pdf', package = "OsteoSort"), file)
-	},
-)
-
 output$example_data <- downloadHandler(
 	filename <- function() {
 		"Example_Data.zip"

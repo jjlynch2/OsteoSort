@@ -25,10 +25,6 @@ dash <- tabPanel("About",icon = icon("question", lib="font-awesome"),
 			),
 			fluidRow(br()),
 			fluidRow(
-				downloadButton('osteoguide', 'Help guide')
-			),
-			fluidRow(br()),
-			fluidRow(
 				downloadButton('antemortem_template', 'Antemortem template')
 			),
 			fluidRow(br()),
@@ -38,7 +34,10 @@ dash <- tabPanel("About",icon = icon("question", lib="font-awesome"),
 			fluidRow(br()),
 			fluidRow(
 				downloadButton('example_data', "Example data")
-			)
+			),
+			br(),
+			br(),
+			br()
 		,width = 3),
 		sidebarPanel(
 			uiOutput("changes")
