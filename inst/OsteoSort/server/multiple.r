@@ -147,8 +147,6 @@ observeEvent(input$multiple_reference, {
 		}
 	}
 
-
-
 	output$multiple_measurements_non_antimere_a <- renderUI({
 		temp1 <- which(multiple_art_elements$df == input$multiple_element_non_antimere)
 		tempa <- multiple_art_measurements_a$df[temp1][!duplicated(multiple_art_measurements_a$df[temp1])]
@@ -241,46 +239,38 @@ observeEvent(input$pro, {
 	tempdata1 <- c(tempdataa, tempdatab)
 	tempdata1 <- as.data.frame(tempdata1) #combines first four columns with now numeric measurements
 	if(input$multiple_analysis == "Non-Antimere t-test") {
+		if(is.null(input$multiple_measurements_non_antimere_a) || is.null(input$multiple_measurements_non_antimere_b)) {removeModal();shinyalert(title = "ERROR!", text="You forgot to enter measurement data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		temp1 <- which(multiple_art_elements$df == input$multiple_element_non_antimere)
 		tempa <- multiple_art_measurements_a$df[temp1][!duplicated(multiple_art_measurements_a$df[temp1])]
 		tempb <- multiple_art_measurements_b$df[temp1][!duplicated(multiple_art_measurements_b$df[temp1])]
 		tempdata1$Element <- tolower(tempdata1$Element)
 		sorta = tempdata1[tempdata1$Element == strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1],]
 		sortb = tempdata1[tempdata1$Element == strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2],]
-
-
-
-
-		if(is.null(input$multiple_measurements_non_antimere_a)) {measa <- tempa} else {measa <- input$multiple_measurements_non_antimere_a}
-		if(is.null(input$multiple_measurements_non_antimere_b)) {measb <- tempb} else {measb <- input$multiple_measurements_non_antimere_b}
-
+		measa <- input$multiple_measurements_non_antimere_a
+		measb <- input$multiple_measurements_non_antimere_b
 		art.d1 <- art.input(side = input$multiple_non_antimere_side, ref = multiple_reference_imported$multiple_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2], measurementsa = measa, measurementsb = measb)
 		if(is.null(art.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = c(multiple_file_output1$multiple_file_output1, FALSE), threads = numbercoresglobal$ncore)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	} else if(input$multiple_analysis == "Antimere t-test") {
-
-		if(is.null(input$multiple_measurement_antimere)) {meas <- multiple_ML$multiple_ML} else {meas <- input$multiple_measurement_antimere}
-
+		if(is.null(input$multiple_measurement_antimere)) {removeModal();shinyalert(title = "ERROR!", text="Sorry.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+		meas <- input$multiple_measurement_antimere
 		pm.d1 <- pm.input(sort = tempdata1, bone = input$multiple_elements_pairmatch, measurements = meas, ref = multiple_reference_imported$multiple_reference_imported)
 		if(is.null(pm.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		d2 <- ttest(ztest = multiple_ztransform$multiple_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = c(multiple_file_output1$multiple_file_output1, FALSE), threads = numbercoresglobal$ncore)
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 	} else if(input$multiple_analysis == "Non-Antimere regression") {
-
+		if(is.null(input$multiple_measurement_association_a) || is.null(input$multiple_measurement_association_b)) {removeModal();shinyalert(title = "ERROR!", text="Nope.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		tempdata1$Element <- tolower(tempdata1$Element)
 		sorta = tempdata1[tempdata1$Element == input$multiple_elements_association_a,]
 		sortb = tempdata1[tempdata1$Element == input$multiple_elements_association_b,]
-
-		if(is.null(input$multiple_measurement_association_a)) {measa <- multiple_MLA$multiple_ML} else {measa <- input$multiple_measurement_association_a}
-		if(is.null(input$multiple_measurement_association_b)) {measb <- multiple_MLB$multiple_ML} else {measb <- input$multiple_measurement_association_b}
-
+		measa <- input$multiple_measurement_association_a
+		measb <- input$multiple_measurement_association_b
 		reg.d1 <<- reg.input(sorta = sorta, sortb = sortb, sidea = input$multiple_association_side_a, sideb = input$multiple_association_side_b, bonea = input$multiple_elements_association_a, boneb = input$multiple_elements_association_b, measurementsa = measa, measurementsb = measb, ref = multiple_reference_imported$multiple_reference_imported)
 		if(is.null(reg.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		d2 <- reg.test(threads = numbercoresglobal$ncore, ztest = multiple_ztransform$multiple_ztransform, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, output_options = c(multiple_file_output1$multiple_file_output1, FALSE))
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 	}
-
 	#if combinations exist, produces output
 	if(!all(is.na(d2[[2]])) || !all(is.na(d2[[3]]))) {
 		direc <- d2[[1]]
@@ -291,27 +281,23 @@ observeEvent(input$pro, {
 		output$multiple_contents <- renderUI({
 			HTML(paste("<strong>",
 						"Completed in: ", "<font color=\"#00688B\">", t_time, " minutes</font>", 
-						"<br/>","Comparisons: ",   "<font color=\"#00688B\">", ll, "</font>", 
-		                   "<br/>", "Specimens: ",           "<font color=\"#00688B\">",samplesize, "</font>", 
-		                   '<br/>', "Potential matches: ",  "<font color=\"#00688B\">",nmatch , "</font>",
-		                   '<br/>', "Exclusions: ",         "<font color=\"#00688B\">",ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)",  "</font>",
+						"<br/>","Comparisons: ","<font color=\"#00688B\">", ll, "</font>", 
+						"<br/>", "Specimens: ","<font color=\"#00688B\">",samplesize, "</font>", 
+						'<br/>', "Potential matches: ","<font color=\"#00688B\">",nmatch , "</font>",
+						'<br/>', "Exclusions: ","<font color=\"#00688B\">",ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)",  "</font>",
 						'<br/>', "Rejected: ","<font color=\"#00688B\">",nrow(d2[[5]]),"</font>",
 						'</strong>'))
 		})
 	}
-
 	output$table <- DT::renderDataTable({
 		DT::datatable(d2[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
-
 	output$tablen <- DT::renderDataTable({
 		DT::datatable(d2[[3]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
-
 	output$tablenr <- DT::renderDataTable({
 		DT::datatable(d2[[5]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
-
 	if(multiple_file_output1$multiple_file_output1) {
 		output$downloadData <- downloadHandler(
 			filename <- function() {
