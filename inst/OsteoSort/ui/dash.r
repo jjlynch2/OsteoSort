@@ -18,7 +18,7 @@ dash <- tabPanel("About",icon = icon("question", lib="font-awesome"),
 	fluidRow(
 		sidebarPanel(
 			fluidRow(
-				HTML("<p><h4>Files</h4></p>")
+				HTML("<p><h4><b>Files</b></h4></p>")
 			),
 			fluidRow(
 				actionButton('Create_Desktop_Icon', 'Desktop Shortcut', icon = icon("gears"))
@@ -50,7 +50,7 @@ dash <- tabPanel("About",icon = icon("question", lib="font-awesome"),
 		,width = 6),
 		sidebarPanel(
 			fluidRow(
-				HTML("<p><h4>Measurement Conversion</h4></p>")
+				HTML("<p><h4><b>Measurement Conversion</b></h4></p>")
 			),
 			DT::dataTableOutput('measurement_conversion_table')
 		,width = 6)

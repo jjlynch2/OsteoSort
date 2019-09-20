@@ -1,5 +1,5 @@
 output$changes <- renderUI({
-	HTML(paste("<p><h4>Version Changes</h4></p>",
+	HTML(paste("<p><h4><b>Version Changes</b></h4></p>",
 		"The Julia programming language is now integrated as the new analytical platform.",
 		"<p></p>",
 		"Reference data can be imported and exported.",

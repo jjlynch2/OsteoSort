@@ -1,6 +1,6 @@
 output$about_refs <- renderUI({
 	HTML("
-		<p><h4>References</h4></p>
+		<p><h4><b>References</b></h4></p>
 		<p>
 		Lynch JJ, Byrd JE, LeGarde CB. The Power of Exclusion using Automated Osteometric Sorting: Pair-matching. <br>Journal of Forensic Sciences <br><a href='https://doi.org/10.1111/1556-4029.13560', target='_blank'>https://doi.org/10.1111/1556-4029.13560</a>
 		<p>&nbsp;</p>

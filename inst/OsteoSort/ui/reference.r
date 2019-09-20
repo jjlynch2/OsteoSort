@@ -3,7 +3,7 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 		sidebarPanel(
 			fluidRow(
 				column(12,
-					HTML("<p><h5>Import Reference</h5></p>"),
+					HTML("<h5><b>Import Reference</b></h5>"),
 					uiOutput("importRefR")
 				)
 			),
@@ -40,8 +40,12 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 				)
 			),
 			fluidRow(
-				HTML("<p><h5>Configuration</h5></p>"),
-				uiOutput("config_render"),
+				column(12,
+					HTML("<h5><b>Configuration</h5></b>"),
+					uiOutput("config_render")
+				)
+			),
+			fluidRow(
 				column(6,
 					uiOutput("config_a")
 				),

@@ -1,5 +1,5 @@
 output$URL <- renderUI({	
-	HTML(paste("<p><h4>URLs</h4></p>",
+	HTML(paste("<p><b><h4>URLs</h4></b></p>",
 	"<strong>Website: </strong>",
 	a("OsteoCodeR.com", href='https://OsteoCodeR.com', target='_blank'),
 	"<p></p>",

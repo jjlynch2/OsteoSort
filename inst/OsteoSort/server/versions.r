@@ -2,7 +2,7 @@ JV <- NULL
 output$version_numbers <- renderUI({
 	HTML(
 		paste(
-			"<p><h4>Version Details</h4></p>",
+			"<p><b><h4>Version Details</h4></b></p>",
 			"<strong>OsteoSort:  </strong>", gsub("'", "" , packageVersion("OsteoSort")),"<p></p>",
 			"<strong>R: </strong>", gsub('R version', '', gsub('version.string R ', '', version['version.string'])),"<p></p>",
 			"<strong>Julia: </strong>", JV, "<p></p>",
