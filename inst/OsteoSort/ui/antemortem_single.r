@@ -10,12 +10,12 @@ antemortem_single <- tabPanel("Single",icon = icon("gear", lib="font-awesome"),
 					uiOutput("single_ante_elements")
 				),
 				column(6,
-					uiOutput("single_measurements_ante"),
-					textInput(inputId = 'Postmortem_ID_ante', label = 'Postmortem ID', value = 'X1')
+					numericInput(inputId = 'antestat_input', label = 'Stature', value = ''),
+					textInput(inputId = 'Antemortem_ID_ante', label = 'Antemortem ID', value = 'X1')
 				),
 				column(6,
-					numericInput(inputId = 'antestat_input', label = 'Stature', value = ''),
-					textInput(inputId = 'Antemortem_ID_ante', label = 'Antemortem ID', value = 'Y1')
+					uiOutput("single_measurements_ante"),
+					textInput(inputId = 'Postmortem_ID_ante', label = 'Postmortem ID', value = 'Y1')
 				)
 			),
 			fluidRow(

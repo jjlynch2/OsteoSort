@@ -49,11 +49,13 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 	if(nrow(postmortem) == 1) { postmortem[results[,1],1] <- as.character(postmortem[results[,1],1])}
 	if(nrow(antemortem) == 1) { antemortem[results[,2],1] <- as.character(antemortem[results[,2],1])}
 
-	results_formatted <- data.frame(cbind(pm_id = as.character(postmortem[results[,2],1]),       #1
-								side = postmortem[results[,2],2],        #2
-								element = postmortem[results[,2],3],     #3
-								am_id = as.character(antemortem[results[,1],1]),          #4
-								Stature = antemortem[results[,1],2],       #5
+	results_formatted <- data.frame(cbind(
+								am_id = as.character(antemortem[results[,1],1]),          #1
+								Stature = antemortem[results[,1],2],       #2
+								pm_id = as.character(postmortem[results[,2],1]),       #3
+								side = postmortem[results[,2],2],        #4
+								element = postmortem[results[,2],3],     #5
+								
 								measurements = colnames(ref)[5],           #6
 								p_value = round(results[,3], digits = 4),  #7
 								r2 = round(results[,5], digits = 4),       #8
@@ -79,7 +81,7 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 	if(output_options[2]) { 
 		no_return_value <- OsteoSort:::output_function(
 							hera1 <- list(results_formatted[1,1], 
-										results_formatted[1,4], 
+										results_formatted[1,3], 
 										ref[,4], 
 										ref[,5], 
 										antemortem[1,2],
