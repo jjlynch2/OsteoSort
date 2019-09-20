@@ -7,21 +7,32 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 			uiOutput("testtype2"),
 			uiOutput('resettableInput'),
 			conditionalPanel(condition = "input.multiple_analysis == 'Antimere t-test'",
-				uiOutput("multiple_element_pair_match")
+				uiOutput("multiple_element_pair_match"),
+				uiOutput("multiple_measurement_antimere")
 			),
 			conditionalPanel(condition = "input.multiple_analysis == 'Non-Antimere t-test'",
 				selectInput("multiple_non_antimere_side", "Side", c(Left='Left', Right='Right')),
-				uiOutput("multiple_element_non_antimere")
+				uiOutput("multiple_element_non_antimere"),
+				fluidRow(
+					column(6,
+						uiOutput("multiple_measurements_non_antimere_a")
+					),
+					column(6,
+						uiOutput("multiple_measurements_non_antimere_b")
+					)
+				)
 			),
 			conditionalPanel(condition = "input.multiple_analysis == 'Non-Antimere regression'",
 				fluidRow(
 					column(6,
 						selectInput("multiple_association_side_a", "Side", c(Left='Left', Right='Right')),
-						uiOutput("multiple_elements_association_a")
+						uiOutput("multiple_elements_association_a"),
+						uiOutput("multiple_measurement_association_a")
 					),
 					column(6,
 						selectInput("multiple_association_side_b", "Side", c(Left='Left', Right='Right')),
-						uiOutput("multiple_elements_association_b")
+						uiOutput("multiple_elements_association_b"),
+						uiOutput("multiple_measurement_association_b")
 					)
 				)
 			),
