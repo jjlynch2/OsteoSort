@@ -133,7 +133,7 @@ output$refdown <- downloadHandler(
 		"Reference.csv"
 	},
 	content <- function(file) {
-		write.csv(reference_list$reference_list[[input$Reference_Sample]], file, row.names=FALSE, col.names=TRUE)
+		write.csv(reference_list$reference_list[[input$Reference_Sample]], file, row.names=FALSE, col.names=TRUE, quote = FALSE)
 	}
 )
 
