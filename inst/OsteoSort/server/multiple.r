@@ -201,8 +201,7 @@ observeEvent(input$multiple_reference, {
 		temp <- multiple_reference_imported$multiple_reference_imported[multiple_reference_imported$multiple_reference_imported$Element == input$multiple_elements_pairmatch,]
 		t1 <- temp[,c(1:6)]
 		t2 <- temp[,-c(1:6)]
-		t2 <- t2[,colSums(is.na(t2)) < nrow(t2)]
-		multiple_ML$multiple_ML <- names(t2)
+		multiple_ML$multiple_ML <- names(which(colSums(is.na(t2)) < nrow(t2)))
 	})
 })
 
