@@ -6,7 +6,7 @@ config_df <- reactiveValues(config_df = data.frame())
 observeEvent(TRUE, {
 	reference_name_list$reference_name_list <- reference_name_list$reference_name_list[grepl(".ref", reference_name_list$reference_name_list)]
 	for (i in reference_name_list$reference_name_list) {
-		reference_list$reference_list[[i]] <- read.csv(file = paste(system.file("extdata/data", '', package = "OsteoSort"), i, sep=""), header = TRUE, sep=",", stringsAsFactors=FALSE)
+		reference_list$reference_list[[i]] <- read.csv(file = paste(system.file("extdata/data", '', package = "OsteoSort"), i, sep="/"), header = TRUE, sep=",", stringsAsFactors=FALSE)
 	}
 	reference_name_list$reference_name_list <- gsub(".ref", "", reference_name_list$reference_name_list)
 	names(reference_list$reference_list) <- reference_name_list$reference_name_list
@@ -33,16 +33,16 @@ output$reference_data_interface <- renderUI({
 
 observeEvent(input$importRef, {
 	for (i in length(input$importRef$name)) {
-		file.copy(input$importRef$datapath[i], paste(system.file("extdata/data", '', package = "OsteoSort"),input$importRef$name[i],sep=""))
+		file.copy(input$importRef$datapath[i], paste(system.file("extdata/data", '', package = "OsteoSort"),input$importRef$name[i],sep="/"))
 		reference_name_list$reference_name_list[(length(reference_name_list$reference_name_list)+1)] <- input$importRef$name
-		reference_list$reference_list[[(length(reference_list$reference_list)+1)]] <- read.csv(file = paste(system.file("extdata/data", '', package = "OsteoSort"),input$importRef$name[i],sep=""), header = TRUE, sep=",", stringsAsFactors=FALSE)
+		reference_list$reference_list[[(length(reference_list$reference_list)+1)]] <- read.csv(file = paste(system.file("extdata/data", '', package = "OsteoSort"),input$importRef$name[i],sep="/"), header = TRUE, sep=",", stringsAsFactors=FALSE)
 	}
 	reference_name_list$reference_name_list <- gsub(".ref", "", reference_name_list$reference_name_list)
 	names(reference_list$reference_list) <- reference_name_list$reference_name_list
 })
 
 observeEvent(input$refdel, {
-	rmf <- paste(system.file("extdata/data", '', package = "OsteoSort"),input$Reference_Sample,".ref",sep="")
+	rmf <- paste(system.file("extdata/data", '', package = "OsteoSort"),input$Reference_Sample,".ref",sep="/")
 	if(file.exists(rmf)) { 
 		file.remove(rmf) 
 	}
