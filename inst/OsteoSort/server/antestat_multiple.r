@@ -49,7 +49,7 @@ observeEvent(input$stature_reference_antem, {
 	})
 
 	output$multiple_measurements_ante <- renderUI({
-		selectInput("Measurement_ante_mm", label = "Measurement", choices = ante_measurementsm$df[which(ante_elementsm$df == input$multiple_ante_elements)])
+		selectizeInput("Measurement_ante_mm", label = "Measurement", choices = ante_measurementsm$df[which(ante_elementsm$df == input$multiple_ante_elements)], selected = ante_measurementsm$df[which(ante_elementsm$df == input$multiple_ante_elements)], multiple = TRUE)
 	})
 
 })
@@ -109,6 +109,7 @@ observeEvent(input$proantestatm, {
 							ref = stature_reference_imported_antem$stature_reference_imported_antem
 	)
 	if(is.null(outtemp1m)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+	if(is.null(input$Measurement_ante_mm)) {removeModal();shinyalert(title = "ERROR!", text="You forgot to enter the measurement!.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 	outtemp2m <- antestat.regtest(threads = numbercoresglobalm$ncorem, 
 								antemortem = outtemp1m[[1]], 
 								postmortem = outtemp1m[[2]], 
@@ -154,13 +155,14 @@ observeEvent(input$proantestatm, {
 				file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
 				if(is.numeric(input$antestat_table1m_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(outtemp2m[[2]][input$antestat_table1m_rows_selected,], method="exclusion", type="csv2")
-				}
+				} else {file.remove("excluded-selected-list.csv")}
 				if(is.numeric(input$antestat_table2m_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(outtemp2m[[3]][input$antestat_table2m_rows_selected,], method="exclusion", type="csv2")
-				}
+				} else {file.remove("not-excluded-selected-list.csv")}
 				setwd(sessiontemp)
 				files <- list.files(outtemp2m[[1]], recursive = TRUE)
 				setwd(outtemp2m[[1]])
+				zip:::zipr(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = files[1], compression = 1)
 				for(file_na in files[-1]) {
 					zip:::zipr_append(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
 				}

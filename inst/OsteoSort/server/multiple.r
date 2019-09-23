@@ -307,13 +307,13 @@ observeEvent(input$pro, {
 				file.remove(paste(direc,'.zip',sep=''))
 				if(is.numeric(input$tablen_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(d2[[3]][input$tablen_rows_selected,], method="exclusion", type="csv2")
-				}
+				} else {file.remove("excluded-selected-list.csv")}
 				if(is.numeric(input$table_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(d2[[2]][input$table_rows_selected,], method="exclusion", type="csv2")
-				}
+				} else {file.remove("not-excluded-selected-list.csv")}
 				if(is.numeric(input$tablenr_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(rejected = d2[[5]][input$tablenr_rows_selected,], method="exclusion", type="csv2")
-				}
+				} else {file.remove("rejected-selected-list.csv")}
 				setwd(sessiontemp)
 				files <- list.files(direc, recursive = TRUE)
 				setwd(direc)

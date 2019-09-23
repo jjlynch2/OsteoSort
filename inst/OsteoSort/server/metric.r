@@ -138,13 +138,13 @@ observeEvent(input$pro3, {
 				file.remove(paste(outtemp[[1]],'.zip',sep=''))
 				if(is.numeric(input$tjbingworka_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(outtemp[[3]][input$tjbingworka_rows_selected,], method="exclusion", type="csv3", uln = "u")
-				}
+				} else {file.remove("upper-selected-list.csv")}
 				if(is.numeric(input$tjbingworkc_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(outtemp[[4]][input$tjbingworkc_rows_selected,], method="exclusion", type="csv3", uln = "n")
-				}
+				} else {file.remove("non-selected-list.csv")}
 				if(is.numeric(input$tjbingworkb_rows_selected)) {
 					no_return_value <- OsteoSort:::output_function(outtemp[[2]][input$tjbingworkb_rows_selected,], method="exclusion", type="csv3", uln = "l")
-				}
+				} else {file.remove("lower-selected-list.csv")}
 				setwd(sessiontemp)
 				files <- list.files(outtemp[[1]], recursive = TRUE)
 				setwd(outtemp[[1]])

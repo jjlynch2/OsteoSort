@@ -260,7 +260,7 @@ observeEvent(input$pro2D, {
 					file.remove(paste(direc,'.zip',sep=''))
 					if(is.numeric(input$table2D_rows_selected)) {
 						no_return_value <- OsteoSort:::output_function(out2[[2]][input$table2D_rows_selected,], method="exclusion", type="csv4")
-					}
+				} else {file.remove("selected-list.csv.csv")}
 					setwd(sessiontemp)
 					files <- list.files(direc, recursive = TRUE)
 					setwd(direc)
