@@ -110,8 +110,10 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 															type="plot2"
 						)
 	}
-	if(output_options[3]) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="association", labtf = labtf)
+	if(length(output_options) > 2) { 
+		if(output_options[3]) {
+			no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="association", labtf = labtf)
+		}
 	}
 
 	gc()
