@@ -8,6 +8,9 @@ two_dimensional <- tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"
 			conditionalPanel(condition = "input.fragcomp == 'Complete'",
 				uiOutput('mspec')
 			),
+			conditionalPanel(condition = "input.fragcomp == 'Fragmented'",
+				uiOutput('pwspec')
+			),
 			fluidRow(
 				column(6,
 					actionButton("settings2D","Settings", icon=icon("keyboard-o"))
@@ -40,7 +43,11 @@ two_dimensional <- tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"
 						uiOutput('fileoutput2Dexcel1'),
 						uiOutput('fileoutput2Dexcel2'),
 						uiOutput('fileoutput2Dplot'),
-						uiOutput('fileoutput2Dtps')
+						uiOutput('fileoutput2Dtps'),
+						uiOutput("multiple_file_output_graph_2d"),
+						conditionalPanel(condition = "input.multiple_file_output_graph_2d", 
+							uiOutput("labtf2d")
+						)
 					),
 					tabPanel("Statistical Parameters",
 						fluidRow(

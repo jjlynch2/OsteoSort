@@ -1,24 +1,4 @@
 
-observeEvent(input$mspec3D, {
-		tt1 <- out2[[6]][out2[[6]][,3] == input$mspec3D, ][1]
-		tt1 <- as.numeric(tt1)
-
-		tt2 <- out2[[6]][out2[[6]][,3] == input$mspec3D, ][2]
-		tt2 <- as.numeric(tt2)
-
-		tt1 <- out2[[1]][[tt1]]
-		tt2 <- out2[[1]][[tt2]]
-
-		output$webgl3D <- renderRglwidget ({
-			try(rgl.close())
-
-			points3d(tt1, size=3, col="dimgray", box=FALSE)
-			points3d(tt2, size=3, col="dodgerblue", box=FALSE)
-			axes3d(c('x++', 'y++', 'z++'))
-
-			rglwidget()
-		})
-})
 
 
 
@@ -76,8 +56,28 @@ observeEvent(input$fileoutput3Dtps, {
 output$fileoutput3Dtps <- renderUI({
 	checkboxInput(inputId = "fileoutput3Dtps", label = "Output TPS registered coordinates", value = FALSE)
 })
-					 			
-								
+
+
+
+multiple_file_output_graph_3d <- reactiveValues(multiple_file_output_graph_3d = TRUE) 
+output$multiple_file_output_graph_3d <- renderUI({
+	checkboxInput(inputId = "multiple_file_output_graph_3d", label = "Output network graph", value = TRUE)
+})
+observeEvent(input$multiple_file_output_graph_3d, {
+	multiple_file_output_graph_3d$multiple_file_output_graph_3d <- input$multiple_file_output_graph_3d
+})
+
+
+labtf3d <- reactiveValues(labtf3d = TRUE) 
+output$labtf3d <- renderUI({
+	checkboxInput(inputId = "labtf3d", label = "Network graph labels", value = TRUE)
+})
+observeEvent(input$labtf3d, {
+	labtf3d$labtf3d <- input$labtf3d
+})
+
+
+
 nthreshold3D <- reactiveValues(nthreshold3D = 4)
 observeEvent(input$nthreshold3D, {
 	nthreshold3D$nthreshold3D <- input$nthreshold3D
@@ -166,7 +166,7 @@ observeEvent(input$pro3D, {
 	if(!is.null(input$leftimages3D$datapath) && !is.null(input$leftimages3D$datapath)) { #prevents crashing
 
 		out1 <- input.3d(list1 = input$rightimages3D$name, list2 = input$leftimages3D$name)
-		out2 <<- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps), sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
+		out2 <- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, multiple_file_output_graph_3d$multiple_file_output_graph_3d), labtf3d = labtf3d$labtf3d, sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
 		direc <- out2[[3]]
 
 		if(is.null(nrow(out2[[2]]))) {pm <- 1; out2[[2]] <- rbind(out2[[2]],c(NA,NA,NA)) }
@@ -181,9 +181,22 @@ observeEvent(input$pro3D, {
 		output$mspec3D <- renderUI({
 			selectInput(inputId = "mspec3D", label = "Choose comparison", choices = c(out2[[6]][,3]))
 		})
+		if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps || multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
+			setwd(direc)
+			if(multiple_file_output_graph_3d$multiple_file_output_graph_3d && length(nimages[grep(".jpg", nimages)]) != 0) {
+				nimages <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
+			} else {
+				nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")
+			}
+			output$multiple_plot_na_3d <- renderImage({
+				list(src = nimages,
+					contentType = 'image/jpg',
+					height = 800,
+					alt = "A"
+				)
+			}, deleteFile = FALSE)
+			setwd(sessiontemp)
 
-
-		if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps) {
 			output$downloadData3D <- downloadHandler(
 				filename <- function() {
 					paste("results.zip")
@@ -209,6 +222,27 @@ observeEvent(input$pro3D, {
 			setwd(sessiontemp)
 		}
 	}
+	observeEvent(input$mspec3D, {
+			tt1 <- out2[[6]][out2[[6]][,3] == input$mspec3D, ][1]
+			tt1 <- as.numeric(tt1)
+
+			tt2 <- out2[[6]][out2[[6]][,3] == input$mspec3D, ][2]
+			tt2 <- as.numeric(tt2)
+
+			tt1 <- out2[[1]][[tt1]]
+			tt2 <- out2[[1]][[tt2]]
+
+			output$webgl3D <- renderRglwidget ({
+				try(rgl.close())
+
+				points3d(tt1, size=3, col="dimgray", box=FALSE)
+				points3d(tt2, size=3, col="dodgerblue", box=FALSE)
+				axes3d(c('x++', 'y++', 'z++'))
+
+				rglwidget()
+			})
+	})
+
 	gc()
 	removeModal()  
 })

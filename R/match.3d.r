@@ -6,7 +6,7 @@
 #' @examples
 #' match.3d()
 
-match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 1, transformation = "rigid", threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
+match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = TRUE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 1, transformation = "rigid", threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
 	if(threads != julia_call("nprocs")) {
 		print("Setting up Julia workers...")
 		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
@@ -168,6 +168,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 	if(output_options[1]) {no <- OsteoSort:::output_function(resmatches, method="3D", type="csv-res")}
 	if(output_options[2]) {no <- OsteoSort:::output_function(matches, method="3D", type="csv-all")}
 	if(output_options[3]) {no <- OsteoSort:::output_function(pairwise_coords, method="3D", type="coord")}
+	if(output_options[4]) {no <- OsteoSort:::output_function(hera1 = resmatches, method="networkanalysis", type="2D-3D", labtf = labtf3d)}
 	comparisons <- length(list1) * length(list2) #number of comparisons
 	gc()
 	setwd(workingdir)

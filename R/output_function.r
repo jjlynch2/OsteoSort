@@ -96,7 +96,7 @@ output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion",
 					tempa <- rbind(hera1[[i]], hera1[[i-1]])
 					d <- data.frame(x = tempa[,1], y = tempa[,2])
 					Specimens <- c(rep(names(hera1)[[i]], nrow(hera1[[i]])), rep(names(hera1)[[i-1]], nrow(hera1[[i-1]])))
-					ptemp <- ggplot(d, aes(x = x, y = y, color = Specimens)) + theme_minimal() + geom_point(size = 3) 
+					ptemp <- ggplot(d, aes(x = x, y = y, color = Specimens)) + theme_minimal() + geom_point(size = 3) + labs(x="", y="") + scale_color_manual(values = c("dimgray","dodgerblue")) 
 					ggsave(paste(names(hera1)[[i]], "-", names(hera1)[[i-1]], ".jpg",sep=""), plot = ptemp, device = "jpeg", dpi = 300)
 				}
 			}
@@ -116,6 +116,15 @@ output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion",
 		}
 	}
 	if(method == "networkanalysis") {
+		if(type == "2D-3D") {
+			hera1 <- as.data.frame(hera1)
+			df1 <- as.data.frame(cbind(from_id = hera1$ID, to_id = hera1$`Match-ID`, Distance = hera1$Distance))
+			df2 <- as.data.frame(cbind(from_id = hera1$`Match-ID`, to_id = hera1$ID, Distance = hera1$Distance))
+			df <- rbind(df1, df2)
+			df$Distance <- (max(as.numeric(df$Distance))+0.5) - as.numeric(df$Distance)
+			naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, linewidth=Distance)) + geom_net(colour = "#126a8f", repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = labtf, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.position = "none")
+			ggsave("network.jpg", plot = naplot, device = "jpeg", dpi = 300)
+		}
 		if(type == "association") {
 			df1 <- as.data.frame(cbind(from_id = hera1$x_id, to_id = hera1$y_id, Probability = hera1$p_value, Element = paste(hera1$x_side, hera1$x_element,sep='-')))
 			df2 <- as.data.frame(cbind(from_id = hera1$y_id, to_id = hera1$x_id, Probability = hera1$p_value, Element = paste(hera1$y_side, hera1$y_element,sep='-')))

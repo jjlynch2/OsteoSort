@@ -37,6 +37,9 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 				),
 				tabPanel("Render ",
 					rglwidgetOutput('webgl3D', width = "1200px", height = "1200px")
+				),
+				tabPanel("Graph",
+					imageOutput('multiple_plot_na_3d')
 				)
 		 	),
 			bsModal("settings3DD", title = "Settings", trigger = "settings3D", size = "large", 
@@ -44,7 +47,11 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 					tabPanel("Output Parameters",
 						uiOutput('fileoutput3Dexcel1'),
 						uiOutput('fileoutput3Dexcel2'),
-						uiOutput('fileoutput3Dtps')
+						uiOutput('fileoutput3Dtps'),
+						uiOutput("multiple_file_output_graph_3d"),
+						conditionalPanel(condition = "input.multiple_file_output_graph_3d", 
+							uiOutput("labtf3d")
+						)
 					),
 					tabPanel("Statistical Parameters",
 						fluidRow(

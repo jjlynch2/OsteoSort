@@ -1,11 +1,14 @@
 output$tabpanpan <- renderUI({
 	panels1 <- list(
 		tabPanel("Starting Mean",imageOutput('meanImage')),
+		tabPanel("Results",DT::dataTableOutput('table2D')),
 		tabPanel("Registration",imageOutput('plotplottd')),
-		tabPanel("Results",DT::dataTableOutput('table2D'))
+		tabPanel("Graph", imageOutput('multiple_plot_na_2d'))
 	)
 	panels2 <- list(
-		tabPanel("Results ",DT::dataTableOutput('table2D'))
+		tabPanel("Results ",DT::dataTableOutput('table2D')),
+		tabPanel("Registration",imageOutput('pwspeci')),
+		tabPanel("Graph", imageOutput('multiple_plot_na_2d'))
 	)
 	if(input$fragcomp == "Complete") {panel <- panels1}
 	if(input$fragcomp == "Fragmented") {panel <- panels2}
@@ -72,6 +75,26 @@ output$fileoutput2Dtps <- renderUI({
 	checkboxInput(inputId = "fileoutput2Dtps", label = "Output TPS registered coordinates", value = FALSE)
 })						 			
 								
+multiple_file_output_graph_2d <- reactiveValues(multiple_file_output_graph_2d = TRUE) 
+output$multiple_file_output_graph_2d <- renderUI({
+	checkboxInput(inputId = "multiple_file_output_graph_2d", label = "Output network graph", value = TRUE)
+})
+observeEvent(input$multiple_file_output_graph_2d, {
+	multiple_file_output_graph_2d$multiple_file_output_graph_2d <- input$multiple_file_output_graph_2d
+})
+
+
+labtf2d <- reactiveValues(labtf2d = TRUE) 
+output$labtf2d <- renderUI({
+	checkboxInput(inputId = "labtf2d", label = "Network graph labels", value = TRUE)
+})
+observeEvent(input$labtf2d, {
+	labtf2d$labtf2d <- input$labtf2d
+})
+
+
+
+
 nthreshold <- reactiveValues(nthreshold = 0.8)
 observeEvent(input$nthreshold, {
 	nthreshold$nthreshold <- input$nthreshold
@@ -219,28 +242,52 @@ observeEvent(input$pro2D, {
 		if(input$fragcomp == "Fragmented") {fragment <- TRUE}
 
 		out1 <- outline.images(imagelist1 = input$rightimages$name, imagelist2 = input$leftimages$name, fragment = fragment, threshold =nthreshold$nthreshold, scale = scale2D$scale2D, mirror = mirror2D$mirror2D, npoints = npoints2D$npoints2D, nharmonics = efaH2D$efaH2D)
-		out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, fragment = fragment, dist = max_avg_distance$max_avg_distance, n_regions = n_regions$n_regions, n_lowest_distances = shortlistn$shortlistn, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D, test = distance2D$distance2D, temporary_mean_specimen = input$mspec, mean_iterations = meanit2D$meanit2D)
+		out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, fragment = fragment, dist = max_avg_distance$max_avg_distance, n_regions = n_regions$n_regions, n_lowest_distances = shortlistn$shortlistn, labtf2d = labtf2d$labtf2d, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps, multiple_file_output_graph_2d$multiple_file_output_graph_2d), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D, test = distance2D$distance2D, temporary_mean_specimen = input$mspec, mean_iterations = meanit2D$meanit2D)
 		direc <- out2[[3]]
 		if(fileoutput2Dplot$fileoutput2Dplot && input$fragcomp == "Complete") {
-			setwd(sessiontemp)
-			setwd(direc)
-			nimages <- list.files()
-			nimages <- paste(sessiontemp, "/", direc, "/", nimages[grep(".jpg", nimages)], sep="")
+			imagetemp <- paste(sessiontemp, "/", direc, "/", "Registration.jpg", sep="")
 			output$plotplottd <- renderImage({
-				list(src = nimages,
+				list(src = imagetemp,
 					contentType = 'image/jpg',
 					height = 600,
 					alt = "A"
 				)
 			}, deleteFile = FALSE)
 		}
-		if(!fileoutput2Dplot$fileoutput2Dplot && input$fragcomp == "Complete") {
-			output$plotplottd <- renderImage({
-				list(src = "",
+		if(multiple_file_output_graph_2d$multiple_file_output_graph_2d) {
+			imagetemp2 <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
+			output$multiple_plot_na_2d <- renderImage({
+				list(src = imagetemp2,
 					contentType = 'image/jpg',
-					alt = ""
-				)})
+					height = 800,
+					alt = "A"
+				)
+			}, deleteFile = FALSE)
 		}
+		if(fileoutput2Dplot$fileoutput2Dplot && input$fragcomp == "Fragmented") {
+			setwd(direc)
+			pwspec <- list.files()
+			pwspec <- pwspec[grep(".jpg", pwspec)]
+			pwspec <- pwspec[pwspec != "network.jpg"]
+			pwspec = pwspec[pwspec != "Registration.jpg"]
+			output$pwspec <- renderUI({
+				selectInput(inputId = "pwspec", label = "Choose pairwise comparison", choices=pwspec, selected = pwspec[1])
+			})
+			setwd(sessiontemp)
+			observeEvent(input$pwspec, {
+				output$pwspeci <- renderImage({
+					if(fileoutput2Dplot$fileoutput2Dplot) {
+						tempni <- paste(sessiontemp, "/", direc, "/", input$pwspec, sep="")
+						list(src = tempni,
+							contentType = 'image/jpg',
+							height = 800,
+							alt = "A"
+						)
+					}
+				}, deleteFile = FALSE)
+			})
+		}
+
 		if(is.null(nrow(out2[[2]]))) {pm <- 1; out2[[2]] <- rbind(out2[[2]],c(NA,NA,NA)) }
 		if(!is.null(nrow(out2[[2]]))) {pm <- nrow(as.matrix(out2[[2]][,1]))}
 		output$table2D <- DT::renderDataTable({
@@ -250,7 +297,7 @@ observeEvent(input$pro2D, {
 		output$contents2D <- renderUI({
 			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
 		})
-		if(fileoutput2Dexcel1$fileoutput2Dexcel1 || fileoutput2Dexcel2$fileoutput2Dexcel2 || fileoutput2Dplot$fileoutput2Dplot || fileoutput2Dtps$fileoutput2Dtps) {
+		if(multiple_file_output_graph_2d$multiple_file_output_graph_2d || fileoutput2Dexcel1$fileoutput2Dexcel1 || fileoutput2Dexcel2$fileoutput2Dexcel2 || fileoutput2Dplot$fileoutput2Dplot || fileoutput2Dtps$fileoutput2Dtps) {
 			output$downloadData2D <- downloadHandler(
 				filename <- function() {
 					paste("results.zip")
