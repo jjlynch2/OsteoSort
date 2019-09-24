@@ -21,7 +21,9 @@ if(system_name == "Linux") {
 }
 if(system_name == "Windows") {
 	system_name <- paste(icon = icon("windows", lib="font-awesome"), system_name, sep = " ")
-	system_mem <- paste(gsub("TotalVisibleMemorySize=", '', system('wmic OS get TotalVisibleMemorySize /Value', intern = TRUE)), " kB", sep="")
+	tempgsub <- gsub("TotalVisibleMemorySize=", '', system('wmic OS get TotalVisibleMemorySize /Value', intern = TRUE)[3])
+	tempgsub <- gsub("\r", '', tempgsub)
+	system_mem <- paste(tempgsub, " kB", sep="")
 }
 if(system_name == "Darwin") {
 	system_name <- paste(icon = icon("apple", lib="font-awesome"), system_name, sep = " ")
