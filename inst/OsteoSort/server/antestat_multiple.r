@@ -7,6 +7,14 @@ observeEvent(input$fileoutputant1m, {
 	fileoutputant1m$fileoutputant1m <- input$fileoutputant1m
 })
 
+multiple_file_output_graph_ante <- reactiveValues(multiple_file_output_graph_ante = TRUE) 
+output$multiple_file_output_graph_ante <- renderUI({
+	checkboxInput(inputId = "multiple_file_output_graph_ante", label = "Output network graph", value = TRUE)
+})
+observeEvent(input$multiple_file_output_graph_ante, {
+	multiple_file_output_graph_ante$multiple_file_output_graph_ante <- input$multiple_file_output_graph_ante
+})
+
 alphalevelsantestatm <- reactiveValues(alphalevelsantestatm = 0.05) 
 output$alphalevelsantestatm <- renderUI({
 	sliderInput(inputId = "alphalevelsantestatm", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
@@ -115,7 +123,7 @@ observeEvent(input$proantestatm, {
 								postmortem = outtemp1m[[2]], 
 								ref = outtemp1m[[3]],
 								alphalevel = alphalevelsantestatm$alphalevelsantestatm, 
-								output_options = c(fileoutputant1m$fileoutputant1m, FALSE), 
+								output_options = c(fileoutputant1m$fileoutputant1m, FALSE, multiple_file_output_graph_ante$multiple_file_output_graph_ante), 
 								sessiontempdir = sessiontemp
 	)
 
@@ -146,6 +154,23 @@ observeEvent(input$proantestatm, {
 	})
 
 	if(fileoutputant1m$fileoutputant1m) {
+
+
+		setwd(outtemp2m[[1]])
+		nimages <- list.files()
+		if(multiple_file_output_graph_ante$multiple_file_output_graph_ante && length(nimages[grep(".jpg", nimages)]) != 0) {
+			nimages <- paste(sessiontemp, "/", outtemp2m[[1]], "/", nimages[grep(".jpg", nimages)], sep="")
+		} else {
+			nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")
+		}
+		output$multiple_plot_na_ante <- renderImage({
+			list(src = nimages,
+				contentType = 'image/jpg',
+				height = 800,
+				alt = "A"
+			)
+		}, deleteFile = FALSE)
+		setwd(sessiontemp)
 		output$downloadantestatm <- downloadHandler(
 			filename <- function() {
 				paste("results.zip")

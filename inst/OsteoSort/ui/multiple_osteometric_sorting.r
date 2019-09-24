@@ -71,10 +71,14 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 				tabPanel("Rejected",
 					DT::dataTableOutput('tablenr')
 				),
+				tabPanel("Graph",
+					imageOutput('multiple_plot_na')
+				),
 				bsModal("settingsmultiple", title = "Settings", trigger = "settings1", size = "medium", 
 					tabsetPanel(id="multiple_tab",
 						tabPanel("Output Parameters",
-							uiOutput("multiple_file_output1")
+							uiOutput("multiple_file_output1"),
+							uiOutput("multiple_file_output_graph")
 						),
 						tabPanel("Statistical Parameters",
 							fluidRow(

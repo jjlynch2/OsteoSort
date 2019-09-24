@@ -16,7 +16,9 @@ Depends:
 	ClusterR,
 	JuliaCall,
 	ggplot2,
-	shinyalert
+	shinyalert,
+	geomnet,
+	ggrepel
 License: GPL-2
 LazyData: true
 ByteCompile: true
@@ -32,4 +34,6 @@ Imports:
 	ClusterR,
 	JuliaCall,
 	ggplot2,
-	shinyalert
+	shinyalert,
+	geomnet,
+	ggrepel

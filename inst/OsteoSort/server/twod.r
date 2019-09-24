@@ -64,12 +64,12 @@ output$fileoutput2Dplot <- renderUI({
 	checkboxInput(inputId = "fileoutput2Dplot", label = "Output registered plot (WARNING: fragmented analysis will generate a plot for every comparison)", value = TRUE)
 })
 
-fileoutput2Dtps <- reactiveValues(fileoutput2Dtps = TRUE)
+fileoutput2Dtps <- reactiveValues(fileoutput2Dtps = FALSE)
 observeEvent(input$fileoutput2Dtps, {
 	fileoutput2Dtps$fileoutput2Dtps <- input$fileoutput2Dtps
 })
 output$fileoutput2Dtps <- renderUI({
-	checkboxInput(inputId = "fileoutput2Dtps", label = "Output TPS registered coordinates", value = TRUE)
+	checkboxInput(inputId = "fileoutput2Dtps", label = "Output TPS registered coordinates", value = FALSE)
 })						 			
 								
 nthreshold <- reactiveValues(nthreshold = 0.8)

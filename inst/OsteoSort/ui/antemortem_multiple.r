@@ -40,19 +40,25 @@ antemortem_multiple <- tabPanel("Multiple",icon = icon("gears", lib="font-awesom
 			htmlOutput('antestat_outputm'),
 			tabsetPanel(id="tabSelected",
 				tabPanel("Not excluded",
-		 			DT::dataTableOutput('antestat_table1m')),
+		 			DT::dataTableOutput('antestat_table1m')
+				),
 		 		tabPanel("Excluded",
-		 			DT::dataTableOutput('antestat_table2m'))),
-		 	bsModal("settingsante2m", title = "Settings", trigger = "settingsantem", size = "medium", 
-		 		tabsetPanel(id="tabSelected2m",
-					tabPanel("Output Paramters",
-						uiOutput('fileoutputant1m')
-					),	
-					tabPanel("Statistical Parameters",
-						uiOutput("alphalevelsantestatm")
-					),
-					tabPanel("Computational Parameters",
-						uiOutput('ncoresm')
+		 			DT::dataTableOutput('antestat_table2m')
+				),
+				tabPanel("Graph",
+					imageOutput('multiple_plot_na_ante')
+				),
+		 		bsModal("settingsante2m", title = "Settings", trigger = "settingsantem", size = "medium", 
+			 		tabsetPanel(id="tabSelected2m",
+						tabPanel("Output Paramters",
+							uiOutput('fileoutputant1m')
+						),	
+						tabPanel("Statistical Parameters",
+							uiOutput("alphalevelsantestatm")
+						),
+						tabPanel("Computational Parameters",
+							uiOutput('ncoresm')
+						)
 					)
 				)
 			)
