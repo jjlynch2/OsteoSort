@@ -127,7 +127,25 @@ output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion",
 			}
 			df <- rbind(df1, df2)
 			df$Distance <- (max(as.numeric(df$Distance))+0.5) - as.numeric(df$Distance)
-			naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, linewidth=Distance)) + geom_net(colour = "#126a8f", repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = labtf, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.position = "none")
+			side <- c()
+			skip <- TRUE
+			for(i in 1:nrow(df)) {
+				if(length(grep("_L_", df[i,1])) == 1) {
+					side <- c(side, "left")
+				} else if(length(grep("_R_", df[i,1])) == 1) {
+					side <- c(side, "right")
+				} else {
+					skip <- TRUE
+					break
+				}
+				skip <- FALSE
+			}
+			if(!skip) {
+				df <- cbind(df, side)
+				naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, linewidth=Distance, colour = side)) + geom_net(repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = labtf, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.text = element_text(size=8), legend.position = "top", legend.title=element_blank()) + scale_color_manual(values = c("#126a8f", "#ea6011"))
+			} else {
+				naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, linewidth=Distance)) + geom_net(colour = "#126a8f", repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = labtf, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.position = "none")
+			}
 			ggsave("network.jpg", plot = naplot, device = "jpeg", dpi = 300)
 		}
 		if(type == "association") {
