@@ -125,7 +125,7 @@ observeEvent(input$proantestat, {
 				)
 			}, deleteFile = FALSE)
 		}
-		zip:::zip(zipfile = paste(direc6,'.zip',sep=''), files = files)
+		zip:::zipr(zipfile = paste(direc6,'.zip',sep=''), files = files)
 		setwd(sessiontemp)  #restores session
 		#Download handler
 		output$downloadantestat <- downloadHandler(
