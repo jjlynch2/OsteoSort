@@ -117,9 +117,14 @@ output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion",
 	}
 	if(method == "networkanalysis") {
 		if(type == "2D-3D") {
-			hera1 <- as.data.frame(hera1)
-			df1 <- as.data.frame(cbind(from_id = hera1$ID, to_id = hera1$`Match-ID`, Distance = hera1$Distance))
-			df2 <- as.data.frame(cbind(from_id = hera1$`Match-ID`, to_id = hera1$ID, Distance = hera1$Distance))
+			if(is.null(nrow(hera1))) {
+				df1 <- as.data.frame(cbind(from_id = hera1["ID"], to_id = hera1["Match-ID"], Distance = hera1["Distance"]))
+				df2 <- as.data.frame(cbind(from_id = hera1["Match-ID"], to_id = hera1["ID"], Distance = hera1["Distance"]))
+			} else {
+				hera1 <- as.data.frame(hera1)
+				df1 <- as.data.frame(cbind(from_id = hera1$ID, to_id = hera1$`Match-ID`, Distance = hera1$Distance))
+				df2 <- as.data.frame(cbind(from_id = hera1$`Match-ID`, to_id = hera1$ID, Distance = hera1$Distance))
+			}
 			df <- rbind(df1, df2)
 			df$Distance <- (max(as.numeric(df$Distance))+0.5) - as.numeric(df$Distance)
 			naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, linewidth=Distance)) + geom_net(colour = "#126a8f", repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = labtf, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.position = "none")

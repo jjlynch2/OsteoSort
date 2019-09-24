@@ -8,7 +8,8 @@ if(Sys.info()[['sysname']] == "Linux") {
 if(Sys.info()[['sysname']] == "Windows") {
 	output$memUsage <- renderUI({
 		autoMem()
-		HTML(paste("<strong><font color=\"#FFFFFF\">Memory Usage: ", memory.size(), "</strong></font>"))
+		temp <- gc()
+		HTML(paste("<strong><font color=\"#FFFFFF\">Memory Usage: ", temp[1,2] + temp[2,2], " Mb</strong></font>"))
 	})
 }
 
@@ -20,7 +21,7 @@ if(system_name == "Linux") {
 }
 if(system_name == "Windows") {
 	system_name <- paste(icon = icon("windows", lib="font-awesome"), system_name, sep = " ")
-	system_mem <- memory.size(max = TRUE)
+	system_mem <- paste(gsub("FreePhysicalMemory=", '', system('wmic OS get TotalVisibleMemorySize /Value')), " kB", sep="")
 }
 if(system_name == "Darwin") {
 	system_name <- paste(icon = icon("apple", lib="font-awesome"), system_name, sep = " ")

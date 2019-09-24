@@ -183,7 +183,7 @@ observeEvent(input$pro3D, {
 		})
 		if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps || multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
 			setwd(direc)
-			if(multiple_file_output_graph_3d$multiple_file_output_graph_3d && length(nimages[grep(".jpg", nimages)]) != 0) {
+			if(multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
 				nimages <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
 			} else {
 				nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")

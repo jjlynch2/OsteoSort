@@ -91,7 +91,7 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 										type="plot2"
 						)
 	}
-	if(output_options[3] && nrow(results_formatted[results_formatted$result == "Cannot Exclude",]) > 1) { 
+	if(output_options[3]) { 
 		no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ante", labtf = labtfa)
 	}
 

@@ -21,7 +21,7 @@
 #' @examples
 #' match.2d()
 
-match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, labtf2d = TRUE, output_options = c(TRUE,TRUE,TRUE,TRUE,TRUE), iteration = 10, transformation = "rigid", threads=1, test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
+match.2d <- function(outlinedata = NULL, min = 1e+15, sessiontempdir = NULL, fragment = FALSE, labtf2d = TRUE, output_options = c(TRUE,TRUE,TRUE,TRUE,FALSE), iteration = 10, transformation = "rigid", threads=1, test = "Hausdorff", temporary_mean_specimen = 1, mean_iterations = 5, n_lowest_distances = 1, hide_distances = FALSE, n_regions = 6, dist = "average") {
 	if(threads != julia_call("nprocs")) {
 		print("Setting up Julia workers...")
 		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
