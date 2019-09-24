@@ -7,7 +7,7 @@
 #' @examples
 #' output_function()
 
-output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion", type = "csv", uln = NULL) {
+output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion", type = "csv", uln = NULL, labtf = TRUE) {
 	print("Writing output files")
 	if(method == "exclusion") {
 		if(type == "csv") {
@@ -121,7 +121,7 @@ output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion",
 			df2 <- as.data.frame(cbind(from_id = hera1$y_id, to_id = hera1$x_id, Probability = hera1$p_value, Element = paste(hera1$y_side, hera1$y_element,sep='-')))
 			df <- rbind(df1, df2)
 			df$Probability <- as.numeric(df$Probability)
-			naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, colour = Element, linewidth=Probability)) + geom_net(repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = TRUE, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.text = element_text(size=8), legend.position = "top", legend.title=element_blank()) + scale_color_manual(values = c("#126a8f", "#ea6011"))
+			naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, colour = Element, linewidth=Probability)) + geom_net(repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = labtf, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.text = element_text(size=8), legend.position = "top", legend.title=element_blank()) + scale_color_manual(values = c("#126a8f", "#ea6011"))
 			ggsave("network.jpg", plot = naplot, device = "jpeg", dpi = 300)
 		}
 		if(type == "ttest") {
@@ -129,7 +129,7 @@ output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion",
 			df2 <- as.data.frame(cbind(from_id = hera1$id_2, to_id = hera1$id_1, Probability = hera1$p_value, Element = paste(hera1$side_2, hera1$element_2,sep='-')))
 			df <- rbind(df1, df2)
 			df$Probability <- as.numeric(df$Probability)
-			naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, colour = Element, linewidth=Probability)) + geom_net(repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = TRUE, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.text = element_text(size=8), legend.position = "top", legend.title=element_blank()) + scale_color_manual(values = c("#126a8f", "#ea6011"))
+			naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, colour = Element, linewidth=Probability)) + geom_net(repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = labtf, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.text = element_text(size=8), legend.position = "top", legend.title=element_blank()) + scale_color_manual(values = c("#126a8f", "#ea6011"))
 			ggsave("network.jpg", plot = naplot, device = "jpeg", dpi = 300)
 		}
 		if(type == "ante") {
@@ -137,7 +137,7 @@ output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion",
 			df2 <- as.data.frame(cbind(from_id = hera1$pm_id, to_id = hera1$am_id, Probability = hera1$p_value, Element = paste(hera1$side, hera1$element,sep='-')))
 			df <- rbind(df1, df2)
 			df$Probability <- as.numeric(df$Probability)
-			naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, colour = Element, linewidth=Probability)) + geom_net(repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = TRUE, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.text = element_text(size=8), legend.position = "top", legend.title=element_blank()) + scale_color_manual(values = c("#126a8f", "#ea6011"))
+			naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, colour = Element, linewidth=Probability)) + geom_net(repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = labtf, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.text = element_text(size=8), legend.position = "top", legend.title=element_blank()) + scale_color_manual(values = c("#126a8f", "#ea6011"))
 			ggsave("network.jpg", plot = naplot, device = "jpeg", dpi = 300)
 		}
 	}

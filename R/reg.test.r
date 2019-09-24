@@ -17,7 +17,7 @@
 #' @examples 
 #' reg.multitest()
 
-reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, output_options = c(TRUE,FALSE, FALSE), threads = 1, type = "Logarithm Composite", alphalevel = 0.05) {	
+reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, labtf = TRUE, output_options = c(TRUE,FALSE, FALSE), threads = 1, type = "Logarithm Composite", alphalevel = 0.05) {	
 	force(alphalevel)
 	force(threads)
 	force(type)
@@ -111,7 +111,7 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 						)
 	}
 	if(output_options[3] && nrow(results_formatted[results_formatted$result == "Cannot Exclude",]) > 1) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="association")
+		no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="association", labtf = labtf)
 	}
 
 	gc()

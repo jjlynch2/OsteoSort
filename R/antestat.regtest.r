@@ -17,7 +17,7 @@
 #' @examples 
 #' antestat.regtest()
 
-antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(TRUE,FALSE,FALSE), alphalevel = 0.05, threads = 1) {
+antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, sessiontempdir = NULL, labtfa = TRUE, output_options = c(TRUE,FALSE,FALSE), alphalevel = 0.05, threads = 1) {
 	force(alphalevel)
 	force(threads)
 	force(output_options)
@@ -92,7 +92,7 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 						)
 	}
 	if(output_options[3] && nrow(results_formatted[results_formatted$result == "Cannot Exclude",]) > 1) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ante")
+		no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ante", labtf = labtfa)
 	}
 
 	gc()

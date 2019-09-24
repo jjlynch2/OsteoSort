@@ -78,7 +78,10 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 					tabsetPanel(id="multiple_tab",
 						tabPanel("Output Parameters",
 							uiOutput("multiple_file_output1"),
-							uiOutput("multiple_file_output_graph")
+							uiOutput("multiple_file_output_graph"),
+							conditionalPanel(condition = "input.multiple_file_output_graph", 
+								uiOutput("labtf")
+							)
 						),
 						tabPanel("Statistical Parameters",
 							fluidRow(

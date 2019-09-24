@@ -15,7 +15,7 @@
 #' @examples
 #' ttest()
 
-ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, output_options = c(TRUE, FALSE, FALSE), threads = 1, tails = 2, boxcox = TRUE, ztest = FALSE) {
+ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, labtf = TRUE, output_options = c(TRUE, FALSE, FALSE), threads = 1, tails = 2, boxcox = TRUE, ztest = FALSE) {
 	if(threads != julia_call("nprocs")) {
 		print("Setting up Julia workers...")
 		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
@@ -155,7 +155,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot")
 	}
 	if(output_options[3] && nrow(results_formatted[results_formatted$result == "Cannot Exclude",]) > 1) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ttest")
+		no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ttest", labtf = labtf)
 	}
 	#cleanup
 	gc()

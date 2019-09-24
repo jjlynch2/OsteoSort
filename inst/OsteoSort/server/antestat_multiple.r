@@ -15,6 +15,14 @@ observeEvent(input$multiple_file_output_graph_ante, {
 	multiple_file_output_graph_ante$multiple_file_output_graph_ante <- input$multiple_file_output_graph_ante
 })
 
+labtfa <- reactiveValues(labtfa = TRUE) 
+output$labtfa <- renderUI({
+	checkboxInput(inputId = "labtfa", label = "Network graph labels", value = TRUE)
+})
+observeEvent(input$labtfa, {
+	labtfa$labtfa <- input$labtfa
+})
+
 alphalevelsantestatm <- reactiveValues(alphalevelsantestatm = 0.05) 
 output$alphalevelsantestatm <- renderUI({
 	sliderInput(inputId = "alphalevelsantestatm", label = "Alpha level", min=0.01, max=1, value=0.05, step = 0.01)
@@ -118,7 +126,8 @@ observeEvent(input$proantestatm, {
 	)
 	if(is.null(outtemp1m)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 	if(is.null(input$Measurement_ante_mm)) {removeModal();shinyalert(title = "ERROR!", text="You forgot to enter the measurement!.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
-	outtemp2m <- antestat.regtest(threads = numbercoresglobalm$ncorem, 
+	outtemp2m <- antestat.regtest(labtfa = labtfa$labtfa,
+								threads = numbercoresglobalm$ncorem, 
 								antemortem = outtemp1m[[1]], 
 								postmortem = outtemp1m[[2]], 
 								ref = outtemp1m[[3]],

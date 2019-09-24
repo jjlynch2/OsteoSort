@@ -51,7 +51,11 @@ antemortem_multiple <- tabPanel("Multiple",icon = icon("gears", lib="font-awesom
 		 		bsModal("settingsante2m", title = "Settings", trigger = "settingsantem", size = "medium", 
 			 		tabsetPanel(id="tabSelected2m",
 						tabPanel("Output Paramters",
-							uiOutput('fileoutputant1m')
+							uiOutput('fileoutputant1m'),
+							uiOutput('multiple_file_output_graph_ante'),
+							conditionalPanel(condition = "input.multiple_file_output_graph_ante", 
+								uiOutput('labtfa')
+							)
 						),	
 						tabPanel("Statistical Parameters",
 							uiOutput("alphalevelsantestatm")
