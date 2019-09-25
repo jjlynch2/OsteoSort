@@ -231,7 +231,7 @@ observeEvent(input$pro3D, {
 								  Source = "source", Target = "target",
 								  Value = "value", NodeID = "name",
 								  Group = "group", opacity = 1,
-									colourScale = JS('d3.scaleOrdinal().domain(["1", "2", "3"]).range(["#ea6011","#126a8f"])'),
+									colourScale = JS('d3.scaleOrdinal().domain(["1", "2"]).range(["#ea6011","#126a8f"])'),
 									zoom = TRUE
 						)
 					})
