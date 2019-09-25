@@ -47,7 +47,8 @@ two_dimensional <- tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"
 						uiOutput("multiple_file_output_graph_2d"),
 						conditionalPanel(condition = "input.multiple_file_output_graph_2d", 
 							uiOutput("labtf2d")
-						)
+						),
+						uiOutput("forc2d")
 					),
 					tabPanel("Statistical Parameters",
 						fluidRow(

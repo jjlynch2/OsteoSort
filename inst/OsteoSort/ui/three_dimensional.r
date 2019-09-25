@@ -40,6 +40,9 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 				),
 				tabPanel("Graph",
 					imageOutput('multiple_plot_na_3d')
+				),
+				tabPanel("Interactive",
+					forceNetworkOutput("forceNetworkOSMd")
 				)
 		 	),
 			bsModal("settings3DD", title = "Settings", trigger = "settings3D", size = "large", 
@@ -51,7 +54,8 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 						uiOutput("multiple_file_output_graph_3d"),
 						conditionalPanel(condition = "input.multiple_file_output_graph_3d", 
 							uiOutput("labtf3d")
-						)
+						),
+						uiOutput("forcd")
 					),
 					tabPanel("Statistical Parameters",
 						fluidRow(

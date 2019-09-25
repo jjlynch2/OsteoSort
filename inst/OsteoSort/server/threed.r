@@ -1,7 +1,46 @@
+forcefun3d <- function(hera1) {
+	hera1 <- as.data.frame(hera1)
+	df1 <- as.data.frame(cbind(from_id = hera1[,1], to_id = hera1[,2], Distance = hera1[,3]))
+	df2 <- as.data.frame(cbind(from_id = hera1[,2], to_id = hera1[,1], Distance = hera1[,3]))
+	df <- rbind(df1, df2)
+	df$Distance <- (max(as.numeric(df$Distance))+1) - as.numeric(df$Distance)
+	group <- c()
+	skip <- TRUE
+	for(i in 1:nrow(df)) {
+		if(length(grep("_L_", df[i,1])) == 1) {
+			group <- c(group, "left")
+		} else if(length(grep("_R_", df[i,1])) == 1) {
+			group <- c(group, "right")
+		} else {
+			skip <- TRUE
+			break
+		}
+		skip <- FALSE
+	}
+	if(!skip) {
+		df <- cbind(df, group)
+	} else {
+		df <- cbind(df, rep("group", nrow(df)))
+	}
+	nodes <- df[!duplicated(df[,1]),c(1,4)]
+	colnames(nodes) <- c("name", "group")
+	colnames(df) <- c("source", "target", "value", "group")
+	df <- df[,c(1:3)]
+	for(i in 1:nrow(nodes)) {
+		df[df$source == nodes[i,1],1] <- i-1
+		df[df$target == nodes[i,1],2] <- i-1
+	}
+	links <- df
+	return(list(links,nodes))
+}
 
-
-
-
+forcd <- reactiveValues(forcd = TRUE) 
+output$forcd <- renderUI({
+	checkboxInput(inputId = "forcd", label = "Interactive network graph", value = TRUE)
+})
+observeEvent(input$forcd, {
+	forcd$forcd <- input$forcd
+})
 output$contents3D <- renderUI({
    HTML(paste(""))
 })	
@@ -181,6 +220,24 @@ observeEvent(input$pro3D, {
 		output$mspec3D <- renderUI({
 			selectInput(inputId = "mspec3D", label = "Choose comparison", choices = c(out2[[6]][,3]))
 		})
+
+		if(forcd$forcd) {
+				if(nrow(out2[[2]]) > 1){
+					td <- forcefun3d(out2[[2]])
+					links <- td[[1]]
+					nodes <- td[[2]]
+					output$forceNetworkOSMd <- renderForceNetwork({
+						forceNetwork(Links = links, Nodes = nodes,
+								  Source = "source", Target = "target",
+								  Value = "value", NodeID = "name",
+								  Group = "group", opacity = 1,
+									colourScale = JS('d3.scaleOrdinal().domain(["1", "2", "3"]).range(["#ea6011","#126a8f"])'),
+									zoom = TRUE
+						)
+					})
+				}
+		}
+
 		if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps || multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
 			setwd(direc)
 			if(multiple_file_output_graph_3d$multiple_file_output_graph_3d) {

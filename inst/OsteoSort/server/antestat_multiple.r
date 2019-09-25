@@ -1,3 +1,27 @@
+forcefunante <- function(hera1) {
+	df1 <- as.data.frame(cbind(from_id = hera1[,1], to_id = hera1[,3], Probability = hera1[,7], Element = rep("Stature", nrow(hera1))))
+	df2 <- as.data.frame(cbind(from_id = hera1[,3], to_id = hera1[,1], Probability = hera1[,7], Element = paste(hera1[,4], hera1[,5],sep='-')))
+	df <- rbind(df1, df2)
+	temp <- df[!duplicated(df[,1]),c(1,4)]
+	colnames(temp) <- c("name", "group")
+	nodes <- temp
+	colnames(df) <- c("source", "target", "value", "group")
+	df <- df[,c(1:3)]
+	for(i in 1:nrow(nodes)) {
+		df[df$source == nodes[i,1],1] <- i-1
+		df[df$target == nodes[i,1],2] <- i-1
+	}
+	links <- df
+	return(list(links,nodes))
+}
+
+forcante <- reactiveValues(forcante = TRUE) 
+output$forcante <- renderUI({
+	checkboxInput(inputId = "forcante", label = "Interactive network graph", value = TRUE)
+})
+observeEvent(input$forcante, {
+	forcante$forcante <- input$forcante
+})
 
 fileoutputant1m <- reactiveValues(fileoutputant1m = TRUE)
 output$fileoutputant1m <- renderUI({
@@ -162,9 +186,24 @@ observeEvent(input$proantestatm, {
 		DT::datatable(outtemp2m[[3]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 	})
 
-	if(fileoutputant1m$fileoutputant1m) {
+	if(forcante$forcante) {
+			if(nrow(outtemp2m[[2]]) > 1){
+				td <- forcefunante(outtemp2m[[2]])
+				links <- td[[1]]
+				nodes <- td[[2]]
+				output$forceNetworkOSMante <- renderForceNetwork({
+					forceNetwork(Links = links, Nodes = nodes,
+							  Source = "source", Target = "target",
+							  Value = "value", NodeID = "name",
+							  Group = "group", opacity = 1,
+								colourScale = JS('d3.scaleOrdinal().domain(["1", "2", "3"]).range(["#ea6011","#126a8f"])'),
+								zoom = TRUE
+					)
+				})
+			}
+	}
 
-
+	if(fileoutputant1m$fileoutputant1m || multiple_file_output_graph_ante$multiple_file_output_graph_ante) {
 		setwd(outtemp2m[[1]])
 		nimages <- list.files()
 		if(multiple_file_output_graph_ante$multiple_file_output_graph_ante && length(nimages[grep(".jpg", nimages)]) != 0) {

@@ -1,3 +1,20 @@
+forcefun <- function(hera1) {
+	df1 <- as.data.frame(cbind(from_id = hera1[,1], to_id = hera1[,4], Probability = hera1[,8], Element = paste(hera1[,3], hera1[,2],sep='-')))
+	df2 <- as.data.frame(cbind(from_id = hera1[,4], to_id = hera1[,1], Probability = hera1[,8], Element = paste(hera1[,6], hera1[,5],sep='-')))
+	df <- rbind(df1, df2)
+	temp <- df[!duplicated(df[,1]),c(1,4)]
+	colnames(temp) <- c("name", "group")
+	nodes <- temp
+	colnames(df) <- c("source", "target", "value", "group")
+	df <- df[,c(1:3)]
+	for(i in 1:nrow(nodes)) {
+		df[df$source == nodes[i,1],1] <- i-1
+		df[df$target == nodes[i,1],2] <- i-1
+	}
+	links <- df
+	return(list(links,nodes))
+}
+
 output$resettableInput <- renderUI({
 	input$clearFile1
 	input$uploadFormat
@@ -36,6 +53,13 @@ observeEvent(input$labtf, {
 	labtf$labtf <- input$labtf
 })
 
+forc <- reactiveValues(forc = TRUE) 
+output$forc <- renderUI({
+	checkboxInput(inputId = "forc", label = "Interactive network graph", value = TRUE)
+})
+observeEvent(input$forc, {
+	forc$forc <- input$forc
+})
 
 multiple_common_alpha_level <- reactiveValues(multiple_common_alpha_level = 0.05) 
 output$multiple_common_alpha_level <- renderUI({
@@ -318,6 +342,24 @@ observeEvent(input$pro, {
 
 		setwd(direc)
 		nimages <- list.files()
+
+		if(forc$forc) {
+			if(nrow(d2[[2]]) > 1){
+				td <- forcefun(d2[[2]])
+				links <- td[[1]]
+				nodes <- td[[2]]
+				output$forceNetworkOSM <- renderForceNetwork({
+					forceNetwork(Links = links, Nodes = nodes,
+							  Source = "source", Target = "target",
+							  Value = "value", NodeID = "name",
+							  Group = "group", opacity = 1,
+								colourScale = JS('d3.scaleOrdinal().domain(["1", "2", "3"]).range(["#ea6011","#126a8f"])'),
+								zoom = TRUE
+					)
+				})
+			}
+		}
+
 		if(multiple_file_output_graph$multiple_file_output_graph && length(nimages[grep(".jpg", nimages)]) != 0) {
 			nimages <- paste(sessiontemp, "/", direc, "/", nimages[grep(".jpg", nimages)], sep="")
 		} else {

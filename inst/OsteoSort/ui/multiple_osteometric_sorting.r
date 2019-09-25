@@ -74,6 +74,9 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 				tabPanel("Graph",
 					imageOutput('multiple_plot_na')
 				),
+				tabPanel("Iteractive",
+					forceNetworkOutput("forceNetworkOSM")
+				),
 				bsModal("settingsmultiple", title = "Settings", trigger = "settings1", size = "medium", 
 					tabsetPanel(id="multiple_tab",
 						tabPanel("Output Parameters",
@@ -81,7 +84,8 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 							uiOutput("multiple_file_output_graph"),
 							conditionalPanel(condition = "input.multiple_file_output_graph", 
 								uiOutput("labtf")
-							)
+							),
+							uiOutput("forc")
 						),
 						tabPanel("Statistical Parameters",
 							fluidRow(

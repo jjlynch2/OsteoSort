@@ -18,7 +18,8 @@ Depends:
 	ggplot2,
 	shinyalert,
 	geomnet,
-	ggrepel
+	ggrepel,
+	networkD3
 License: GPL-2
 LazyData: true
 ByteCompile: true
@@ -36,4 +37,5 @@ Imports:
 	ggplot2,
 	shinyalert,
 	geomnet,
-	ggrepel
+	ggrepel,
+	networkD3
