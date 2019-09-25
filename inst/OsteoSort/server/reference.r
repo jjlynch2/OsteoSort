@@ -42,7 +42,7 @@ observeEvent(input$importRef, {
 })
 
 observeEvent(input$refdel, {
-	rmf <- paste(system.file("extdata/data", '', package = "OsteoSort"),input$Reference_Sample,".ref",sep="/")
+	rmf <- paste(system.file("extdata/data", '', package = "OsteoSort"),"/",input$Reference_Sample,".ref",sep="")
 	if(file.exists(rmf)) { 
 		file.remove(rmf) 
 	}
