@@ -222,7 +222,7 @@ observeEvent(input$proantestatm, {
 		output$downloadantestatm <- downloadHandler(
 			filename <- function() {
 				paste("results.zip")
-			},      
+			},
 			content <- function(file) {
 				setwd(outtemp2m[[1]])
 				file.remove(paste(outtemp2m[[1]],'.zip',sep=''))

@@ -306,7 +306,7 @@ observeEvent(input$pro, {
 		sortb = tempdata1[tempdata1$Element == input$multiple_elements_association_b,]
 		measa <- input$multiple_measurement_association_a
 		measb <- input$multiple_measurement_association_b
-		reg.d1 <<- reg.input(sorta = sorta, sortb = sortb, sidea = input$multiple_association_side_a, sideb = input$multiple_association_side_b, bonea = input$multiple_elements_association_a, boneb = input$multiple_elements_association_b, measurementsa = measa, measurementsb = measb, ref = multiple_reference_imported$multiple_reference_imported)
+		reg.d1 <- reg.input(sorta = sorta, sortb = sortb, sidea = input$multiple_association_side_a, sideb = input$multiple_association_side_b, bonea = input$multiple_elements_association_a, boneb = input$multiple_elements_association_b, measurementsa = measa, measurementsb = measb, ref = multiple_reference_imported$multiple_reference_imported)
 		if(is.null(reg.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		d2 <- reg.test(labtf = labtf$labtf, threads = numbercoresglobal$ncore, ztest = multiple_ztransform$multiple_ztransform, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, output_options = c(multiple_file_output1$multiple_file_output1, FALSE, multiple_file_output_graph$multiple_file_output_graph))
 		tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
