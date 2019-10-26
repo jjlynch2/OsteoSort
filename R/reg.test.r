@@ -1,22 +1,3 @@
-#' reg.test Input Function
-#' Function to produce combinations for associating elements with regression
-#'
-#' @param ref Reference data
-#' @param sort Sorted data for comparison
-#' @param splitn The index location of each bone types measurements. Used internally from reg.input()
-#' @param prediction_interval Specifies the prediction interval 
-#' @param sessiontempdir Specifies temporary directory for analytical session 
-#' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
-#' @param threads The number of threads to use
-#' @param test If true, PCA-CCA-Regression, if false, Simple Linear Regression 
-#' @param alphalevel The alpha level for exclusion
-#' @param pca Specifies the number of principal components to use
-#'
-#' @keywords reg.test
-#' @export
-#' @examples 
-#' reg.multitest()
-
 reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, labtf = TRUE, output_options = c(TRUE,FALSE, FALSE), threads = 1, type = "Logarithm Composite", alphalevel = 0.05) {	
 	force(alphalevel)
 	force(threads)

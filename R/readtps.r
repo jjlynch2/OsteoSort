@@ -1,14 +1,3 @@
-#' A function to import TPS data. 
-#' 
-#' Modified from the opensource readland.tps function from the Geomorph package for R
-#'
-#' @param file File path for TPS data
-#'
-#' @keywords random
-#' @export
-#' @examples
-#' readtps()
-
 readtps <- function (file) {
 	specID = "ID"
 	ignore.case = TRUE

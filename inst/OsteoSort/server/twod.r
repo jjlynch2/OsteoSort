@@ -7,22 +7,13 @@ observeEvent(input$forc2d, {
 })
 
 output$tabpanpan <- renderUI({
-	panels1 <- list(
-		tabPanel("Starting Mean",imageOutput('meanImage')),
-		tabPanel("Results",DT::dataTableOutput('table2D')),
-		tabPanel("Registration",imageOutput('plotplottd')),
-		tabPanel("Graph", imageOutput('multiple_plot_na_2d')),
-		tabPanel("Interactive", forceNetworkOutput("forceNetworkOSM2d"))
-	)
 	panels2 <- list(
 		tabPanel("Results ",DT::dataTableOutput('table2D')),
 		tabPanel("Registration",imageOutput('pwspeci')),
 		tabPanel("Graph", imageOutput('multiple_plot_na_2d')),
 		tabPanel("Interactive", forceNetworkOutput("forceNetworkOSM2d"))
 	)
-	if(input$fragcomp == "Complete") {panel <- panels1}
-	if(input$fragcomp == "Fragmented") {panel <- panels2}
-	do.call(tabsetPanel, panel)
+	do.call(tabsetPanel, panels2)
 })
 
 output$contents2D <- renderUI({
@@ -74,7 +65,7 @@ observeEvent(input$fileoutput2Dplot, {
 	fileoutput2Dplot$fileoutput2Dplot <- input$fileoutput2Dplot
 })
 output$fileoutput2Dplot <- renderUI({
-	checkboxInput(inputId = "fileoutput2Dplot", label = "Output registered plot (WARNING: fragmented analysis will generate a plot for every comparison)", value = TRUE)
+	checkboxInput(inputId = "fileoutput2Dplot", label = "Output registered plot", value = TRUE)
 })
 
 fileoutput2Dtps <- reactiveValues(fileoutput2Dtps = FALSE)
@@ -83,8 +74,8 @@ observeEvent(input$fileoutput2Dtps, {
 })
 output$fileoutput2Dtps <- renderUI({
 	checkboxInput(inputId = "fileoutput2Dtps", label = "Output TPS registered coordinates", value = FALSE)
-})						 			
-								
+})
+
 multiple_file_output_graph_2d <- reactiveValues(multiple_file_output_graph_2d = TRUE) 
 output$multiple_file_output_graph_2d <- renderUI({
 	checkboxInput(inputId = "multiple_file_output_graph_2d", label = "Output network graph", value = TRUE)
@@ -101,8 +92,6 @@ output$labtf2d <- renderUI({
 observeEvent(input$labtf2d, {
 	labtf2d$labtf2d <- input$labtf2d
 })
-
-
 
 
 nthreshold <- reactiveValues(nthreshold = 0.8)
@@ -129,30 +118,6 @@ output$ncores2D <- renderUI({
 	sliderInput(inputId = "ncores2D", label = "Number of cores", min=1, max=detectCores(), value=1, step =1)
 })
 
-meanit2D <- reactiveValues(meanit2D = 2)
-observeEvent(input$meanit2D, {
-	meanit2D$meanit2D <- input$meanit2D
-})
-output$comp_options <- renderUI({
-	sliderInput(inputId = "meanit2D", label = "Mean iterations", min=1, max=100, value=2, step=1)
-})
-
-efaH2D <- reactiveValues(efaH2D = 40)
-observeEvent(input$efaH2D, {
-	efaH2D$efaH2D <- input$efaH2D
-})
-output$efa_options1 <- renderUI({
-	sliderInput(inputId = "efaH2D", label = "EFA harmonics", min=1, max=1000, value=40, step=1)
-})
-
-npoints2D <- reactiveValues(npoints2D = 200)
-observeEvent(input$npoints2D, {
-	npoints2D$npoints2D <- input$npoints2D
-})
-output$efa_options2 <- renderUI({
-	sliderInput(inputId = "npoints2D", label = "Landmarks for inverse EFA", min=20, max=1000, value=200, step=1)
-})
-
 
 scale2D <- reactiveValues(scale2D = FALSE)
 observeEvent(input$scale2D, {
@@ -162,20 +127,13 @@ output$efa_options3 <- renderUI({
 	checkboxInput(inputId = "scale2D", label = "Scale to Centroid Size", value = FALSE)
 })
 
-n_regions <- reactiveValues(n_regions = 6)
-observeEvent(input$n_regions, {
-	n_regions$n_regions <- input$n_regions
-})
-output$n_regions <- renderUI({			
-	sliderInput(inputId = "n_regions", label = "Segmented regions", min = 2, max = input$npoints2D, value = 6, step = 1)										
-})
 
 max_avg_distance <- reactiveValues(max_avg_distance = "average")
 observeEvent(input$max_avg_distance, {
 	max_avg_distance$max_avg_distance <- input$max_avg_distance
 })
 output$max_avg_distance <- renderUI({
-	radioButtons(inputId = "max_avg_distance", label = "Distance type:", choices = c("maximum",  "average", "dilated"), selected = "average")
+	radioButtons(inputId = "max_avg_distance", label = "Distance type:", choices = c("maximum",  "average"), selected = "average")
 })
 
 icp2D <- reactiveValues(icp2D = 20)
@@ -186,14 +144,6 @@ output$icp2D <- renderUI({
 	sliderInput(inputId = "icp2D", label = "ICP iterations", min=1, max=1000, value=20, step=1)
 })
 
-
-distance2D <- reactiveValues(distance2D = "Hausdorff")
-observeEvent(input$distance2D, {
-	distance2D$distance2D <- input$distance2D
-})
-output$distance2D <- renderUI({
-	radioButtons(inputId = "distance2D", label = "Distance calculation:", choices = c("Segmented-Hausdorff", "Hausdorff"), selected = "Hausdorff")
-})
 
 shortlistn <- reactiveValues(shortlistn = 1)
 observeEvent(input$shortlistn, {
@@ -211,25 +161,6 @@ output$hidedist <- renderUI({
 	checkboxInput(inputId = "hidedist", label = "Hide distance from results", value = FALSE)
 })
 
-#renders temporary mean
-observeEvent(input$rightimages, {
-	output$mspec <- renderUI({
-		sliderInput(inputId = "mspec", label = "Choose specimen # for temporary mean", min=1, max=nrow(input$leftimages) + nrow(input$rightimages), value = 1, step = 1)
-	})
-})
-
-observeEvent(input$mspec, {
-	nimages <- rbind(input$leftimages$datapath, input$rightimages$datapath)
-	nimages <- nimages[input$mspec]
-	output$meanImage <- renderImage({
-		list(src = nimages,
-			contentType = 'image/jpg',
-			width = 400,
-			height = 400,
-			alt = "A"
-		)
-	}, deleteFile = FALSE)
-})
 
 observeEvent(input$pro2D, {
 	output$contents2D <- renderUI({
@@ -248,11 +179,9 @@ observeEvent(input$pro2D, {
 		rightimages <- input$rightimages$datapath
 		file.copy(input$leftimages$datapath, input$leftimages$name)
 		file.copy(input$rightimages$datapath, input$rightimages$name)
-		if(input$fragcomp == "Complete") {fragment <- FALSE}
-		if(input$fragcomp == "Fragmented") {fragment <- TRUE}
 
-		out1 <- outline.images(imagelist1 = input$rightimages$name, imagelist2 = input$leftimages$name, fragment = fragment, threshold =nthreshold$nthreshold, scale = scale2D$scale2D, mirror = mirror2D$mirror2D, npoints = npoints2D$npoints2D, nharmonics = efaH2D$efaH2D)
-		out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, fragment = fragment, dist = max_avg_distance$max_avg_distance, n_regions = n_regions$n_regions, n_lowest_distances = shortlistn$shortlistn, labtf2d = labtf2d$labtf2d, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps, multiple_file_output_graph_2d$multiple_file_output_graph_2d), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D, test = distance2D$distance2D, temporary_mean_specimen = input$mspec, mean_iterations = meanit2D$meanit2D)
+		out1 <- outline.images(imagelist1 = input$rightimages$name, imagelist2 = input$leftimages$name, threshold =nthreshold$nthreshold, scale = scale2D$scale2D, mirror = mirror2D$mirror2D)
+		out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, dist = max_avg_distance$max_avg_distance, n_lowest_distances = shortlistn$shortlistn, labtf2d = labtf2d$labtf2d, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps, multiple_file_output_graph_2d$multiple_file_output_graph_2d), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D)
 		direc <- out2[[3]]
 
 		if(forc2d$forc2d) {
@@ -271,17 +200,6 @@ observeEvent(input$pro2D, {
 					})
 				}
 		}
-
-		if(fileoutput2Dplot$fileoutput2Dplot && input$fragcomp == "Complete") {
-			imagetemp <- paste(sessiontemp, "/", direc, "/", "Registration.jpg", sep="")
-			output$plotplottd <- renderImage({
-				list(src = imagetemp,
-					contentType = 'image/jpg',
-					height = 600,
-					alt = "A"
-				)
-			}, deleteFile = FALSE)
-		}
 		if(multiple_file_output_graph_2d$multiple_file_output_graph_2d) {
 			imagetemp2 <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
 			output$multiple_plot_na_2d <- renderImage({
@@ -292,7 +210,7 @@ observeEvent(input$pro2D, {
 				)
 			}, deleteFile = FALSE)
 		}
-		if(fileoutput2Dplot$fileoutput2Dplot && input$fragcomp == "Fragmented") {
+		if(fileoutput2Dplot$fileoutput2Dplot) {
 			setwd(direc)
 			pwspec <- list.files()
 			pwspec <- pwspec[grep(".jpg", pwspec)]

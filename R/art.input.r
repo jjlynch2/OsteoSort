@@ -1,13 +1,3 @@
-#' Articulation comparison Input Function
-#'
-#' @param bone Specifies the bone type
-#' @param sort Data to be sorted
-#'
-#' @keywords art.input
-#' @export
-#' @examples
-#' art.input()
-
 art.input <- function (bonea = NULL, boneb = NULL, side = NULL, ref = NULL, sorta = NULL, sortb = NULL, measurementsa = NULL, measurementsb = NULL, threshold = 1) {
 	print("Filtering data by element types, specified measurements, and threshold value...")
 	if(is.null(bonea) || is.null(boneb) || is.null(sort)){return(NULL)}

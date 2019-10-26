@@ -1,11 +1,3 @@
-#' three-dimensional pair-match function
-#' 
-#'
-#' @keywords input.3d
-#' @export
-#' @examples
-#' input.3d()
-
 input.3d <- function(list1 = NULL, list2 = NULL) {
 	print("Importing 3D data")
 

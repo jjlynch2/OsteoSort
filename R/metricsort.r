@@ -1,19 +1,3 @@
-#' A function to sort by bone metrics
-#' 
-#' @param sort Sorted data for comparison
-#' @param bone Specifies the bone type
-#' @param side The bone type side ("left", "right", "both")
-#' @param method The outlier method ("quartiles" or "standard deviations")
-#' @param measurements The measurement types to be used
-#' @param sessiontempdir Specifies temporary directory for analytical session if stdout is false
-#' @param cutoff The outlier cutoff value for either quartiles or standard deviations
-#' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
-#'
-#' @keywords metricsort
-#' @export
-#' @examples
-#' metricsort()
-
 metricsort <- function (sort, method = "Quartiles", measurements = NULL, sessiontempdir = NULL, cutoff = c(1.5,2), output_options = c(TRUE, TRUE)) {
 	print("Outlier analysis started")
 	upperfile = "upper.csv"

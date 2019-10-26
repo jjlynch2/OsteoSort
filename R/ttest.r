@@ -1,20 +1,3 @@
-#' T.test Function
-#' 
-#' @param ref Reference data
-#' @param sort Sorted data for comparison
-#' @param sessiontempdir Specifies temporary directory for analytical session
-#' @param threads The number of threads to use
-#' @param alphalevel The alpha level for exclusion
-#' @param absolute if TRUE uses absolute value for D-values
-#' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
-#' @param boxcox If TRUE uses boxcox power transformation
-#' @param tails The number of tails for the t-distribution
-#' 
-#' @keywords TTEST.ttest
-#' @export
-#' @examples
-#' ttest()
-
 ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, labtf = TRUE, output_options = c(TRUE, FALSE, FALSE), threads = 1, tails = 2, boxcox = TRUE, ztest = FALSE) {
 	if(threads != julia_call("nprocs")) {
 		print("Setting up Julia workers...")

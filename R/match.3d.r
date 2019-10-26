@@ -1,23 +1,9 @@
-#' three-dimensional pair-match function
-#' 
-#'
-#' @keywords match.3d
-#' @export
-#' @examples
-#' match.3d()
-
-match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = TRUE, output_options = c(TRUE,TRUE,TRUE,FALSE), iteration = 1, transformation = "rigid", threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
-	if(threads != julia_call("nprocs")) {
-		print("Setting up Julia workers...")
-		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
-		print("Finished.")
-	}
+match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = TRUE, output_options = c(TRUE,TRUE,TRUE,FALSE), iteration = 1, threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
 	print("Form comparisons started")
 	start_time <- start_time()
 	if(fragment == "Complete") {fragment <- FALSE}
 	if(fragment == "Fragmented") {fragment <- TRUE}
 	dist <- tolower(dist)
-	transformation <- tolower(transformation)
 	workingdir = getwd()
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 	list1 <- data[[1]]
@@ -48,7 +34,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 				L1 <- L1 - rep(1,nrow(L1)) %*% t(mean_shape(L1p))
 				L2 <- L2 - rep(1,nrow(L2)) %*% t(mean_shape(L2p))
 				L2 <- L2 %*% rot$rotation
-				L1 <- icpmat(L1, L2, type = transformation, threads = threads, iterations = iteration)
+				L1 <- icpmat(L1, L2, type = "rigid", threads = threads, iterations = iteration)
 				lh_combined <- rbind(L1, L2)
 				lh_combined <- pca_align(lh_combined)
 				lhr <- nrow(L1)
@@ -118,8 +104,8 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 					else if (k == 6) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2],lista[[i]][,3]*-1)}
 					else if (k == 7) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2]*-1,lista[[i]][,3])}
 					else if(k == 8) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2],lista[[i]][,3])}
-					lt <- icpmat(lt1, listb[[x]], iterations = iteration, type = transformation, threads = threads)
-					d1t <- hausdorff_dist(lt, listb[[x]], test = "Hausdorff", dist = dist)
+					lt <- icpmat(lt1, listb[[x]], iterations = iteration, type = "rigid", threads = threads)
+					d1t <- hausdorff_dist(lt, listb[[x]], dist = dist, threads = threads)
 					if(d1t < d1) {
 						pairwise_coords[[pwc]] <- lt
 						d1 <- d1t

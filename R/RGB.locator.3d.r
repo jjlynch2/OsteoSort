@@ -1,12 +1,4 @@
-#' RGB coordinate extractor
-#' 
-#'
-#' @keywords RGB.locator.3d()
-#' @export
-#' @examples
-#' RGB.locator.3d()
-
-RGB.locator.3d <- function(align_data, type = "landmark",r = c(255,255,255), g = c(0,255,0), b = c(0,0,255), f = c(255,0,0), f_threshold = 100) {	
+RGB.locator.3d <- function(align_data, type = "landmark",r = c(255,255,255), g = c(0,255,0), b = c(0,0,255), f = c(255,0,0), f_threshold = 100, threads = 1) {	
 	a <- 0
 	aa <- 0
 
@@ -25,15 +17,12 @@ RGB.locator.3d <- function(align_data, type = "landmark",r = c(255,255,255), g =
 			b <- as.matrix(t(b))
 		}
 
-		lr <- JuliaCall("AD3D", align_data[,c(4:6)], r)
-		lg <- JuliaCall("AD3D", align_data[,c(4:6)], g)
-		lb <- JuliaCall("AD3D", align_data[,c(4:6)], b)
-
-		red <- which.min(lr)
-
-		green <- which.min(lg)
-
-		blue <- which.min(lb)
+		lr <- HD_KDTree_Ind(align_data[,c(4:6)], r, threads = threads)
+		lg <- HD_KDTree_Ind(align_data[,c(4:6)], g, threads = threads)
+		lb <- HD_KDTree_Ind(align_data[,c(4:6)], b, threads = threads)
+		red <-	lr[2]
+		green <- lg[2]
+		blue <- lb[2]
 
 		landmarks <- align_data[c(red,green,blue),c(1:3)]
 		a <- 1
@@ -48,7 +37,9 @@ RGB.locator.3d <- function(align_data, type = "landmark",r = c(255,255,255), g =
 		}
 
 		lf <- JuliaCall("AD3D", align_data[,c(4:6)], f)
-		fracture <- which(lf <= f_threshold)
+		lf <- HD_KDTree_Ind(align_data[,c(4:6)], f, threads = threads, k = nrow(align_data))
+
+		fracture <- which(lf[,1] <= f_threshold)
 		aa <- 1
 	}
 

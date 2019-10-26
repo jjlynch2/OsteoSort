@@ -122,7 +122,7 @@ observeEvent(input$nthreshold3D, {
 	nthreshold3D$nthreshold3D <- input$nthreshold3D
 })
 output$nthreshold3D <- renderUI({
-	sliderInput(inputId = "nthreshold3D", label = "Threshold for principal bands", min=0.5, max=100, value=4, step=0.5)
+	sliderInput(inputId = "nthreshold3D", label = "Threshold for centroid bands", min=0.5, max=100, value=4, step=0.5)
 })
 
 
@@ -151,7 +151,7 @@ observeEvent(input$banding, {
 	banding$banding <- input$banding
 })
 output$banding <- renderUI({
-	checkboxInput(inputId = "banding", label = "Principal bands", value = TRUE)
+	checkboxInput(inputId = "banding", label = "Centroid bands", value = TRUE)
 })
 
 
@@ -170,7 +170,7 @@ observeEvent(input$max_avg_distance3D, {
 	max_avg_distance3D$max_avg_distance3D <- input$max_avg_distance3D
 })
 output$max_avg_distance3D <- renderUI({
-	radioButtons(inputId = "max_avg_distance3D", label = "Distance type:", choices = c("maximum",  "average", "dilated"), selected = "average")
+	radioButtons(inputId = "max_avg_distance3D", label = "Distance type:", choices = c("maximum",  "average"), selected = "average")
 })
 
 icp3D <- reactiveValues(icp3D = 1)

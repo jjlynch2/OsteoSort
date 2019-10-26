@@ -74,7 +74,7 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 				tabPanel("Graph",
 					imageOutput('multiple_plot_na')
 				),
-				tabPanel("Iteractive",
+				tabPanel("Interactive",
 					forceNetworkOutput("forceNetworkOSM")
 				),
 				bsModal("settingsmultiple", title = "Settings", trigger = "settings1", size = "medium", 

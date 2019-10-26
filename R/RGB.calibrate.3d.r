@@ -1,11 +1,3 @@
-#' RGB calibration
-#' 
-#'
-#' @keywords RGB.calibrate.3d()
-#' @export
-#' @examples
-#' RGB.calibrate.3d()
-
 RGB.calibrate.3d <- function(align_data) {
 	if(ncol(align_data) < 6) {return(NULL)}
 	cc <- rgb(align_data[,c(4:6)], max=255)	

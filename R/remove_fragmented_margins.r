@@ -1,26 +1,9 @@
-#' helper function to remove fragmented margins for Hausdorff
-#' 
-#' @param first_configuration first shape
-#' @param second_configuration second shape
-#' @param indices list of indices of fracture margins
-#'
-#' @keywords remove_fragmented_margins
-#' @export
-#' @examples
-#' remove_fragmented_margins()
-
-remove_fragmented_margins <- function(first_configuration, second_configuration, indices) {
+remove_fragmented_margins <- function(first_configuration, second_configuration, indices, threads) {
 	moving_indices <- indices[[1]]
 	target_indices <- indices[[2]]
 
-	if(ncol(first_configuration) == 3) {
-		t1 <- julia_call("MEDI3D", first_configuration, second_configuration)
-		t2 <- julia_call("MEDI3D", second_configuration, first_configuration)
-	}
-	if(ncol(first_configuration) == 2) {
-		t1 <- julia_call("MEDI2D", first_configuration, second_configuration)
-		t2 <- julia_call("MEDI2D", second_configuration, first_configuration)
-	}
+	t1 <- HD_KDTree_Ind(first_configuration, second_configuration, threads = threads)
+	t2 <- HD_KDTree_Ind(second_configuration, first_configuration, threads = threads)
 
 	if(length(target_indices) > 0) {
 		for(i in 1:nrow(target_indices)) {

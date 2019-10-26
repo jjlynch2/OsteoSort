@@ -1,14 +1,3 @@
-#' Centroid Band Extraction
-#' 
-#' @param data A list of matrices of XYZ point clouds
-#' @param pc Align along principal components before extracting
-#' @param threshold Metric for band thickness relative to the point cloud scale
-#'
-#' @keywords CentroidBand
-#' @export
-#' @examples
-#' CentroidBand(data = pointclouds, pc = TRUE, threshold = 4)
-
 CentroidBand <- function(pointcloud = NULL, threshold = 4, centroid = NULL) {
 	if(is.null(centroid)) {
 		centroid <- apply(pointcloud, 2, mean)

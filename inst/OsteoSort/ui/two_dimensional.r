@@ -2,15 +2,9 @@ two_dimensional <- tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"
 	titlePanel(""),
 	sidebarLayout(
 		sidebarPanel(
-			selectInput(inputId ="fragcomp", label = "Analysis:", choices = c("Complete", "Fragmented"), selected = "Complete"),
-			uiOutput('resettableInput2D'),	
+			uiOutput('resettableInput2D'),
 			uiOutput('resettableInput2DD'),
-			conditionalPanel(condition = "input.fragcomp == 'Complete'",
-				uiOutput('mspec')
-			),
-			conditionalPanel(condition = "input.fragcomp == 'Fragmented'",
-				uiOutput('pwspec')
-			),
+			uiOutput('pwspec'),
 			fluidRow(
 				column(6,
 					actionButton("settings2D","Settings", icon=icon("keyboard-o"))
@@ -64,20 +58,11 @@ two_dimensional <- tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"
 							),
 							column(4, 
 								h4("Registration"),
-								conditionalPanel(condition = "input.fragcomp == 'Complete'",
-										uiOutput('comp_options')
-								),
 								uiOutput('icp2D')
 							),
 							column(4,
 								h4("Distance"),
-								uiOutput('distance2D'),
-				 				conditionalPanel(condition = "input.distance2D == 'Segmented-Hausdorff' || input.distance2D == 'Hausdorff'",
-									uiOutput('max_avg_distance')
-								),
-				 				conditionalPanel(condition = "input.distance2D == 'Segmented-Hausdorff'",
-									uiOutput('n_regions')
-								),
+								uiOutput('max_avg_distance'),
 								uiOutput('shortlistn'),
 								uiOutput('hidedist')
 							)

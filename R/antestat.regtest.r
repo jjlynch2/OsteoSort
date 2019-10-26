@@ -1,22 +1,3 @@
-#' antestat.regtest Input Function
-#'
-#' Function to produce a p-value evaluating the strength of evidence for comparing an antemortem stature to postmortem measurement
-#'
-#' @param sort The antemortem stature and postmorterm measurement for comparison
-#' @param ref The reference sample used in the regression model
-#' @param prediction_interval The prediction interval level for exclusion
-#' @param alphalevel The alpha level for exclusion
-#' @param alphatest If TRUE specifies the use of alphalevels for exclusion. If FALSE specifies the use of prediction intervals
-#' @param tails The number of tails for the t-distribution
-#' @param output_options C(TRUE,FALSE) First logic specifies excel output, second specifies plot output
-#' @param sessiontempdir Specifies temporary directory for analytical session 
-#' @param threads The number of threads to use
-#'
-#' @keywords antestat
-#' @export
-#' @examples 
-#' antestat.regtest()
-
 antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, sessiontempdir = NULL, labtfa = TRUE, output_options = c(TRUE,FALSE,FALSE), alphalevel = 0.05, threads = 1) {
 	force(alphalevel)
 	force(threads)

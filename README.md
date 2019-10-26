@@ -20,7 +20,11 @@ OsteoSort()
 * rgl
 * ClusterR
 * JuliaCall
+* ggplot2
 * shinyalerts
+* geomnet
+* ggrepel
+* networkD3
 
 ## Julia Dependencies
 * Pkg

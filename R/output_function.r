@@ -1,12 +1,3 @@
-#' Internal function for output_options
-#'
-#' @param hera1 The data to be ploted
-#' @param method The analytical method to be plotted
-#' @param type The type of output
-#'
-#' @examples
-#' output_function()
-
 output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion", type = "csv", uln = NULL, labtf = TRUE) {
 	print("Writing output files")
 	if(method == "exclusion") {
@@ -81,16 +72,6 @@ output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion",
 			writetps(hera1, file = "Coordinates.tps")
 		}
 		if(type == "plot") {
-			if(!is.list(hera1)) {
-				heram <- apply(hera1, c(1,2), mean)
-				d <- data.frame(x = heram[,1], y = heram[,2])
-				ptemp <- ggplot(d, aes(x=x, y=y)) + theme_minimal() + geom_point(col = I("white"), size = 1) + labs(x = "", y = "") + xlim(c(min(hera1), max(hera1))) + ylim(c(max(hera1), min(hera1)))
-				for(a in 1:dim(hera1)[3]) {
-					ptemp <- ptemp + geom_point(x = hera1[,1,a], y = hera1[,2,a], col = OsteoSort:::add.alpha(a,0.3), size = 3)
-				}
-				ptemp <- ptemp + geom_point(x = heram[,1], y = heram[,2], col = I("black"), size = 4) + labs(x="", y="")
-				ggsave(paste("Registration",".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300)
-			}
 			if(is.list(hera1)) {
 				for(i in seq(from = 2, to = length(hera1), by=2)) {
 					tempa <- rbind(hera1[[i]], hera1[[i-1]])

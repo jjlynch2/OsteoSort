@@ -1,18 +1,3 @@
-#' antestat.input Input Function
-#'
-#' Function to generate combinations of antemortem stature to postmortem measurements for use with antestat.regtest.R
-#'
-#' @param antemortem_stature The antemortem stature for comparison
-#' @param postmortem_measurement The postmortem measurement for comparison
-#' @param bone The bone type to compare
-#' @param population The population data to use for modeling
-#' @param metric Specifies millimeters (mm), centimeters (cm), or inches (in) for stature
-#'
-#' @keywords antestat
-#' @export
-#' @examples 
-#' antestat.input()
-
 antestat.input <- function(antemortem_stature = NULL, postmortem_measurement = NULL, ref = NULL, measurement = NULL, side = NULL, bone = NULL) {
 	print("Filtering data by element type and specified measurement...")
 	if(is.na(antemortem_stature) || is.null(antemortem_stature)) {return(NULL)} #input san

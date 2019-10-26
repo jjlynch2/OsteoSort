@@ -1,23 +1,3 @@
-#' A function estimate and sort by stature
-#' 
-#' Equation reference from the Forensic Data Bank
-#'
-#' @param sort Sorted data for comparison
-#' @param bone Specifies the bone type ("left", "right", "both")
-#' @param side The bone type side
-#' @param population The reference sample for stature estimation
-#' @param method The outlier method ("quartiles" or "standard deviations")
-#' @param measurements The measurement types to be used
-#' @param sessiontempdir Specifies temporary directory for analytical session
-#' @param cutoff The outlier cutoff value for either quartiles or standard deviations
-#' @param output_options First index TRUE outputs to excel, second index TRUE outputs plot
-#' @param metric Specifies millimeters (mm), centimeters (cm), or inches (in) for stature
-#'
-#' @keywords random
-#' @export
-#' @examples
-#' statsort()
-
 statsort <- function (sort, ref, method = "Quartiles", measurements = NULL, cutoff = 1.5, sessiontempdir = NULL, output_options = c(TRUE,TRUE)) {
 	print("Outlier analysis started")
 	upperfile = "upper.csv"

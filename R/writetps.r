@@ -1,16 +1,3 @@
-#' A function to export TPS data. 
-#' 
-#' Modified from the opensource writeland.tps function from the Geomorph package for R
-#'
-#' @param shape_matrices matrices of shape configurations
-#' @param file File path for saving output
-#' @param append TRUE FALSE create new file or append existing
-#'
-#' @keywords random
-#' @export
-#' @examples
-#' writetps()
-
 writetps <- function (shape_matrices, file) {
 	file.create(file, showWarnings = FALSE) 
 

@@ -1,11 +1,3 @@
-#' three-dimensional digitizer
-#' 
-#'
-#' @keywords digitize.3d
-#' @export
-#' @examples
-#' digitize.3d()
-
 digitize.3d <- function(align_data, type = "single") {
 	if(ncol(align_data) >5) {
 				if(any(is.na(align_data[,c(4:6)]))) { 
@@ -33,6 +25,6 @@ digitize.3d <- function(align_data, type = "single") {
 		dt <- mp[,2]
 
 	}
-	options(rgl.useNULL=TRUE) #required to avoid rgl device opening in shiny
+	options(rgl.useNULL=TRUE)
 	return(dt)
 }

@@ -1,14 +1,4 @@
-#' fragment_margins function
-#'
-#' @param configuration This is the 2D shape configuration
-#'
-#' @keywords fragment_margins
-#' @export
-#' @examples
-#' fragment_margins()
-
-
-fragment_margins <- function(configuration = NULL) {	
+fragment_margins <- function(configuration = NULL) {
 	shiftm <- function(d, k) rbind(tail(d,k), head(d,-k), deparse.level = 0)
 	nrr <- nrow(configuration)
 	ed1 <- sqrt(sum( (configuration[1,] - configuration[2,]) ^2 ) )

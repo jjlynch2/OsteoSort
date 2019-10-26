@@ -1,11 +1,3 @@
-#' Cartesian coordinate rotation
-#' 
-#'
-#' @keywords rotation
-#' @export
-#' @examples
-#' rotation()
-
 rotation <-function(Z2,Z1) {
 	k<-ncol(Z2)
 	td <- t( Z2 ) %*% Z1

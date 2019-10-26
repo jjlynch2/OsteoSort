@@ -170,7 +170,7 @@ observeEvent(input$simplify, {
 		showModal(modalDialog(title = "Point cloud K-means simplification started...", easyClose = FALSE, footer = NULL))
 		if(input$alln == "Present") {		
 			ttt <- filelist3$list[[position$pos]]
-			filelist3$list[[position$pos]] <- kmeans.3d(filelist3$list[[position$pos]], cluster = vara$vara)
+			filelist3$list[[position$pos]] <- kmeans.3d(filelist3$list[[position$pos]], cluster = vara$vara, threads = ncorespc$ncorespc)
 			if(!is.null(landmarks$landmarks[[position$pos]][[2]])) {
 				tempp <- julia_call("AD3D", as.matrix(ttt[landmarks$landmarks[[position$pos]][[2]],]), as.matrix(filelist3$list[[position$pos]]))
 				landmarks$landmarks[[position$pos]][[2]] <- unique(which(tempp < tva$tva, arr.ind = TRUE)[,2])
@@ -181,7 +181,7 @@ observeEvent(input$simplify, {
 			ll <- length(filelist3$list)
 			for (i in 1:ll) {	
 				ttt <- filelist3$list[[i]]
-				filelist3$list[[i]] <- kmeans.3d(filelist3$list[[i]], cluster = vara$vara)
+				filelist3$list[[i]] <- kmeans.3d(filelist3$list[[i]], cluster = vara$vara, threads = ncorespc$ncorespc)
 
 				if(!is.null(landmarks$landmarks[[i]][[2]])) {
 					tempp <- julia_call("AD3D", as.matrix(ttt[landmarks$landmarks[[i]][[2]],]), as.matrix(filelist3$list[[i]]))

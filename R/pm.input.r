@@ -1,16 +1,3 @@
-#' Pair-match Input Function
-#' 
-#' @param bone Specifies the bone type
-#' @param sort Data to be sorted
-#' @param ref Reference data to be sorted
-#' @param threshold Threshold value for number of measurements per comparison
-#' @param measurements The measurement types to be used
-#' 
-#' @keywords pm.input
-#' @export
-#' @examples
-#' pm.input()
-
 pm.input <- function (bone = NULL, ref = NULL, sort = NULL, measurements = NULL, threshold = 1) {
 	print("Filtering data by element type, specified measurements, and threshold value...")
 	options(warn = -1) #disables warnings

@@ -1,22 +1,3 @@
-#' reg.match Input Function
-#'
-#' Function to produce combinations for associating elements with regression
-#'
-#' @param sort Data to be sorted
-#' @param bone1 The first bone type
-#' @param bone2 The second bone type
-#' @param side1 The first bone type side
-#' @param side2 The second bone type side
-#' @param measurement_standard Specifies the measurement standards to use ("standard" or "supplemental")
-#' @param threshold Threshold value for number of measurements per comparison
-#' @param measurements1 The first bone types measurement types to be used
-#' @param measurements2 The second bone types measurement types to be used
-#'
-#' @keywords reg.input
-#' @export
-#' @examples 
-#' reg.input()
-
 reg.input <- function(ref = NULL, sorta = NULL, sortb = NULL, bonea = NULL, boneb = NULL, sidea = NULL, sideb = NULL, threshold = 1, measurementsa = NULL, measurementsb = NULL) {
 	print("Filtering data by element types, specified measurements, and threshold value...")
 	sidea <- tolower(sidea)

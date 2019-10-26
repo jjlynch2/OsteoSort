@@ -1,11 +1,3 @@
-#' Match rows from different cols
-#' 
-#' @param xx to be matched
-#' @param table table to search
-#'
-#' @examples
-#' m.row()
-
 m.row <- function (xx, table) {
 	tt <-c()
 	table <- as.data.frame(table)

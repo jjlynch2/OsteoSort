@@ -6,7 +6,7 @@ output$changes <- renderUI({
 		"<p></p>",
 		"The user interface is now dynamic and generates based on the reference data and user input.",
 		"<p></p>",
-		"The ability to check for updates on GitHub.",
+		"The ability to check for updates on GitHub has been implemented.",
 		"<p></p>",
 		"Memory usage is provided in the navbar.",
 		"<p></p>",

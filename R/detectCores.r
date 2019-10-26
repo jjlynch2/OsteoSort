@@ -1,5 +1,3 @@
-#This function is from the parallel package for R and redistributed here under license GPLv2.0
-
 detectCores <- function() {
 	if(.Platform$OS.type == "windows") {
 		return(as.numeric(Sys.getenv("NUMBER_OF_PROCESSORS")))
