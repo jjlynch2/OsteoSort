@@ -14,7 +14,6 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	nz <- 1 #comparison counter
 	pairwise_coords <- list() #saved pairwise registration
 	renderlist <- data.frame(0,0,0)
-	pwc <- 1
 	if(fragment) {
 		for(i in 1:length(list1)) {
 			for(x in 1:length(list2)) {
@@ -56,12 +55,8 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 				target <- b[,-4]
 				tte <- remove_fragmented_margins(moving, target, list(moving_indices, target_indices))
 				dd <- max(mean(tte[[1]]), mean(tte[[2]]))
-				pairwise_coords[[pwc+1]] <- target
-				pairwise_coords[[pwc]] <- moving
-				names(pairwise_coords)[[pwc]] <- names(list1)[i]
-				names(pairwise_coords)[[pwc+1]] <- names(list2)[x]
-				renderlist[nz,] <- rbind(pwc, pwc+1, paste(names(list1)[i], names(list2)[x], sep="_"))
-				pwc <- pwc + 2 #skips by 2 since we use two indices
+				write.tmp.data(target, moving , paste(names(list1)[i], names(list2)[x], sep="-"), direc, sessiontempdir)
+				renderlist[nz,] <- paste(names(list1)[i], names(list2)[x], sep="-")
 				matches1[nz,] <- c(names(list1)[i], names(list2)[x], dd)
 				matches2[nz,] <- c(names(list2)[x], names(list1)[i], dd)
 				print(paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", "Hausdorff", " distance: ", dd, sep=""))
@@ -95,6 +90,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 		for(i in 1:length(lista)) {
 			for(x in 1:length(listb)) {
 				d1 <- 999999
+				ptemp <- NULL
 				for(k in 1:8) {
 					if (k == 1) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2],lista[[i]][,3])}
 					else if (k == 2) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2]*-1,lista[[i]][,3]*-1)}
@@ -107,15 +103,12 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 					lt <- icpmat(lt1, listb[[x]], iterations = iteration, type = "rigid", threads = threads)
 					d1t <- hausdorff_dist(lt, listb[[x]], dist = dist, threads = threads)
 					if(d1t < d1) {
-						pairwise_coords[[pwc]] <- lt
+						ptemp <- lt
 						d1 <- d1t
 					}
 				}
-				pairwise_coords[[pwc+1]] <- listb[[x]]
-				names(pairwise_coords)[[pwc]] <- names(list1)[i]
-				names(pairwise_coords)[[pwc+1]] <- names(list2)[x]
-				renderlist[nz,] <- rbind(pwc, pwc+1, paste(names(list1)[i], names(list2)[x], sep="_"))
-				pwc <- pwc + 2 #skips by 2 since we use two indices
+				write.tmp.data(ptemp, listb[[x]], paste(names(list1)[i], names(list2)[x], sep="-"), direc, sessiontempdir)
+				renderlist[nz,] <- paste(names(list1)[i], names(list2)[x], sep="-")
 				matches1[nz,] <- c(names(list1)[i], names(list2)[x], d1)
 				matches2[nz,] <- c(names(list2)[x], names(list1)[i], d1)
 				print(paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", "Hausdorff", " distance: ", d1, sep=""))
@@ -160,5 +153,5 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	setwd(workingdir)
 	print("Form comparisons completed")
 	t_time <- end_time(start_time)
-	return(list(pairwise_coords, resmatches, direc, comparisons, matches, renderlist, t_time))
+	return(list(resmatches, direc, comparisons, matches, renderlist, t_time))
 }

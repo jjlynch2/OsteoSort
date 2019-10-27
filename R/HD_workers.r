@@ -23,5 +23,6 @@ Max_HD_KDTree <- function(f2, f1, threads) {
 HD_KDTree_Ind <- function(f1, f2, threads,k=1) {
 	f1t <- Rvcg::vcgCreateKDtree(f1)
 	clost <- Rvcg::vcgSearchKDtree(f1t,f2,k,threads=threads)
+	if(k > 1) {return(cbind(matrix(s$distance), matrix(s$index)))}
 	return(cbind(clost$distance, clost$index))
 }

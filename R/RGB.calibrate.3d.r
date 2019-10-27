@@ -13,5 +13,5 @@ RGB.calibrate.3d <- function(align_data) {
 
 	try(rgl.close())
 	options(rgl.useNULL=TRUE) #required to avoid rgl device opening in shiny
-	return(dt)	
+	return(dt)
 }

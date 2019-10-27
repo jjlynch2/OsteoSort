@@ -66,6 +66,10 @@ observeEvent(input$clearFile3D, {
 		file.remove(input$leftimages3D$datapath)
 		file.remove(input$leftimages3D$name)
 	}
+	delete.tmp.data(dirdel, sessiontemp)
+	output$mspec3D <- renderUI({
+		selectInput(inputId = "mspec3D", label = "Choose comparison", choices = "")
+	})
 	fileInput('leftimages3D', 'Upload first data set', accept=c("xyz"), multiple = TRUE)
 	fileInput('rightimages3D', 'Upload second data set', accept=c("xyz"), multiple = TRUE)
 })
@@ -206,24 +210,24 @@ observeEvent(input$pro3D, {
 
 		out1 <- input.3d(list1 = input$rightimages3D$name, list2 = input$leftimages3D$name)
 		out2 <- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, multiple_file_output_graph_3d$multiple_file_output_graph_3d), labtf3d = labtf3d$labtf3d, sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
-		direc <- out2[[3]]
-
-		if(is.null(nrow(out2[[2]]))) {pm <- 1; out2[[2]] <- rbind(out2[[2]],c(NA,NA,NA)) }
-		if(!is.null(nrow(out2[[2]]))) {pm <- nrow(as.matrix(out2[[2]][,1]))}
+		direc <- out2[[2]]
+		dirdel <<- direc
+		if(is.null(nrow(out2[[1]]))) {pm <- 1; out2[[1]] <- rbind(out2[[1]],c(NA,NA,NA)) }
+		if(!is.null(nrow(out2[[5]]))) {pm <- nrow(as.matrix(out2[[1]][,1]))}
 		output$table3D <- DT::renderDataTable({
-			DT::datatable(out2[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+			DT::datatable(out2[[1]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 		})
 
 		output$contents3D <- renderUI({
-			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[7]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
+			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
 		})
 		output$mspec3D <- renderUI({
-			selectInput(inputId = "mspec3D", label = "Choose comparison", choices = c(out2[[6]][,3]))
+			selectInput(inputId = "mspec3D", label = "Choose comparison", choices = c(out2[[5]][,3]))
 		})
 
 		if(forcd$forcd) {
-				if(nrow(out2[[2]]) > 1){
-					td <- forcefun3d(out2[[2]])
+				if(nrow(out2[[1]]) > 1){
+					td <- forcefun3d(out2[[1]])
 					links <- td[[1]]
 					nodes <- td[[2]]
 					output$forceNetworkOSMd <- renderForceNetwork({
@@ -262,7 +266,7 @@ observeEvent(input$pro3D, {
 					setwd(direc)
 					file.remove(paste(direc,'.zip',sep=''))
 					if(is.numeric(input$table3D_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(out2[[2]][input$table3D_rows_selected,], method="exclusion", type="csv4")
+						no_return_value <- OsteoSort:::output_function(out2[[1]][input$table3D_rows_selected,], method="exclusion", type="csv4")
 					} else {file.remove("selected-list.csv")}
 					setwd(sessiontemp)
 					files <- list.files(direc, recursive = TRUE)
@@ -280,15 +284,10 @@ observeEvent(input$pro3D, {
 		}
 	}
 	observeEvent(input$mspec3D, {
-			tt1 <- out2[[6]][out2[[6]][,3] == input$mspec3D, ][1]
-			tt1 <- as.numeric(tt1)
-
-			tt2 <- out2[[6]][out2[[6]][,3] == input$mspec3D, ][2]
-			tt2 <- as.numeric(tt2)
-
-			tt1 <- out2[[1]][[tt1]]
-			tt2 <- out2[[1]][[tt2]]
-
+		if(input$mspec3D != "") {
+			tt <- import.tmp.data(input$mspec3D, out2[[2]], sessiontemp)
+			tt1 <- tt[[1]][c(1:3)]
+			tt2 <- tt[[2]][c(1:3)]
 			output$webgl3D <- renderRglwidget ({
 				try(rgl.close())
 
@@ -298,6 +297,7 @@ observeEvent(input$pro3D, {
 
 				rglwidget()
 			})
+		}
 	})
 
 	gc()

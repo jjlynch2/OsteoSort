@@ -20,7 +20,7 @@ RGB.locator.3d <- function(align_data, type = "landmark",r = c(255,255,255), g =
 		lr <- HD_KDTree_Ind(align_data[,c(4:6)], r, threads = threads)
 		lg <- HD_KDTree_Ind(align_data[,c(4:6)], g, threads = threads)
 		lb <- HD_KDTree_Ind(align_data[,c(4:6)], b, threads = threads)
-		red <-	lr[2]
+		red <- lr[2]
 		green <- lg[2]
 		blue <- lb[2]
 
@@ -39,7 +39,7 @@ RGB.locator.3d <- function(align_data, type = "landmark",r = c(255,255,255), g =
 		lf <- JuliaCall("AD3D", align_data[,c(4:6)], f)
 		lf <- HD_KDTree_Ind(align_data[,c(4:6)], f, threads = threads, k = nrow(align_data))
 
-		fracture <- which(lf[,1] <= f_threshold)
+		fracture <- unique(lf[which(lf[,1] <= f_threshold),1])
 		aa <- 1
 	}
 

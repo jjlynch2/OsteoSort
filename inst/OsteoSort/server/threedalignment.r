@@ -162,18 +162,13 @@ observeEvent(input$aligndata$datapath, {
 
 observeEvent(input$simplify, {
 	if(length(input$aligndata$datapath) > 0) {
-		if(ncorespc$ncorespc != julia_call("nprocs")) {
-			print("Setting up Julia workers...")
-			JuliaSetup(add_cores = ncorespc$ncorespc, source = TRUE, recall_libraries = TRUE)
-			print("Finished.")
-		}
 		showModal(modalDialog(title = "Point cloud K-means simplification started...", easyClose = FALSE, footer = NULL))
 		if(input$alln == "Present") {		
 			ttt <- filelist3$list[[position$pos]]
 			filelist3$list[[position$pos]] <- kmeans.3d(filelist3$list[[position$pos]], cluster = vara$vara, threads = ncorespc$ncorespc)
 			if(!is.null(landmarks$landmarks[[position$pos]][[2]])) {
-				tempp <- julia_call("AD3D", as.matrix(ttt[landmarks$landmarks[[position$pos]][[2]],]), as.matrix(filelist3$list[[position$pos]]))
-				landmarks$landmarks[[position$pos]][[2]] <- unique(which(tempp < tva$tva, arr.ind = TRUE)[,2])
+				tempp <- HD_KDTree_Ind(as.matrix(ttt[landmarks$landmarks[[position$pos]][[2]],]), as.matrix(filelist3$list[[position$pos]]), threads = ncorespc$ncorespc, k = nrow(as.matrix(ttt[landmarks$landmarks[[position$pos]][[2]],])))
+				landmarks$landmarks[[position$pos]][[2]] <- unique(tempp[which(tempp[,1] < tva$tva),1])
 				if(length(landmarks$landmarks[[position$pos]][[2]]) == 0) { landmarks$landmarks[[position$pos]][[2]] <- NULL }
 			}
 		}
@@ -184,8 +179,8 @@ observeEvent(input$simplify, {
 				filelist3$list[[i]] <- kmeans.3d(filelist3$list[[i]], cluster = vara$vara, threads = ncorespc$ncorespc)
 
 				if(!is.null(landmarks$landmarks[[i]][[2]])) {
-					tempp <- julia_call("AD3D", as.matrix(ttt[landmarks$landmarks[[i]][[2]],]), as.matrix(filelist3$list[[i]]))
-					landmarks$landmarks[[i]][[2]] <- unique(which(tempp < tva$tva, arr.ind = TRUE)[,2])
+					tempp <- HD_KDTree_Ind(as.matrix(ttt[landmarks$landmarks[[i]][[2]],]), as.matrix(filelist3$list[[i]]), threads = ncorespc$ncorespc, k = nrow(as.matrix(filelist3$list[[i]])))
+					landmarks$landmarks[[i]][[2]] <- unique(tempp[which(tempp[,1] < tva$tva),1])
 					if(length(landmarks$landmarks[[i]][[2]]) == 0) { landmarks$landmarks[[i]][[2]] <- NULL }
 				}
 			}
@@ -229,11 +224,6 @@ observeEvent(input$start2, {
 
 observeEvent(input$RGB1, {
 	if(length(input$aligndata$datapath) > 0) {
-		if(ncorespc$ncorespc != julia_call("nprocs")) {
-			print("Setting up Julia workers...")
-			JuliaSetup(add_cores = ncorespc$ncorespc, source = TRUE, recall_libraries = TRUE)
-			print("Finished.")
-		}
 		showModal(modalDialog(title = "RGB landmark extraction has started...", easyClose = FALSE, footer = NULL))
 		if(input$alln == "Present") {		
 			temp_p <- filelist3$list[[position$pos]]
@@ -250,11 +240,6 @@ observeEvent(input$RGB1, {
 })
 observeEvent(input$RGB2, {
 	if(length(input$aligndata$datapath) > 0) {
-		if(ncorespc$ncorespc != julia_call("nprocs")) {
-			print("Setting up Julia workers...")
-			JuliaSetup(add_cores = ncorespc$ncorespc, source = TRUE, recall_libraries = TRUE)
-			print("Finished.")
-		}
 		showModal(modalDialog(title = "RGB fracture extraction has started...", easyClose = FALSE, footer = NULL))
 		if(input$alln == "Present") {		
 			temp_p <- filelist3$list[[position$pos]]
