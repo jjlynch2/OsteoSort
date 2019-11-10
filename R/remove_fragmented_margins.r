@@ -2,8 +2,8 @@ remove_fragmented_margins <- function(first_configuration, second_configuration,
 	moving_indices <- indices[[1]]
 	target_indices <- indices[[2]]
 
-	t1 <- HD_KDTree_Ind(first_configuration, second_configuration, threads = threads)
-	t2 <- HD_KDTree_Ind(second_configuration, first_configuration, threads = threads)
+	t2 <- HD_KDTree_Ind(first_configuration, second_configuration, threads = threads)
+	t1 <- HD_KDTree_Ind(second_configuration, first_configuration, threads = threads)
 
 	if(length(target_indices) > 0) {
 		for(i in 1:nrow(target_indices)) {

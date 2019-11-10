@@ -196,111 +196,107 @@ observeEvent(input$rightimages3D$datapath, {
 observeEvent(input$pro3D, {
 	output$contents3D <- renderUI({
 	   HTML(paste(""))
-	})	
+	})
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
-	withProgress(message = 'Calculation has started',
-	            detail = '', value = 0, {       
-	            for (i in 1:10) {
-	       incProgress(1/10)
-	       Sys.sleep(0.05)
-	     }
-	})
-
-	if(!is.null(input$leftimages3D$datapath) && !is.null(input$leftimages3D$datapath)) { #prevents crashing
-
-		out1 <- input.3d(list1 = input$rightimages3D$name, list2 = input$leftimages3D$name)
-		out2 <- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, multiple_file_output_graph_3d$multiple_file_output_graph_3d), labtf3d = labtf3d$labtf3d, sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
-		direc <- out2[[2]]
-		dirdel <<- direc
-		if(is.null(nrow(out2[[1]]))) {pm <- 1; out2[[1]] <- rbind(out2[[1]],c(NA,NA,NA)) }
-		if(!is.null(nrow(out2[[5]]))) {pm <- nrow(as.matrix(out2[[1]][,1]))}
-		output$table3D <- DT::renderDataTable({
-			DT::datatable(out2[[1]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
-		})
-
-		output$contents3D <- renderUI({
-			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
-		})
-		output$mspec3D <- renderUI({
-			selectInput(inputId = "mspec3D", label = "Choose comparison", choices = c(out2[[5]][,3]))
-		})
-
-		if(forcd$forcd) {
-				if(nrow(out2[[1]]) > 1){
-					td <- forcefun3d(out2[[1]])
-					links <- td[[1]]
-					nodes <- td[[2]]
-					output$forceNetworkOSMd <- renderForceNetwork({
-						forceNetwork(Links = links, Nodes = nodes,
-								  Source = "source", Target = "target",
-								  Value = "value", NodeID = "name",
-								  Group = "group", opacity = 1,
-									colourScale = JS('d3.scaleOrdinal().domain(["1", "2"]).range(["#ea6011","#126a8f"])'),
-									zoom = TRUE
-						)
-					})
-				}
-		}
-
-		if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps || multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
-			setwd(direc)
-			if(multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
-				nimages <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
-			} else {
-				nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")
-			}
-			output$multiple_plot_na_3d <- renderImage({
-				list(src = nimages,
-					contentType = 'image/jpg',
-					height = 800,
-					alt = "A"
-				)
-			}, deleteFile = FALSE)
-			setwd(sessiontemp)
-
-			output$downloadData3D <- downloadHandler(
-				filename <- function() {
-					paste("results.zip")
-				},      
-				content <- function(file) {
-					setwd(direc)
-					file.remove(paste(direc,'.zip',sep=''))
-					if(is.numeric(input$table3D_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(out2[[1]][input$table3D_rows_selected,], method="exclusion", type="csv4")
-					} else {file.remove("selected-list.csv")}
-					setwd(sessiontemp)
-					files <- list.files(direc, recursive = TRUE)
-					setwd(direc)
-					zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
-					for(file_na in files[-1]) {
-						zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
-					}
-					file.copy(paste(direc,'.zip',sep=''), file)  
-					setwd(sessiontemp)    
-				},
-				contentType = "application/zip"
-			)
-			setwd(sessiontemp)
-		}
-	}
-	observeEvent(input$mspec3D, {
-		if(input$mspec3D != "") {
-			tt <- import.tmp.data(input$mspec3D, out2[[2]], sessiontemp)
-			tt1 <- tt[[1]][c(1:3)]
-			tt2 <- tt[[2]][c(1:3)]
-			output$webgl3D <- renderRglwidget ({
-				try(rgl.close())
-
-				points3d(tt1, size=3, col="dimgray", box=FALSE)
-				points3d(tt2, size=3, col="dodgerblue", box=FALSE)
-				axes3d(c('x++', 'y++', 'z++'))
-
-				rglwidget()
+	withProgress(message = 'Calculation has started', detail = '', value = 1, min=0, max=4, {
+		if(!is.null(input$leftimages3D$datapath) && !is.null(input$leftimages3D$datapath)) { #prevents crashing
+			setProgress(value = 2, message = "Importing data", detail = '')
+			out1 <- input.3d(list1 = input$rightimages3D$name, list2 = input$leftimages3D$name)
+			setProgress(value = 3, message = "Running comparisons", detail = '')
+			out2 <- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, multiple_file_output_graph_3d$multiple_file_output_graph_3d), labtf3d = labtf3d$labtf3d, sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
+			direc <- out2[[2]]
+			dirdel <<- direc
+			if(is.null(nrow(out2[[1]]))) {pm <- 1; out2[[1]] <- rbind(out2[[1]],c(NA,NA,NA)) }
+			if(!is.null(nrow(out2[[5]]))) {pm <- nrow(as.matrix(out2[[1]][,1]))}
+			output$table3D <- DT::renderDataTable({
+				DT::datatable(out2[[1]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 			})
-		}
-	})
 
-	gc()
-	removeModal()  
+			output$contents3D <- renderUI({
+				HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
+			})
+			output$mspec3D <- renderUI({
+				selectInput(inputId = "mspec3D", label = "Choose comparison", choices = c(out2[[5]][,3]))
+			})
+
+			if(forcd$forcd) {
+					if(nrow(out2[[1]]) > 1){
+						td <- forcefun3d(out2[[1]])
+						links <- td[[1]]
+						nodes <- td[[2]]
+						output$forceNetworkOSMd <- renderForceNetwork({
+							forceNetwork(Links = links, Nodes = nodes,
+									  Source = "source", Target = "target",
+									  Value = "value", NodeID = "name",
+									  Group = "group", opacity = 1,
+										colourScale = JS('d3.scaleOrdinal().domain(["1", "2"]).range(["#ea6011","#126a8f"])'),
+										zoom = TRUE
+							)
+						})
+					}
+			}
+
+			if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps || multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
+				setwd(direc)
+				if(multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
+					nimages <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
+				} else {
+					nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")
+				}
+				output$multiple_plot_na_3d <- renderImage({
+					list(src = nimages,
+						contentType = 'image/jpg',
+						height = 800,
+						alt = "A"
+					)
+				}, deleteFile = FALSE)
+				setwd(sessiontemp)
+
+				output$downloadData3D <- downloadHandler(
+					filename <- function() {
+						paste("results.zip")
+					},      
+					content <- function(file) {
+						setwd(direc)
+						file.remove(paste(direc,'.zip',sep=''))
+						if(is.numeric(input$table3D_rows_selected)) {
+							no_return_value <- OsteoSort:::output_function(out2[[1]][input$table3D_rows_selected,], method="exclusion", type="csv4")
+						} else {file.remove("selected-list.csv")}
+						setwd(sessiontemp)
+						files <- list.files(direc, recursive = TRUE)
+						setwd(direc)
+						zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
+						for(file_na in files[-1]) {
+							zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
+						}
+						file.copy(paste(direc,'.zip',sep=''), file)  
+						setwd(sessiontemp)    
+					},
+					contentType = "application/zip"
+				)
+				setwd(sessiontemp)
+			}
+		}
+		observeEvent(input$mspec3D, {
+			if(input$mspec3D != "") {
+				tt <- import.tmp.data(input$mspec3D, out2[[2]], sessiontemp)
+				tt1 <- tt[[1]][c(1:3)]
+				tt2 <- tt[[2]][c(1:3)]
+				output$webgl3D <- renderRglwidget ({
+					try(rgl.close())
+
+					points3d(tt1, size=3, col="dimgray", box=FALSE)
+					points3d(tt2, size=3, col="dodgerblue", box=FALSE)
+					axes3d(c('x++', 'y++', 'z++'))
+
+					rglwidget()
+				})
+			}
+		})
+
+		gc()
+		removeModal()
+		setProgress(value = 4, message = "Completed", detail = '')
+	})
 })
 	

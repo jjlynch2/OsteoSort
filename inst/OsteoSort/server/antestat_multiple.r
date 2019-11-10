@@ -122,129 +122,126 @@ observeEvent(input$clearFile1ante, {
 
 observeEvent(input$proantestatm, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
-	withProgress(message = 'Calculation has started',
-		detail = '', value = 0, {
-		for (i in 1:10) {
-			incProgress(1/10)
-			Sys.sleep(0.05)
+	withProgress(message = 'Calculation has started', detail = '', value = 0, min=0, max=3, {
+		inFile1 <- input$file1ante
+		inFile2 <- input$file2ante
+		if (is.null(inFile1) || is.null(inFile2)){
+			removeModal()
+			shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
+			return(NULL) 
 		}
-	})
 
-	inFile1 <- input$file1ante
-	inFile2 <- input$file2ante
-	if (is.null(inFile1) || is.null(inFile2)){
-		removeModal()
-		shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
-		return(NULL) 
-	}
+		tempdata1m <- read.csv(inFile1$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))
+		tempdata2m <- read.csv(inFile2$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))
 
-	tempdata1m <- read.csv(inFile1$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))
-	tempdata2m <- read.csv(inFile2$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))
-
-	outtemp1m <- antestat.input(bone = input$multiple_ante_elements, 
-							antemortem_stature = tempdata1m, 
-							postmortem_measurement = tempdata2m, 
-							side = input$state_reference_ante_sidem, 
-							measurement = input$Measurement_ante_mm,
-							ref = stature_reference_imported_antem$stature_reference_imported_antem
-	)
-	if(is.null(outtemp1m)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
-	if(is.null(input$Measurement_ante_mm)) {removeModal();shinyalert(title = "ERROR!", text="You forgot to enter the measurement!.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
-	outtemp2m <- antestat.regtest(labtfa = labtfa$labtfa,
-								threads = numbercoresglobalm$ncorem, 
-								antemortem = outtemp1m[[1]], 
-								postmortem = outtemp1m[[2]], 
-								ref = outtemp1m[[3]],
-								alphalevel = alphalevelsantestatm$alphalevelsantestatm, 
-								output_options = c(fileoutputant1m$fileoutputant1m, FALSE, multiple_file_output_graph_ante$multiple_file_output_graph_ante), 
-								sessiontempdir = sessiontemp
-	)
-
-	if(!all(is.na(outtemp2m[[2]])) || !all(is.na(outtemp2m[[3]]))) {
-
-		ll <- nrow(outtemp2m[[2]]) + nrow(outtemp2m[[3]])
-		nmatch <- nrow(outtemp2m[[2]])
-		pmsize <- length(unique(c(outtemp2m[[2]][,1], outtemp2m[[3]][,1]))) 
-		amsize <- length(unique(c(outtemp2m[[2]][,4], outtemp2m[[3]][,4]))) 
-		t_time <- outtemp2m[[4]]
-		output$antestat_outputm <- renderUI({
-			HTML(paste("<strong>",
-						"Completed in: ", "<font color=\"#00688B\">", t_time, " minutes</font>", 
-						"<br/>","Comparisons: ",   "<font color=\"#00688B\">", ll, "</font>", 
-		                   "<br/>", "Postmortem Specimens: ",           "<font color=\"#00688B\">",pmsize, "</font>", 
-		                   "<br/>", "Antemortem Statures: ",           "<font color=\"#00688B\">",amsize, "</font>", 
-		                   '<br/>', "Potential matches: ",  "<font color=\"#00688B\">",nmatch , "</font>",
-		                   '<br/>', "Exclusions: ",         "<font color=\"#00688B\">",ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)",  "</font>",
-						'</strong>'))
-		})
-	}
-
-	output$antestat_table1m <- DT::renderDataTable({
-		DT::datatable(outtemp2m[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
-	})
-	output$antestat_table2m <- DT::renderDataTable({
-		DT::datatable(outtemp2m[[3]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
-	})
-
-	if(forcante$forcante) {
-			if(nrow(outtemp2m[[2]]) > 1){
-				td <- forcefunante(outtemp2m[[2]])
-				links <- td[[1]]
-				nodes <- td[[2]]
-				output$forceNetworkOSMante <- renderForceNetwork({
-					forceNetwork(Links = links, Nodes = nodes,
-							  Source = "source", Target = "target",
-							  Value = "value", NodeID = "name",
-							  Group = "group", opacity = 1,
-								colourScale = JS('d3.scaleOrdinal().domain(["1", "2"]).range(["#ea6011","#126a8f"])'),
-								zoom = TRUE
-					)
-				})
-			}
-	}
-
-	if(fileoutputant1m$fileoutputant1m || multiple_file_output_graph_ante$multiple_file_output_graph_ante) {
-		setwd(outtemp2m[[1]])
-		nimages <- list.files()
-		if(multiple_file_output_graph_ante$multiple_file_output_graph_ante && length(nimages[grep(".jpg", nimages)]) != 0) {
-			nimages <- paste(sessiontemp, "/", outtemp2m[[1]], "/", nimages[grep(".jpg", nimages)], sep="")
-		} else {
-			nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")
-		}
-		output$multiple_plot_na_ante <- renderImage({
-			list(src = nimages,
-				contentType = 'image/jpg',
-				height = 800,
-				alt = "A"
-			)
-		}, deleteFile = FALSE)
-		setwd(sessiontemp)
-		output$downloadantestatm <- downloadHandler(
-			filename <- function() {
-				paste("results.zip")
-			},
-			content <- function(file) {
-				setwd(outtemp2m[[1]])
-				file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
-				if(is.numeric(input$antestat_table1m_rows_selected)) {
-					no_return_value <- OsteoSort:::output_function(outtemp2m[[2]][input$antestat_table1m_rows_selected,], method="exclusion", type="csv2")
-				} else {file.remove("excluded-selected-list.csv")}
-				if(is.numeric(input$antestat_table2m_rows_selected)) {
-					no_return_value <- OsteoSort:::output_function(outtemp2m[[3]][input$antestat_table2m_rows_selected,], method="exclusion", type="csv2")
-				} else {file.remove("not-excluded-selected-list.csv")}
-				setwd(sessiontemp)
-				files <- list.files(outtemp2m[[1]], recursive = TRUE)
-				setwd(outtemp2m[[1]])
-				zip:::zipr(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = files[1], compression = 1)
-				for(file_na in files[-1]) {
-					zip:::zipr_append(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
-				}
-				file.copy(paste(outtemp2m[[1]],'.zip',sep=''), file) 
-				setwd(sessiontemp)  
-			},
-			contentType = "application/zip"
+		incProgress(amount = 1, message = "Antemortem: sorting data")
+		outtemp1m <- antestat.input(bone = input$multiple_ante_elements, 
+								antemortem_stature = tempdata1m, 
+								postmortem_measurement = tempdata2m, 
+								side = input$state_reference_ante_sidem, 
+								measurement = input$Measurement_ante_mm,
+								ref = stature_reference_imported_antem$stature_reference_imported_antem
 		)
-	}
-	setwd(sessiontemp) #restores session
-	removeModal() #removes modal
+		if(is.null(outtemp1m)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+		if(is.null(input$Measurement_ante_mm)) {removeModal();shinyalert(title = "ERROR!", text="You forgot to enter the measurement!.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+		incProgress(amount = 1, message = "Antemortem: running comparisons")
+		outtemp2m <- antestat.regtest(labtfa = labtfa$labtfa,
+									threads = numbercoresglobalm$ncorem, 
+									antemortem = outtemp1m[[1]], 
+									postmortem = outtemp1m[[2]], 
+									ref = outtemp1m[[3]],
+									alphalevel = alphalevelsantestatm$alphalevelsantestatm, 
+									output_options = c(fileoutputant1m$fileoutputant1m, FALSE, multiple_file_output_graph_ante$multiple_file_output_graph_ante), 
+									sessiontempdir = sessiontemp
+		)
+
+		if(!all(is.na(outtemp2m[[2]])) || !all(is.na(outtemp2m[[3]]))) {
+
+			ll <- nrow(outtemp2m[[2]]) + nrow(outtemp2m[[3]])
+			nmatch <- nrow(outtemp2m[[2]])
+			pmsize <- length(unique(c(outtemp2m[[2]][,1], outtemp2m[[3]][,1]))) 
+			amsize <- length(unique(c(outtemp2m[[2]][,4], outtemp2m[[3]][,4]))) 
+			t_time <- outtemp2m[[4]]
+			output$antestat_outputm <- renderUI({
+				HTML(paste("<strong>",
+							"Completed in: ", "<font color=\"#00688B\">", t_time, " minutes</font>", 
+							"<br/>","Comparisons: ",   "<font color=\"#00688B\">", ll, "</font>", 
+				              "<br/>", "Postmortem Specimens: ",           "<font color=\"#00688B\">",pmsize, "</font>", 
+				              "<br/>", "Antemortem Statures: ",           "<font color=\"#00688B\">",amsize, "</font>", 
+				              '<br/>', "Potential matches: ",  "<font color=\"#00688B\">",nmatch , "</font>",
+				              '<br/>', "Exclusions: ",         "<font color=\"#00688B\">",ll - nmatch, " (", round((ll - nmatch) / ll, digits = 3) * 100, "%)",  "</font>",
+							'</strong>'))
+			})
+		}
+
+		output$antestat_table1m <- DT::renderDataTable({
+			DT::datatable(outtemp2m[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		})
+		output$antestat_table2m <- DT::renderDataTable({
+			DT::datatable(outtemp2m[[3]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		})
+
+		if(forcante$forcante) {
+				if(nrow(outtemp2m[[2]]) > 1){
+					td <- forcefunante(outtemp2m[[2]])
+					links <- td[[1]]
+					nodes <- td[[2]]
+					output$forceNetworkOSMante <- renderForceNetwork({
+						forceNetwork(Links = links, Nodes = nodes,
+								  Source = "source", Target = "target",
+								  Value = "value", NodeID = "name",
+								  Group = "group", opacity = 1,
+									colourScale = JS('d3.scaleOrdinal().domain(["1", "2"]).range(["#ea6011","#126a8f"])'),
+									zoom = TRUE
+						)
+					})
+				}
+		}
+
+		if(fileoutputant1m$fileoutputant1m || multiple_file_output_graph_ante$multiple_file_output_graph_ante) {
+			setwd(outtemp2m[[1]])
+			nimages <- list.files()
+			if(multiple_file_output_graph_ante$multiple_file_output_graph_ante && length(nimages[grep(".jpg", nimages)]) != 0) {
+				nimages <- paste(sessiontemp, "/", outtemp2m[[1]], "/", nimages[grep(".jpg", nimages)], sep="")
+			} else {
+				nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")
+			}
+			output$multiple_plot_na_ante <- renderImage({
+				list(src = nimages,
+					contentType = 'image/jpg',
+					height = 800,
+					alt = "A"
+				)
+			}, deleteFile = FALSE)
+			setwd(sessiontemp)
+			output$downloadantestatm <- downloadHandler(
+				filename <- function() {
+					paste("results.zip")
+				},
+				content <- function(file) {
+					setwd(outtemp2m[[1]])
+					file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
+					if(is.numeric(input$antestat_table1m_rows_selected)) {
+						no_return_value <- OsteoSort:::output_function(outtemp2m[[2]][input$antestat_table1m_rows_selected,], method="exclusion", type="csv2")
+					} else {file.remove("excluded-selected-list.csv")}
+					if(is.numeric(input$antestat_table2m_rows_selected)) {
+						no_return_value <- OsteoSort:::output_function(outtemp2m[[3]][input$antestat_table2m_rows_selected,], method="exclusion", type="csv2")
+					} else {file.remove("not-excluded-selected-list.csv")}
+					setwd(sessiontemp)
+					files <- list.files(outtemp2m[[1]], recursive = TRUE)
+					setwd(outtemp2m[[1]])
+					zip:::zipr(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = files[1], compression = 1)
+					for(file_na in files[-1]) {
+						zip:::zipr_append(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
+					}
+					file.copy(paste(outtemp2m[[1]],'.zip',sep=''), file) 
+					setwd(sessiontemp)  
+				},
+				contentType = "application/zip"
+			)
+		}
+		setwd(sessiontemp) #restores session
+		removeModal() #removes modal
+		incProgress(amount = 1, message = "Completed")
+	})
 })

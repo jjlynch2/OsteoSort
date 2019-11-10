@@ -15,106 +15,116 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	pairwise_coords <- list() #saved pairwise registration
 	renderlist <- data.frame(0,0,0)
 	if(fragment) {
-		for(i in 1:length(list1)) {
-			for(x in 1:length(list2)) {
-				list1[[i]][,2] <- list1[[i]][,2] * -1 #mirror
-				L1 <- as.matrix(translation(list1[[i]][,c(1:3)]))
-				L1p <- as.numeric(na.omit(list1[[i]][,c(4:6)]))
-				L1p <- rbind(L1p, as.numeric(na.omit(list1[[i]][,c(7:9)])))
-				L1p <- rbind(L1p, as.numeric(na.omit(list1[[i]][,c(10:12)])))
-				L1mp <- as.numeric(na.omit(list1[[i]][,c(13)]))
-				L1p[,2] <- L1p[,2] * -1 #mirror 
-				L2 <- as.matrix(translation(list2[[i]][,c(1:3)]))
-				L2p <- as.numeric(na.omit(list2[[i]][,c(4:6)]))
-				L2p <- rbind(L2p, as.numeric(na.omit(list2[[i]][,c(7:9)])))
-				L2p <- rbind(L2p, as.numeric(na.omit(list2[[i]][,c(10:12)])))
-				L2mp <- as.numeric(na.omit(list2[[i]][,c(13)]))
-				rot <- rotation(L1p, L2p)
-				L1 <- L1 - rep(1,nrow(L1)) %*% t(mean_shape(L1p))
-				L2 <- L2 - rep(1,nrow(L2)) %*% t(mean_shape(L2p))
-				L2 <- L2 %*% rot$rotation
-				L1 <- icpmat(L1, L2, type = "rigid", threads = threads, iterations = iteration)
-				lh_combined <- rbind(L1, L2)
-				lh_combined <- pca_align(lh_combined)
-				lhr <- nrow(L1)
-				lhc <- nrow(lh_combined)
-				L1 <- lh_combined[1:lhr,]
-				L2 <- lh_combined[(lhr+1):lhc,]
-				temp1 <- rep(FALSE, nrow(L1))
-				temp1[L1mp] <- TRUE
-				temp2 <- rep(FALSE, nrow(L2))
-				temp2[L2mp] <- TRUE
-				L1 <- cbind(L1,temp1)
-				L2 <- cbind(L2,temp2)
-				centroid <- apply(lh_combined, 2, mean) #centroid of combined 
-				a <- CentroidBand(L1, threshold = band_threshold, centroid = centroid)
-				b <- CentroidBand(L2, threshold = band_threshold, centroid = centroid)
-				moving_indices <- matrix(which(a[,4] == 1))
-				target_indices <- matrix(which(b[,4] == 1))
-				moving <- a[,-4]
-				target <- b[,-4]
-				tte <- remove_fragmented_margins(moving, target, list(moving_indices, target_indices))
-				dd <- max(mean(tte[[1]]), mean(tte[[2]]))
-				write.tmp.data(target, moving , paste(names(list1)[i], names(list2)[x], sep="-"), direc, sessiontempdir)
-				renderlist[nz,] <- paste(names(list1)[i], names(list2)[x], sep="-")
-				matches1[nz,] <- c(names(list1)[i], names(list2)[x], dd)
-				matches2[nz,] <- c(names(list2)[x], names(list1)[i], dd)
-				print(paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", "Hausdorff", " distance: ", dd, sep=""))
-				nz <- nz + 1
+		withProgress(message = '', detail = '', value = 1, min=0, max=length(lista) * length(listb), {
+			for(i in 1:length(list1)) {
+				for(x in 1:length(list2)) {
+					list1[[i]][,2] <- list1[[i]][,2] * -1 #mirror
+					L1 <- as.matrix(translation(list1[[i]][,c(1:3)]))
+					L1p <- as.numeric(na.omit(list1[[i]][,c(4:6)]))
+					L1p <- rbind(L1p, as.numeric(na.omit(list1[[i]][,c(7:9)])))
+					L1p <- rbind(L1p, as.numeric(na.omit(list1[[i]][,c(10:12)])))
+					L1mp <- as.numeric(na.omit(list1[[i]][,c(13)]))
+					L1p[,2] <- L1p[,2] * -1 #mirror 
+					L2 <- as.matrix(translation(list2[[i]][,c(1:3)]))
+					L2p <- as.numeric(na.omit(list2[[i]][,c(4:6)]))
+					L2p <- rbind(L2p, as.numeric(na.omit(list2[[i]][,c(7:9)])))
+					L2p <- rbind(L2p, as.numeric(na.omit(list2[[i]][,c(10:12)])))
+					L2mp <- as.numeric(na.omit(list2[[i]][,c(13)]))
+					rot <- rotation(L1p, L2p)
+					L1 <- L1 - rep(1,nrow(L1)) %*% t(mean_shape(L1p))
+					L2 <- L2 - rep(1,nrow(L2)) %*% t(mean_shape(L2p))
+					L2 <- L2 %*% rot$rotation
+					L1 <- icpmat(L1, L2, type = "rigid", threads = threads, iterations = iteration)
+					lh_combined <- rbind(L1, L2)
+					lh_combined <- pca_align(lh_combined)
+					lhr <- nrow(L1)
+					lhc <- nrow(lh_combined)
+					L1 <- lh_combined[1:lhr,]
+					L2 <- lh_combined[(lhr+1):lhc,]
+					temp1 <- rep(FALSE, nrow(L1))
+					temp1[L1mp] <- TRUE
+					temp2 <- rep(FALSE, nrow(L2))
+					temp2[L2mp] <- TRUE
+					L1 <- cbind(L1,temp1)
+					L2 <- cbind(L2,temp2)
+					centroid <- apply(lh_combined, 2, mean) #centroid of combined 
+					a <- CentroidBand(L1, threshold = band_threshold, centroid = centroid)
+					b <- CentroidBand(L2, threshold = band_threshold, centroid = centroid)
+					moving_indices <- matrix(which(a[,4] == 1))
+					target_indices <- matrix(which(b[,4] == 1))
+					moving <- a[,-4]
+					target <- b[,-4]
+					tte <- remove_fragmented_margins(moving, target, list(moving_indices, target_indices))
+					dd <- max(mean(tte[[1]]), mean(tte[[2]]))
+					write.tmp.data(target, moving , paste(names(list1)[i], names(list2)[x], sep="-"), direc, sessiontempdir)
+					renderlist[nz,] <- paste(names(list1)[i], names(list2)[x], sep="-")
+					matches1[nz,] <- c(names(list1)[i], names(list2)[x], dd)
+					matches2[nz,] <- c(names(list2)[x], names(list1)[i], dd)
+					print(paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", "Hausdorff", " distance: ", dd, sep=""))
+					incProgress(amount = 1, message = paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", "Hausdorff", " distance: ", dd, sep=""), detail = '')
+					nz <- nz + 1
+				}
 			}
-		}
+		})
 	} #end of fragment if
 	if(!fragment) {
 		lista <- list()
 		listb <- list()
-		for(i in 1:length(list1)) {
-			A <- list1[[i]][,c(1:3)]
-			A <- OsteoSort::pca_align(A)
-			if(band == TRUE) {
-				lista[[i]] <- CentroidBand(A, band_threshold)
-			}
-			if(band == FALSE) {
-				lista[[i]] <- as.matrix(A)
-			}
-		}
-		for(i in 1:length(list2)) {
-			B <- list2[[i]][,c(1:3)]
-			B <- OsteoSort::pca_align(B)
-			if(band == TRUE) {
-				listb[[i]] <- CentroidBand(B, band_threshold)
-			}
-			if(band == FALSE) {
-				listb[[i]] <- as.matrix(B)
-			}
-		}
-		for(i in 1:length(lista)) {
-			for(x in 1:length(listb)) {
-				d1 <- 999999
-				ptemp <- NULL
-				for(k in 1:8) {
-					if (k == 1) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2],lista[[i]][,3])}
-					else if (k == 2) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2]*-1,lista[[i]][,3]*-1)}
-					else if (k == 3) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2]*-1,lista[[i]][,3]*-1)}
-					else if (k == 4) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2],lista[[i]][,3]*-1)}
-					else if (k == 5) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2]*-1,lista[[i]][,3])}
-					else if (k == 6) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2],lista[[i]][,3]*-1)}
-					else if (k == 7) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2]*-1,lista[[i]][,3])}
-					else if(k == 8) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2],lista[[i]][,3])}
-					lt <- icpmat(lt1, listb[[x]], iterations = iteration, type = "rigid", threads = threads)
-					d1t <- hausdorff_dist(lt, listb[[x]], dist = dist, threads = threads)
-					if(d1t < d1) {
-						ptemp <- lt
-						d1 <- d1t
-					}
+		withProgress(message = '', detail = '', value = 1, min=0, max=length(list1) + length(list2), {
+			for(i in 1:length(list1)) {
+				incProgress(amount = i, message = paste("Extracting centroid band: ", names(list1)[i], sep=""), detail = '')
+				A <- list1[[i]][,c(1:3)]
+				A <- OsteoSort::pca_align(A)
+				if(band == TRUE) {
+					lista[[i]] <- CentroidBand(A, band_threshold)
 				}
-				write.tmp.data(ptemp, listb[[x]], paste(names(list1)[i], names(list2)[x], sep="-"), direc, sessiontempdir)
-				renderlist[nz,] <- paste(names(list1)[i], names(list2)[x], sep="-")
-				matches1[nz,] <- c(names(list1)[i], names(list2)[x], d1)
-				matches2[nz,] <- c(names(list2)[x], names(list1)[i], d1)
-				print(paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", "Hausdorff", " distance: ", d1, sep=""))
-				nz <- nz + 1
+				if(band == FALSE) {
+					lista[[i]] <- as.matrix(A)
+				}
 			}
-		}
+			for(i in 1:length(list2)) {
+				incProgress(amount = i, message = paste("Extracting centroid band: ", names(list2)[i], sep=""), detail = '')
+				B <- list2[[i]][,c(1:3)]
+				B <- OsteoSort::pca_align(B)
+				if(band == TRUE) {
+					listb[[i]] <- CentroidBand(B, band_threshold)
+				}
+				if(band == FALSE) {
+					listb[[i]] <- as.matrix(B)
+				}
+			}
+		})
+		withProgress(message = '', detail = '', value = 1, min=0, max=length(lista) * length(listb), {
+			for(i in 1:length(lista)) {
+				for(x in 1:length(listb)) {
+					d1 <- 999999
+					ptemp <- NULL
+					for(k in 1:8) {
+						if (k == 1) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2],lista[[i]][,3])}
+						else if (k == 2) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2]*-1,lista[[i]][,3]*-1)}
+						else if (k == 3) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2]*-1,lista[[i]][,3]*-1)}
+						else if (k == 4) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2],lista[[i]][,3]*-1)}
+						else if (k == 5) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2]*-1,lista[[i]][,3])}
+						else if (k == 6) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2],lista[[i]][,3]*-1)}
+						else if (k == 7) {lt1 <- cbind( lista[[i]][,1], lista[[i]][,2]*-1,lista[[i]][,3])}
+						else if(k == 8) {lt1 <- cbind( lista[[i]][,1]*-1, lista[[i]][,2],lista[[i]][,3])}
+						lt <- icpmat(lt1, listb[[x]], iterations = iteration, type = "rigid", threads = threads)
+						d1t <- hausdorff_dist(lt, listb[[x]], dist = dist, threads = threads)
+						if(d1t < d1) {
+							ptemp <- lt
+							d1 <- d1t
+						}
+					}
+					write.tmp.data(ptemp, listb[[x]], paste(names(list1)[i], names(list2)[x], sep="-"), direc, sessiontempdir)
+					renderlist[nz,] <- paste(names(list1)[i], names(list2)[x], sep="-")
+					matches1[nz,] <- c(names(list1)[i], names(list2)[x], d1)
+					matches2[nz,] <- c(names(list2)[x], names(list1)[i], d1)
+					print(paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", "Hausdorff", " distance: ", d1, sep=""))
+					incProgress(amount = 1, message = paste("Specimens: ", names(list1)[i], " - ", names(list2)[x], " ", "Hausdorff", " distance: ", d1, sep=""), detail = '')
+					nz <- nz + 1
+				}
+			}
+		})
 	} #end of non-fragment if
 	matches <- rbind(matches1, matches2)
 	resmatches <- array()

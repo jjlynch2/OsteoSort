@@ -12,36 +12,38 @@ match.2d <- function(outlinedata = NULL, sessiontempdir = NULL, fragment = FALSE
 
 	pairwise_coords <- list() #saved pairwise registration
 	pwc <- 1
-	for(z in 1:length(outlinedata[[2]])) {
-		for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
-			zzz <- 0
-			if(nrow(specmatrix[[z]]) >= nrow(specmatrix[[x]])) {moving <- specmatrix[[x]]; target <- specmatrix[[z]];zzz <- 1}
-			if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}
-			moving <- Morpho::icpmat(moving, target, iterations = iteration, type = "rigid", threads=threads) 
-			#identifies indices of fragmented ends
-			r1 <- fragment_margins(moving)
-			moving <- r1[[1]]
-			moving_indices <- r1[[2]]
-			r1 <- fragment_margins(target)
-			target <- r1[[1]]
-			target_indices <- r1[[2]]
+	withProgress(message = '', detail = '', value = 1, min=0, max=length(outlinedata[[2]]) * length(outlinedata[[3]]), {
+		for(z in 1:length(outlinedata[[2]])) {
+			for(x in length(outlinedata[[2]])+1:length(outlinedata[[3]])) {
+				zzz <- 0
+				if(nrow(specmatrix[[z]]) >= nrow(specmatrix[[x]])) {moving <- specmatrix[[x]]; target <- specmatrix[[z]];zzz <- 1}
+				if(nrow(specmatrix[[z]]) < nrow(specmatrix[[x]])) {moving <- specmatrix[[z]]; target <- specmatrix[[x]];zzz <- 2}
+				moving <- Morpho::icpmat(moving, target, iterations = iteration, type = "rigid", threads=threads) 
+				#identifies indices of fragmented ends
+				r1 <- fragment_margins(moving)
+				moving <- r1[[1]]
+				moving_indices <- r1[[2]]
+				r1 <- fragment_margins(target)
+				target <- r1[[1]]
+				target_indices <- r1[[2]]
 
-			distance <- hausdorff_dist(moving, target, dist = dist, indices = list(moving_indices, target_indices), threads = threads)
+				distance <- hausdorff_dist(moving, target, dist = dist, indices = list(moving_indices, target_indices), threads = threads)
 
-			matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
-			matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
-			print(paste("Specimens: ", names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", " distance: ", distance, sep=""))
-			nz <- nz + 1
+				matches1[nz,] <- c(names(specmatrix)[[z]], names(specmatrix)[[x]], distance)
+				matches2[nz,] <- c(names(specmatrix)[[x]], names(specmatrix)[[z]], distance)
+				incProgress(amount = 1, message = paste("Specimens: ", names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", " distance: ", distance, sep=""), detail = '')
+				print(paste("Specimens: ", names(specmatrix)[[z]], " - ", names(specmatrix)[[x]], " ", " distance: ", distance, sep=""))
+				nz <- nz + 1
 
-			#saves coords for output
-			pairwise_coords[[pwc]] <- moving
-			pairwise_coords[[pwc+1]] <- target
-			if(zzz == 1) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[z]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[x]]}
-			if(zzz == 2) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[x]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[z]]}
-			pwc <- pwc + 2 #skips by 2 since we use two indices
+				#saves coords for output
+				pairwise_coords[[pwc]] <- moving
+				pairwise_coords[[pwc+1]] <- target
+				if(zzz == 1) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[z]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[x]]}
+				if(zzz == 2) {names(pairwise_coords)[[pwc+1]] <- names(specmatrix)[[x]]; names(pairwise_coords)[[pwc]] <- names(specmatrix)[[z]]}
+				pwc <- pwc + 2 #skips by 2 since we use two indices
+			}
 		}
-	}
-
+	})
 	coords <- pairwise_coords 
 	matches <- rbind(matches1, matches2) #combine both directions
 
@@ -72,11 +74,14 @@ match.2d <- function(outlinedata = NULL, sessiontempdir = NULL, fragment = FALSE
 	if(!is.null(nrow(resmatches))) {colnames(resmatches) <- c("ID", "Match-ID", "Distance")}
 
 	if(hide_distances) {resmatches[,3] <- "Hidden"}
-	if(output_options[1]) {no <- OsteoSort:::output_function(resmatches, method="2D", type="csv-res")}
-	if(output_options[2]) {no <- OsteoSort:::output_function(matches, method="2D", type="csv-all")}
-	if(output_options[3]) {no <- OsteoSort:::output_function(coords, method="2D", type="plot")}
-	if(output_options[4]) {no <- OsteoSort:::output_function(coords, method="2D", type="coord")}
-	if(output_options[5]) {no <- OsteoSort:::output_function(hera1 = resmatches, method="networkanalysis", type="2D-3D", labtf = labtf2d)}
+	withProgress(message = '', detail = '', value = 1, min=0, max=5, {
+		if(output_options[1]) {setProgress(value = 1, message = "Saving: potential-matches.csv", detail='');no <- OsteoSort:::output_function(resmatches, method="2D", type="csv-res")}
+		if(output_options[2]) {setProgress(value = 1, message = "Saving: all-distances.csv", detail='');no <- OsteoSort:::output_function(matches, method="2D", type="csv-all")}
+		if(output_options[3]) {setProgress(value = 1, message = "Saving: registration plots", detail='');no <- OsteoSort:::output_function(coords, method="2D", type="plot")}
+		if(output_options[4]) {setProgress(value = 1, message = "Saving: coordinates.tps", detail='');no <- OsteoSort:::output_function(coords, method="2D", type="coord")}
+		if(output_options[5]) {setProgress(value = 1, message = "Saving: network.jpg", detail='');no <- OsteoSort:::output_function(hera1 = resmatches, method="networkanalysis", type="2D-3D", labtf = labtf2d)}
+		setProgress(value = 5, message = "Completed", detail='')
+	})
 	gc()
 	setwd(workingdir)
 	comparisons <- length(outlinedata[[2]]) * length(outlinedata[[3]]) #number of comparisons

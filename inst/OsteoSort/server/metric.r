@@ -60,103 +60,99 @@ observeEvent(input$file3, {
 
 observeEvent(input$pro3, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
-	withProgress(message = 'Calculation has started',
-	            detail = '', value = 0, {       
-	            for (i in 1:10) {
-	       incProgress(1/10)
-	       Sys.sleep(0.05)
-	     }
-	})
-	
-	if (is.null(input$file3)){
-		removeModal()
-		shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
-		return(NULL) 
-	}
-	if (!file.size(input$file3$datapath) > 1){
-		removeModal()
-		shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
-		return(NULL)
-	}
+	withProgress(message = 'Calculation has started', detail = '', value = 0, min=0, max=2, {
+		if (is.null(input$file3)){
+			removeModal()
+			shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
+			return(NULL) 
+		}
+		if (!file.size(input$file3$datapath) > 1){
+			removeModal()
+			shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
+			return(NULL)
+		}
 
 
-	if(OSmethod$OSmethod == "Standard_deviation") {
-		cutoffvalue <- OSsd$OSsd
-	} else {
-		cutoffvalue <- OSqt$OSqt
-	}
+		if(OSmethod$OSmethod == "Standard_deviation") {
+			cutoffvalue <- OSsd$OSsd
+		} else {
+			cutoffvalue <- OSqt$OSqt
+		}
 
-	#calls sorting function
-	outtemp <- metricsort(sort = datafile3$datafile3, method = OSmethod$OSmethod, measurements = input$zzm, cutoff = cutoffvalue, sessiontempdir = sessiontemp, output_options = c(fileoutputl1$fileoutputl1, fileoutputl2$fileoutputl2))
-	
-	#counts number of outliers discovered
-	outliercount <- 0
-	if(!is.null(outtemp[[2]])) {outliercount <- nrow(outtemp[[2]])}
-	if(!is.null(outtemp[[3]])) {outliercount <- outliercount + nrow(outtemp[[3]])}
-	
-	#display output
-	output$outliercontent <- renderUI({
-			HTML(paste("<strong>Outliers: ",            "<font color=\"#00688B\">",outliercount, "</font>",
-					'<br/>',"Mean: ",                 "<font color=\"#00688B\">",outtemp[[5]], "</font>",
-					"<br/>", "Standard Deviation: ",  "<font color=\"#00688B\">",outtemp[[6]], "</font>",
-					"<br/>", "Median: ",              "<font color=\"#00688B\">",outtemp[[7]], "</font>",
-					"<br/>", "Interquartile: ",       "<font color=\"#00688B\">",outtemp[[8]], "</font>","</strong>"))
-	})
-	
-	
-	output$tjbingworkb <- DT::renderDataTable({
-		DT::datatable(outtemp[[2]],selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
-	})
-	output$tjbingworka <- DT::renderDataTable({
-		DT::datatable(outtemp[[3]],selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
-	})
-	output$tjbingworkc <- DT::renderDataTable({
-		DT::datatable(outtemp[[4]],selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
-	})
+		#calls sorting function
+		incProgress(amount = 1, message = "Calculating outliers")
+		outtemp <- metricsort(sort = datafile3$datafile3, method = OSmethod$OSmethod, measurements = input$zzm, cutoff = cutoffvalue, sessiontempdir = sessiontemp, output_options = c(fileoutputl1$fileoutputl1, fileoutputl2$fileoutputl2))
+		
+		#counts number of outliers discovered
+		outliercount <- 0
+		if(!is.null(outtemp[[2]])) {outliercount <- nrow(outtemp[[2]])}
+		if(!is.null(outtemp[[3]])) {outliercount <- outliercount + nrow(outtemp[[3]])}
+		
+		#display output
+		output$outliercontent <- renderUI({
+				HTML(paste("<strong>Outliers: ",            "<font color=\"#00688B\">",outliercount, "</font>",
+						'<br/>',"Mean: ",                 "<font color=\"#00688B\">",outtemp[[5]], "</font>",
+						"<br/>", "Standard Deviation: ",  "<font color=\"#00688B\">",outtemp[[6]], "</font>",
+						"<br/>", "Median: ",              "<font color=\"#00688B\">",outtemp[[7]], "</font>",
+						"<br/>", "Interquartile: ",       "<font color=\"#00688B\">",outtemp[[8]], "</font>","</strong>"))
+		})
+		
+		
+		output$tjbingworkb <- DT::renderDataTable({
+			DT::datatable(outtemp[[2]],selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		})
+		output$tjbingworka <- DT::renderDataTable({
+			DT::datatable(outtemp[[3]],selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		})
+		output$tjbingworkc <- DT::renderDataTable({
+			DT::datatable(outtemp[[4]],selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
+		})
 
-	if(fileoutputl2$fileoutputl2) {
-		nimages <- list.files(outtemp[[1]])
-		nimages <- paste(sessiontemp, "/", outtemp[[1]], "/", nimages[grep(".jpg", nimages)], sep="")
+		if(fileoutputl2$fileoutputl2) {
+			nimages <- list.files(outtemp[[1]])
+			nimages <- paste(sessiontemp, "/", outtemp[[1]], "/", nimages[grep(".jpg", nimages)], sep="")
 
-		output$plotoutlier <- renderImage({
-			list(src = nimages,
-				contentType = 'image/jpg',
-				height = 400,
-				alt = "A"
+			output$plotoutlier <- renderImage({
+				list(src = nimages,
+					contentType = 'image/jpg',
+					height = 400,
+					alt = "A"
+				)
+			}, deleteFile = FALSE)
+		}
+		removeModal() #removes modal
+		if(fileoutputl1$fileoutputl1 || fileoutputl2$fileoutputl2) {
+			#Download handler       
+			output$outlierdownload <- downloadHandler(
+				filename <- function() {
+					paste("results.zip")
+				},      
+				content <- function(file) {
+					setwd(outtemp[[1]])
+					file.remove(paste(outtemp[[1]],'.zip',sep=''))
+					if(is.numeric(input$tjbingworka_rows_selected)) {
+						no_return_value <- OsteoSort:::output_function(outtemp[[3]][input$tjbingworka_rows_selected,], method="exclusion", type="csv3", uln = "u")
+					} else {file.remove("upper-selected-list.csv")}
+					if(is.numeric(input$tjbingworkc_rows_selected)) {
+						no_return_value <- OsteoSort:::output_function(outtemp[[4]][input$tjbingworkc_rows_selected,], method="exclusion", type="csv3", uln = "n")
+					} else {file.remove("non-selected-list.csv")}
+					if(is.numeric(input$tjbingworkb_rows_selected)) {
+						no_return_value <- OsteoSort:::output_function(outtemp[[2]][input$tjbingworkb_rows_selected,], method="exclusion", type="csv3", uln = "l")
+					} else {file.remove("lower-selected-list.csv")}
+					setwd(sessiontemp)
+					files <- list.files(outtemp[[1]], recursive = TRUE)
+					setwd(outtemp[[1]])
+					zip:::zipr(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
+					for(file_na in files[-1]) {
+						zip:::zipr_append(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
+					}
+					file.copy(paste(outtemp[[1]],'.zip',sep=''), file) 
+					setwd(sessiontemp)  
+				},
+				contentType = "application/zip"
 			)
-		}, deleteFile = FALSE)
-	}
-	removeModal() #removes modal
-	if(fileoutputl1$fileoutputl1 || fileoutputl2$fileoutputl2) {
-		#Download handler       
-		output$outlierdownload <- downloadHandler(
-			filename <- function() {
-				paste("results.zip")
-			},      
-			content <- function(file) {
-				setwd(outtemp[[1]])
-				file.remove(paste(outtemp[[1]],'.zip',sep=''))
-				if(is.numeric(input$tjbingworka_rows_selected)) {
-					no_return_value <- OsteoSort:::output_function(outtemp[[3]][input$tjbingworka_rows_selected,], method="exclusion", type="csv3", uln = "u")
-				} else {file.remove("upper-selected-list.csv")}
-				if(is.numeric(input$tjbingworkc_rows_selected)) {
-					no_return_value <- OsteoSort:::output_function(outtemp[[4]][input$tjbingworkc_rows_selected,], method="exclusion", type="csv3", uln = "n")
-				} else {file.remove("non-selected-list.csv")}
-				if(is.numeric(input$tjbingworkb_rows_selected)) {
-					no_return_value <- OsteoSort:::output_function(outtemp[[2]][input$tjbingworkb_rows_selected,], method="exclusion", type="csv3", uln = "l")
-				} else {file.remove("lower-selected-list.csv")}
-				setwd(sessiontemp)
-				files <- list.files(outtemp[[1]], recursive = TRUE)
-				setwd(outtemp[[1]])
-				zip:::zipr(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
-				for(file_na in files[-1]) {
-					zip:::zipr_append(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
-				}
-				file.copy(paste(outtemp[[1]],'.zip',sep=''), file) 
-				setwd(sessiontemp)  
-			},
-			contentType = "application/zip"
-		)
-		setwd(sessiontemp) #restores session
-	}
+			setwd(sessiontemp) #restores session
+		}
+		incProgress(amount = 1, message = "Completed")
+	})
 })

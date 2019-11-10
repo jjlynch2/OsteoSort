@@ -3,30 +3,36 @@ input.3d <- function(list1 = NULL, list2 = NULL) {
 
 	if(!is.null(list1)) {
 		Rlist <- list()
-		for(i in 1:length(list1)) {
-			Rtemp <- read.table(list1[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = FALSE)
-			if(is.character(Rtemp[1,1])) {
-				Rlist[[i]] <- read.table(list1[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = TRUE)
+		withProgress(message = '', detail = '', value = 0, min=0, max=length(list1), {
+			for(i in 1:length(list1)) {
+				incProgress(amount = i, message = paste("Importing Set 1: ", gsub(".*/\\s*", "", list1)[i], sep=""), detail = '')
+				Rtemp <- read.table(list1[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = FALSE)
+				if(is.character(Rtemp[1,1])) {
+					Rlist[[i]] <- read.table(list1[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = TRUE)
+				}
+				if(!is.character(Rtemp[1,1])) {
+					Rlist[[i]] <- read.table(list1[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = FALSE)
+				}
 			}
-			if(!is.character(Rtemp[1,1])) {
-				Rlist[[i]] <- read.table(list1[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = FALSE)
-			}
-		}
-		names(Rlist) <- gsub(".*/\\s*", "", list1)
+			names(Rlist) <- gsub(".*/\\s*", "", list1)
+		})
 	}
 
 	if(!is.null(list2)) {
 		Llist <- list()
-		for(i in 1:length(list2)) {
-			Ltemp <- read.table(list2[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = FALSE)
-			if(is.character(Ltemp[1,1])) {
-				Llist[[i]] <- read.table(list2[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = TRUE)
+		withProgress(message = '', detail = '', value = 0, min=0, max=length(list2), {
+			for(i in 1:length(list2)) {
+				incProgress(amount = i, message = paste("Importing Set 2: ", gsub(".*/\\s*", "", list2)[i], sep=""), detail = '')
+				Ltemp <- read.table(list2[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = FALSE)
+				if(is.character(Ltemp[1,1])) {
+					Llist[[i]] <- read.table(list2[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = TRUE)
+				}
+				if(!is.character(Ltemp[1,1])) {
+					Llist[[i]] <- read.table(list2[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = FALSE)
+				}
 			}
-			if(!is.character(Ltemp[1,1])) {
-				Llist[[i]] <- read.table(list2[i], quote="\"", comment.char="", stringsAsFactors=FALSE, header = FALSE)
-			}
-		}
-		names(Llist) <- gsub(".*/\\s*", "", list2)
+			names(Llist) <- gsub(".*/\\s*", "", list2)
+		})
 	}
 
 	print("3D data imported")

@@ -3,8 +3,10 @@ outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = FAL
 	nimages <- length(imagelist1) + length(imagelist2)
 	imagelist <- c(imagelist1, imagelist2)
 	speclist <- list()
-	for(iii in 1:nimages) {
+	withProgress(message = "Specimen: ", detail = '', value = 1, min=0, max=length(nimages), {
+		for(iii in 1:nimages) {
 		print(paste("Tracing specimen: ", paste(gsub(".*/\\s*|.JPG.*","",imagelist[iii]), ".JPG", sep=""), sep=""))
+		incProgress(amount = iii, message = paste("Specimen: ", paste(gsub(".*/\\s*|.JPG.*","",imagelist[iii]), ".JPG", sep=""), sep=""), detail = '')
 		M <- jpeg::readJPEG(imagelist[iii])
 		M <- suppressWarnings(pixmap::pixmapGrey(M))
 		M@grey[which(M@grey > threshold)] <- 1#white
@@ -80,7 +82,8 @@ outline.images <- function (imagelist1, imagelist2, threshold = 0.8, scale = FAL
 		}
 		spec1 <- scale(spec1, scale=FALSE)
 		speclist[[iii]] <- spec1 #save to list since points are unequal
-	}
+		}
+	})
 	names(speclist) <- paste(gsub(".*/\\s*|.JPG.*","",imagelist), ".JPG", sep="")
 	results <- speclist
 	print("Outline generation completed")	

@@ -167,109 +167,106 @@ observeEvent(input$pro2D, {
 	   HTML(paste(""))
 	})	
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
-	withProgress(message = 'Calculation has started',
-	            detail = '', value = 0, {       
-	            for (i in 1:10) {
-	       incProgress(1/10)
-	       Sys.sleep(0.05)
-	     }
-	})
-	if(!is.null(input$leftimages$datapath) && !is.null(input$leftimages$datapath)) { #prevents crashing
-		leftimages <- input$leftimages$datapath
-		rightimages <- input$rightimages$datapath
-		file.copy(input$leftimages$datapath, input$leftimages$name)
-		file.copy(input$rightimages$datapath, input$rightimages$name)
+	withProgress(message = 'Calculation has started', detail = '', value = 1, min=0, max=3, {
+		if(!is.null(input$leftimages$datapath) && !is.null(input$leftimages$datapath)) { #prevents crashing
+			leftimages <- input$leftimages$datapath
+			rightimages <- input$rightimages$datapath
+			file.copy(input$leftimages$datapath, input$leftimages$name)
+			file.copy(input$rightimages$datapath, input$rightimages$name)
+			setProgress(value = 1, message = "Tracing outlines", detail = '')
+			out1 <- outline.images(imagelist1 = input$rightimages$name, imagelist2 = input$leftimages$name, threshold =nthreshold$nthreshold, scale = scale2D$scale2D, mirror = mirror2D$mirror2D)
+			setProgress(value = 2, message = "Running comparisons", detail = '')
+			out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, dist = max_avg_distance$max_avg_distance, n_lowest_distances = shortlistn$shortlistn, labtf2d = labtf2d$labtf2d, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps, multiple_file_output_graph_2d$multiple_file_output_graph_2d), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D)
+			direc <- out2[[3]]
 
-		out1 <- outline.images(imagelist1 = input$rightimages$name, imagelist2 = input$leftimages$name, threshold =nthreshold$nthreshold, scale = scale2D$scale2D, mirror = mirror2D$mirror2D)
-		out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, dist = max_avg_distance$max_avg_distance, n_lowest_distances = shortlistn$shortlistn, labtf2d = labtf2d$labtf2d, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps, multiple_file_output_graph_2d$multiple_file_output_graph_2d), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D)
-		direc <- out2[[3]]
-
-		if(forc2d$forc2d) {
-				if(nrow(out2[[2]]) > 1){
-					td <- forcefun3d(out2[[2]])
-					links <- td[[1]]
-					nodes <- td[[2]]
-					output$forceNetworkOSM2d <- renderForceNetwork({
-						forceNetwork(Links = links, Nodes = nodes,
-								  Source = "source", Target = "target",
-								  Value = "value", NodeID = "name",
-								  Group = "group", opacity = 1,
-									colourScale = JS('d3.scaleOrdinal().domain(["1", "2"]).range(["#ea6011","#126a8f"])'),
-									zoom = TRUE
-						)
-					})
-				}
-		}
-		if(multiple_file_output_graph_2d$multiple_file_output_graph_2d) {
-			imagetemp2 <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
-			output$multiple_plot_na_2d <- renderImage({
-				list(src = imagetemp2,
-					contentType = 'image/jpg',
-					height = 800,
-					alt = "A"
-				)
-			}, deleteFile = FALSE)
-		}
-		if(fileoutput2Dplot$fileoutput2Dplot) {
-			setwd(direc)
-			pwspec <- list.files()
-			pwspec <- pwspec[grep(".jpg", pwspec)]
-			pwspec <- pwspec[pwspec != "network.jpg"]
-			pwspec = pwspec[pwspec != "Registration.jpg"]
-			output$pwspec <- renderUI({
-				selectInput(inputId = "pwspec", label = "Choose pairwise comparison", choices=pwspec, selected = pwspec[1])
-			})
-			setwd(sessiontemp)
-			observeEvent(input$pwspec, {
-				output$pwspeci <- renderImage({
-					if(fileoutput2Dplot$fileoutput2Dplot) {
-						tempni <- paste(sessiontemp, "/", direc, "/", input$pwspec, sep="")
-						list(src = tempni,
-							contentType = 'image/jpg',
-							height = 800,
-							alt = "A"
-						)
+			if(forc2d$forc2d) {
+					if(nrow(out2[[2]]) > 1){
+						td <- forcefun3d(out2[[2]])
+						links <- td[[1]]
+						nodes <- td[[2]]
+						output$forceNetworkOSM2d <- renderForceNetwork({
+							forceNetwork(Links = links, Nodes = nodes,
+									  Source = "source", Target = "target",
+									  Value = "value", NodeID = "name",
+									  Group = "group", opacity = 1,
+										colourScale = JS('d3.scaleOrdinal().domain(["1", "2"]).range(["#ea6011","#126a8f"])'),
+										zoom = TRUE
+							)
+						})
 					}
+			}
+			if(multiple_file_output_graph_2d$multiple_file_output_graph_2d) {
+				imagetemp2 <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
+				output$multiple_plot_na_2d <- renderImage({
+					list(src = imagetemp2,
+						contentType = 'image/jpg',
+						height = 800,
+						alt = "A"
+					)
 				}, deleteFile = FALSE)
+			}
+			if(fileoutput2Dplot$fileoutput2Dplot) {
+				setwd(direc)
+				pwspec <- list.files()
+				pwspec <- pwspec[grep(".jpg", pwspec)]
+				pwspec <- pwspec[pwspec != "network.jpg"]
+				pwspec = pwspec[pwspec != "Registration.jpg"]
+				output$pwspec <- renderUI({
+					selectInput(inputId = "pwspec", label = "Choose pairwise comparison", choices=pwspec, selected = pwspec[1])
+				})
+				setwd(sessiontemp)
+				observeEvent(input$pwspec, {
+					output$pwspeci <- renderImage({
+						if(fileoutput2Dplot$fileoutput2Dplot) {
+							tempni <- paste(sessiontemp, "/", direc, "/", input$pwspec, sep="")
+							list(src = tempni,
+								contentType = 'image/jpg',
+								height = 800,
+								alt = "A"
+							)
+						}
+					}, deleteFile = FALSE)
+				})
+			}
+
+			if(is.null(nrow(out2[[2]]))) {pm <- 1; out2[[2]] <- rbind(out2[[2]],c(NA,NA,NA)) }
+			if(!is.null(nrow(out2[[2]]))) {pm <- nrow(as.matrix(out2[[2]][,1]))}
+			output$table2D <- DT::renderDataTable({
+				DT::datatable(out2[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 			})
-		}
 
-		if(is.null(nrow(out2[[2]]))) {pm <- 1; out2[[2]] <- rbind(out2[[2]],c(NA,NA,NA)) }
-		if(!is.null(nrow(out2[[2]]))) {pm <- nrow(as.matrix(out2[[2]][,1]))}
-		output$table2D <- DT::renderDataTable({
-			DT::datatable(out2[[2]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
-		})
-
-		output$contents2D <- renderUI({
-			HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
-		})
-		if(multiple_file_output_graph_2d$multiple_file_output_graph_2d || fileoutput2Dexcel1$fileoutput2Dexcel1 || fileoutput2Dexcel2$fileoutput2Dexcel2 || fileoutput2Dplot$fileoutput2Dplot || fileoutput2Dtps$fileoutput2Dtps) {
-			output$downloadData2D <- downloadHandler(
-				filename <- function() {
-					paste("results.zip")
-				},
-				content <- function(file) {
-					setwd(direc)
-					file.remove(paste(direc,'.zip',sep=''))
-					if(is.numeric(input$table2D_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(out2[[2]][input$table2D_rows_selected,], method="exclusion", type="csv4")
-				} else {file.remove("selected-list.csv")}
-					setwd(sessiontemp)
-					files <- list.files(direc, recursive = TRUE)
-					setwd(direc)
-					zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
-					for(file_na in files[-1]) {
-						zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
-					}
-					file.copy(paste(direc,'.zip',sep=''), file)  
-					setwd(sessiontemp)
-				},
-				contentType = "application/zip"
-			)
-			setwd(sessiontemp)
+			output$contents2D <- renderUI({
+				HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
+			})
+			if(multiple_file_output_graph_2d$multiple_file_output_graph_2d || fileoutput2Dexcel1$fileoutput2Dexcel1 || fileoutput2Dexcel2$fileoutput2Dexcel2 || fileoutput2Dplot$fileoutput2Dplot || fileoutput2Dtps$fileoutput2Dtps) {
+				output$downloadData2D <- downloadHandler(
+					filename <- function() {
+						paste("results.zip")
+					},
+					content <- function(file) {
+						setwd(direc)
+						file.remove(paste(direc,'.zip',sep=''))
+						if(is.numeric(input$table2D_rows_selected)) {
+							no_return_value <- OsteoSort:::output_function(out2[[2]][input$table2D_rows_selected,], method="exclusion", type="csv4")
+					} else {file.remove("selected-list.csv")}
+						setwd(sessiontemp)
+						files <- list.files(direc, recursive = TRUE)
+						setwd(direc)
+						zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
+						for(file_na in files[-1]) {
+							zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
+						}
+						file.copy(paste(direc,'.zip',sep=''), file)  
+						setwd(sessiontemp)
+					},
+					contentType = "application/zip"
+				)
+				setwd(sessiontemp)
+			}
 		}
-	}
-	gc()
-	removeModal()  
+		gc()
+		removeModal()
+		setProgress(value = 3, message = "Running comparisons", detail = '')
+	})
 })
 	
