@@ -7,3 +7,4 @@
 @everywhere using Optim
 @everywhere using Rmath
 @everywhere using GLM
+@everywhere using NearestNeighbors

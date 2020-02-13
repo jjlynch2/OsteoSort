@@ -2,9 +2,9 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 	withProgress(message = 'Loading analytical environment', detail = '', value = 0, min=0, max=11, {
 		if (libraries) {
 			julia <- JuliaCall::julia_setup()
-			pkg = c("Pkg","Statistics", "Distributed","SharedArrays", "Optim", "Rmath", "GLM")
+			pkg = c("Pkg","Statistics", "Distributed","SharedArrays", "Optim", "Rmath", "GLM", "NearestNeighbors")
 			for(i in pkg) {
-				incProgress(amount = 1, message = paste("Loading ", i, "library", sep=""))
+				incProgress(amount = 1, message = paste("Loading ", i, " library", sep=""))
 				print(paste("Loading Julia package: ", i, sep=""))
 				if(JuliaCall::julia_installed_package(i) == "nothing") {
 					JuliaCall::julia_install_package(i)
@@ -19,6 +19,7 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 			julia_source(system.file("jl", "antemortem_MC.jl", package = "OsteoSort"))
 			julia_source(system.file("jl", "z_test_MC.jl", package = "OsteoSort"))
 			julia_source(system.file("jl", "regression_plot_MC.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "radius_search.jl", package = "OsteoSort"))
 		}
 
 		sycores <- detectCores()
