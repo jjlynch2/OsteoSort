@@ -35,11 +35,11 @@ observeEvent(input$clearFile3Da, {
 		file.remove(input$aligndata$name)
 	}
 	try(rgl.close())
+	tt1$tt1 <- matrix(0,1,2)
 	filelist3$list = list()
 	position$pos = 1
 	landmarks$landmarks = list()
 	delete.tmp.data(filelist3$list, sessiontemp)
-	tt1$tt1 <- matrix(0,1,2)
 	fileInput('aligndata', 'Upload data set', accept=c("xyz"), multiple = TRUE)
 })
 
@@ -115,10 +115,11 @@ observeEvent(input$simplify, {
 			write.tmp.data.pct(te, filelist3$list[[position$pos]], sessiontemp)
 			tt1$tt1 <- te
 			if(!is.null(landmarks$landmarks[[position$pos]])) {
-				tempp <- HD_KDTree_Ind(as.matrix(te), as.matrix(ttt[landmarks$landmarks[[position$pos]],]), threads = input$ncorespc, k = input$sft)
+				tempp <- HD_KDTree_Ind(as.matrix(te[,1:3]), as.matrix(ttt[landmarks$landmarks[[position$pos]],c(1:3)]), threads = input$ncorespc, k = input$sft)
 				landmarks$landmarks[[position$pos]] <- unique(tempp[which(tempp[,1] <= input$sft),2])
-				if(length(landmarks$landmarks[[position$pos]]) == 0) { landmarks$landmarks[[position$pos]] <- NULL }
+				if(length(landmarks$landmarks[[position$pos]]) == 0) { landmarks$landmarks[position$pos] <- list(NULL) }
 			}
+			write.table(te, sep = ' ', file = filelist3$list[[position$pos]], row.names = FALSE)
 		}
 		if(input$alln == "All") {	
 			ll <- length(filelist3$list)
@@ -126,10 +127,14 @@ observeEvent(input$simplify, {
 				ttt <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
 				te <- kmeans.3d(ttt, cluster = input$vara, threads = input$ncorespc)
 				if(!is.null(landmarks$landmarks[[i]])) {
-					tempp <- HD_KDTree_Ind(as.matrix(te), as.matrix(ttt[landmarks$landmarks[[i]],]), threads = input$ncorespc, k = input$sft)
+					tempp <- HD_KDTree_Ind(as.matrix(te[,1:3]), as.matrix(ttt[landmarks$landmarks[[i]],c(1:3)]), threads = input$ncorespc, k = input$sft)
 					landmarks$landmarks[[i]] <- unique(tempp[which(tempp[,1] <= input$sft),2])
-					if(length(landmarks$landmarks[[i]]) == 0) { landmarks$landmarks[[i]] <- NULL }
+					if(length(landmarks$landmarks[[i]]) == 0) { landmarks$landmarks[i] <- list(NULL) }
 				}
+				if(i == position$pos) {
+					tt1$tt1 <- te
+				}
+				write.table(te, sep = ' ', file = filelist3$list[[i]], row.names = FALSE)
 			}
 		}
 		removeModal()  
@@ -180,7 +185,7 @@ observeEvent(input$start1, {
 			results <- julia_call("radius_search", as.matrix(tt1$tt1), input$fr)
 			landmarks$landmarks[[position$pos]] <- which(results <= input$fmt)
 			if(length(landmarks$landmarks[[position$pos]]) == 0) {
-				landmarks$landmarks[[position$pos]] <- NULL
+				landmarks$landmarks[position$pos] <- list(NULL)
 			}
 		}
 		else if(input$alln == "All") {
@@ -190,7 +195,7 @@ observeEvent(input$start1, {
 				results <- julia_call("radius_search", as.matrix(ttt), input$fr)
 				landmarks$landmarks[[i]] <- which(results <= input$fmt)
 				if(length(landmarks$landmarks[[i]]) == 0) {
-					landmarks$landmarks[[i]] <- NULL
+					landmarks$landmarks[i] <- list(NULL)
 				}
 			}
 		}
@@ -204,7 +209,7 @@ observeEvent(input$start1, {
 output$savedata <- downloadHandler(
 	filename <- function() {
 		paste("aligned.zip")
-	},      
+	},
 	content <- function(file) {
 		direc <- OsteoSort:::analytical_temp_space(output_options <- TRUE, sessiontempdir = sessiontemp)
 		setwd(sessiontemp)
