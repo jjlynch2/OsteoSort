@@ -25,3 +25,21 @@ delete.tmp.data <- function(direc, sessiontemp) {
 		file.remove(i)
 	}
 }
+
+import.tmp.data.pct <- function(comp_name, sessiontemp) {
+	file1 <- paste(sessiontemp, "/" , comp_name, sep="")
+	data1 <- input.3d(file1)
+	return(data1[[1]])
+}
+
+delete.tmp.data.pct <- function(comp_name, sessiontemp) {
+	for(i in comp_name) {
+		file.remove(list.files(paste(sessiontemp, "/" , comp_name[i], sep=""), full.names=TRUE))
+	}
+}
+
+write.tmp.data.pct <- function(A, comp_name, sessiontemp) {
+	mainDir1 <- paste(sessiontemp, "/", comp_name, sep="")
+	write.table(A, sep = ' ', file = mainDir1, row.names=FALSE)
+
+}

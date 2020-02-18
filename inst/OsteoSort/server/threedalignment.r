@@ -1,6 +1,7 @@
 filelist3 <- reactiveValues(list=list())
 position <- reactiveValues(pos = 1)
 landmarks <- reactiveValues(landmarks=list())
+tt1 <- reactiveValues(tt1 = matrix(0))
 
 output$ncorespc <- renderUI({
 	sliderInput(inputId = "ncorespc", label = "Number of cores", min=1, max=detectCores(), value=detectCores()-1, step =1)
@@ -15,7 +16,7 @@ output$sft <- renderUI({
 })
 
 output$fmt <- renderUI({
-	sliderInput(inputId = "fmt", label = "Margin threshold", min=0.1, max=500, value=1, step = 0.1)
+	sliderInput(inputId = "fmt", label = "Margin threshold", min=0.1, max=500, value=125, step = 0.1)
 })
 
 output$fr <- renderUI({
@@ -37,12 +38,14 @@ observeEvent(input$clearFile3Da, {
 	filelist3$list = list()
 	position$pos = 1
 	landmarks$landmarks = list()
+	delete.tmp.data(filelist3$list, sessiontemp)
+	tt1$tt1 <- matrix(0,1,2)
 	fileInput('aligndata', 'Upload data set', accept=c("xyz"), multiple = TRUE)
 })
 
 observeEvent(input$aligndata$datapath, {
 	file.copy(input$aligndata$datapath, input$aligndata$name)
-	filelist3$list <- input.3d(input$aligndata$name) #imports 3D xyzrbg data
+	filelist3$list <- input$aligndata$name
 	landmarks$landmarks <- rep(list(NULL), length(filelist3$list)) #populate as NULL x file length on upload
 
 
@@ -59,43 +62,38 @@ observeEvent(input$aligndata$datapath, {
 
 	observeEvent(position$pos, {
 
-		if(is.null(filelist3$list[[position$pos]])) {nn <- 0}
-		else {nn <- nrow(filelist3$list[[position$pos]]); mm <- input$aligndata$name[position$pos]}
-
-		output$coordinates <- renderUI({
-			HTML(paste("<strong>","<br/>","Coordinates: ",   "<font color=\"#00688B\">", nn, "</font>",
-					 "<strong>","<br/>","Specimen: ",   "<font color=\"#00688B\">", mm, "</font>"
-
-			))
-		})   
 		showModal(modalDialog(title = "Rendering...", easyClose = FALSE, footer = NULL))
 		output$webgl3Dalign <- renderRglwidget ({
    			try(rgl.close())
 
 			if(length(filelist3$list) != 0) {
-				tt1 <- filelist3$list[[position$pos]]
+				tt1$tt1 <- import.tmp.data.pct(filelist3$list[[position$pos]], sessiontemp)
 			}
 			else {
-				tt1 = matrix(0)
+				tt1$tt1 = matrix(0)
 			}
 
-			if(ncol(tt1) >5) {
-				if(any(is.na(tt1[,c(4:6)]))) { 
+			if(ncol(tt1$tt1) >5) {
+				if(any(is.na(tt1$tt1[,c(4:6)]))) { 
 					cc <- "dimgrey"
 				}
 				else {
-					cc <- rgb(tt1[,c(4:6)], max=255)
+					cc <- rgb(tt1$tt1[,c(4:6)], max=255)
 				}
 			}
 			else {cc <- "dimgrey"}
-			if(length(filelist3$list) != 0) {
-				plot3d(tt1, size=3, col=cc, box=FALSE, axes=FALSE, aspect = "iso", xlab="",ylab="",zlab="")
-
-
+			if(length(tt1$tt1) != 0) {
+				plot3d(tt1$tt1, size=3, col=cc, box=FALSE, axes=FALSE, aspect = "iso", xlab="",ylab="",zlab="")
 				if(!is.null(landmarks$landmarks[[position$pos]]))  {
-					mp <- filelist3$list[[position$pos]][landmarks$landmarks[[position$pos]],]
-					points3d(mp, size=20, col="black", box=FALSE)
+					mp <- tt1$tt1[landmarks$landmarks[[position$pos]],]
+					points3d(mp, size=20, col="DODGERBLUE", box=FALSE)
 				}
+				output$coordinates <- renderUI({
+					HTML(paste("<strong>","<br/>","Coordinates: ",   "<font color=\"#00688B\">", nrow(tt1$tt1), "</font>",
+							 "<strong>","<br/>","Specimen: ",   "<font color=\"#00688B\">", input$aligndata$name[position$pos], "</font>"
+
+					))
+				})   
 			}
 			else {
 				points3d(c(0,0,0), size=3, col="white", box=FALSE, aspect = "iso")
@@ -112,14 +110,12 @@ observeEvent(input$simplify, {
 	if(length(input$aligndata$datapath) > 0) {
 		showModal(modalDialog(title = "Point cloud K-means simplification started...", easyClose = FALSE, footer = NULL))
 		if(input$alln == "Present") {		
-			ttt <- filelist3$list[[position$pos]]
-
-			filelist3$list[[position$pos]] <- kmeans.3d(filelist3$list[[position$pos]], cluster = input$vara, threads = input$ncorespc)
+			ttt <- tt1$tt1
+			te <- kmeans.3d(ttt, cluster = input$vara, threads = input$ncorespc)
+			write.tmp.data.pct(te, filelist3$list[[position$pos]], sessiontemp)
+			tt1$tt1 <- te
 			if(!is.null(landmarks$landmarks[[position$pos]])) {
-
-
-
-				tempp <- HD_KDTree_Ind(as.matrix(filelist3$list[[position$pos]]), as.matrix(ttt[landmarks$landmarks[[position$pos]],]), threads = input$ncorespc, k = input$sft)
+				tempp <- HD_KDTree_Ind(as.matrix(te), as.matrix(ttt[landmarks$landmarks[[position$pos]],]), threads = input$ncorespc, k = input$sft)
 				landmarks$landmarks[[position$pos]] <- unique(tempp[which(tempp[,1] <= input$sft),2])
 				if(length(landmarks$landmarks[[position$pos]]) == 0) { landmarks$landmarks[[position$pos]] <- NULL }
 			}
@@ -127,11 +123,10 @@ observeEvent(input$simplify, {
 		if(input$alln == "All") {	
 			ll <- length(filelist3$list)
 			for (i in 1:ll) {	
-				ttt <- filelist3$list[[i]]
-				filelist3$list[[i]] <- kmeans.3d(filelist3$list[[i]], cluster = input$vara, threads = input$ncorespc)
-
+				ttt <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
+				te <- kmeans.3d(ttt, cluster = input$vara, threads = input$ncorespc)
 				if(!is.null(landmarks$landmarks[[i]])) {
-					tempp <- HD_KDTree_Ind(as.matrix(filelist3$list[[i]]), as.matrix(ttt[landmarks$landmarks[[i]],]), threads = input$ncorespc, k = input$sft)
+					tempp <- HD_KDTree_Ind(as.matrix(te), as.matrix(ttt[landmarks$landmarks[[i]],]), threads = input$ncorespc, k = input$sft)
 					landmarks$landmarks[[i]] <- unique(tempp[which(tempp[,1] <= input$sft),2])
 					if(length(landmarks$landmarks[[i]]) == 0) { landmarks$landmarks[[i]] <- NULL }
 				}
@@ -162,13 +157,12 @@ observeEvent(input$start2, {
 	if(length(input$aligndata$datapath) > 0) {
 		showModal(modalDialog(title = "Digitization has started...Please check the RGL window.", easyClose = FALSE, footer = NULL))
 		if(input$alln == "Present") {
-			temp_p <- filelist3$list[[position$pos]]
-			landmarks$landmarks[[position$pos]] <- digitize.3d(temp_p)
+			landmarks$landmarks[[position$pos]] <- digitize.3d(tt1$tt1)
 		}
 		else if(input$alln == "All") {
 			ll <- length(filelist3$list)
 			for (i in 1:ll) {
-				ttt <- filelist3$list[[i]]
+				ttt <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
 				landmarks$landmarks[[i]] <- digitize.3d(ttt)
    				try(rgl.close())
 			}
@@ -183,9 +177,8 @@ observeEvent(input$start1, {
 	if(length(input$aligndata$datapath) > 0) {
 		showModal(modalDialog(title = "Fracture margin identification has started...", easyClose = FALSE, footer = NULL))
 		if(input$alln == "Present") {
-			ttt <- filelist3$list[[position$pos]]
-			results <<- julia_call("radius_search", as.matrix(ttt), input$fr)
-			landmarks$landmarks[[position$pos]] <- ttt[which(results <= input$fmt),]
+			results <- julia_call("radius_search", as.matrix(tt1$tt1), input$fr)
+			landmarks$landmarks[[position$pos]] <- which(results <= input$fmt)
 			if(length(landmarks$landmarks[[position$pos]]) == 0) {
 				landmarks$landmarks[[position$pos]] <- NULL
 			}
@@ -193,9 +186,9 @@ observeEvent(input$start1, {
 		else if(input$alln == "All") {
 			ll <- length(filelist3$list)
 			for (i in 1:ll) {
-				ttt <- filelist3$list[[i]]
+				ttt <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
 				results <- julia_call("radius_search", as.matrix(ttt), input$fr)
-				landmarks$landmarks[[i]] <- ttt[which(results <= input$fmt),]
+				landmarks$landmarks[[i]] <- which(results <= input$fmt)
 				if(length(landmarks$landmarks[[i]]) == 0) {
 					landmarks$landmarks[[i]] <- NULL
 				}
@@ -213,21 +206,18 @@ output$savedata <- downloadHandler(
 		paste("aligned.zip")
 	},      
 	content <- function(file) {
-		#eventually move this to OsteoSort in output_functions. Here as proof-of-concept
 		direc <- OsteoSort:::analytical_temp_space(output_options <- TRUE, sessiontempdir = sessiontemp)
 		setwd(sessiontemp)
 		setwd(direc)
 		for(i in 1:length(filelist3$list)) {
 			if(!is.null(landmarks$landmarks[[i]])) {
-				r1 <- length(landmarks$landmarks[[i]])
-				saveme <- cbind(x = filelist3$list[[i]][,1], 
-							 y = filelist3$list[[i]][,2], 
-							 z = filelist3$list[[i]][,3], 
-							 ml = c(landmarks$landmarks[[i]], rep(NA, nrow(filelist3$list[[i]]) - r1))
-				)
+				saveme <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
+				saveme <- cbind(saveme, 0)
+				saveme[landmarks$landmarks[[i]],4] <- 1
+				colnames(saveme) <- c("x","y","z","f")
 			}
 			if(is.null(landmarks$landmarks[[i]])) {
-				saveme <- cbind(x = filelist3$list[[i]][,1], y = filelist3$list[[i]][,2], z = filelist3$list[[i]][,3])
+				saveme <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
 			}
 			write.table(saveme, sep = ' ', file = input$aligndata$name[i], row.names = FALSE)
 		}
