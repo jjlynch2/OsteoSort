@@ -1,6 +1,6 @@
 CentroidBand <- function(pointcloud = NULL, threshold = 4, centroid = NULL) {
 	if(is.null(centroid)) {
-		centroid <- apply(pointcloud, 2, mean)
+		centroid <- apply(pointcloud[,1:3], 2, mean)
 	}
 	t1 <- pointcloud[pointcloud[,1] <= centroid[1]+threshold, ]
 	band_1 <- t1[t1[,1] >= centroid[1]-threshold, ]
