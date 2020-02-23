@@ -12,11 +12,11 @@ output$vara <- renderUI({
 })
 
 output$sft <- renderUI({
-	sliderInput(inputId = "sft", label = "Simplify fracture", min=0.1, max=500, value=5, step = 0.1)
+	sliderInput(inputId = "sft", label = "Simplify fracture", min=0.1, max=500, value=1, step = 0.1)
 })
 
 output$fmt <- renderUI({
-	sliderInput(inputId = "fmt", label = "Margin threshold", min=0.1, max=500, value=125, step = 0.1)
+	sliderInput(inputId = "fmt", label = "Margin threshold", min=1, max=500, value=125, step = 1)
 })
 
 output$fr <- renderUI({

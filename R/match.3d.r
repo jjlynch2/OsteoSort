@@ -14,30 +14,40 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	nz <- 1 #comparison counter
 	pairwise_coords <- list() #saved pairwise registration
 	renderlist <- data.frame(0,0,0)
+
+list1g <<- list1
+list2g <<- list2
+
 	if(fragment) {
 		withProgress(message = '', detail = '', value = 1, min=0, max=length(list1) * length(list2), {
 			for(z in 1:length(list1)) {
+print("A")
 				section_save1 <- 99999999
 				section_save2 <- 99999999
-				section_savet <- 99999999
-				section_savett <- 99999999
 				section_d1 <- 9999999
 				section_d1t <- 9999999
 				for(i in 1:length(list2)) {
-					n_splits <- section_split(list2[[i]], list1[[z]])
+print("B")
+					section_savet <- c(0,0,0)
+					section_savett <- c(0,0,0)
+					if(ncol(list2[[i]]) == 3) {list2[[i]] <- cbind(list2[[i]],0)}
+					if(ncol(list1[[z]]) == 3) {list1[[z]] <- cbind(list1[[z]],0)}
+					n_splits <<- section_split(list2[[i]], list1[[z]])
 					for(x in 1:length(n_splits[[1]])) {
+print("C")
 						d1 <- 999999
 						for(k in 1:8) {
-							if (k == 1) {lt1 <- cbind( n_splits[[2]][,1], n_splits[[2]][,2],n_splits[[2]][,3])}
-							else if (k == 2) {lt1 <- cbind( n_splits[[2]][,1]*-1, n_splits[[2]][,2]*-1,n_splits[[2]][,3]*-1)}
-							else if (k == 3) {lt1 <- cbind( n_splits[[2]][,1], n_splits[[2]][,2]*-1,n_splits[[2]][,3]*-1)}
-							else if (k == 4) {lt1 <- cbind( n_splits[[2]][,1]*-1, n_splits[[2]][,2],n_splits[[2]][,3]*-1)}
-							else if (k == 5) {lt1 <- cbind( n_splits[[2]][,1]*-1, n_splits[[2]][,2]*-1,n_splits[[2]][,3])}
-							else if (k == 6) {lt1 <- cbind( n_splits[[2]][,1], n_splits[[2]][,2],n_splits[[2]][,3]*-1)}
-							else if (k == 7) {lt1 <- cbind( n_splits[[2]][,1], n_splits[[2]][,2]*-1,n_splits[[2]][,3])}
-							else if(k == 8) {lt1 <- cbind( n_splits[[2]][,1]*-1, n_splits[[2]][,2],n_splits[[2]][,3])}
+print("D")
+							if (k == 1) {lt1 <- cbind( n_splits[[2]][,1], n_splits[[2]][,2],n_splits[[2]][,3], n_splits[[2]][,4])}
+							else if (k == 2) {lt1 <- cbind( n_splits[[2]][,1]*-1, n_splits[[2]][,2]*-1,n_splits[[2]][,3]*-1, n_splits[[2]][,4])}
+							else if (k == 3) {lt1 <- cbind( n_splits[[2]][,1], n_splits[[2]][,2]*-1,n_splits[[2]][,3]*-1, n_splits[[2]][,4])}
+							else if (k == 4) {lt1 <- cbind( n_splits[[2]][,1]*-1, n_splits[[2]][,2],n_splits[[2]][,3]*-1, n_splits[[2]][,4])}
+							else if (k == 5) {lt1 <- cbind( n_splits[[2]][,1]*-1, n_splits[[2]][,2]*-1,n_splits[[2]][,3], n_splits[[2]][,4])}
+							else if (k == 6) {lt1 <- cbind( n_splits[[2]][,1], n_splits[[2]][,2],n_splits[[2]][,3]*-1, n_splits[[2]][,4])}
+							else if (k == 7) {lt1 <- cbind( n_splits[[2]][,1], n_splits[[2]][,2]*-1,n_splits[[2]][,3], n_splits[[2]][,4])}
+							else if(k == 8) {lt1 <- cbind( n_splits[[2]][,1]*-1, n_splits[[2]][,2],n_splits[[2]][,3], n_splits[[2]][,4])}
 							lt <- icpmat(lt1[,1:3], n_splits[[1]][[x]][,1:3], iterations = iteration, type = "rigid", threads = threads)
-							lh_combined <- cbind(lt,n_splits[[1]][[x]][,1:3])
+							lh_combined <- rbind(lt,n_splits[[1]][[x]][,1:3])
 							lh_combined <- pca_align(lh_combined)
 							lhr <- nrow(lt)
 							lhc <- nrow(lh_combined)
@@ -45,16 +55,19 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 							L1 <- lh_combined[1:lhr,]
 							L2 <- lh_combined[(lhr+1):lhc,]
 							A <- CentroidBand(cbind(L1,lt1[,4]), threshold = band_threshold, centroid = centroid)
-							B <- CentroidBand(L2, threshold = band_threshold, centroid = centroid)
+							B <- CentroidBand(cbind(L2, n_splits[[1]][[x]][,4]), threshold = band_threshold, centroid = centroid)
 							moving_indices <- matrix(which(A[,4] == 1))
 							target_indices <- matrix(which(B[,4] == 1))
-							tte <- remove_fragmented_margins(A[,1:3], B[,1:3], list(moving_indices, target_indices))
+							tte <- remove_fragmented_margins(A[,1:3], B[,1:3], list(moving_indices, target_indices), threads = threads)
 							d1t <- max(mean(tte[[1]]), mean(tte[[2]]))
 							if(d1t < d1) {
 								d1 <- d1t
 								section_d1t <- d1
-								section_savet <- L1
-								section_savett <- L2
+								section_savet <- cbind(L1, n_splits[[2]][,4])
+								section_savett <- n_splits[[1]][[1]]
+								for(ii in 2:length(n_splits[[1]])) {
+									section_savett <- rbind(section_savett, n_splits[[1]][[ii]])
+								}
 							}
 						}
 						if(section_d1t < section_d1) {
@@ -63,19 +76,22 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 							section_save2 <- section_savett
 						}
 					}
-					lt <- icpmat(section_save1, section_save2, iterations = iteration, type = "rigid", threads = threads)
-					lh_combined <- cbind(section_save1,section_save2)
+ga <<- section_save1
+gb <<- section_save2	
+					ss2 <- section_save2[,4]
+					lt <- icpmat(section_save1[,1:3], section_save2[,1:3], iterations = iteration, type = "rigid", threads = threads)
+					lh_combined <- rbind(section_save1[,1:3],section_save2[,1:3])
 					lh_combined <- pca_align(lh_combined)
-					centroid <- apply(cbind(section_save1, section_save2), 2, mean)
+					centroid <- apply(rbind(section_save1[,1:3],section_save2[,1:3]), 2, mean)
 					lhr <- nrow(section_save1)
 					lhc <- nrow(lh_combined)
 					section_save1 <- lh_combined[1:lhr,]
 					section_save2 <- lh_combined[(lhr+1):lhc,]
 					A <- CentroidBand(cbind(section_save1, n_splits[[2]][,4]), threshold = band_threshold, centroid = centroid)
-					B <- CentroidBand(cbind(section_save2, n_splits[[1]][[x]][,4]), threshold = band_threshold, centroid = centroid)
+					B <- CentroidBand(cbind(section_save2,ss2), threshold = band_threshold, centroid = centroid)
 					moving_indices <- matrix(which(A[,4] == 1))
 					target_indices <- matrix(which(B[,4] == 1))
-					tte <- remove_fragmented_margins(A[,1:3], B[,1:3], list(moving_indices, target_indices))
+					tte <- remove_fragmented_margins(A[,1:3], B[,1:3], list(moving_indices, target_indices), threads = threads)
 					d1 <- max(mean(tte[[1]]), mean(tte[[2]]))
 					write.tmp.data(A, B, paste(names(list2)[i], names(list1)[z], sep="-"), direc, sessiontempdir)
 					renderlist[nz,] <- paste(names(list2)[i], names(list1)[z], sep="-")
