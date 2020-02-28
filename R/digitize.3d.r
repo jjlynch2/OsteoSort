@@ -8,15 +8,19 @@ digitize.3d <- function(align_data) {
 		}
 	}
 	else {cc <- "dimgrey"}
-
+	align_data <- align_data[,1:3]
 	options(rgl.useNULL=FALSE)
 	open3d()
-	points3d(align_data, aspect = "iso", size = 15, col=cc, box=FALSE)
+	ids <- plot3d(align_data, aspect = "iso", size = 5, col=cc, box=FALSE)
 
 	rgl.bringtotop(stay = TRUE)
 
 	print("Select fragmented boundary")
-	mp <- selectpoints3d(value = FALSE, button = c("right"), multiple = TRUE)
+	mp <- selectpoints3d(ids["data"], value = FALSE, button = c("right"), multiple = function(ids) {
+			spheres3d(align_data[ids[, "index"], , drop=FALSE], color = "dodgerblue")
+			TRUE
+		}
+	)
 	dt <- mp[,2]
 
 	options(rgl.useNULL=TRUE)
