@@ -1,4 +1,4 @@
-match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = TRUE, output_options = c(TRUE,TRUE,TRUE,FALSE), iteration = 1, threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
+match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = TRUE, output_options = c(TRUE,TRUE,TRUE,FALSE), iteration = 50, threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
 	print("Form comparisons started")
 	start_time <- start_time()
 	if(fragment == "Complete") {fragment <- FALSE}
@@ -15,29 +15,22 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	pairwise_coords <- list() #saved pairwise registration
 	renderlist <- data.frame(0,0,0)
 
-list1g <<- list1
-list2g <<- list2
-
 	if(fragment) {
 		withProgress(message = '', detail = '', value = 1, min=0, max=length(list1) * length(list2), {
 			for(z in 1:length(list1)) {
-print("A")
-				section_save1 <- 99999999
-				section_save2 <- 99999999
-				section_d1 <- 9999999
-				section_d1t <- 9999999
 				for(i in 1:length(list2)) {
-print("B")
+					section_save1 <- 99999999
+					section_save2 <- 99999999
+					section_d1 <- 9999999
+					section_d1t <- 9999999
 					section_savet <- c(0,0,0)
 					section_savett <- c(0,0,0)
 					if(ncol(list2[[i]]) == 3) {list2[[i]] <- cbind(list2[[i]],0)}
 					if(ncol(list1[[z]]) == 3) {list1[[z]] <- cbind(list1[[z]],0)}
 					n_splits <<- section_split(list2[[i]], list1[[z]])
 					for(x in 1:length(n_splits[[1]])) {
-print("C")
 						d1 <- 999999
 						for(k in 1:8) {
-print("D")
 							if (k == 1) {lt1 <- cbind( n_splits[[2]][,1], n_splits[[2]][,2],n_splits[[2]][,3], n_splits[[2]][,4])}
 							else if (k == 2) {lt1 <- cbind( n_splits[[2]][,1]*-1, n_splits[[2]][,2]*-1,n_splits[[2]][,3]*-1, n_splits[[2]][,4])}
 							else if (k == 3) {lt1 <- cbind( n_splits[[2]][,1], n_splits[[2]][,2]*-1,n_splits[[2]][,3]*-1, n_splits[[2]][,4])}
@@ -63,7 +56,7 @@ print("D")
 							if(d1t < d1) {
 								d1 <- d1t
 								section_d1t <- d1
-								section_savet <- cbind(L1, n_splits[[2]][,4])
+								section_savet <- cbind(lt, n_splits[[2]][,4])
 								section_savett <- n_splits[[1]][[1]]
 								for(ii in 2:length(n_splits[[1]])) {
 									section_savett <- rbind(section_savett, n_splits[[1]][[ii]])
@@ -76,8 +69,6 @@ print("D")
 							section_save2 <- section_savett
 						}
 					}
-ga <<- section_save1
-gb <<- section_save2	
 					ss2 <- section_save2[,4]
 					lt <- icpmat(section_save1[,1:3], section_save2[,1:3], iterations = iteration, type = "rigid", threads = threads)
 					lh_combined <- rbind(section_save1[,1:3],section_save2[,1:3])
@@ -91,7 +82,7 @@ gb <<- section_save2
 					B <- CentroidBand(cbind(section_save2,ss2), threshold = band_threshold, centroid = centroid)
 					moving_indices <- matrix(which(A[,4] == 1))
 					target_indices <- matrix(which(B[,4] == 1))
-					tte <- remove_fragmented_margins(A[,1:3], B[,1:3], list(moving_indices, target_indices), threads = threads)
+					tte <<- remove_fragmented_margins(A[,1:3], B[,1:3], list(moving_indices, target_indices), threads = threads)
 					d1 <- max(mean(tte[[1]]), mean(tte[[2]]))
 					write.tmp.data(A, B, paste(names(list2)[i], names(list1)[z], sep="-"), direc, sessiontempdir)
 					renderlist[nz,] <- paste(names(list2)[i], names(list1)[z], sep="-")

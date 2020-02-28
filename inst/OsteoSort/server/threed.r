@@ -177,12 +177,12 @@ output$max_avg_distance3D <- renderUI({
 	radioButtons(inputId = "max_avg_distance3D", label = "Distance type:", choices = c("maximum",  "average"), selected = "average")
 })
 
-icp3D <- reactiveValues(icp3D = 1)
+icp3D <- reactiveValues(icp3D = 50)
 observeEvent(input$icp3D, {
 	icp3D$icp3D <- input$icp3D
 })
 output$icp3D <- renderUI({
-	sliderInput(inputId = "icp3D", label = "ICP iterations", min=1, max=1000, value=10, step=1)
+	sliderInput(inputId = "icp3D", label = "ICP iterations", min=1, max=1000, value=50, step=1)
 })
 
 				
