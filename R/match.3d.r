@@ -191,5 +191,6 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	setwd(workingdir)
 	print("Form comparisons completed")
 	t_time <- end_time(start_time)
+ga <<- list(resmatches, direc, comparisons, matches, renderlist, t_time)
 	return(list(resmatches, direc, comparisons, matches, renderlist, t_time))
 }
