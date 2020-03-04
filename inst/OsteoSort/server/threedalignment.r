@@ -39,7 +39,7 @@ observeEvent(input$clearFile3Da, {
 	filelist3$list = list()
 	position$pos = 1
 	landmarks$landmarks = list()
-	delete.tmp.data(filelist3$list, sessiontemp)
+	delete.tmp.data.pct(filelist3$list, sessiontemp)
 	fileInput('aligndata', 'Upload data set', accept=c("xyz"), multiple = TRUE)
 })
 
