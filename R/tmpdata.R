@@ -32,10 +32,11 @@ import.tmp.data.pct <- function(comp_name, sessiontemp) {
 	return(data1[[1]])
 }
 
-delete.tmp.data.pct <- function(comp_name, sessiontemp) {
+delete.tmp.data.pct <- function(comp_name, sessiontemp, direc) {
 	for(i in comp_name) {
-		file.remove(list.files(paste(sessiontemp, "/" , comp_name[i], sep=""), full.names=TRUE))
+		file.remove(list.files(paste(sessiontemp, "/" , i, sep=""), full.names=TRUE))
 	}
+	unlink(direc, recursive=TRUE)
 }
 
 write.tmp.data.pct <- function(A, comp_name, sessiontemp) {

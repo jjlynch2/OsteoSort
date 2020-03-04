@@ -2,7 +2,7 @@ filelist3 <- reactiveValues(list=list())
 position <- reactiveValues(pos = 1)
 landmarks <- reactiveValues(landmarks=list())
 tt1 <- reactiveValues(tt1 = matrix(0))
-
+direc <- reactiveValues(direc1 = c())
 output$ncorespc <- renderUI({
 	sliderInput(inputId = "ncorespc", label = "Number of cores", min=1, max=detectCores(), value=detectCores()-1, step =1)
 })
@@ -30,17 +30,18 @@ output$resettableInput3Da <- renderUI({
 })
 
 observeEvent(input$clearFile3Da, {
+	setwd(sessiontemp)
+	delete.tmp.data.pct(filelist3$list, sessiontemp, direc$direc1)
 	if(!is.null(input$aligndata$datapath)) {
 		file.remove(input$aligndata$datapath)
 		file.remove(input$aligndata$name)
 	}
 	try(rgl.close())
-	tt1$tt1 <- matrix(0,1,2)
 	filelist3$list = list()
 	position$pos = 1
 	landmarks$landmarks = list()
-	delete.tmp.data.pct(filelist3$list, sessiontemp)
 	fileInput('aligndata', 'Upload data set', accept=c("xyz"), multiple = TRUE)
+	tt1$tt1 <- matrix(0,1,2)
 })
 
 observeEvent(input$aligndata$datapath, {
@@ -103,6 +104,7 @@ observeEvent(input$aligndata$datapath, {
 		})
 		removeModal()  
 	})
+
 
 })
 
@@ -211,9 +213,9 @@ output$savedata <- downloadHandler(
 		paste("aligned.zip")
 	},
 	content <- function(file) {
-		direc <- OsteoSort:::analytical_temp_space(output_options <- TRUE, sessiontempdir = sessiontemp)
+		direc$direc1 <- OsteoSort:::analytical_temp_space(output_options <- TRUE, sessiontempdir = sessiontemp)
 		setwd(sessiontemp)
-		setwd(direc)
+		setwd(direc$direc1)
 		for(i in 1:length(filelist3$list)) {
 			if(!is.null(landmarks$landmarks[[i]])) {
 				saveme <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
@@ -227,13 +229,12 @@ output$savedata <- downloadHandler(
 			write.table(saveme, sep = ' ', file = input$aligndata$name[i], row.names = FALSE)
 		}
 		setwd(sessiontemp)
-		files <- list.files(direc, recursive = TRUE)
-		setwd(direc)
-		zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files)
-		file.copy(paste(direc,'.zip',sep=''), file)
-
+		files <- list.files(direc$direc1, recursive = TRUE)
+		setwd(direc$direc1)
+		zip:::zipr(zipfile = paste(direc$direc1,'.zip',sep=''), files = files)
+		file.copy(paste(direc$direc1,'.zip',sep=''), file)
+		setwd(sessiontemp)
 	},
 	contentType = "application/zip"
 )
-setwd(sessiontemp)
 	
