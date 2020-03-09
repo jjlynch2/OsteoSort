@@ -1,4 +1,4 @@
-match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = TRUE, output_options = c(TRUE,TRUE,TRUE,FALSE), iteration = 50, threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
+match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = TRUE, output_options = c(TRUE,TRUE,TRUE,FALSE,TRUE), iteration = 50, threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
 	print("Form comparisons started")
 	start_time <- start_time()
 	if(fragment == "Complete") {fragment <- FALSE}
@@ -143,7 +143,9 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 							d1 <- d1t
 						}
 					}
-					write.tmp.data(ptemp, listb[[x]], paste(names(list1)[i], names(list2)[x], sep="-"), direc, sessiontempdir)
+					if(output_options[[5]]) {
+						write.tmp.data(ptemp, listb[[x]], paste(names(list1)[i], names(list2)[x], sep="-"), direc, sessiontempdir)
+					}
 					renderlist[nz,] <- paste(names(list1)[i], names(list2)[x], sep="-")
 					matches1[nz,] <- c(names(list1)[i], names(list2)[x], d1)
 					matches2[nz,] <- c(names(list2)[x], names(list1)[i], d1)
@@ -191,6 +193,5 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	setwd(workingdir)
 	print("Form comparisons completed")
 	t_time <- end_time(start_time)
-ga <<- list(resmatches, direc, comparisons, matches, renderlist, t_time)
 	return(list(resmatches, direc, comparisons, matches, renderlist, t_time))
 }

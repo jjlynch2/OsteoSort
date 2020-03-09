@@ -66,7 +66,7 @@ observeEvent(input$clearFile3D, {
 		file.remove(input$leftimages3D$datapath)
 		file.remove(input$leftimages3D$name)
 	}
-	delete.tmp.data(dirdel, sessiontemp)
+	delete.tmp.data(dirdel)
 	output$mspec3D <- renderUI({
 		selectInput(inputId = "mspec3D", label = "Choose comparison", choices = "")
 	})
@@ -158,7 +158,13 @@ output$banding <- renderUI({
 	checkboxInput(inputId = "banding", label = "Centroid bands", value = TRUE)
 })
 
-
+render <- reactiveValues(render = TRUE)
+observeEvent(input$render, {
+	render$render <- input$render
+})
+output$render <- renderUI({
+	checkboxInput(inputId = "render", label = "Save registrations", value = TRUE)
+})
 
 ncores3D <- reactiveValues(ncores3D = detectCores()-1)
 observeEvent(input$ncores3D, {
@@ -203,7 +209,7 @@ observeEvent(input$pro3D, {
 			setProgress(value = 2, message = "Importing data", detail = '')
 			out1 <- input.3d(list1 = input$rightimages3D$name, list2 = input$leftimages3D$name)
 			setProgress(value = 3, message = "Running comparisons", detail = '')
-			out2 <- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, multiple_file_output_graph_3d$multiple_file_output_graph_3d), labtf3d = labtf3d$labtf3d, sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
+			out2 <- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, multiple_file_output_graph_3d$multiple_file_output_graph_3d, render$render), labtf3d = labtf3d$labtf3d, sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
 			direc <- out2[[2]]
 			dirdel <<- direc
 			if(is.null(nrow(out2[[1]]))) {pm <- 1; out2[[1]] <- rbind(out2[[1]],c(NA,NA,NA)) }
@@ -278,8 +284,8 @@ observeEvent(input$pro3D, {
 			}
 		}
 		observeEvent(input$mspec3D, {
-			if(input$mspec3D != "") {
-				tt <- import.tmp.data(input$mspec3D, out2[[2]], sessiontemp)
+			if(input$mspec3D != "" && isTRUE(render$render)) {
+				tt <- import.tmp.data(input$mspec3D, dirdel, sessiontemp)
 				tt1 <- tt[[1]][c(1:3)]
 				tt2 <- tt[[2]][c(1:3)]
 				output$webgl3D <- renderRglwidget ({

@@ -17,13 +17,8 @@ import.tmp.data <- function(comp_name, direc, sessiontemp) {
 	return(list(data1, data2))
 }
 
-delete.tmp.data <- function(direc, sessiontemp) {
-	file1 <- paste(sessiontemp, "/", direc , "/1/", sep="")
-	file2 <- paste(sessiontemp, "/", direc , "/2/", sep="")
-	filelist <- c(list.files(file1, full.names=TRUE), list.files(file2, full.names=TRUE))
-	for(i in filelist) {
-		file.remove(i)
-	}
+delete.tmp.data <- function(direc) {
+	unlink(direc, recursive=TRUE)
 }
 
 import.tmp.data.pct <- function(comp_name, sessiontemp) {

@@ -55,7 +55,8 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 						conditionalPanel(condition = "input.multiple_file_output_graph_3d", 
 							uiOutput("labtf3d")
 						),
-						uiOutput("forcd")
+						uiOutput("forcd"),
+						uiOutput("render")
 					),
 					tabPanel("Statistical Parameters",
 						fluidRow(
