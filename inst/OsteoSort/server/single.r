@@ -258,7 +258,7 @@ observeEvent(input$proc, {
 				if(!is.na(single_input_list_left$single_input_list_left[x]) && !is.na(single_input_list_right$single_input_list_right[x])) {
 					break #break if at least 1 pair is present
 				} else if(x == length(single_input_list_left$single_input_list_left)) {
-					removeModal();shinyalert(title = "ERROR!", text="user error - please replace user",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)
+					removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)
 				}
 			}
 
@@ -286,7 +286,7 @@ observeEvent(input$proc, {
 			colnames(single_input_list_A$single_input_list_A) <- single_MLA$single_ML
 			colnames(single_input_list_B$single_input_list_B) <- single_MLB$single_ML
 
-			if(all(is.na(single_input_list_A$single_input_list_A)) || all(is.na(single_input_list_B$single_input_list_B))) {removeModal();shinyalert(title = "ERROR!", text="Pssst... you forgot to enter data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+			if(all(is.na(single_input_list_A$single_input_list_A)) || all(is.na(single_input_list_B$single_input_list_B))) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 
 			sorta <- data.frame(id = input$ID1, Side = input$single_association_side_a, Element = input$single_elements_association_a, single_input_list_A$single_input_list_A, stringsAsFactors = FALSE)
 			sortb <- data.frame(id = input$ID2, Side = input$single_association_side_b, Element = input$single_elements_association_b, single_input_list_B$single_input_list_B, stringsAsFactors = FALSE)

@@ -71,7 +71,7 @@ observeEvent(input$stature_reference_ante, {
 observeEvent(input$proantestat, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
 	withProgress(message = 'Calculation has started', detail = '', value = 0, min=0, max=3, {
-		if(is.na(input$antestat_input) || is.na(input[[paste0(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], "_ante")]])) {removeModal();shinyalert(title = "ERROR!", text="Problem exists between chair and keyboard",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+		if(is.na(input$antestat_input) || is.na(input[[paste0(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], "_ante")]])) {removeModal();shinyalert(title = "ERROR!", text="Data input error.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 
 		ante <- data.frame(id = input$Antemortem_ID_ante, stature = input$antestat_input)
 		post <- data.frame(id = input$Postmortem_ID_ante, side = input$state_reference_ante_side, element = input$single_ante_elements, input[[paste0(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], "_ante")]])

@@ -143,7 +143,7 @@ observeEvent(input$proantestatm, {
 								ref = stature_reference_imported_antem$stature_reference_imported_antem
 		)
 		if(is.null(outtemp1m)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
-		if(is.null(input$Measurement_ante_mm)) {removeModal();shinyalert(title = "ERROR!", text="You forgot to enter the measurement!.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+		if(is.null(input$Measurement_ante_mm)) {removeModal();shinyalert(title = "ERROR!", text="The measurement is missing.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		incProgress(amount = 1, message = "Antemortem: running comparisons")
 		outtemp2m <- antestat.regtest(labtfa = labtfa$labtfa,
 									threads = numbercoresglobalm$ncorem, 

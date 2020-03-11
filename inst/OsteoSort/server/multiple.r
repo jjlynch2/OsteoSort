@@ -256,7 +256,7 @@ observeEvent(input$pro, {
 		 #return null if not uploaded
 		if (is.null(inFile)) {
 			removeModal()
-			shinyalert(title = "ERROR!", text="Task failed successfully",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
+			shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
 			return(NULL)
 		}
 		#return null if empty file
@@ -273,7 +273,7 @@ observeEvent(input$pro, {
 		tempdata1 <- c(tempdataa, tempdatab)
 		tempdata1 <- as.data.frame(tempdata1) #combines first four columns with now numeric measurements
 		if(input$multiple_analysis == "Non-Antimere t-test") {
-			if(is.null(input$multiple_measurements_non_antimere_a) || is.null(input$multiple_measurements_non_antimere_b)) {removeModal();shinyalert(title = "ERROR!", text="You forgot to enter measurement data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+			if(is.null(input$multiple_measurements_non_antimere_a) || is.null(input$multiple_measurements_non_antimere_b)) {removeModal();shinyalert(title = "ERROR!", text="The measurement data is missing",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			temp1 <- which(multiple_art_elements$df == input$multiple_element_non_antimere)
 			tempa <- multiple_art_measurements_a$df[temp1][!duplicated(multiple_art_measurements_a$df[temp1])]
 			tempb <- multiple_art_measurements_b$df[temp1][!duplicated(multiple_art_measurements_b$df[temp1])]
@@ -289,7 +289,7 @@ observeEvent(input$pro, {
 			d2 <- ttest(labtf = labtf$labtf, ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = c(multiple_file_output1$multiple_file_output1, FALSE, multiple_file_output_graph$multiple_file_output_graph), threads = numbercoresglobal$ncore)
 			tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 		} else if(input$multiple_analysis == "Antimere t-test") {
-			if(is.null(input$multiple_measurement_antimere)) {removeModal();shinyalert(title = "ERROR!", text="Sorry.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+			if(is.null(input$multiple_measurement_antimere)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			meas <- input$multiple_measurement_antimere
 			incProgress(amount = 1, message = "Antimere t-test: sorting data")			
 			pm.d1 <- pm.input(sort = tempdata1, bone = input$multiple_elements_pairmatch, measurements = meas, ref = multiple_reference_imported$multiple_reference_imported)
@@ -298,7 +298,7 @@ observeEvent(input$pro, {
 			d2 <- ttest(labtf = labtf$labtf, ztest = multiple_ztransform$multiple_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, output_options = c(multiple_file_output1$multiple_file_output1, FALSE, multiple_file_output_graph$multiple_file_output_graph), threads = numbercoresglobal$ncore)
 			tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 		} else if(input$multiple_analysis == "Non-Antimere regression") {
-			if(is.null(input$multiple_measurement_association_a) || is.null(input$multiple_measurement_association_b)) {removeModal();shinyalert(title = "ERROR!", text="Nope.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
+			if(is.null(input$multiple_measurement_association_a) || is.null(input$multiple_measurement_association_b)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			tempdata1$Element <- tolower(tempdata1$Element)
 			sorta = tempdata1[tempdata1$Element == input$multiple_elements_association_a,]
 			sortb = tempdata1[tempdata1$Element == input$multiple_elements_association_b,]
