@@ -75,7 +75,7 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 			results_formatted[i,11] <- c("Excluded")
 		}
 	}
-
+	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, tails = 2, ztransform = ztest, type = type))
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}

@@ -74,7 +74,8 @@ match.2d <- function(outlinedata = NULL, sessiontempdir = NULL, fragment = FALSE
 	if(!is.null(nrow(resmatches))) {colnames(resmatches) <- c("ID", "Match-ID", "Distance")}
 
 	if(hide_distances) {resmatches[,3] <- "Hidden"}
-	withProgress(message = '', detail = '', value = 1, min=0, max=5, {
+	withProgress(message = '', detail = '', value = 1, min=0, max=6, {
+		setProgress(value = 1, message = "Saving: settings.csv", detail='');no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(lowest_distance = n_lowest_distances, distance_type = "average"))
 		if(output_options[1]) {setProgress(value = 1, message = "Saving: potential-matches.csv", detail='');no <- OsteoSort:::output_function(resmatches, method="2D", type="csv-res")}
 		if(output_options[2]) {setProgress(value = 1, message = "Saving: all-distances.csv", detail='');no <- OsteoSort:::output_function(matches, method="2D", type="csv-all")}
 		if(output_options[3]) {setProgress(value = 1, message = "Saving: registration plots", detail='');no <- OsteoSort:::output_function(coords, method="2D", type="plot")}

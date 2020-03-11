@@ -1,5 +1,8 @@
-output_function <- function(hera1 = NULL, rejected = NULL, method = "exclusion", type = "csv", uln = NULL, labtf = TRUE) {
+output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, method = "exclusion", type = "csv", uln = NULL, labtf = TRUE) {
 	print("Writing output files")
+	if(method == "options") {
+		write.csv(options, file = "settings.csv", row.names=FALSE, col.names = TRUE)
+	}
 	if(method == "exclusion") {
 		if(type == "csv") {
 			if(nrow(hera1[hera1$result == "Cannot Exclude",]) > 0) {

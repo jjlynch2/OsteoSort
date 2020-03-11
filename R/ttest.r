@@ -130,7 +130,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 			results_formatted[i,12] <- c("Excluded")
 		}
 	}
-
+	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, absolute_value = absolute, zero_mean = zmean, tails = tails, boxcox = boxcox, ztransform = ztest))
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results_formatted, rejected = rejected, method="exclusion", type="csv")
 	}

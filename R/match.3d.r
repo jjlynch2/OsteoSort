@@ -184,6 +184,12 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	if(is.null(nrow(resmatches))) {names(resmatches) <- c("ID", "Match-ID", "Distance")}
 	if(!is.null(nrow(resmatches))) {colnames(resmatches) <- c("ID", "Match-ID", "Distance")}
 	if(hide_distances) {resmatches[,3] <- "Hidden"}
+	if(band) {
+		bandt = band_threshold*2
+	} else {
+		bandt = NULL
+	}
+	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(fragment = fragment, lowest_distance = n_lowest_distances, distance_type = "average", band=bandt))
 	if(output_options[1]) {no <- OsteoSort:::output_function(resmatches, method="3D", type="csv-res")}
 	if(output_options[2]) {no <- OsteoSort:::output_function(matches, method="3D", type="csv-all")}
 	if(output_options[3]) {no <- OsteoSort:::output_function(pairwise_coords, method="3D", type="coord")}
