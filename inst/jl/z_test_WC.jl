@@ -5,28 +5,20 @@
 	refz_cache = []
 	refc_cache = []
 	cache_index = 0
-
-
 	for j in 1:size(m2,1)
-
-###cache isn't working correctly
-###need to test in julia 
-
-
 		#comparison d-values and res for present measurements
 		for g in 1:size(v1,1)
 			if v1[g] != 0 && m2[j,g] != 0 #measurement is being used
 				res[j,g+7] = 1 #still recover index
 			end
 		end
-
 		cache = false
 		temp_index = 0
 		if j != 1
 			for x_cache in 1:cache_index
 				cache = true
 				for i_cache in 1:size(v1,1)
-					if res[j,i_cache] != res_cache[x_cache][i_cache]
+					if res[j,7+i_cache] != res_cache[x_cache][7+i_cache]
 						cache = false
 						break
 					end
@@ -37,7 +29,6 @@
 				end
 			end
 		end
-
 		if cache 
 			refd = refd_cache[temp_index]
 			z_temp_ref = refz_cache[temp_index]
@@ -46,31 +37,25 @@
 			refd = ref_dif_s(res[j,8:end], RL, RR)
 			z_temp_ref = zeros(size(refd,1),size(refd,2))
 			c_temp_ref = zeros(size(refd,2))
-			
 			#ref z-scores
 			for i in 1:size(refd,1)
 				for g in 1:size(refd,2)
 					z_temp_ref[i,g] = qnorm(2*pt(-abs(abs(refd[i,g] - mean(refd[1:end,g])) / std(refd[1:end,g])), size(refd,1) - 1), true, false)
 				end
 			end
-
 			#ref z-scores correlation
 			c_temp_ref = cor(z_temp_ref, z_temp_ref)
-
 			push!(refc_cache, c_temp_ref)
 			push!(refz_cache, z_temp_ref)
 			push!(refd_cache, refd)
 			push!(res_cache, res)
 			cache_index <- cache_index + 1
 		end
-
-
 		#comparison z-scores
 		z_temp_comp = zeros(1,size(refd,2))
 		for i in 1:size(refd,2)
 			z_temp_comp[i] = qnorm(2*pt(-abs(abs(abs(v1[i] - m2[j,i]) - mean(refd[1:end,i])) / std(refd[1:end,i])), size(refd,1) - 1), true, false)
 		end
-
 		#weights
 		wA = 0
 		wAA = zeros(1,size(refd,2))
@@ -82,8 +67,6 @@
 		end
 		wZ = sum(wAA .* z_temp_comp) / sqrt(sum(wAA .^ 2) + (wA * 2)) #combined Z-score
 		wZP = 1 - pnorm(wZ, false, false) #combined P-value from normal distribution
-
-
 		res[j,1] = li #index of left
 		res[j,2] = j #index of right
 		res[j,3] = 0 #not needed but left here so array columns match in R
