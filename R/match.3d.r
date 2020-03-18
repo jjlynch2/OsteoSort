@@ -14,10 +14,6 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	nz <- 1 #comparison counter
 	pairwise_coords <- list() #saved pairwise registration
 	renderlist <- data.frame(0,0,0)
-#Alist <- list()
-#Blist <- list()
-#Dlist <- list()
-
 	if(fragment) {
 		withProgress(message = '', detail = '', value = 1, min=0, max=length(list1) * length(list2), {
 			for(z in 1:length(list1)) {
@@ -93,11 +89,6 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 					moving_indices <- matrix(which(A[,4] == 1))
 					target_indices <- matrix(which(B[,4] == 1))
 					tte <- remove_fragmented_margins(A[,1:3], B[,1:3], list(moving_indices, target_indices), threads = threads)
-
-#Alist[[nz]] <- A
-#Blist[[nz]] <- B
-#Dlist[[nz]] <- tte
-
 					d1 <- max(mean(tte[[1]]), mean(tte[[2]]))
 					write.tmp.data(A, B, paste(names(list2)[i], names(list1)[z], sep="-"), direc, sessiontempdir)
 					renderlist[nz,] <- paste(names(list2)[i], names(list1)[z], sep="-")
@@ -110,9 +101,6 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 			}
 		})
 	}
-#AA <<- Alist
-#BB <<- Blist
-#DD <<- Dlist
 	if(!fragment) {
 		lista <- list()
 		listb <- list()

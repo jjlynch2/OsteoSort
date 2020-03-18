@@ -16,9 +16,10 @@ Depends:
 	JuliaCall,
 	ggplot2,
 	shinyalert,
-	geomnet,
 	ggrepel,
-	networkD3
+	networkD3,
+	dplyr,
+	grid
 License: GPL-2
 LazyData: true
 ByteCompile: true
@@ -34,6 +35,5 @@ Imports:
 	JuliaCall,
 	ggplot2,
 	shinyalert,
-	geomnet,
 	ggrepel,
 	networkD3
