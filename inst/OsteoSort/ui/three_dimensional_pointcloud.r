@@ -48,6 +48,21 @@ three_dimensional_pointcloud <- tabPanel("3D Point Cloud Tools",icon = icon("clo
 			),	
 			fluidRow(br()),
 			fluidRow(
+				column(12,
+					uiOutput("landmark_switch")
+				)
+			),
+			fluidRow(br()),
+			fluidRow(
+				column(6,
+					actionButton("reimport", "Reimport", icon=icon("arrows-alt"))
+				),
+				column(6,
+					actionButton("landmarks_dig","Landmarks", icon=icon("arrows-alt"))
+				)
+			),
+			fluidRow(br()),
+			fluidRow(
 				column(6,
 					actionButton("simplify","Simplify", icon=icon("cloud-download"))
 				),
@@ -64,7 +79,8 @@ three_dimensional_pointcloud <- tabPanel("3D Point Cloud Tools",icon = icon("clo
 					downloadButton("savedata", " Save    ")
 				)
 			),
-
+			tags$style(type = "text/css", "#reimport { width:100%; font-size:85%; background-color:#126a8f }"),
+			tags$style(type = "text/css", "#landmarks_dig { width:100%; font-size:85%; background-color:#126a8f }"),
 			tags$style(type = "text/css", "#pcset { width:100%; font-size:85%; background-color:#126a8f }"),
 			tags$style(type = "text/css", "#simplify { width:100%; font-size:85%; background-color:#126a8f }"),
 			tags$style(type = "text/css", "#start2 { width:100%; font-size:85%; background-color:#126a8f }"),

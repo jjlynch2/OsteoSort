@@ -1,6 +1,7 @@
 filelist3 <- reactiveValues(list=list())
 position <- reactiveValues(pos = 1)
 landmarks <- reactiveValues(landmarks=list())
+landmarks_align <- reactiveValues(landmarks_align=list())
 tt1 <- reactiveValues(tt1 = matrix(0))
 direc <- reactiveValues(direc1 = c())
 output$ncorespc <- renderUI({
@@ -23,6 +24,33 @@ output$fr <- renderUI({
 	sliderInput(inputId = "fr", label = "Fracture radius", min=0.1, max=500, value=1, step = 0.1)
 })
 
+
+output$landmark_switch <- renderUI({
+	checkboxGroupInput(inputId = "landmark_switch", label = "landmarks", choices = c(1,2,3,4,5,6,7,8,9,10), selected = c(1,2,3), inline=TRUE)
+})
+
+
+observeEvent(input$landmarks_dig, {
+	if(length(input$aligndata$datapath) > 0) {
+		showModal(modalDialog(title = "Digitization has started...Please check the RGL window.", easyClose = FALSE, footer = NULL))
+		if(input$alln == "Present") {
+			landmarks_align$landmarks_align[[position$pos]] <- digitize.3d(tt1$tt1, landmarks=input$landmark_switch)
+		}
+		else if(input$alln == "All") {
+			ll <- length(filelist3$list)
+			for (i in 1:ll) {
+				ttt <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
+				landmarks_align$landmarks_align[[i]] <- digitize.3d(ttt, landmarks=input$landmark_switch)
+   				try(rgl.close())
+			}
+		}
+	removeModal()  
+	}
+})
+
+
+
+
 output$resettableInput3Da <- renderUI({
 	input$clearFile3Da
 	input$uploadFormat
@@ -40,26 +68,43 @@ observeEvent(input$clearFile3Da, {
 	filelist3$list = list()
 	position$pos = 1
 	landmarks$landmarks = list()
+	landmarks_align$landmarks_align = list()
 	fileInput('aligndata', 'Upload data set', accept=c("xyz"), multiple = TRUE)
 	tt1$tt1 <- matrix(0,1,2)
+})
+
+
+observeEvent(input$reimport, {
+		if(input$alln == "Present") {
+			ttt <- import.tmp.data.pct(filelist3$list[[position$pos]], sessiontemp)
+			if(ncol(ttt) == 5) {
+				landmarks$landmarks[[position$pos]] <- which(ttt[,4] != 0)
+				landmarks_align$landmarks_align[[position$pos]] <- which(ttt[,5] != 0)
+			} else if (ncol(ttt) == 4) {
+				landmarks$landmarks[[position$pos]] <- which(ttt[,4] != 0)
+				landmarks_align$landmarks_align[[position$pos]] <- rep(0,10)
+			}
+		} 
+		else if(input$alln == "All") {
+			ll <- length(filelist3$list)
+			for (i in 1:ll) {
+				ttt <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
+				if(ncol(ttt) == 5) {
+					landmarks$landmarks[[i]] <- which(ttt[,4] != 0)
+					landmarks_align$landmarks_align[[i]] <- which(ttt[,5] != 0)
+				} else if (ncol(ttt) == 4) {
+					landmarks$landmarks[[i]] <- which(ttt[,4] != 0)
+					landmarks_align$landmarks_align[[i]] <- rep(0,10)
+				}
+			}
+		}
 })
 
 observeEvent(input$aligndata$datapath, {
 	file.copy(input$aligndata$datapath, input$aligndata$name)
 	filelist3$list <- input$aligndata$name
 	landmarks$landmarks <- rep(list(NULL), length(filelist3$list)) #populate as NULL x file length on upload
-
-
-######broken code to reimport landmarks
-#	for(i in 1:length(filelist3$list)) {
-#		if(ncol(filelist3$list[[i]]) > 6) {
-#			if(!is.na(filelist3$list[[i]]$ml[1])) {
-#				temp4 <- as.numeric(na.omit(filelist3$list[[i]]$ml))
-#				landmarks$landmarks[[i]] <- temp4
-#			}
-#		}
-#	}
-######broken code to reimport landmarks
+	landmarks_align$landmarks_align <- rep(list(NULL), length(filelist3$list)) #populate as NULL x file length on upload
 
 	observeEvent(position$pos, {
 
@@ -87,7 +132,11 @@ observeEvent(input$aligndata$datapath, {
 				plot3d(tt1$tt1, size=3, col=cc, box=FALSE, axes=FALSE, aspect = "iso", xlab="",ylab="",zlab="")
 				if(!is.null(landmarks$landmarks[[position$pos]]))  {
 					mp <- tt1$tt1[landmarks$landmarks[[position$pos]],]
-					points3d(mp, size=20, col="DODGERBLUE", box=FALSE)
+					spheres3d(mp, size=10, col="DODGERBLUE")
+				}
+				if(!is.null(landmarks_align$landmarks_align[[position$pos]]))  {
+					mp <- tt1$tt1[landmarks_align$landmarks_align[[position$pos]][landmarks_align$landmarks_align[[position$pos]] != 0],]
+					spheres3d(mp, size=10, col="red")
 				}
 				output$coordinates <- renderUI({
 					HTML(paste("<strong>","<br/>","Coordinates: ",   "<font color=\"#00688B\">", nrow(tt1$tt1), "</font>",
@@ -114,7 +163,6 @@ observeEvent(input$simplify, {
 		if(input$alln == "Present") {		
 			ttt <- tt1$tt1
 			te <- kmeans.3d(ttt, cluster = input$vara, threads = input$ncorespc)
-			write.tmp.data.pct(te, filelist3$list[[position$pos]], sessiontemp)
 			tt1$tt1 <- te
 			if(!is.null(landmarks$landmarks[[position$pos]])) {
 				tempp <- HD_KDTree_Ind(as.matrix(te[,1:3]), as.matrix(ttt[landmarks$landmarks[[position$pos]],c(1:3)]), threads = input$ncorespc, k = input$sft)
@@ -179,7 +227,6 @@ observeEvent(input$start2, {
 })
 
 
-#this code isnt working yet... something about the returned indices
 observeEvent(input$start1, {
 	if(length(input$aligndata$datapath) > 0) {
 		showModal(modalDialog(title = "Fracture margin identification has started...", easyClose = FALSE, footer = NULL))
@@ -206,8 +253,6 @@ observeEvent(input$start1, {
 })
 
 
-
-#download code needs to be adjusted for the new saving type.. no more landmarks eh
 output$savedata <- downloadHandler(
 	filename <- function() {
 		paste("aligned.zip")
@@ -217,14 +262,23 @@ output$savedata <- downloadHandler(
 		setwd(sessiontemp)
 		setwd(direc$direc1)
 		for(i in 1:length(filelist3$list)) {
-			if(!is.null(landmarks$landmarks[[i]])) {
-				saveme <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
+			saveme <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
+			if(ncol(saveme) == 3) {
+				saveme <- cbind(saveme, 0,0)
+			} else if(ncol(saveme) == 4) {
 				saveme <- cbind(saveme, 0)
-				saveme[landmarks$landmarks[[i]],4] <- 1
-				colnames(saveme) <- c("x","y","z","f")
 			}
-			if(is.null(landmarks$landmarks[[i]])) {
-				saveme <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
+			colnames(saveme) <- c("x","y","z","f","a")
+			if(!is.null(landmarks$landmarks[[i]])) {
+				saveme[landmarks$landmarks[[i]],4] <- 1
+			}
+			if(!is.null(landmarks_align$landmarks_align[[i]])) {
+				for(la in 1:10) {
+					lat <- landmarks_align$landmarks_align[[i]][la]
+					if(lat != 0) {
+						saveme[landmarks_align$landmarks_align[[i]],5] <- la
+					}
+				}
 			}
 			write.table(saveme, sep = ' ', file = input$aligndata$name[i], row.names = FALSE)
 		}
