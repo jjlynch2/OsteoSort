@@ -79,7 +79,12 @@ observeEvent(input$reimport, {
 			ttt <- import.tmp.data.pct(filelist3$list[[position$pos]], sessiontemp)
 			if(ncol(ttt) == 5) {
 				landmarks$landmarks[[position$pos]] <- which(ttt[,4] != 0)
-				landmarks_align$landmarks_align[[position$pos]] <- which(ttt[,5] != 0)
+				ttt_temp <- unique(ttt[ttt[,5] != 0,5])
+				p_temp <- rep(0,10)
+				for(p in ttt_temp) {
+					 p_temp[p] <- which(ttt[,5] == p)
+				}
+				landmarks_align$landmarks_align[[position$pos]] <- p_temp
 			} else if (ncol(ttt) == 4) {
 				landmarks$landmarks[[position$pos]] <- which(ttt[,4] != 0)
 				landmarks_align$landmarks_align[[position$pos]] <- rep(0,10)
@@ -91,7 +96,12 @@ observeEvent(input$reimport, {
 				ttt <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
 				if(ncol(ttt) == 5) {
 					landmarks$landmarks[[i]] <- which(ttt[,4] != 0)
-					landmarks_align$landmarks_align[[i]] <- which(ttt[,5] != 0)
+					ttt_temp <- unique(ttt[ttt[,5] != 0,5])
+					p_temp <- rep(0,10)
+					for(p in ttt_temp) {
+						 p_temp[p] <- which(ttt[,5] == p)
+					}
+					landmarks_align$landmarks_align[[i]] <- p_temp
 				} else if (ncol(ttt) == 4) {
 					landmarks$landmarks[[i]] <- which(ttt[,4] != 0)
 					landmarks_align$landmarks_align[[i]] <- rep(0,10)
@@ -276,7 +286,7 @@ output$savedata <- downloadHandler(
 				for(la in 1:10) {
 					lat <- landmarks_align$landmarks_align[[i]][la]
 					if(lat != 0) {
-						saveme[landmarks_align$landmarks_align[[i]],5] <- la
+						saveme[lat,5] <- la
 					}
 				}
 			}

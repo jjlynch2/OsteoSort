@@ -20,56 +20,60 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 				for(i in 1:length(list2)) {
 					if(ncol(list2[[i]]) == 3) {list2[[i]] <- cbind(list2[[i]],0,0)}
 					if(ncol(list1[[z]]) == 3) {list1[[z]] <- cbind(list1[[z]],0,0)}
-
-					L1 <- OsteoSort:::pca_align(list1[[z]][,1:3])
-					L2 <- OsteoSort:::pca_align(list2[[i]][,1:3])
-
-					L2[,2] <- L2[,2] * -1
-
-					points_1 <- unique(list1[[z]][list1[[z]][,5] != 0,5])
-					points_2 <- unique(list2[[i]][list2[[i]][,5] != 0,5])
-					first <- matrix(0,1,3)
-					second <- matrix(0,1,3)
-					if(length(points_1) > 0 && length(points_2) > 0) {
-						for(n1 in points_1) {
-							for(n2 in points_2) {
-								if(n1 == n2) {
-									first <- rbind(first, list1[list1[[z]][,5] == n1,] )
-									second <- rbind(second, list2[list2[[i]][,5] == n2,])
-								}
-							}
+					L1 <- as.matrix(list1[[z]][,1:3])
+					L2 <- as.matrix(list2[[i]][,1:3])
+					L1 <- OsteoSort::pca_align(L1)
+					L2 <- OsteoSort::pca_align(L2)
+					L1 <- cbind(L1, list1[[z]][,4:5])
+					L2 <- cbind(L2, list2[[i]][,4:5])
+					colnames(L1) <- colnames(list1[[z]])
+					colnames(L2) <- colnames(list2[[i]])
+					d1 <- 999999
+					ptemp1 <- NULL
+					ptemp2 <- NULL
+					for(k in 1:8) {
+						if (k == 1) {lt1 <- cbind( L1[,1], L1[,2],L1[,3])}
+						else if (k == 2) {lt1 <- cbind( L1[,1]*-1, L1[,2]*-1,L1[,3]*-1)}
+						else if (k == 3) {lt1 <- cbind( L1[,1], L1[,2]*-1,L1[,3]*-1)}
+						else if (k == 4) {lt1 <- cbind( L1[,1]*-1, L1[,2],L1[,3]*-1)}
+						else if (k == 5) {lt1 <- cbind( L1[,1]*-1, L1[,2]*-1,L1[,3])}
+						else if (k == 6) {lt1 <- cbind( L1[,1], L1[,2],L1[,3]*-1)}
+						else if (k == 7) {lt1 <- cbind( L1[,1], L1[,2]*-1,L1[,3])}
+						else if (k == 8) {lt1 <- cbind( L1[,1]*-1, L1[,2],L1[,3])}
+						lt1 <- as.matrix(cbind(lt1,L1[,4:5]))
+						lt2 <- as.matrix(L2)
+						colnames(lt1) <- colnames(list1[[z]])
+						colnames(lt2) <- colnames(list2[[i]])
+						fs <- extract(lt1, lt2)
+						if(!isFALSE(fs)) {
+							first <- fs[[1]]
+							second <- fs[[2]]
+							trafo <- Morpho::computeTransform(as.matrix(first), as.matrix(second), type="rigid")
+							lt2[,1:3] <- Morpho::applyTransform(as.matrix(lt2[,1:3]),trafo)
 						}
-						first <- first[-1,]
-						second <- second[-1,]
-						if(nrow(first) == 1) {
-							first <- rbind(first,first,first)
-							second <- rbind(second,second,second)
-						} else if(nrow(first == 2)) {
-							first <- rbind(first[1,], first[2,], first[1,])
-							second <- rbind(second[1,], second[2,], second[1,])
+						lt1[,1:3] <- icpmat(lt1[,1:3], lt2[,1:3], iterations = iteration, type = "rigid", threads = threads)
+						if(band == TRUE) {
+							lh_combined <- rbind(lt1[,1:3],lt2[,1:3])
+							lh_combined <- pca_align(lh_combined)
+							lhr <- nrow(lt1)
+							lhc <- nrow(lh_combined)
+							centroid <- apply(lh_combined[,1:3], 2, mean)
+							lt1 <- cbind(lh_combined[1:lhr,], lt1[,4])
+							lt2 <- cbind(lh_combined[(lhr+1):lhc,], lt2[,4])
+							lt1 <- CentroidBand(lt1, threshold = band_threshold, centroid = centroid)
+							lt2 <- CentroidBand(lt2, threshold = band_threshold, centroid = centroid)
 						}
-						trafo <- Morpho::computeTransform(first, second, type="rigid")
-						L2 <- Morpho::applyTransform(L2,trafo)
+						moving_indices <- matrix(which(lt1[,4] == 1))
+						target_indices <- matrix(which(lt2[,4] == 1))
+						frag_ident <- remove_fragmented_margins(lt1[,1:3], lt2[,1:3], list(moving_indices, target_indices), threads = threads)
+						d1t <- max(mean(frag_ident[[1]]), mean(frag_ident[[2]]))
+						if(d1t < d1) {
+							ptemp1 <- lt1
+							ptemp2 <- lt2
+							d1 <- d1t
+						}
 					}
-					L2 <- cbind(L2, list2[[i]][,4])
-					L1 <- cbind(L1, list1[[z]][,4])
-					L1_t <- icpmat(L1[,1:3], L2[,1:3], iterations = iteration, type = "rigid", threads = threads)
-					if(band == TRUE) {
-						lh_combined <- rbind(L1_t[,1:3],L2[,1:3])
-						lh_combined <- pca_align(lh_combined)
-						lhr <- nrow(L1_t)
-						lhc <- nrow(lh_combined)
-						centroid <- apply(lh_combined[,1:3], 2, mean)
-						L1 <- cbind(lh_combined[1:lhr,], L1[,4])
-						L2 <- cbind(lh_combined[(lhr+1):lhc,], L2[,4])
-						L1 <- CentroidBand(L1, threshold = band_threshold, centroid = centroid)
-						L2 <- CentroidBand(L2, threshold = band_threshold, centroid = centroid)
-					}
-					moving_indices <- matrix(which(L1[,4] == 1))
-					target_indices <- matrix(which(L2[,4] == 1))
-					frag_ident <- remove_fragmented_margins(L1[,1:3], L2[,1:3], list(moving_indices, target_indices), threads = threads)
-					d1 <- max(mean(frag_ident[[1]]), mean(frag_ident[[2]]))
-					write.tmp.data(L1, L2, paste(names(list2)[i], names(list1)[z], sep="-"), direc, sessiontempdir)
+					write.tmp.data(ptemp1, ptemp2, paste(names(list2)[i], names(list1)[z], sep="-"), direc, sessiontempdir)
 					renderlist[nz,] <- paste(names(list2)[i], names(list1)[z], sep="-")
 					matches1[nz,] <- c(names(list2)[i], names(list1)[z], d1)
 					matches2[nz,] <- c(names(list1)[z], names(list2)[i], d1)
