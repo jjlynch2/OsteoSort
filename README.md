@@ -2,8 +2,7 @@
 
 ## Installation
 ```javascript
-install.packages("devtools")
-library(devtools)
+require("devtools")
 install_github("jjlynch2/OsteoSort", ref="Development-1.3.0")
 library(OsteoSort)
 OsteoSort()
@@ -22,7 +21,6 @@ OsteoSort()
 * JuliaCall
 * ggplot2
 * shinyalerts
-* geomnet
 * ggrepel
 * networkD3
 
