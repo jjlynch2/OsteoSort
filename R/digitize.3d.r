@@ -18,7 +18,7 @@ digitize.3d <- function(align_data, landmarks = FALSE) {
 		points3d(align_data, aspect="iso", size = 10, col = cc, box = FALSE)
 		for(i in as.numeric(landmarks)) {
 			dt[i] <- identify3d(align_data, n = 1)
-			spheres3d(align_data[dt[i],1:3], color = "dodgerblue")
+			spheres3d(align_data[dt[i],1:3], color = "dodgerblue", size = 40)
 		}
 	} else {
 		print("Select fragmented boundary")

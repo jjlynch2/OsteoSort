@@ -9,7 +9,7 @@ output$ncorespc <- renderUI({
 })
 
 output$vara <- renderUI({
-	sliderInput(inputId = "vara", label = "K-means", min=0.01, max=1, value=0.01, step = 0.01)
+	sliderInput(inputId = "vara", label = "K-means", min=0.001, max=1, value=0.01, step = 0.001)
 })
 
 output$sft <- renderUI({
@@ -146,7 +146,7 @@ observeEvent(input$aligndata$datapath, {
 				}
 				if(!is.null(landmarks_align$landmarks_align[[position$pos]]))  {
 					mp <- tt1$tt1[landmarks_align$landmarks_align[[position$pos]][landmarks_align$landmarks_align[[position$pos]] != 0],]
-					spheres3d(mp, size=10, col="red")
+					spheres3d(mp, size=40, col="red")
 				}
 				output$coordinates <- renderUI({
 					HTML(paste("<strong>","<br/>","Coordinates: ",   "<font color=\"#00688B\">", nrow(tt1$tt1), "</font>",
