@@ -144,9 +144,15 @@ observeEvent(input$aligndata$datapath, {
 					mp <- tt1$tt1[landmarks$landmarks[[position$pos]],]
 					spheres3d(mp, size=10, col="DODGERBLUE")
 				}
-				if(!is.null(landmarks_align$landmarks_align[[position$pos]]))  {
+				if(any(landmarks_align$landmarks_align[[position$pos]] != 0))  {
 					mp <- tt1$tt1[landmarks_align$landmarks_align[[position$pos]][landmarks_align$landmarks_align[[position$pos]] != 0],]
-					spheres3d(mp, size=40, col="red")
+					ali <- which(landmarks_align$landmarks_align[[position$pos]] != 0)
+					ccco <- c("blue","green","red","orange","black","purple","brown","yellow","grey","pink")
+					for(al in 1:nrow(mp)) {
+						print(ccco[ali[al]])
+						spheres3d(mp[al,], size=40, col=ccco[ali[al]])
+						text3d(mp[al,], text = ali[al], pos = 1, cex = 2)
+					}
 				}
 				output$coordinates <- renderUI({
 					HTML(paste("<strong>","<br/>","Coordinates: ",   "<font color=\"#00688B\">", nrow(tt1$tt1), "</font>",
