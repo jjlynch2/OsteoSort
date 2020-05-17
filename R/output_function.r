@@ -114,9 +114,9 @@ output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, metho
 			side <- c()
 			skip <- TRUE
 			for(i in 1:nrow(df)) {
-				if(length(grep("_L_", df[i,1])) == 1) {
+				if(length(grep("_L_", df[i,1])) == 1 || length(grep("_l_", df[i,1])) == 1) {
 					side <- c(side, "left")
-				} else if(length(grep("_R_", df[i,1])) == 1) {
+				} else if(length(grep("_R_", df[i,1])) == 1 || length(grep("_r_", df[i,1])) == 1) {
 					side <- c(side, "right")
 				} else {
 					skip <- TRUE
