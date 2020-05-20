@@ -22,8 +22,6 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 					if(ncol(list1[[z]]) == 3) {list1[[z]] <- cbind(list1[[z]],0,0)}
 					L1 <- as.matrix(list1[[z]][,1:3])
 					L2 <- as.matrix(list2[[i]][,1:3])
-					L1 <- OsteoSort::pca_align(L1)
-					L2 <- OsteoSort::pca_align(L2)
 					L1 <- cbind(L1, list1[[z]][,4:5])
 					L2 <- cbind(L2, list2[[i]][,4:5])
 					colnames(L1) <- colnames(list1[[z]])
@@ -44,12 +42,18 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 						lt2 <- as.matrix(L2)
 						colnames(lt1) <- colnames(list1[[z]])
 						colnames(lt2) <- colnames(list2[[i]])
-						fs <- extract(lt1, lt2)
+						fs <- OsteoSort::extract(lt1, lt2)
 						if(!isFALSE(fs)) {
 							first <- fs[[1]]
 							second <- fs[[2]]
 							trafo <- Morpho::computeTransform(as.matrix(first), as.matrix(second), type="rigid")
 							lt2[,1:3] <- Morpho::applyTransform(as.matrix(lt2[,1:3]),trafo)
+						}
+						if(nrow(lt1) > nrow(lt2)) {
+							ll <- lt1
+							rr <- lt2
+							lt1 <- rr
+							lt2 <- ll
 						}
 						lt1[,1:3] <- icpmat(lt1[,1:3], lt2[,1:3], iterations = iteration, type = "rigid", threads = threads)
 						if(band == TRUE) {

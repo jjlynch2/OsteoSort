@@ -16,12 +16,9 @@ extract <- function(L1, L2) {
 		}
 		first <- first[-1,]
 		second <- second[-1,]
-		if(nrow(first) == 1) {
-			first <- rbind(first,first,first)
-			second <- rbind(second,second,second)
-		} else if(nrow(first == 2)) {
-			first <- rbind(first[1,], first[2,], first[1,])
-			second <- rbind(second[1,], second[2,], second[1,])
+		ind <- ind[-1,]
+		if(nrow(first) < 3) {
+			return(FALSE)
 		}
 		return(list(first, second))
 	} else {
