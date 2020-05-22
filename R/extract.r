@@ -16,8 +16,7 @@ extract <- function(L1, L2) {
 		}
 		first <- first[-1,]
 		second <- second[-1,]
-		ind <- ind[-1,]
-		if(nrow(first) < 3) {
+		if(length(first) < 9) {
 			return(FALSE)
 		}
 		return(list(first, second))
