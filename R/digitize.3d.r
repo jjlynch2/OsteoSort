@@ -16,10 +16,10 @@ digitize.3d <- function(align_data, landmarks = FALSE) {
 		print("Select landmarks")
 		dt <- rep(0,10)
 		ccc <- c("blue","green","red","orange","black","purple","brown","yellow","grey","pink")
-		points3d(align_data, aspect="iso", size = 10, col = cc, box = FALSE)
+		points3d(align_data, aspect="iso", col = cc, box = FALSE)
 		for(i in as.numeric(landmarks)) {
 			dt[i] <- identify3d(align_data, n = 1)
-			spheres3d(align_data[dt[i],1:3], color = ccc[i], size = 40)
+			spheres3d(align_data[dt[i],1:3], color = ccc[i])
 			text3d(align_data[dt[i],1:3], text = i, pos = 1, cex = 2)
 		}
 	} else {
