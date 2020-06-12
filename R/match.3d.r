@@ -77,7 +77,9 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 							d1 <- d1t
 						}
 					}
-					write.tmp.data(ptemp1, ptemp2, paste(names(list2)[i], names(list1)[z], sep="-"), direc, sessiontempdir)
+					if(output_options[[5]]) {
+						write.tmp.data(ptemp1, ptemp2, paste(names(list2)[i], names(list1)[z], sep="-"), direc, sessiontempdir)
+					}
 					renderlist[nz,] <- paste(names(list2)[i], names(list1)[z], sep="-")
 					matches1[nz,] <- c(names(list2)[i], names(list1)[z], d1)
 					matches2[nz,] <- c(names(list1)[z], names(list2)[i], d1)
