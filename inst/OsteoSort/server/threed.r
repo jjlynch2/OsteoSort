@@ -34,9 +34,9 @@ forcefun3d <- function(hera1) {
 	return(list(links,nodes))
 }
 
-forcd <- reactiveValues(forcd = TRUE) 
+forcd <- reactiveValues(forcd = FALSE) 
 output$forcd <- renderUI({
-	checkboxInput(inputId = "forcd", label = "Interactive network graph", value = TRUE)
+	checkboxInput(inputId = "forcd", label = "Interactive network graph", value = FALSE)
 })
 observeEvent(input$forcd, {
 	forcd$forcd <- input$forcd
@@ -102,18 +102,18 @@ output$fileoutput3Dtps <- renderUI({
 
 
 
-multiple_file_output_graph_3d <- reactiveValues(multiple_file_output_graph_3d = TRUE) 
+multiple_file_output_graph_3d <- reactiveValues(multiple_file_output_graph_3d = FALSE) 
 output$multiple_file_output_graph_3d <- renderUI({
-	checkboxInput(inputId = "multiple_file_output_graph_3d", label = "Output network graph", value = TRUE)
+	checkboxInput(inputId = "multiple_file_output_graph_3d", label = "Output network graph", value = FALSE)
 })
 observeEvent(input$multiple_file_output_graph_3d, {
 	multiple_file_output_graph_3d$multiple_file_output_graph_3d <- input$multiple_file_output_graph_3d
 })
 
 
-labtf3d <- reactiveValues(labtf3d = TRUE) 
+labtf3d <- reactiveValues(labtf3d = FALSE) 
 output$labtf3d <- renderUI({
-	checkboxInput(inputId = "labtf3d", label = "Network graph labels", value = TRUE)
+	checkboxInput(inputId = "labtf3d", label = "Network graph labels", value = FALSE)
 })
 observeEvent(input$labtf3d, {
 	labtf3d$labtf3d <- input$labtf3d
@@ -158,12 +158,12 @@ output$banding <- renderUI({
 	checkboxInput(inputId = "banding", label = "Centroid bands", value = TRUE)
 })
 
-render <- reactiveValues(render = TRUE)
+render <- reactiveValues(render = FALSE)
 observeEvent(input$render, {
 	render$render <- input$render
 })
 output$render <- renderUI({
-	checkboxInput(inputId = "render", label = "Save registrations", value = TRUE)
+	checkboxInput(inputId = "render", label = "Save registrations", value = FALSE)
 })
 
 ncores3D <- reactiveValues(ncores3D = detectCores()-1)
