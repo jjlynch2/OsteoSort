@@ -23,6 +23,8 @@ OsteoSort()
 * shinyalerts
 * ggrepel
 * networkD3
+* network
+* sna
 
 ## Julia Dependencies
 * Pkg
