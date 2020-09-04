@@ -1,4 +1,4 @@
-reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, labtf = TRUE, output_options = c(TRUE,FALSE, FALSE), threads = 1, type = "Logarithm Composite", alphalevel = 0.05) {	
+reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, reference = NULL, labtf = TRUE, output_options = c(TRUE,FALSE, FALSE), threads = 1, type = "Logarithm Composite", alphalevel = 0.05) {	
 	force(alphalevel)
 	force(threads)
 	force(type)
@@ -75,7 +75,7 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 			results_formatted[i,11] <- c("Excluded")
 		}
 	}
-	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, tails = 2, ztransform = ztest, type = type))
+	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, tails = 2, ztransform = ztest, type = type, reference = reference))
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
 	}

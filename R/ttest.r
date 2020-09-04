@@ -1,4 +1,4 @@
-ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, labtf = TRUE, output_options = c(TRUE, FALSE, FALSE), threads = 1, tails = 2, boxcox = TRUE, ztest = FALSE) {
+ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, labtf = TRUE, output_options = c(TRUE, FALSE, FALSE), threads = 1, tails = 2, boxcox = TRUE, ztest = FALSE, reference = NULL) {
 	if(threads != julia_call("nprocs")) {
 		print("Setting up Julia workers...")
 		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
@@ -130,7 +130,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 			results_formatted[i,12] <- c("Excluded")
 		}
 	}
-	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, absolute_value = absolute, zero_mean = zmean, tails = tails, boxcox = boxcox, ztransform = ztest))
+	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, absolute_value = absolute, zero_mean = zmean, tails = tails, boxcox = boxcox, ztransform = ztest, reference = reference))
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results_formatted, rejected = rejected, method="exclusion", type="csv")
 	}
