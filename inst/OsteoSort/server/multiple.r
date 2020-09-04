@@ -265,13 +265,24 @@ observeEvent(input$pro, {
 			shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss")
 			return(NULL)
 		}
+		#added quote
+		tempdata1 <- read.csv(inFile$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"), quote="\"")## see na.strings forces NA for blanks, spaces, etc
 
-		tempdata1 <- read.csv(inFile$datapath, header=TRUE, sep=",", na.strings=c("", " ", "NA"))## see na.strings forces NA for blanks, spaces, etc
+		cnam <- colnames(tempdata1)
+		if(cnam[1] == "se_id") { #detect cora input
+			cora_data <- tempdata1 #save data for later cora output
+			tempdata1 <- tempdata1[,-c(1,3,4,5,6)] #Remove excess columns
+			tempdata1 <- tempdata1[,c(1,3,2,4:ncol(tempdata1))] #rearrange column order
+			colnames(tempdata1) <- c("id","Side","Element",cnam[-c(1:8)]) #rename columns
+		}
+
 		#checks if measurements are numeric and converts alpha characters to numeric   
 		tempdataa <- tempdata1[,1:3]
 		tempdatab <- lapply(tempdata1[,-(1:3)], function(x) { as.numeric(as.character(x))})
 		tempdata1 <- c(tempdataa, tempdatab)
-		tempdata1 <- as.data.frame(tempdata1) #combines first four columns with now numeric measurements
+		tempdata1 <- as.data.frame(tempdata1) #combines first three columns with now numeric measurements
+
+
 		if(input$multiple_analysis == "Non-Antimere t-test") {
 			if(is.null(input$multiple_measurements_non_antimere_a) || is.null(input$multiple_measurements_non_antimere_b)) {removeModal();shinyalert(title = "ERROR!", text="The measurement data is missing",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			temp1 <- which(multiple_art_elements$df == input$multiple_element_non_antimere)
@@ -339,6 +350,12 @@ observeEvent(input$pro, {
 			DT::datatable(d2[[5]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 		})
 		if(multiple_file_output1$multiple_file_output1 || multiple_file_output_graph$multiple_file_output_graph) {
+			if(cnam[1] == "se_id") { #detect cora input
+				setwd(direc)
+				hera1 <- rbind(d2[[2]], d2[[3]])
+				no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform))
+				setwd(sessiontemp)
+			}
 			setwd(direc)
 			nimages <- list.files()
 			if(forc$forc) {

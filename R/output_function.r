@@ -1,9 +1,65 @@
-output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, method = "exclusion", type = "csv", uln = NULL, labtf = TRUE) {
+output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, method = "exclusion", cora_data = NULL, type = "csv", uln = NULL, labtf = TRUE) {
 	print("Writing output files")
 	if(method == "options") {
 		write.csv(options, file = "settings.csv", row.names=FALSE, col.names = TRUE)
 	}
 	if(method == "exclusion") {
+		if(type == "cora") {
+			new_df <- data.frame()
+			for(i in 1:nrow(hera1)) {
+				se1 <- cora_data[cora_data[,2] == hera1[i,1],1:7]
+				se2 <- cora_data[cora_data[,2] == hera1[i,4],1:7]
+				colnames(se1) <- c("se_id","se_skeletal_element","se_accession_number","se_provenance1","se_provenance2","se_designator")
+				colnames(se2) <- c("pair_id","pair_skeletal_element","pair_accession_number","pair_provenance1","pair_provenance2","pair_designator")
+				bonename <- hera1[1,2]
+				compare_method <- "OsteoSort"
+				if(options[7]) {
+					compare_method_settings <- paste("{'version':'",packageVersion("OsteoSort"),"',",
+		                                                "'reference':'",options[1],"',",
+		                                                "'distribution':","z-distribution","',",
+		                                                "'alpha':'",options[2],"'}", sep="")
+				} else {
+					compare_method_settings <- paste("{'version':'",packageVersion("OsteoSort"),"',",
+		                                                "'reference':'",options[1],"',",
+		                                                "'distribution':","t-distribution","',",
+		                                                "'alpha':'",options[2],"',",
+		                                                "'absolute_mean':'",options[3],"',",
+		                                                "'zero_mean':'",options[4],"',",
+		                                                "'box_cox':'",options[5],"',",
+		                                                "'tails':'",options[6],"'}", sep="")
+				}
+				sample_size <- hera1[i,11]
+				pvalue <- hera1[i,8]
+				if(hera1[i,12] == "Excluded") {
+					excluded <- "yes"
+					elimination_reason <- "statistical"
+				} else {
+					excluded <- "no"
+					elimination_reason <- ""
+				}
+				measurements <- strsplit(hera1[1,]$measurements, " ")[[1]]
+				measurements_temp <- colnames(cora_data[,-c(1:8)])
+				measurements_used <- "{"
+				for(x in 1:length(measurements_temp)) {
+						if(any(measurements == measurements_temp[x])) {
+						used <- "True"
+					} else {
+						used <- "False"
+					}
+					measurements_used <- paste(measurements_used, "'", measurements_temp[x],"'",":",used,",", sep="")
+					if(x == length(measurements_temp)) {
+						measurements_used <- substr(measurements_used,1,nchar(measurements_used)-1)
+						measurements_used <- paste(measurements_used,"}",sep="")
+					}
+				}
+				num_measurements <- length(measurements)
+				mean <- hera1[i,9]
+				sd <- hera1[i,10]
+				row_temp <- data.frame(se1[1], se2[1], se1[2:5], se2[2:5], bonename, compare_method, compare_method_settings, sample_size, pvalue, excluded, num_measurements, mean, sd, measurements_used, measurement_means="", measurement_sd="",elimination_reason)
+				new_df <- rbind(new_df, row_temp)
+			}
+			write.csv(new_df, file = "CoRA_Osteometric_Sorting_Results_Import.csv",row.names=FALSE, col.names = TRUE)
+		}
 		if(type == "csv") {
 			if(nrow(hera1[hera1$result == "Cannot Exclude",]) > 0) {
 				write.csv(hera1[hera1$result == "Cannot Exclude",], file = "not-excluded-list.csv", row.names=FALSE, col.names = TRUE)

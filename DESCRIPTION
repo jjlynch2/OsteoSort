@@ -19,7 +19,9 @@ Depends:
 	ggrepel,
 	networkD3,
 	dplyr,
-	grid
+	grid,
+	network,
+	sna
 License: GPL-2
 LazyData: true
 ByteCompile: true
@@ -36,4 +38,6 @@ Imports:
 	ggplot2,
 	shinyalert,
 	ggrepel,
-	networkD3
+	networkD3,
+	network,
+	sna
