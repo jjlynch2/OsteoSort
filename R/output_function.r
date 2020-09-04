@@ -16,16 +16,24 @@ output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, metho
 				if(options[7]) {
 					compare_method_settings <- paste("{'version':'",packageVersion("OsteoSort"),"',",
 		                                                "'reference':'",options[1],"',",
-		                                                "'distribution':","z-distribution","',",
+		                                                "'distribution':'","z","',",
 		                                                "'alpha':'",options[2],"'}", sep="")
 				} else {
+					opt1 <- opt2 <- opt3 <- c()
+					if(options[3] == "TRUE") {
+						opt1 <- paste("'absolute_mean':'",options[3],"',",sep="")
+					}
+					if(options[4] == "TRUE") {
+						opt2 <- paste("'zero_mean':'",options[4],"',",sep="")
+					}
+					if(options[5] == "TRUE") {
+						opt3 <-paste("'box_cox':'",options[5],"',",sep="")
+					}
 					compare_method_settings <- paste("{'version':'",packageVersion("OsteoSort"),"',",
 		                                                "'reference':'",options[1],"',",
-		                                                "'distribution':","t-distribution","',",
+		                                                "'distribution':'","t","',",
 		                                                "'alpha':'",options[2],"',",
-		                                                "'absolute_mean':'",options[3],"',",
-		                                                "'zero_mean':'",options[4],"',",
-		                                                "'box_cox':'",options[5],"',",
+		                                                opt1, opt2, opt3,
 		                                                "'tails':'",options[6],"'}", sep="")
 				}
 				sample_size <- hera1[i,11]
