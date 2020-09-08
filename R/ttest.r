@@ -18,7 +18,8 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	refb <- cbind(refb,fa = 0)
 	sorta <- cbind(sorta,fa = 0)
 	sortb <- cbind(sortb,fa = 0)
-
+	zmeans <- NULL
+	zstd <- NULL
 	print("Comparisons started")
 	start_time <- start_time()
 	options(warn = -1) #disables warnings
@@ -82,22 +83,35 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 			plot_data <- julia_call("TTEST_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
-
 	#transform numerical T/F to measurement names
-	if(nrow(results) > 1) {
-		measurements <- data.frame(results[,c(8:ncol(results))])
-	}else {
-		measurements <- data.frame(t(results[c(8:length(results))]))
+	if(ztest) {
+		mn <- (ncol(results)-7)/2
+		if(nrow(results) > 1) {
+			measurements <- data.frame(results[,c(8:(7+mn))])
+			zmeans <- measurements
+			zstd <- data.frame(results[,c((8+mn):ncol(results))])
+		}else {
+			measurements <- data.frame(t(results[,c(8:(7+mn))]))
+			zmeans <- measurements
+			zstd <- data.frame(t(results[c((8+mn):ncol(results))]))
+		}
+	} else {
+		if(nrow(results) > 1) {
+			measurements <- data.frame(results[,c(8:ncol(results))])
+		}else {
+			measurements <- data.frame(t(results[c(8:length(results))]))
+		}
 	}
+
 	measurement_names <- unique(c(colnames(sorta[,-c(1:3)]), colnames(sortb[,-c(1:3)])))
 
 	if(sorta[results[,1],3] != sortb[results[,2],3]) {
 		measurements[2] = 1
 		measurement_names = c(measurement_names[1], measurement_names[3])
 	} #if non-antimere test hack
-
+	
 	for(i in 1:ncol(measurements)) {
-		measurements[measurements[,i] == 1,i] <- paste(measurement_names[i], " ", sep="")
+		measurements[measurements[,i] != 0,i] <- paste(measurement_names[i], " ", sep="")
 		measurements[measurements[,i] == 0,i] <- ""
 	}
 	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
@@ -147,5 +161,5 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	setwd(workingdir)
 	print("Finished.")
 	t_time <- end_time(start_time)
-	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time, rejected))
+	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time, rejected, zmeans, zstd))
 }

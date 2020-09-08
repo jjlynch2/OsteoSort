@@ -399,19 +399,19 @@ observeEvent(input$pro, {
 						no_return_value <- OsteoSort:::output_function(rejected = d2[[5]][input$tablenr_rows_selected,], method="exclusion", type="csv2")
 					} else {file.remove("rejected-selected-list.csv")}
 					if(is.numeric(input$table_rows_selected) && is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
-						hera1 <- rbind(d2[[2]][input$table_rows_selected,], d2[[3]][input$tablen_rows_selected,])
+						hera1 <- list(rbind(d2[[2]][input$table_rows_selected,], d2[[3]][input$tablen_rows_selected,]),d2[[6]],d2[[7]])
 						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform))
 					}
 					if(is.numeric(input$table_rows_selected) && !is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
-						hera1 <- rbind(d2[[2]][input$table_rows_selected,], d2[[3]])
+						hera1 <- list(rbind(d2[[2]][input$table_rows_selected,], d2[[3]]),d2[[6]],d2[[7]])
 						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform))
 					}
 					if(!is.numeric(input$table_rows_selected) && is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
-						hera1 <- rbind(d2[[2]], d2[[3]][input$tablen_rows_selected,])
+						hera1 <- list(rbind(d2[[2]], d2[[3]][input$tablen_rows_selected,]),d2[[6]],d2[[7]])
 						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform))
 					}
 					if(!is.numeric(input$table_rows_selected) && !is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
-						hera1 <- rbind(d2[[2]], d2[[3]])
+						hera1 <- list(rbind(d2[[2]], d2[[3]]),d2[[6]],d2[[7]])
 						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform))
 					}
 					setwd(sessiontemp)

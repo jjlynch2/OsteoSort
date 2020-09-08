@@ -1,5 +1,6 @@
 @everywhere function ZTEST_worker(v1, m2, li, RL, RR)
-	res = zeros(size(m2,1),size(m2,2)+7)
+	res = zeros(size(m2,1),size(m2,2))
+	res_f = zeros(size(m2,1),size(m2,2)*2+7)
 	res_cache = []
 	refd_cache = []
 	refz_cache = []
@@ -9,7 +10,7 @@
 		#comparison d-values and res for present measurements
 		for g in 1:size(v1,1)
 			if v1[g] != 0 && m2[j,g] != 0 #measurement is being used
-				res[j,g+7] = 1 #still recover index
+				res[j,g] = 1 #still recover index
 			end
 		end
 		cache = false
@@ -18,7 +19,7 @@
 			for x_cache in 1:cache_index
 				cache = true
 				for i_cache in 1:size(v1,1)
-					if res[j,7+i_cache] != res_cache[x_cache][7+i_cache]
+					if res[j,i_cache] != res_cache[x_cache][i_cache]
 						cache = false
 						break
 					end
@@ -34,7 +35,7 @@
 			z_temp_ref = refz_cache[temp_index]
 			c_temp_ref = refc_cache[temp_index]
 		else
-			refd = ref_dif_s(res[j,8:end], RL, RR)
+			refd = ref_dif_s(res[j,1:end], RL, RR)
 			z_temp_ref = zeros(size(refd,1),size(refd,2))
 			c_temp_ref = zeros(size(refd,2))
 			#ref z-scores
@@ -54,7 +55,15 @@
 		#comparison z-scores
 		z_temp_comp = zeros(1,size(refd,2))
 		for i in 1:size(refd,2)
-			z_temp_comp[i] = qnorm(2*pt(-abs(abs(abs(v1[i] - m2[j,i]) - mean(refd[1:end,i])) / std(refd[1:end,i])), size(refd,1) - 1), true, false)
+			dcomp = zeros(1,trunc(Int, sum(res[j,1:end])))
+			co = 1
+			for p in 1:size(res,2)
+				if res[j,p] == 1
+					dcomp[co] = v1[p] - m2[j,p]
+					co += 1
+				end
+			end
+			z_temp_comp[i] = qnorm(2*pt(-abs(abs(abs(dcomp[i]) - mean(refd[1:end,i])) / std(refd[1:end,i])), size(refd,1) - 1), true, false)
 		end
 		#weights
 		wA = 0
@@ -67,15 +76,24 @@
 		end
 		wZ = sum(wAA .* z_temp_comp) / sqrt(sum(wAA .^ 2) + (wA * 2)) #combined Z-score
 		wZP = 1 - pnorm(wZ, false, false) #combined P-value from normal distribution
-		res[j,1] = li #index of left
-		res[j,2] = j #index of right
-		res[j,3] = 0 #not needed but left here so array columns match in R
-		res[j,4] = wZP #final P from norm
-		res[j,5] = 0 #since final is norm, return 0 for mean
-		res[j,6] = 1 #since final is norm, return 1 for sd
-		res[j,7] = size(refd,1) #reference sample size
+		res_f[j,1] = li #index of left
+		res_f[j,2] = j #index of right
+		res_f[j,3] = 0 #not needed but left here so array columns match in R
+		res_f[j,4] = wZP #final P from norm
+		res_f[j,5] = 0 #since final is norm, return 0 for mean
+		res_f[j,6] = 1 #since final is norm, return 1 for sd
+		res_f[j,7] = size(refd,1) #reference sample size
+		#mean and std per measurement thats used
+		co = 1
+		for g in 1:size(res,2)
+			if res[j,g] == 1
+				res_f[j,g+7] = mean(refd[1:end,co])
+				res_f[j,g+7+size(res,2)] = std(refd[1:end,co])
+				co += 1
+			end
+		end
 	end
-	return res
+	return res_f
 end
 
 @everywhere function ref_dif_s(res, RL, RR)
