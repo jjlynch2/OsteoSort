@@ -109,14 +109,27 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 		measurements[2] = 1
 		measurement_names = c(measurement_names[1], measurement_names[3])
 	} #if non-antimere test hack
-	
+
 	for(i in 1:ncol(measurements)) {
 		measurements[measurements[,i] != 0,i] <- paste(measurement_names[i], " ", sep="")
 		measurements[measurements[,i] == 0,i] <- ""
+		if(ztest) {
+			if(zmeans[,i] != 0) {
+				zmeans[zmeans[,i] != 0,i] <- paste("'", gsub(" ", "", measurement_names[i]), "': ", zmeans[zmeans[,i] != 0,i],",",sep="")
+				zstd[zstd[,i] != 0,i] <- paste("'", gsub(" ", "", measurement_names[i]), "': ", zstd[zstd[,i] != 0,i],",",sep="")
+			}
+			zmeans[zmeans[,i] == 0,i] <- "" 
+			zstd[zstd[,i] == 0,i] <- "" 
+		}
 	}
-	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
-	#format data.frame to return
 
+	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
+	if(ztest) {
+		zmeans <- do.call(paste0, zmeans[c(1:ncol(zmeans))])
+		zstd <- do.call(paste0, zstd[c(1:ncol(zstd))])
+	}
+
+	#format data.frame to return
 	results_formatted <- data.frame(cbind(id_1 = sorta[results[,1],1], 
 									element_1 = sorta[results[,1],3], 
 									side_1 = sorta[results[,1],2], 
