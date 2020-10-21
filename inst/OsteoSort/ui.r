@@ -1,3 +1,4 @@
+library(OsteoSort) #for deployment in shiny-server
 source(system.file("OsteoSort/ui", 'dash.r', package = "OsteoSort"), local=TRUE) ###imports dashboard code
 source(system.file("OsteoSort/ui", 'reference.r', package = "OsteoSort"), local=TRUE) ###imports reference code
 source(system.file("OsteoSort/ui", 'single_osteometric_sorting.r', package = "OsteoSort"), local=TRUE) ###imports single osteometric sorting code
@@ -18,7 +19,7 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 	navbarMenu("Help",icon = icon("info", lib="font-awesome"),
 			dash,
 			reference,
-			exit_button
+			exit_button # #comment out for deployment in shiny-server
 		),
 		navbarMenu("Osteometric",icon = icon("bar-chart", lib="font-awesome"),
 			single_osteometric_sorting,

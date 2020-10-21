@@ -1,4 +1,5 @@
 JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, source = FALSE, recall_libraries = FALSE) {
+	if(!julia_exists("ref_dif_s")) {
 		if (libraries) {
 			withProgress(message = 'Loading analytical environment', detail = '', value = 0, min=0, max=9, {
 				julia <- JuliaCall::julia_setup()
@@ -50,7 +51,7 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 		if(recall_libraries) {
 			julia_source(system.file("jl", "library.jl", package = "OsteoSort"))
 		}
-
-		JV <- JuliaCall:::julia_line(c("-e", "print(VERSION)"), stdout=TRUE)
+	}
+	JV <- JuliaCall:::julia_line(c("-e", "print(VERSION)"), stdout=TRUE)
 	return(JV)
 }

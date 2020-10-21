@@ -41,7 +41,7 @@ output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, metho
 			hera1[hera1$result == "Cannot Exclude",12] <- "no"
 			hera1 <- cbind(se1, se2, hera1[,-c(1:6)], elimination_reason = "", elimination_date = "")
 			hera1[hera1$result == "yes",]$elimination_reason <- c("statistical")
-			hera1[hera1$result == "yes",]$elimination_date <- c(paste(Sys.Date()))
+			hera1[hera1$result == "yes",]$elimination_date <- c(paste(as.POSIXct(format(Sys.time()), tz="GMT")))
 			measurements_used <- gsub(" ", "': True, '", x = paste('"{',"'", hera1[,14], sep=""))
 			measurements_used <- substr(measurements_used,1,nchar(measurements_used)-3)
 			measurements_used <- paste(measurements_used, '}"',sep="")

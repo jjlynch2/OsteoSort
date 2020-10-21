@@ -87,7 +87,17 @@ end
 			temp_index = cache_check(res[j,1:end], res_cache, cache_index, size(v1,1))
 		end
 		if temp_index != 0 
-			break
+			#break
+
+
+
+
+#############never gets triggered here so it recalculates the data each time...fix
+
+
+
+
+
 			refd = refd_cache[temp_index]
 			z_temp_ref = refz_cache[temp_index]
 			c_temp_ref = refc_cache[temp_index]

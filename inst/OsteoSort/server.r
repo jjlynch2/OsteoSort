@@ -4,6 +4,7 @@ options(shiny.maxRequestSize=100*1024^2) #10MB file size limit
 options(warn = -1) #disables warnings
 options(as.is = TRUE)
 options(stringsAsFactors = FALSE)
+library(OsteoSort) #call for shiny-server deployment
 shinyServer(function(input, output, session) {
 	#defines which modules to include
 	source(system.file("OsteoSort/server", 'temp_dir.r', package = "OsteoSort"), local=TRUE) ###imports temporary directory code
