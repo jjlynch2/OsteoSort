@@ -18,8 +18,8 @@ navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
 	),
 	navbarMenu("Help",icon = icon("info", lib="font-awesome"),
 			dash,
-			reference,
-			exit_button # #comment out for deployment in shiny-server
+			reference
+			,exit_button # #comment out for deployment in shiny-server
 		),
 		navbarMenu("Osteometric",icon = icon("bar-chart", lib="font-awesome"),
 			single_osteometric_sorting,

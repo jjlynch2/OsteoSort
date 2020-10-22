@@ -387,6 +387,7 @@ observeEvent(input$pro, {
 				paste("results.zip")
 				},
 				content = function(file) {
+					setwd(sessiontemp)
 					setwd(direc)
 					file.remove(paste(direc,'.zip',sep=''))
 					if(is.numeric(input$tablen_rows_selected)) {

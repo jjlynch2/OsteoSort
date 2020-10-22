@@ -326,8 +326,10 @@ observeEvent(input$proc, {
 					paste("results.zip")
 				},
 				content = function(file) {
+					setwd(sessiontemp)
 					setwd(direc)
 					file.copy(paste(direc,'.zip',sep=''), file)  
+					setwd(sessiontemp)
 				},
 				contentType = "application/zip"
 			)

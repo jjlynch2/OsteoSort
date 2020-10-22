@@ -263,6 +263,7 @@ observeEvent(input$pro3D, {
 						paste("results.zip")
 					},      
 					content <- function(file) {
+						setwd(sessiontemp)
 						setwd(direc)
 						file.remove(paste(direc,'.zip',sep=''))
 						if(is.numeric(input$table3D_rows_selected)) {

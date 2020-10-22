@@ -219,6 +219,7 @@ observeEvent(input$proantestatm, {
 					paste("results.zip")
 				},
 				content <- function(file) {
+					setwd(sessiontemp)
 					setwd(outtemp2m[[1]])
 					file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
 					if(is.numeric(input$antestat_table1m_rows_selected)) {

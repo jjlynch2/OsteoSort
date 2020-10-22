@@ -127,6 +127,7 @@ observeEvent(input$proantestat, {
 					paste("results.zip")
 				},
 				content <- function(file) {
+					setwd(sessiontemp)
 					setwd(direc6)
 					file.copy(paste(direc6,'.zip',sep=''), file) 
 					setwd(sessiontemp)  

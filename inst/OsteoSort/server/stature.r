@@ -163,6 +163,7 @@ observeEvent(input$pro4, {
 					paste("results.zip")
 				},
 				content <- function(file) {
+					setwd(sessiontemp)
 					setwd(outtemp[[1]])
 					file.remove(paste(outtemp[[1]],'.zip',sep=''))
 					if(is.numeric(input$tjbingworkb4_rows_selected)) {

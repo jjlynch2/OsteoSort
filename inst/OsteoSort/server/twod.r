@@ -244,6 +244,7 @@ observeEvent(input$pro2D, {
 						paste("results.zip")
 					},
 					content <- function(file) {
+						setwd(sessiontemp)
 						setwd(direc)
 						file.remove(paste(direc,'.zip',sep=''))
 						if(is.numeric(input$table2D_rows_selected)) {
