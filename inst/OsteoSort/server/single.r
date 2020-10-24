@@ -304,9 +304,8 @@ observeEvent(input$proc, {
 
 		if(single_file_output1$single_file_output1 || single_file_output2$single_file_output2) {
 			direc <- d2[[1]]
-			setwd(sessiontemp)
-			setwd(direc)
-			nimages <- list.files()
+			sd <- paste(sessiontemp,direc,sep="/")
+			nimages <- list.files(sd)
 			if(single_file_output2$single_file_output2 && length(nimages[grep(".jpg", nimages)]) != 0) {
 				nimages <- paste(sessiontemp, "/", direc, "/", nimages[grep(".jpg", nimages)], sep="")
 			} else {
@@ -319,24 +318,20 @@ observeEvent(input$proc, {
 					alt = "A"
 				)
 			}, deleteFile = FALSE)
-			files <- list.files(recursive = TRUE)
-			zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files)
+			files <- list.files(sd, recursive = TRUE, full.names=TRUE)
+			zip:::zipr(zipfile = paste(sd,"/",direc,'.zip',sep=''), files = files)
 			output$downloadData2 <- downloadHandler(
 				filename = function() {
 					paste("results.zip")
 				},
 				content = function(file) {
-					setwd(sessiontemp)
-					setwd(direc)
-					file.copy(paste(direc,'.zip',sep=''), file)  
-					setwd(sessiontemp)
+					file.copy(paste(sd,"/",direc,'.zip',sep=''), file)  
 				},
 				contentType = "application/zip"
 			)
 		}
 		gc()
 		removeModal()
-		setwd(sessiontemp)
 		incProgress(amount = 1, message = "Completed")
 	})
 })

@@ -350,8 +350,8 @@ observeEvent(input$pro, {
 			DT::datatable(d2[[5]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 		})
 		if(multiple_file_output1$multiple_file_output1 || multiple_file_output_graph$multiple_file_output_graph) {
-			setwd(direc)
-			nimages <- list.files()
+			sd <- paste(sessiontemp,direc,sep="/")
+			nimages <- list.files(sd)
 			if(forc$forc) {
 				if(nrow(d2[[2]]) > 1){
 					td <- forcefun(d2[[2]])
@@ -381,54 +381,54 @@ observeEvent(input$pro, {
 					alt = "A"
 				)
 			}, deleteFile = FALSE)
-			setwd(sessiontemp)
 			output$downloadData <- downloadHandler(
 				filename <- function() {
 				paste("results.zip")
 				},
 				content = function(file) {
-					setwd(sessiontemp)
-					setwd(direc)
-					file.remove(paste(direc,'.zip',sep=''))
+					file.remove(paste(sd,"/",direc,'.zip',sep=''))
 					if(is.numeric(input$tablen_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(d2[[3]][input$tablen_rows_selected,], method="exclusion", type="csv2")
-					} else {file.remove("excluded-selected-list.csv")}
+						no_return_value <- OsteoSort:::output_function(d2[[3]][input$tablen_rows_selected,], method="exclusion", type="csv2", fpath=sd)
+					} else {file.remove(paste(sd,"excluded-selected-list.csv",sep="/"))}
 					if(is.numeric(input$table_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(d2[[2]][input$table_rows_selected,], method="exclusion", type="csv2")
-					} else {file.remove("not-excluded-selected-list.csv")}
+						no_return_value <- OsteoSort:::output_function(d2[[2]][input$table_rows_selected,], method="exclusion", type="csv2", fpath=sd)
+					} else {file.remove(paste(sd,"not-excluded-selected-list.csv",sep="/"))}
 					if(is.numeric(input$tablenr_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(rejected = d2[[5]][input$tablenr_rows_selected,], method="exclusion", type="csv2")
-					} else {file.remove("rejected-selected-list.csv")}
+						no_return_value <- OsteoSort:::output_function(rejected = d2[[5]][input$tablenr_rows_selected,], method="exclusion", type="csv2", fpath=sd)
+					} else {file.remove(paste(sd,"rejected-selected-list.csv",sep="/"))}
 					if(is.numeric(input$table_rows_selected) && is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
 						hera1 <- list(rbind(d2[[2]][input$table_rows_selected,], d2[[3]][input$tablen_rows_selected,]),d2[[6]],d2[[7]])
-						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform))
+						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform), fpath=sd)
 					}
 					if(is.numeric(input$table_rows_selected) && !is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
 						hera1 <- list(rbind(d2[[2]][input$table_rows_selected,], d2[[3]]),d2[[6]],d2[[7]])
-						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform))
+						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform), fpath=sd)
 					}
 					if(!is.numeric(input$table_rows_selected) && is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
 						hera1 <- list(rbind(d2[[2]], d2[[3]][input$tablen_rows_selected,]),d2[[6]],d2[[7]])
-						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform))
+						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform), fpath=sd)
 					}
 					if(!is.numeric(input$table_rows_selected) && !is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
 						hera1 <- list(rbind(d2[[2]], d2[[3]]),d2[[6]],d2[[7]])
-						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform))
+						no_return_value <- OsteoSort:::output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, boxcox = multiple_boxcox$multiple_boxcox, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform), fpath=sd)
 					}
-					setwd(sessiontemp)
-					files <- list.files(direc, recursive = TRUE)
-					setwd(direc)
-					zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
+
+
+
+					files <- list.files(sd, recursive = TRUE, full.names=TRUE)
+					
+
+					zip:::zipr(zipfile = paste(sd,"/",direc,'.zip',sep=''), files = files[1], compression = 1)
+					
+					
 					for(file_na in files[-1]) {
-						zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
+						zip:::zipr_append(zipfile = paste(sd,"/",direc,'.zip',sep=''), files = file_na, compression = 1)
 					}
-					file.copy(paste(direc,'.zip',sep=''), file)
-					setwd(sessiontemp)
+					file.copy(paste(sd,"/",direc,'.zip',sep=''), file)
 				},
 				contentType = "application/zip"
 			)
 		}
-		setwd(sessiontemp)
 		gc()
 		removeModal()
 		incProgress(amount = 1, message = "Completed")

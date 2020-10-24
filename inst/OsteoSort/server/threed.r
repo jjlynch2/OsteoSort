@@ -57,6 +57,8 @@ output$resettableInput3DD <- renderUI({
 	fileInput('rightimages3D', 'Upload second data set', accept=c("xyz"), multiple = TRUE)
 })
 
+dirdel <- reactiveValues(dirdel = NULL)
+
 observeEvent(input$clearFile3D, {
 	if(!is.null(input$rightimages3D$datapath)) { #prevents crashing
 		file.remove(input$rightimages3D$datapath)
@@ -66,7 +68,7 @@ observeEvent(input$clearFile3D, {
 		file.remove(input$leftimages3D$datapath)
 		file.remove(input$leftimages3D$name)
 	}
-	delete.tmp.data(dirdel)
+	delete.tmp.data(dirdel$dirdel, sessiontemp)
 	output$mspec3D <- renderUI({
 		selectInput(inputId = "mspec3D", label = "Choose comparison", choices = "")
 	})
@@ -211,7 +213,8 @@ observeEvent(input$pro3D, {
 			setProgress(value = 3, message = "Running comparisons", detail = '')
 			out2 <- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, multiple_file_output_graph_3d$multiple_file_output_graph_3d, render$render), labtf3d = labtf3d$labtf3d, sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
 			direc <- out2[[2]]
-			dirdel <<- direc
+			sd <- paste(sessiontemp, direc, sep="/")
+			dirdel$dirdel <- direc
 			if(is.null(nrow(out2[[1]]))) {pm <- 1; out2[[1]] <- rbind(out2[[1]],c(NA,NA,NA)) }
 			if(!is.null(nrow(out2[[5]]))) {pm <- nrow(as.matrix(out2[[1]][,1]))}
 			output$table3D <- DT::renderDataTable({
@@ -243,7 +246,6 @@ observeEvent(input$pro3D, {
 			}
 
 			if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps || multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
-				setwd(direc)
 				if(multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
 					nimages <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
 				} else {
@@ -256,37 +258,31 @@ observeEvent(input$pro3D, {
 						alt = "A"
 					)
 				}, deleteFile = FALSE)
-				setwd(sessiontemp)
-
 				output$downloadData3D <- downloadHandler(
 					filename <- function() {
 						paste("results.zip")
 					},      
 					content <- function(file) {
-						setwd(sessiontemp)
-						setwd(direc)
-						file.remove(paste(direc,'.zip',sep=''))
+						file.remove(paste(sd,"/", direc,'.zip',sep=''))
 						if(is.numeric(input$table3D_rows_selected)) {
-							no_return_value <- OsteoSort:::output_function(out2[[1]][input$table3D_rows_selected,], method="exclusion", type="csv4")
-						} else {file.remove("selected-list.csv")}
-						setwd(sessiontemp)
-						files <- list.files(direc, recursive = TRUE)
-						setwd(direc)
-						zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
+							no_return_value <- OsteoSort:::output_function(out2[[1]][input$table3D_rows_selected,], method="exclusion", type="csv4", fpath=sd)
+						} else {file.remove(paste(sd,"/selected-list.csv",sep=""))}
+
+						files <- list.files(sd, recursive = TRUE, full.names = TRUE)
+
+						zip:::zipr(zipfile = paste(sd,"/", direc,'.zip',sep=''), files = files[1], compression = 1)
 						for(file_na in files[-1]) {
-							zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
+							zip:::zipr_append(zipfile = paste(sd,"/", direc,'.zip',sep=''), files = file_na, compression = 1)
 						}
-						file.copy(paste(direc,'.zip',sep=''), file)  
-						setwd(sessiontemp)    
+						file.copy(paste(sd,"/", direc,'.zip',sep=''), file)  
 					},
 					contentType = "application/zip"
 				)
-				setwd(sessiontemp)
 			}
 		}
 		observeEvent(input$mspec3D, {
 			if(input$mspec3D != "" && isTRUE(render$render)) {
-				tt <- import.tmp.data(input$mspec3D, dirdel, sessiontemp)
+				tt <- import.tmp.data(input$mspec3D, dirdel$dirdel, sessiontemp)
 				tt1 <- tt[[1]][c(1:3)]
 				tt2 <- tt[[2]][c(1:3)]
 				output$webgl3D <- renderRglwidget ({

@@ -178,7 +178,7 @@ observeEvent(input$pro2D, {
 			setProgress(value = 2, message = "Running comparisons", detail = '')
 			out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, dist = max_avg_distance$max_avg_distance, n_lowest_distances = shortlistn$shortlistn, labtf2d = labtf2d$labtf2d, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps, multiple_file_output_graph_2d$multiple_file_output_graph_2d), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D)
 			direc <- out2[[3]]
-
+			sd <- paste(sessiontemp,direc,sep="/")
 			if(forc2d$forc2d) {
 					if(nrow(out2[[2]]) > 1){
 						td <- forcefun3d(out2[[2]])
@@ -206,15 +206,13 @@ observeEvent(input$pro2D, {
 				}, deleteFile = FALSE)
 			}
 			if(fileoutput2Dplot$fileoutput2Dplot) {
-				setwd(direc)
-				pwspec <- list.files()
+				pwspec <- list.files(sd)
 				pwspec <- pwspec[grep(".jpg", pwspec)]
 				pwspec <- pwspec[pwspec != "network.jpg"]
 				pwspec = pwspec[pwspec != "Registration.jpg"]
 				output$pwspec <- renderUI({
 					selectInput(inputId = "pwspec", label = "Choose pairwise comparison", choices=pwspec, selected = pwspec[1])
 				})
-				setwd(sessiontemp)
 				observeEvent(input$pwspec, {
 					output$pwspeci <- renderImage({
 						if(fileoutput2Dplot$fileoutput2Dplot) {
@@ -244,25 +242,21 @@ observeEvent(input$pro2D, {
 						paste("results.zip")
 					},
 					content <- function(file) {
-						setwd(sessiontemp)
-						setwd(direc)
-						file.remove(paste(direc,'.zip',sep=''))
+						file.remove(paste(sd,"/",direc,'.zip',sep=''))
 						if(is.numeric(input$table2D_rows_selected)) {
-							no_return_value <- OsteoSort:::output_function(out2[[2]][input$table2D_rows_selected,], method="exclusion", type="csv4")
-					} else {file.remove("selected-list.csv")}
-						setwd(sessiontemp)
-						files <- list.files(direc, recursive = TRUE)
-						setwd(direc)
-						zip:::zipr(zipfile = paste(direc,'.zip',sep=''), files = files[1], compression = 1)
+							no_return_value <- OsteoSort:::output_function(out2[[2]][input$table2D_rows_selected,], method="exclusion", type="csv4", fpath=sd)
+					} else {file.remove(paste(sd,"/selected-list.csv",sep=""))}
+
+						files <- list.files(sd, recursive = TRUE, full.names=TRUE)
+
+						zip:::zipr(zipfile = paste(sd,"/",direc,'.zip',sep=''), files = files[1], compression = 1)
 						for(file_na in files[-1]) {
-							zip:::zipr_append(zipfile = paste(direc,'.zip',sep=''), files = file_na, compression = 1)
+							zip:::zipr_append(zipfile = paste(sd,"/",direc,'.zip',sep=''), files = file_na, compression = 1)
 						}
-						file.copy(paste(direc,'.zip',sep=''), file)  
-						setwd(sessiontemp)
+						file.copy(paste(sd,"/",direc,'.zip',sep=''), file)  
 					},
 					contentType = "application/zip"
 				)
-				setwd(sessiontemp)
 			}
 		}
 		gc()

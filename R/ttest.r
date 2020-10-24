@@ -27,9 +27,9 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	if(is.na(sortb) || is.null(sortb)) {return(NULL)}
 	if(is.na(refa) || is.null(refa)) {return(NULL)}
 	if(is.na(refb) || is.null(refb)) {return(NULL)}
-	workingdir = getwd()
+	
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
-
+	sd <- paste(sessiontempdir, direc, sep="/")
 	if(ztest) {
 		#ztest no plot
 		results <- julia_call("ZTEST", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
@@ -157,21 +157,20 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 			results_formatted[i,12] <- c("Excluded")
 		}
 	}
-	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, absolute_value = absolute, zero_mean = zmean, tails = tails, boxcox = boxcox, ztransform = ztest, reference = reference))
+	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, absolute_value = absolute, zero_mean = zmean, tails = tails, boxcox = boxcox, ztransform = ztest, reference = reference),fpath=sd)
 	if(output_options[1]) {
-		no_return_value <- OsteoSort:::output_function(results_formatted, rejected = rejected, method="exclusion", type="csv")
+		no_return_value <- OsteoSort:::output_function(results_formatted, rejected = rejected, method="exclusion", type="csv",fpath=sd)
 	}
 	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
-		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot")
+		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot",fpath=sd)
 	}
 	if(length(output_options) > 2) { 
 		if(output_options[3]) { 
-			no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ttest", labtf = labtf)
+			no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ttest", labtf = labtf,fpath=sd)
 		}	
 	}
 	#cleanup
 	gc()
-	setwd(workingdir)
 	print("Finished.")
 	t_time <- end_time(start_time)
 	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time, rejected, zmeans, zstd))

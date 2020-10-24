@@ -105,10 +105,10 @@ observeEvent(input$proantestat, {
 		if(fileoutputant1$fileoutputant1 || fileoutputant2$fileoutputant2) {
 			#Zip handler       
 			direc6 <- outtemp2[[1]] #direc temp
-			files <- list.files(direc6, recursive = TRUE)
-			setwd(direc6)
+			sd <- paste(sessiontemp,direc6,sep="/")
+			files <- list.files(sd, recursive = TRUE)
 			if(fileoutputant2$fileoutputant2) {
-				nimages <- list.files()
+				nimages <- list.files(sd)
 				nimages <- paste(sessiontemp, "/", direc6, "/", nimages[grep(".jpg", nimages)], sep="")
 
 				output$plotplotante <- renderImage({
@@ -119,23 +119,19 @@ observeEvent(input$proantestat, {
 					)
 				}, deleteFile = FALSE)
 			}
-			zip:::zipr(zipfile = paste(direc6,'.zip',sep=''), files = files)
-			setwd(sessiontemp)  #restores session
+			files <- list.files(sd, recursive = TRUE, full.names=TRUE)
+			zip:::zipr(zipfile = paste(sd,"/",direc6,'.zip',sep=''), files = files)
 			#Download handler
 			output$downloadantestat <- downloadHandler(
 				filename <- function() {
 					paste("results.zip")
 				},
 				content <- function(file) {
-					setwd(sessiontemp)
-					setwd(direc6)
-					file.copy(paste(direc6,'.zip',sep=''), file) 
-					setwd(sessiontemp)  
+					file.copy(paste(sd,"/",direc6,'.zip',sep=''), file)
 				},
 				contentType = "application/zip"
 			)
 		}
-		setwd(sessiontemp) #restores session
 		removeModal() #removes modal
 		incProgress(amount = 1, message = "Completed")
 	})

@@ -145,9 +145,9 @@ observeEvent(input$pro4, {
 		})
 
 		if(fileoutputstature2$fileoutputstature2) {
-			nimages <- list.files(outtemp[[1]])
+			sd <- paste(sessiontemp,outtemp[[1]],sep="/")
+			nimages <- list.files(sd)
 			nimages <- paste(sessiontemp, "/", outtemp[[1]], "/", nimages[grep(".jpg", nimages)], sep="")
-
 			output$plotoutlier4 <- renderImage({
 				list(src = nimages,
 					contentType = 'image/jpg',
@@ -163,31 +163,25 @@ observeEvent(input$pro4, {
 					paste("results.zip")
 				},
 				content <- function(file) {
-					setwd(sessiontemp)
-					setwd(outtemp[[1]])
-					file.remove(paste(outtemp[[1]],'.zip',sep=''))
+					file.remove(paste(sd,"/",outtemp[[1]],'.zip',sep=''))
 					if(is.numeric(input$tjbingworkb4_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(outtemp[[2]][input$tjbingworkb4_rows_selected,], method="exclusion", type="csv3", uln = "l")
-					} else {file.remove("lower-selected-list.csv")}
+						no_return_value <- OsteoSort:::output_function(outtemp[[2]][input$tjbingworkb4_rows_selected,], method="exclusion", type="csv3", uln = "l", fpath=sd)
+					} else {file.remove(paste(sd,"/lower-selected-list.csv",sep=""))}
 					if(is.numeric(input$tjbingworka4_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(outtemp[[3]][input$tjbingworka4_rows_selected,], method="exclusion", type="csv3", uln = "u")
-					} else {file.remove("upper-selected-list.csv")}
+						no_return_value <- OsteoSort:::output_function(outtemp[[3]][input$tjbingworka4_rows_selected,], method="exclusion", type="csv3", uln = "u", fpath=sd)
+					} else {file.remove(paste(sd,"/upper-selected-list.csv",sep=""))}
 					if(is.numeric(input$tjbingworkc4_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(outtemp[[4]][input$tjbingworkc4_rows_selected,], method="exclusion", type="csv3", uln = "n")
-					} else {file.remove("non-selected-list.csv")}
-					setwd(sessiontemp)
-					files <- list.files(outtemp[[1]], recursive = TRUE)
-					setwd(outtemp[[1]])
-					zip:::zipr(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
+						no_return_value <- OsteoSort:::output_function(outtemp[[4]][input$tjbingworkc4_rows_selected,], method="exclusion", type="csv3", uln = "n", fpath=sd)
+					} else {file.remove(paste(sd,"/non-selected-list.csv",sep=""))}
+					files <- list.files(sd, recursive = TRUE, full.names=TRUE)
+					zip:::zipr(zipfile = paste(sd,"/",outtemp[[1]],'.zip',sep=''), files = files[1], compression = 1)
 					for(file_na in files[-1]) {
-						zip:::zipr_append(zipfile = paste(outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
+						zip:::zipr_append(zipfile = paste(sd,"/",outtemp[[1]],'.zip',sep=''), files = file_na, compression = 1)
 					}
-					file.copy(paste(outtemp[[1]],'.zip',sep=''), file) 
-					setwd(sessiontemp)  
+					file.copy(paste(sd,"/",outtemp[[1]],'.zip',sep=''), file) 
 				},
 				contentType = "application/zip"
 			)
-			setwd(sessiontemp) #restores session
 		}
 		incProgress(amount = 1, message = "Completed")
 	})

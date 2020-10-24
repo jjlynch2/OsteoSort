@@ -19,8 +19,9 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 	if(is.na(postmortem) || is.null(postmortem)) {return(NULL)}
 	if(is.na(ref) || is.null(ref)) {return(NULL)}
 
-	workingdir = getwd()
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
+	sd <- paste(sessiontempdir, direc, sep="/")
+	
 	results <- julia_call("REGS_Ante", as.matrix(antemortem[,2]), as.matrix(postmortem[,4]), as.matrix(ref[c(4,5)]))
 	#format data.frame to return
 
@@ -57,7 +58,7 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 	}
 
 	if(output_options[1]) {
-		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv")
+		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv", fpath=sd)
 	}
 	if(output_options[2]) { 
 		no_return_value <- OsteoSort:::output_function(
@@ -69,17 +70,17 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 										postmortem[1,4],
 										alphalevel),
 										method="exclusion", 
-										type="plot2"
+										type="plot2",
+										fpath=sd
 						)
 	}
 	if(length(output_options) > 2) { 
 		if(output_options[3]) {
-			no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ante", labtf = labtfa)
+			no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ante", labtf = labtfa, fpath=sd)
 		}
 	}
 
 	gc()
-	setwd(workingdir)
 	print("Finished.")
 	t_time <- end_time(start_time)
 	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time))

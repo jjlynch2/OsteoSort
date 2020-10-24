@@ -197,10 +197,9 @@ observeEvent(input$proantestatm, {
 					})
 				}
 		}
-
 		if(fileoutputant1m$fileoutputant1m || multiple_file_output_graph_ante$multiple_file_output_graph_ante) {
-			setwd(outtemp2m[[1]])
-			nimages <- list.files()
+			sd <- paste(sessiontemp,outtemp2m[[1]],sep="/")
+			nimages <- list.files(sd)
 			if(multiple_file_output_graph_ante$multiple_file_output_graph_ante && length(nimages[grep(".jpg", nimages)]) != 0) {
 				nimages <- paste(sessiontemp, "/", outtemp2m[[1]], "/", nimages[grep(".jpg", nimages)], sep="")
 			} else {
@@ -213,35 +212,28 @@ observeEvent(input$proantestatm, {
 					alt = "A"
 				)
 			}, deleteFile = FALSE)
-			setwd(sessiontemp)
 			output$downloadantestatm <- downloadHandler(
 				filename <- function() {
 					paste("results.zip")
 				},
 				content <- function(file) {
-					setwd(sessiontemp)
-					setwd(outtemp2m[[1]])
-					file.remove(paste(outtemp2m[[1]],'.zip',sep=''))
+					file.remove(paste(sd,"/",outtemp2m[[1]],'.zip',sep=''))
 					if(is.numeric(input$antestat_table1m_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(outtemp2m[[2]][input$antestat_table1m_rows_selected,], method="exclusion", type="csv2")
-					} else {file.remove("excluded-selected-list.csv")}
+						no_return_value <- OsteoSort:::output_function(outtemp2m[[2]][input$antestat_table1m_rows_selected,], method="exclusion", type="csv2",fpath=sd)
+					} else {file.remove(paste(sd,"/excluded-selected-list.csv",sep=""))}
 					if(is.numeric(input$antestat_table2m_rows_selected)) {
-						no_return_value <- OsteoSort:::output_function(outtemp2m[[3]][input$antestat_table2m_rows_selected,], method="exclusion", type="csv2")
-					} else {file.remove("not-excluded-selected-list.csv")}
-					setwd(sessiontemp)
-					files <- list.files(outtemp2m[[1]], recursive = TRUE)
-					setwd(outtemp2m[[1]])
-					zip:::zipr(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = files[1], compression = 1)
+						no_return_value <- OsteoSort:::output_function(outtemp2m[[3]][input$antestat_table2m_rows_selected,], method="exclusion", type="csv2",fpath=sd)
+					} else {file.remove(paste(sd,"/not-excluded-selected-list.csv",sep=""))}
+					files <- list.files(sd, recursive = TRUE, full.names=TRUE)
+					zip:::zipr(zipfile = paste(sd,"/", outtemp2m[[1]],'.zip',sep=''), files = files[1], compression = 1)
 					for(file_na in files[-1]) {
-						zip:::zipr_append(zipfile = paste(outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
+						zip:::zipr_append(zipfile = paste(sd,"/", outtemp2m[[1]],'.zip',sep=''), files = file_na, compression = 1)
 					}
-					file.copy(paste(outtemp2m[[1]],'.zip',sep=''), file) 
-					setwd(sessiontemp)  
+					file.copy(paste(sd,"/", outtemp2m[[1]],'.zip',sep=''), file) 
 				},
 				contentType = "application/zip"
 			)
 		}
-		setwd(sessiontemp) #restores session
 		removeModal() #removes modal
 		incProgress(amount = 1, message = "Completed")
 	})

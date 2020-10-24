@@ -2,14 +2,12 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 	if(!julia_exists("ref_dif_s")) {
 		if (libraries) {
 			withProgress(message = 'Loading analytical environment', detail = '', value = 0, min=0, max=9, {
-				julia <- JuliaCall::julia_setup()
+				julia <- JuliaCall::julia_setup(install=TRUE) #Set to false after deploying to shiny-server for startup speed
 				pkg = c("Pkg","Statistics", "Distributed","SharedArrays", "Optim", "Rmath", "GLM", "NearestNeighbors")
 				for(i in pkg) {
 					incProgress(amount = 1, message = paste("Loading ", i, " library", sep=""))
 					print(paste("Loading Julia package: ", i, sep=""))
-					if(JuliaCall::julia_installed_package(i) == "nothing") {
-						JuliaCall::julia_install_package(i)
-					}
+					julia_install_package_if_needed(i)
 					JuliaCall::julia_library(i)
 				}
 				incProgress(amount = 1, message = "Importing source code")

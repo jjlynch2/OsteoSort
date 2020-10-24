@@ -44,11 +44,9 @@ observeEvent(input$landmarks_dig, {
    				try(rgl.close())
 			}
 		}
-	removeModal()  
+	removeModal()
 	}
 })
-
-
 
 
 output$resettableInput3Da <- renderUI({
@@ -58,7 +56,6 @@ output$resettableInput3Da <- renderUI({
 })
 
 observeEvent(input$clearFile3Da, {
-	setwd(sessiontemp)
 	delete.tmp.data.pct(filelist3$list, sessiontemp, direc$direc1)
 	if(!is.null(input$aligndata$datapath)) {
 		file.remove(input$aligndata$datapath)
@@ -111,7 +108,7 @@ observeEvent(input$reimport, {
 })
 
 observeEvent(input$aligndata$datapath, {
-	file.copy(input$aligndata$datapath, input$aligndata$name)
+	file.copy(input$aligndata$datapath, paste(sessiontemp,"/", input$aligndata$name,sep=""))
 	filelist3$list <- input$aligndata$name
 	landmarks$landmarks <- rep(list(NULL), length(filelist3$list)) #populate as NULL x file length on upload
 	landmarks_align$landmarks_align <- rep(list(NULL), length(filelist3$list)) #populate as NULL x file length on upload
@@ -185,11 +182,11 @@ observeEvent(input$simplify, {
 				landmarks$landmarks[[position$pos]] <- unique(tempp[which(tempp[,1] <= input$sft),2])
 				if(length(landmarks$landmarks[[position$pos]]) == 0) { landmarks$landmarks[position$pos] <- list(NULL) }
 			}
-			write.table(te, sep = ' ', file = filelist3$list[[position$pos]], row.names = FALSE)
+			write.table(te, sep = ' ', file = paste(sessiontemp, "/", filelist3$list[[position$pos]], sep=""), row.names = FALSE)
 		}
-		if(input$alln == "All") {	
+		if(input$alln == "All") {
 			ll <- length(filelist3$list)
-			for (i in 1:ll) {	
+			for (i in 1:ll) {
 				ttt <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
 				te <- kmeans.3d(ttt, cluster = input$vara, threads = input$ncorespc)
 				if(!is.null(landmarks$landmarks[[i]])) {
@@ -200,7 +197,7 @@ observeEvent(input$simplify, {
 				if(i == position$pos) {
 					tt1$tt1 <- te
 				}
-				write.table(te, sep = ' ', file = filelist3$list[[i]], row.names = FALSE)
+				write.table(te, sep = ' ', file = paste(sessiontemp, "/", filelist3$list[[i]],sep=""), row.names = FALSE)
 			}
 		}
 		removeModal()  
@@ -275,8 +272,6 @@ output$savedata <- downloadHandler(
 	},
 	content <- function(file) {
 		direc$direc1 <- OsteoSort:::analytical_temp_space(output_options <- TRUE, sessiontempdir = sessiontemp)
-		setwd(sessiontemp)
-		setwd(direc$direc1)
 		for(i in 1:length(filelist3$list)) {
 			saveme <- import.tmp.data.pct(filelist3$list[[i]], sessiontemp)
 			if(ncol(saveme) == 3) {
@@ -296,14 +291,13 @@ output$savedata <- downloadHandler(
 					}
 				}
 			}
-			write.table(saveme, sep = ' ', file = input$aligndata$name[i], row.names = FALSE)
+			write.table(saveme, sep = ' ', file = paste(sessiontemp, direc$direc1, input$aligndata$name[i], sep="/"), row.names = FALSE)
 		}
-		setwd(sessiontemp)
-		files <- list.files(direc$direc1, recursive = TRUE)
-		setwd(direc$direc1)
-		zip:::zipr(zipfile = paste(direc$direc1,'.zip',sep=''), files = files)
-		file.copy(paste(direc$direc1,'.zip',sep=''), file)
-		setwd(sessiontemp)
+
+		files <- list.files(paste(sessiontemp,"/",direc$direc1,sep=""), recursive = TRUE, full.names = TRUE)
+
+		zip:::zipr(zipfile = paste(sessiontemp,"/",direc$direc1,"/",direc$direc1,'.zip',sep=''), files = files)
+		file.copy(paste(sessiontemp,"/",direc$direc1,"/",direc$direc1,'.zip',sep=''), file)
 	},
 	contentType = "application/zip"
 )

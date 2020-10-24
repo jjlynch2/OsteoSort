@@ -6,6 +6,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	dist <- tolower(dist)
 	workingdir = getwd()
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
+	sd <- paste(sessiontempdir, direc, sep="/")
 	list1 <- data[[1]]
 	list2 <- data[[2]]
 	matches1 <- array(NA,c(length(list1)*length(list2), 3)) #side 1
@@ -184,14 +185,13 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	} else {
 		bandt = FALSE
 	}
-	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(fragment = fragment, lowest_distance = n_lowest_distances, distance_type = "average", band=bandt))
-	if(output_options[1]) {no <- OsteoSort:::output_function(resmatches, method="3D", type="csv-res")}
-	if(output_options[2]) {no <- OsteoSort:::output_function(matches, method="3D", type="csv-all")}
-	if(output_options[3]) {no <- OsteoSort:::output_function(pairwise_coords, method="3D", type="coord")}
-	if(output_options[4]) {no <- OsteoSort:::output_function(hera1 = resmatches, method="networkanalysis", type="2D-3D", labtf = labtf3d)}
+	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(fragment = fragment, lowest_distance = n_lowest_distances, distance_type = "average", band=bandt), fpath=sd)
+	if(output_options[1]) {no <- OsteoSort:::output_function(resmatches, method="3D", type="csv-res", fpath=sd)}
+	if(output_options[2]) {no <- OsteoSort:::output_function(matches, method="3D", type="csv-all", fpath=sd)}
+	if(output_options[3]) {no <- OsteoSort:::output_function(pairwise_coords, method="3D", type="coord", fpath=sd)}
+	if(output_options[4]) {no <- OsteoSort:::output_function(hera1 = resmatches, method="networkanalysis", type="2D-3D", labtf = labtf3d, fpath=sd)}
 	comparisons <- length(list1) * length(list2) #number of comparisons
 	gc()
-	setwd(workingdir)
 	print("Form comparisons completed")
 	t_time <- end_time(start_time)
 	return(list(resmatches, direc, comparisons, matches, renderlist, t_time))

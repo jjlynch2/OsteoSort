@@ -1,7 +1,4 @@
 #generates temporary directories
-workingdd <- tempdir()
-setwd(workingdd)
 sessiontempd <- OsteoSort:::randomstring(n = 1, length = 24)
-dir.create(sessiontempd)
-setwd(sessiontempd)
-sessiontemp <- getwd()
+dir.create(paste(tempdir(), sessiontempd,sep="/"))
+sessiontemp <- paste(tempdir(), sessiontempd,sep="/")

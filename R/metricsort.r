@@ -7,8 +7,10 @@ metricsort <- function (sort, method = "Quartiles", measurements = NULL, session
 	cutoff <- cutoff[1]
 	nocut <- FALSE
 	if(cutoffmax == cutoff) {nocut <- TRUE}
-	workingdir = getwd()
+
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
+	sd <- paste(sessiontempdir, direc, sep="/")
+
 	sortdata <- array(NA,c(length(sort[,1]),4))
 	sortdata[,1] <- as.matrix(sort[["id"]])
 	sortdata[,2] <- tolower(sort[["Side"]])
@@ -83,7 +85,7 @@ metricsort <- function (sort, method = "Quartiles", measurements = NULL, session
 		if(!all(is.null(outlierdfupper))) { #skips if all NA (no outliers)
 			outlierdfupper <- na.omit(outlierdfupper)
 			if(output_options[1] && nrow(outlierdfupper) > 0) {
-				no <- OsteoSort:::output_function(hera1 = list(outlierdfupper, upperfile), method = "OS", type = "csv")
+				no <- OsteoSort:::output_function(hera1 = list(outlierdfupper, upperfile), method = "OS", type = "csv", fpath=sd)
 			}
 		}
 	}
@@ -91,7 +93,7 @@ metricsort <- function (sort, method = "Quartiles", measurements = NULL, session
 		if(!all(is.null(outlierdflower))) {
 			outlierdflower <- na.omit(outlierdflower)
 			if(output_options[1] && nrow(outlierdflower) > 0) {
-				no <- OsteoSort:::output_function(hera1 = list(outlierdflower, lowerfile), method = "OS", type = "csv")
+				no <- OsteoSort:::output_function(hera1 = list(outlierdflower, lowerfile), method = "OS", type = "csv", fpath=sd)
 			}
 		}
 	}
@@ -99,15 +101,14 @@ metricsort <- function (sort, method = "Quartiles", measurements = NULL, session
 		if(!all(is.null(nonoutliersdf))) {
 			nonoutliersdf <- na.omit(nonoutliersdf)
 			if(output_options[1] && nrow(nonoutliersdf) > 0) {
-				no <- OsteoSort:::output_function(hera1 = list(nonoutliersdf, nonoutliersfile), method = "OS", type = "csv")
+				no <- OsteoSort:::output_function(hera1 = list(nonoutliersdf, nonoutliersfile), method = "OS", type = "csv", fpath=sd)
 			}
 		}
 	}
 	if(output_options[2]) {
-		no <- OsteoSort:::output_function(hera1 = list(sort[,4], measurements, plotme, upper, lower, lowermax, uppermax, nocut), method = "OS", type = "plot")
+		no <- OsteoSort:::output_function(hera1 = list(sort[,4], measurements, plotme, upper, lower, lowermax, uppermax, nocut), method = "OS", type = "plot", fpath=sd)
 	}
 	
-	setwd(workingdir)
 	print("Outlier analysis completed")	
 	return(list(direc,outlierdflower,outlierdfupper,nonoutliersdf,round(m, digits=2),round(s, digits=2) ,round(me, digits=2),round(IQQ, digits=2)))
 }
