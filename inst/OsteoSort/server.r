@@ -1,6 +1,6 @@
 options(rgl.useNULL=TRUE) #required to avoid rgl device opening 
 options(scipen = 999)
-options(shiny.maxRequestSize=100*1024^2) #10MB file size limit
+options(shiny.maxRequestSize=40*1024^2) #40MB file size limit
 options(warn = -1) #disables warnings
 options(as.is = TRUE)
 options(stringsAsFactors = FALSE)
