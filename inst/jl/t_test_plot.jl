@@ -39,7 +39,7 @@ function TTESTA_plot(SL, SR, RL, RR)
 	return results
 end
 
-#Absolute value and boxcox
+#Absolute value and YeoJohnsonTrans
 function TTESTAB_plot(SL, SR, RL, RR)
 	res = zeros(1,size(SL,2))
 	dsum = 0
@@ -51,15 +51,15 @@ function TTESTAB_plot(SL, SR, RL, RR)
 	end
 	res = res[1,1:end]
 	ref = ref_difa(res, RL, RR)
-	bc = lambda(ref)
-	ref = transform(ref)
+	bc = lambda(ref)[1]
+	ref = transform(ref, bc)
 	results = zeros(size(ref,1)+1,1)
 	results[1:size(ref,1),1] = ref
-	results[size(ref,1)+1,1] = dsum^bc
+	results[size(ref,1)+1,1] = transform([dsum, dsum], bc)[1]
 	return results
 end
 
-#Boxcox only
+#YeoJohnsonTrans only
 function TTESTB_plot(SL, SR, RL, RR)
 	res = zeros(1,size(SL,2))
 	dsum = 0
@@ -70,12 +70,12 @@ function TTESTB_plot(SL, SR, RL, RR)
 		end
 	end
 	res = res[1,1:end]
-	ref = ref_difa(res, RL, RR)
-	bc = lambda(ref)
-	ref = transform(ref)
+	ref = ref_dif(res, RL, RR)
+	bc = lambda(ref)[1]
+	ref = transform(ref, bc)
 	results = zeros(size(ref,1)+1,1)
 	results[1:size(ref,1),1] = ref
-	results[size(ref,1)+1,1] = dsum^bc
+	results[size(ref,1)+1,1] = transform([dsum, dsum], bc)[1]
 	return results
 end
 #############################################

@@ -1,15 +1,9 @@
-ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, labtf = TRUE, output_options = c(TRUE, FALSE, FALSE), threads = 1, tails = 2, boxcox = TRUE, ztest = FALSE, reference = NULL) {
-	if(threads != julia_call("nprocs")) {
-		print("Setting up Julia workers...")
-		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
-		print("Finished.")
-	}
+ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, labtf = TRUE, output_options = c(TRUE, FALSE, FALSE), tails = 2, yeojohnson = TRUE, ztest = FALSE, reference = NULL) {
 	force(alphalevel)
 	force(absolute)
 	force(zmean)
-	force(threads)
 	force(tails)
-	force(boxcox)
+	force(yeojohnson)
 	force(output_options)
 	force(sessiontempdir)
 
@@ -35,7 +29,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 		results <- julia_call("ZTEST", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		output_options[2] <- FALSE #force false as a safety check
 	}
-	else if(absolute && zmean && boxcox) {
+	else if(absolute && zmean && yeojohnson) {
 		results <- julia_call("TTESTABM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
 		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTESTAB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
@@ -47,13 +41,13 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 			plot_data <- julia_call("TTESTA_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
-	else if(absolute && boxcox) {
+	else if(absolute && yeojohnson) {
 		results <- julia_call("TTESTAB", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
 		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTESTAB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
-	else if(zmean && boxcox) {
+	else if(zmean && yeojohnson) {
 		results <- julia_call("TTESTBM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
 		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTESTB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
@@ -65,7 +59,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 			plot_data <- julia_call("TTESTA_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
-	else if(boxcox) {
+	else if(yeojohnson) {
 		results <- julia_call("TTESTB", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
 		if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("TTESTB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
@@ -157,7 +151,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 			results_formatted[i,12] <- c("Excluded")
 		}
 	}
-	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, absolute_value = absolute, zero_mean = zmean, tails = tails, boxcox = boxcox, ztransform = ztest, reference = reference),fpath=sd)
+	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, absolute_value = absolute, zero_mean = zmean, tails = tails, yeojohnson = yeojohnson, ztransform = ztest, reference = reference),fpath=sd)
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results_formatted, rejected = rejected, method="exclusion", type="csv",fpath=sd)
 	}

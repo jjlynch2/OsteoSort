@@ -1,15 +1,9 @@
-reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, reference = NULL, labtf = TRUE, output_options = c(TRUE,FALSE, FALSE), threads = 1, type = "Logarithm Composite", alphalevel = 0.05) {	
+reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, reference = NULL, labtf = TRUE, output_options = c(TRUE,FALSE, FALSE), type = "Logarithm Composite", alphalevel = 0.05) {	
 	force(alphalevel)
-	force(threads)
 	force(type)
 	force(ztest)
 	force(output_options)
 	force(sessiontempdir)
-	if(threads != julia_call("nprocs")) {
-		print("Setting up Julia workers...")
-		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
-		print("Finished.")
-	}
 
 	#appends a variable with 0 to make sure the data structure stays the same in Julia
 	refa <- cbind(refa,fa = 0)

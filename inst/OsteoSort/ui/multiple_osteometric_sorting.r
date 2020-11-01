@@ -98,16 +98,13 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 								),
 								conditionalPanel(condition = "!input.multiple_ztransform && input.multiple_analysis != 'Non-Antimere regression'",
 									uiOutput("multiple_absolute_value"),
-									uiOutput("multiple_boxcox"),
+									uiOutput("multiple_yeojohnson"),
 									uiOutput("multiple_mean"),
 									uiOutput("multiple_tails")
 								),
 								uiOutput("multiple_common_alpha_level")
 								)
 							)
-						),
-						tabPanel("Computational Parameters",
-							uiOutput('ncores')
 						)
 					)
 				)

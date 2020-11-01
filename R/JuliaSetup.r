@@ -12,12 +12,12 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 				}
 				incProgress(amount = 1, message = "Importing source code")
 				julia_source(system.file("jl", "cores.jl", package = "OsteoSort"))
-				julia_source(system.file("jl", "t_test_plot_MC.jl", package = "OsteoSort"))
-				julia_source(system.file("jl", "t_test_MC.jl", package = "OsteoSort"))
-				julia_source(system.file("jl", "regression_MC.jl", package = "OsteoSort"))
-				julia_source(system.file("jl", "antemortem_MC.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "t_test_plot.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "t_test.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "regression.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "antemortem.jl", package = "OsteoSort"))
 				julia_source(system.file("jl", "z_test.jl", package = "OsteoSort"))
-				julia_source(system.file("jl", "regression_plot_MC.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "regression_plot.jl", package = "OsteoSort"))
 				julia_source(system.file("jl", "radius_search.jl", package = "OsteoSort"))
 			})
 		}
@@ -38,11 +38,14 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 
 		if (source) {
 			julia_source(system.file("jl", "library.jl", package = "OsteoSort"))
-			julia_source(system.file("jl", "t_test_WC.jl", package = "OsteoSort"))
-			julia_source(system.file("jl", "Box_Cox_WC.jl", package = "OsteoSort"))
-			julia_source(system.file("jl", "regression_WC.jl", package = "OsteoSort"))
-			julia_source(system.file("jl", "antemortem_WC.jl", package = "OsteoSort"))
-			julia_source(system.file("jl", "regression_helpers_WC.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "t_test.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "t_test_plot.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "yeojohnson.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "regression.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "antemortem.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "regression_plot.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "regression_helpers.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "z_test.jl", package = "OsteoSort"))
 		}
 
 		if(recall_libraries) {

@@ -63,9 +63,6 @@ antemortem_multiple <- tabPanel("Multiple",icon = icon("gears", lib="font-awesom
 						),	
 						tabPanel("Statistical Parameters",
 							uiOutput("alphalevelsantestatm")
-						),
-						tabPanel("Computational Parameters",
-							uiOutput('ncoresm')
 						)
 					)
 				)

@@ -1,4 +1,4 @@
-@everywhere function measurement_counter_plot(v1)
+function measurement_counter_plot(v1)
 	res = 0
 	for i in 1:size(v1,2)
 		if v1[i] != 0

@@ -1,4 +1,4 @@
-#This is modified from the BoxCoxTrans.jl package and licensed under the MIT "Expat" License:
+#This is modified from the YeoJohnsonTrans.jl package and licensed under the MIT "Expat" License:
 
 #Copyright (c) 2018: Tom Kwong.
 
@@ -8,21 +8,35 @@
 
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-@everywhere transform(𝐱) = transform(𝐱, lambda(𝐱))
-
-@everywhere transform(𝐱, λ) = @. λ ≈ 0 ? log(𝐱) : (𝐱 ^ λ - 1) / λ
-
-@everywhere function lambda(𝐱; interval = (-2.0, 2.0))
-    i1, i2 = interval
-    res = optimize(λ -> -mle(𝐱, λ), i1, i2)
-    return Optim.minimizer(res)
+function transform(𝐱; optim_args...)
+    λ, details = lambda(𝐱; optim_args...)
+    transform(𝐱, λ)
 end
 
-@everywhere function mle(𝐱, λ)
-    𝐲 = transform(float.(𝐱), λ)
-    μ = mean(𝐲)
+function transform(𝐱, λ)
+    𝐱′ = similar(𝐱, Float64)
+    for (i, x) in enumerate(𝐱)
+        if x >= 0
+            𝐱′[i] = λ ≈ 0 ? log(x + 1) : ((x + 1)^λ - 1)/λ
+        else
+            𝐱′[i] = λ ≈ 2 ? -log(-x + 1) : -((-x + 1)^(2 - λ) - 1) / (2 - λ)
+        end
+    end
+    𝐱′
+end
+
+function lambda(𝐱; interval = (-2.0, 2.0), optim_args...)
+    i1, i2 = interval
+    res = optimize(λ -> -log_likelihood(𝐱, λ), i1, i2; optim_args...)
+    (value=Optim.minimizer(res), details=res)
+end
+
+function log_likelihood(𝐱, λ)
     N = length(𝐱)
-    llf = (λ - 1) * sum(log.(𝐱))
-    llf -= N / 2.0 * log(sum((𝐲 .- μ) .^ 2) / N)
-    return llf
+    𝐲 = transform(float.(𝐱), λ)
+    σ² = var(𝐲, corrected = false)
+    c = sum(sign.(𝐱) .* log.(abs.(𝐱) .+ 1))
+    llf = -N / 2.0 * log(σ²) + (λ - 1) * c
+    #@info "λ = $λ => σ²=$σ², c=$c, llf=$llf"
+    llf
 end

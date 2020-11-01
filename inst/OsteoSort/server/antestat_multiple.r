@@ -94,14 +94,6 @@ observeEvent(input$stature_reference_antem, {
 
 })
 
-numbercoresglobalm <- reactiveValues(ncorem = 1)
-observeEvent(input$numbercoresm, {
-	numbercoresglobalm$ncorem <- input$numbercoresm
-})
-output$ncoresm <- renderUI({
-	sliderInput(inputId = "numbercoresm", label = "Number of cores", min=1, max=detectCores(), value=1, step =1)
-})
-
 #file upload render for multiple comparison
 output$resettableInputante1 <- renderUI({
 	input$clearFile1ante
@@ -146,7 +138,6 @@ observeEvent(input$proantestatm, {
 		if(is.null(input$Measurement_ante_mm)) {removeModal();shinyalert(title = "ERROR!", text="The measurement is missing.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		incProgress(amount = 1, message = "Antemortem: running comparisons")
 		outtemp2m <- antestat.regtest(labtfa = labtfa$labtfa,
-									threads = numbercoresglobalm$ncorem, 
 									antemortem = outtemp1m[[1]], 
 									postmortem = outtemp1m[[2]], 
 									ref = outtemp1m[[3]],

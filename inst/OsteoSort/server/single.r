@@ -42,12 +42,12 @@ observeEvent(input$single_ztransform, {
 	single_ztransform$single_ztransform <- input$single_ztransform
 })
 
-single_boxcox <- reactiveValues(single_boxcox = FALSE) 
-output$single_boxcox <- renderUI({
-	checkboxInput(inputId = "single_boxcox", label = "Boxcox transformation", value = FALSE)
+single_yeojohnson <- reactiveValues(single_yeojohnson = FALSE) 
+output$single_yeojohnson <- renderUI({
+	checkboxInput(inputId = "single_yeojohnson", label = "YeoJohnson transformation", value = FALSE)
 })
-observeEvent(input$single_boxcox, {
-	single_boxcox$single_boxcox <- input$single_boxcox
+observeEvent(input$single_yeojohnson, {
+	single_yeojohnson$single_yeojohnson <- input$single_yeojohnson
 })
 
 single_mean <- reactiveValues(single_mean = FALSE) 
@@ -238,7 +238,7 @@ observeEvent(input$proc, {
 			art.d1 <- art.input(side = input$single_non_antimere_side, ref = single_reference_imported$single_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$single_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], measurementsa = tempa, measurementsb = tempb)
 			incProgress(amount = 1, message = "Non-antimere t-test: running comparison")
 			if(is.null(art.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
-			d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+			d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, yeojohnson = single_yeojohnson$single_yeojohnson, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 			tempDF <- rbind(d2[[2]], d2[[3]])
 		} else if(input$single_analysis == "Antimere t-test") {
 			single_input_list_left <- reactiveValues(single_input_list_left = c())
@@ -268,7 +268,7 @@ observeEvent(input$proc, {
 			pm.d1 <- pm.input(sort = rbind(sortleft, sortright), bone = input$single_elements_pairmatch, measurements = single_ML$single_ML, ref = single_reference_imported$single_reference_imported)
 			if(is.null(pm.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			incProgress(amount = 1, message = "Antimere t-test: running comparison")
-			d2 <- ttest(ztest = single_ztransform$single_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, boxcox = single_boxcox$single_boxcox, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+			d2 <- ttest(ztest = single_ztransform$single_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, yeojohnson = single_yeojohnson$single_yeojohnson, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 			tempDF <- rbind(d2[[2]], d2[[3]])
 		} else if(input$single_analysis == "Non_antimere regression") {
 

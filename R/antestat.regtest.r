@@ -1,13 +1,7 @@
-antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, sessiontempdir = NULL, labtfa = TRUE, output_options = c(TRUE,FALSE,FALSE), alphalevel = 0.05, threads = 1) {
+antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, sessiontempdir = NULL, labtfa = TRUE, output_options = c(TRUE,FALSE,FALSE), alphalevel = 0.05) {
 	force(alphalevel)
-	force(threads)
 	force(output_options)
 	force(sessiontempdir)
-	if(threads != julia_call("nprocs")) {
-		print("Setting up Julia workers...")
-		JuliaSetup(add_cores = threads, source = TRUE, recall_libraries = TRUE)
-		print("Finished.")
-	}
 	measurements <- colnames(postmortem)[4]
 	antemortem <- rbind(antemortem, 0)
 	postmortem <- rbind(postmortem, 0)

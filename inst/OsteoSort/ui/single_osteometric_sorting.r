@@ -100,7 +100,7 @@ single_osteometric_sorting <- tabPanel("Single",icon = icon("gear", lib="font-aw
 								),
 								conditionalPanel(condition = "!input.single_ztransform && input.single_analysis != 'Non_antimere regression' || input.single_analysis == 'Non_antimere t-test'",
 									uiOutput("single_absolute_value"),
-									uiOutput("single_boxcox"),
+									uiOutput("single_yeojohnson"),
 									uiOutput("single_mean"),
 									uiOutput("single_tails")
 								),
