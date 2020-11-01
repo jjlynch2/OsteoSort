@@ -37,6 +37,5 @@ function log_likelihood(𝐱, λ)
     σ² = var(𝐲, corrected = false)
     c = sum(sign.(𝐱) .* log.(abs.(𝐱) .+ 1))
     llf = -N / 2.0 * log(σ²) + (λ - 1) * c
-    #@info "λ = $λ => σ²=$σ², c=$c, llf=$llf"
     llf
 end

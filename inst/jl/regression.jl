@@ -33,7 +33,6 @@ function check_cache(res_1_i, res_2_i, m_cache_id, m_cache_de)
 	return false
 end
 
-#### its reusing ref data from previous analysis when measurements are missing
 function REGSL(m1, m2, RL, RR)
 	n1 = size(m1,1)
 	n2 = size(m2,1)

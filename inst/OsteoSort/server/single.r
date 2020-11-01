@@ -36,7 +36,7 @@ observeEvent(input$single_absolute_value, {
 
 single_ztransform <- reactiveValues(single_ztransform = FALSE) 
 output$single_ztransform <- renderUI({
-	checkboxInput(inputId = "single_ztransform", label = "Z-transform", value = FALSE)
+	checkboxInput(inputId = "single_ztransform", label = "Z-transform: weighted effect size", value = FALSE)
 })
 observeEvent(input$single_ztransform, {
 	single_ztransform$single_ztransform <- input$single_ztransform

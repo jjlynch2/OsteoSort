@@ -95,7 +95,7 @@ observeEvent(input$multiple_mean, {
 
 multiple_ztransform <- reactiveValues(multiple_ztransform = FALSE) 
 output$multiple_ztransform <- renderUI({
-	checkboxInput(inputId = "multiple_ztransform", label = "Z-transform", value = FALSE)
+	checkboxInput(inputId = "multiple_ztransform", label = "Z-transform: weighted effect size", value = FALSE)
 })
 observeEvent(input$multiple_ztransform, {
 	multiple_ztransform$multiple_ztransform <- input$multiple_ztransform
