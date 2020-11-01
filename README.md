@@ -1,44 +1,45 @@
-#Current development status for 1.2.6
-# Installation
-Requires [**Rtools**](https://cran.r-project.org/bin/windows/Rtools/) to build on Windows
+## OsteoSort 1.3.0
 
-Requires [**Xcode**](https://developer.apple.com/xcode/) to build on OSX
+## Installation
+```javascript
+require("devtools")
+install_github("jjlynch2/OsteoSort", ref="Development-1.3.0")
+library(OsteoSort)
+OsteoSort()
+```
 
-To install directly from GitHub use the devtools R package:
-
-`install.packages("devtools")`
-
-`library(devtools)`
-
-`install_github("jjlynch2/OsteoSort", ref="v1.2.6")`
-
-# Depends
-* compiler
-* Morpho
-* parallel
+## R Dependencies
 * pixmap
 * jpeg
-* CCA
-* data.table
-* Rcpp
-* RcppParallel
-* car
+* Morpho
+* DT
+* shiny
+* htmltools
+* zip
+* rgl
+* ClusterR
+* JuliaCall
+* ggplot2
+* shinyalerts
+* ggrepel
+* networkD3
+* network
+* sna
 
-# Changes for OsteoSort version : 1.2.6
+## Julia Dependencies
+* Pkg
+* Statistics
+* Distributed
+* SharedArrays
+* Optim
+* Rmath
 
-## Minor changes:
-* Updated imports for DESC
-* Adusted default scale option for 2D outline extraction
+## Changes for OsteoSort version 1.3.0
 
-## Moderate changes:
-* Added Boxcox transformation for t-tests
-* Added dependency on car
-* Added option to select number of Principal Components for regression analysis in reg.multitest()
-* Added option (default) to select number of Principal Components based on cumulative variance 
+## Other Windows Dependencies
+* Julia must be in your Windows environrment PATH to run.
 
-## Major changes:
-* Added input.3d() and match.3d() functions for importing and pair-matching 3D data respectively
-* Added rotation(), translation(), and mean_shape() functions
+## Known Issues
+* A bug exists in the StatsModels package version 0.6.0 in Julia, which prevents RCall from precompiling. This bug breaks JuliaCall in R. Downgrading the package to version 0.5.0 will allow OsteoSort to run properly.
+* Some versions of JuliaCall require RCall to be manually rebuilt in Julia.
 
-## Bug fixes:
-* Fixed bug with prediction interval lines for simple regression
