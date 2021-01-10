@@ -3,7 +3,7 @@
 ## Installation
 ```javascript
 require("devtools")
-install_github("jjlynch2/OsteoSort", ref="Development-1.3.0")
+install_github("jjlynch2/OsteoSort")
 library(OsteoSort)
 OsteoSort()
 ```

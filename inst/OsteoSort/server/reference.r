@@ -109,7 +109,6 @@ observeEvent(input$config_delete, {
 
 observeEvent(input$refsel, {
 	if(is.numeric(input$reference_table_rows_selected)) {
-
 		index = NULL
 		for (i in 1:length(reference_name_list$reference_name_list)) {
 			if(reference_name_list$reference_name_list[i] == "Custom_Selected") {
