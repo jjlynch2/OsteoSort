@@ -114,7 +114,7 @@ observeEvent(input$multiple_analysis, {
 	multiple_analysis$multiple_analysis <- input$multiple_analysis
 })
 output$multiple_analysis <- renderUI({
-	selectInput(inputId = "multiple_analysis", label = "Analysis", choices = c("Antimere t-test","Non-Antimere t-test","Non-Antimere regression"), selected = "Antimere t-test")
+	selectInput(inputId = "multiple_analysis", label = "Analysis", choices = c("Antimere t-test","Articulation t-test","Non-Antimere regression"), selected = "Antimere t-test")
 })
 
 output$multiple_element_pair_match <- renderUI({
@@ -142,7 +142,7 @@ multiple_MLA <- reactiveValues(multiple_ML = c("temp"))
 observeEvent(input$multiple_reference, {
 	multiple_reference_imported$multiple_reference_imported <- reference_list$reference_list[[multiple_reference$multiple_reference]]
 	elements$elements <- unique(multiple_reference_imported$multiple_reference_imported$Element)
-	art <- config_df$config_df[config_df$config_df$Method == 'Non_antimere_t-test',]
+	art <- config_df$config_df[config_df$config_df$Method == 'Articulation_t-test',]
 	ref_col_names <- colnames(multiple_reference_imported$multiple_reference_imported)
 	multiple_art_elements$df <- NULL
 	multiple_art_measurements_a$df <- NULL
@@ -275,7 +275,7 @@ observeEvent(input$pro, {
 		tempdata1 <- as.data.frame(tempdata1) #combines first three columns with now numeric measurements
 
 
-		if(input$multiple_analysis == "Non-Antimere t-test") {
+		if(input$multiple_analysis == "Articulation t-test") {
 			if(is.null(input$multiple_measurements_non_antimere_a) || is.null(input$multiple_measurements_non_antimere_b)) {removeModal();shinyalert(title = "ERROR!", text="The measurement data is missing",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			temp1 <- which(multiple_art_elements$df == input$multiple_element_non_antimere)
 			tempa <- multiple_art_measurements_a$df[temp1][!duplicated(multiple_art_measurements_a$df[temp1])]
@@ -285,10 +285,10 @@ observeEvent(input$pro, {
 			sortb = tempdata1[tempdata1$Element == strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2],]
 			measa <- input$multiple_measurements_non_antimere_a
 			measb <- input$multiple_measurements_non_antimere_b
-			incProgress(amount = 1, message = "Non-antimere t-test: sorting data")
+			incProgress(amount = 1, message = "Articulation t-test: sorting data")
 			art.d1 <- art.input(side = input$multiple_non_antimere_side, ref = multiple_reference_imported$multiple_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2], measurementsa = measa, measurementsb = measb)
 			if(is.null(art.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
-			incProgress(amount = 1, message = "Non-antimere t-test: running comparisons")
+			incProgress(amount = 1, message = "Articulation t-test: running comparisons")
 			d2 <- ttest(labtf = labtf$labtf, ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, reference = multiple_reference$multiple_reference, output_options = c(multiple_file_output1$multiple_file_output1, FALSE, multiple_file_output_graph$multiple_file_output_graph))
 			tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 		} else if(input$multiple_analysis == "Antimere t-test") {

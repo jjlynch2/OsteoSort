@@ -50,7 +50,7 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 					uiOutput("config_a")
 				),
 				column(6,
-					conditionalPanel(condition = "input.config_options == 'Non_antimere_t-test'",
+					conditionalPanel(condition = "input.config_options == 'Articulation_t-test'",
 						uiOutput("config_b")
 					)
 				)

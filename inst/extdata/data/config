@@ -1,10 +1,10 @@
 Measurementa,Measurementb,Method
-Fem_04,Osc_17,Non_antimere_t-test
-Hum_06,Uln_11,Non_antimere_t-test
-Hum_06,Rad_04,Non_antimere_t-test
-Hum_07,Sca_03,Non_antimere_t-test
-Fem_03,Tib_02,Non_antimere_t-test
-Fib_05,Tib_12,Non_antimere_t-test
+Fem_04,Osc_17,Articulation_t-test
+Hum_06,Uln_11,Articulation_t-test
+Hum_06,Rad_04,Articulation_t-test
+Hum_07,Sca_03,Articulation_t-test
+Fem_03,Tib_02,Articulation_t-test
+Fib_05,Tib_12,Articulation_t-test
 Hum_01,,Stature
 Uln_01,,Stature
 Rad_01,,Stature

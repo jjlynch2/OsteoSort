@@ -71,7 +71,7 @@ observeEvent(input$single_analysis, {
 	single_analysis$single_analysis <- input$single_analysis
 })
 output$single_analysis <- renderUI({
-	selectInput(inputId = "single_analysis", label = "Analysis", choices = c("Antimere t-test","Non_antimere t-test","Non_antimere regression"), selected = "Antimere t-test")
+	selectInput(inputId = "single_analysis", label = "Analysis", choices = c("Antimere t-test","Articulation t-test","Non_antimere regression"), selected = "Antimere t-test")
 })
 
 single_reference <- reactiveValues(single_reference = c("temp"))
@@ -95,7 +95,7 @@ observeEvent(input$single_reference, {
 	single_reference_imported$single_reference_imported <- reference_list$reference_list[[single_reference$single_reference]]
 	elements$elements <- unique(single_reference_imported$single_reference_imported$Element)
 
-	art <- config_df$config_df[config_df$config_df$Method == 'Non_antimere_t-test',]
+	art <- config_df$config_df[config_df$config_df$Method == 'Articulation_t-test',]
 	ref_col_names <- colnames(single_reference_imported$single_reference_imported)
 	art_elements$df <- NULL
 	art_measurements_a$df <- NULL
@@ -210,7 +210,7 @@ observeEvent(input$single_reference, {
 observeEvent(input$proc, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
 	withProgress(message = 'Calculation has started', detail = '', value = 0, min=0, max=3, {
-		if(input$single_analysis == "Non_antimere t-test") {
+		if(input$single_analysis == "Articulation t-test") {
 			temp1 <- which(art_elements$df == input$single_element_non_antimere)
 			tempa <- art_measurements_a$df[temp1][!duplicated(art_measurements_a$df[temp1])]
 			tempb <- art_measurements_b$df[temp1][!duplicated(art_measurements_b$df[temp1])]
@@ -234,9 +234,9 @@ observeEvent(input$proc, {
 
 			sorta <- data.frame(id = input$ID1, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][1], single_input_art_a$single_input_art_a, stringsAsFactors = FALSE)
 			sortb <- data.frame(id = input$ID2, Side = input$single_non_antimere_side, Element = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], single_input_art_b$single_input_art_b, stringsAsFactors = FALSE)
-			incProgress(amount = 1, message = "Non-antimere t-test: sorting data")
+			incProgress(amount = 1, message = "Articulation t-test: sorting data")
 			art.d1 <- art.input(side = input$single_non_antimere_side, ref = single_reference_imported$single_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$single_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$single_element_non_antimere, split = "-")[[1]][2], measurementsa = tempa, measurementsb = tempb)
-			incProgress(amount = 1, message = "Non-antimere t-test: running comparison")
+			incProgress(amount = 1, message = "Articulation t-test: running comparison")
 			if(is.null(art.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, yeojohnson = single_yeojohnson$single_yeojohnson, tails = single_tails$single_tails, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 			tempDF <- rbind(d2[[2]], d2[[3]])

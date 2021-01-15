@@ -76,17 +76,17 @@ observeEvent(input$config_a_input, {
 })
 
 output$config_render <- renderUI({
-	radioButtons(inputId = "config_options", label = "", choices = c("Non_antimere_t-test","Stature"), selected = "Non_antimere_t-test")
+	radioButtons(inputId = "config_options", label = "", choices = c("Articulation_t-test","Stature"), selected = "Articulation_t-test")
 })
 
 observeEvent(input$config_add, {
 	skip = FALSE
 	for(i in 1:nrow(config_df$config_df)) {
-		if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Non_antimere_t-test" || config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Stature") {
+		if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Articulation_t-test" || config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Stature") {
 			skip = TRUE
 		}
 	}
-	if(input$config_options == "Non_antimere_t-test" && !skip) {
+	if(input$config_options == "Articulation_t-test" && !skip) {
 		config_df$config_df <- rbind(config_df$config_df, data.frame(Measurementa = input$config_a_input, Measurementb = input$config_b_input, Method = input$config_options))
 	}
 	if(input$config_options == "Stature" && !skip) {
@@ -99,7 +99,7 @@ observeEvent(input$config_add, {
 
 observeEvent(input$config_delete, {
 	for(i in 1:nrow(config_df$config_df)) {
-		if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Non_antimere_t-test" || config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Stature") {
+		if(config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,2] == input$config_b_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Articulation_t-test" || config_df$config_df[i,1] == input$config_a_input && config_df$config_df[i,3] == input$config_options && input$config_options == "Stature") {
 			config_df$config_df <- config_df$config_df[-i,]
 			write.csv(config_df$config_df, file = system.file("extdata/data", 'config', package = "OsteoSort"), col.names = TRUE, sep=",", row.names = FALSE)
 			break
@@ -125,7 +125,6 @@ observeEvent(input$refsel, {
 		names(reference_list$reference_list) <- reference_name_list$reference_name_list
 	}
 })
-
 
 output$refdown <- downloadHandler(
 	filename <- function() {

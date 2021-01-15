@@ -114,6 +114,7 @@ observeEvent(input$clearFile1ante, {
 
 observeEvent(input$proantestatm, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
+	if(!any(unique(colnames(stature_reference_imported_antem$stature_reference_imported_antem)) == "Stature")) {removeModal();shinyalert(title = "ERROR!", text="Stature information is not available for this reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 	withProgress(message = 'Calculation has started', detail = '', value = 0, min=0, max=3, {
 		inFile1 <- input$file1ante
 		inFile2 <- input$file2ante
@@ -150,8 +151,8 @@ observeEvent(input$proantestatm, {
 
 			ll <- nrow(outtemp2m[[2]]) + nrow(outtemp2m[[3]])
 			nmatch <- nrow(outtemp2m[[2]])
-			pmsize <- length(unique(c(outtemp2m[[2]][,1], outtemp2m[[3]][,1]))) 
-			amsize <- length(unique(c(outtemp2m[[2]][,4], outtemp2m[[3]][,4]))) 
+			amsize <- length(unique(c(outtemp2m[[2]][,1], outtemp2m[[3]][,1]))) 
+			pmsize <- length(unique(c(outtemp2m[[2]][,3], outtemp2m[[3]][,3]))) 
 			t_time <- outtemp2m[[4]]
 			output$antestat_outputm <- renderUI({
 				HTML(paste("<strong>",

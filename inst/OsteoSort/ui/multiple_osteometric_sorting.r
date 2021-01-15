@@ -10,7 +10,7 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 				uiOutput("multiple_element_pair_match"),
 				uiOutput("multiple_measurement_antimere")
 			),
-			conditionalPanel(condition = "input.multiple_analysis == 'Non-Antimere t-test'",
+			conditionalPanel(condition = "input.multiple_analysis == 'Articulation t-test'",
 				selectInput("multiple_non_antimere_side", "Side", c(Left='Left', Right='Right')),
 				uiOutput("multiple_element_non_antimere"),
 				fluidRow(

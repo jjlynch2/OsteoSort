@@ -94,6 +94,7 @@ observeEvent(input$stature_reference, {
 
 observeEvent(input$pro4, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
+	if(!any(unique(colnames(stature_reference_imported$stature_reference_imported)) == "Stature")) {removeModal();shinyalert(title = "ERROR!", text="Stature information is not available for this reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 	withProgress(message = 'Calculation has started', detail = '', value = 0, min=0, max=2, {
 		if (is.null(input$file4)){
 			removeModal()

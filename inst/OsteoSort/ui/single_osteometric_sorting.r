@@ -33,7 +33,7 @@ single_osteometric_sorting <- tabPanel("Single",icon = icon("gear", lib="font-aw
 					)
 				)
 			),
-			conditionalPanel(condition = "input.single_analysis == 'Non_antimere t-test'",
+			conditionalPanel(condition = "input.single_analysis == 'Articulation t-test'",
 				fluidRow(
 					column(12,
 						selectInput("single_non_antimere_side", "Side", c(Left='Left', Right='Right'))
@@ -85,7 +85,7 @@ single_osteometric_sorting <- tabPanel("Single",icon = icon("gear", lib="font-aw
 		 		tabsetPanel(id="single_tab",
 					tabPanel("Output Parameters",
 						uiOutput("single_file_output1"),
-						conditionalPanel(condition = "!input.single_ztransform || input.single_analysis == 'Non_antimere t-test'", 
+						conditionalPanel(condition = "!input.single_ztransform || input.single_analysis == 'Articulation t-test'", 
 							uiOutput("single_file_output2")
 						)
 			 		),
@@ -98,7 +98,7 @@ single_osteometric_sorting <- tabPanel("Single",icon = icon("gear", lib="font-aw
 								conditionalPanel(condition = "input.single_analysis == 'Antimere t-test'", 
 									uiOutput("single_ztransform")
 								),
-								conditionalPanel(condition = "!input.single_ztransform && input.single_analysis != 'Non_antimere regression' || input.single_analysis == 'Non_antimere t-test'",
+								conditionalPanel(condition = "!input.single_ztransform && input.single_analysis != 'Non_antimere regression' || input.single_analysis == 'Articulation t-test'",
 									uiOutput("single_absolute_value"),
 									uiOutput("single_yeojohnson"),
 									uiOutput("single_mean"),
