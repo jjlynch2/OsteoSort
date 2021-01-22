@@ -214,12 +214,15 @@ output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, metho
 			ggsave(paste(fpath, "/network.jpg",sep=""), plot = naplot, device = "jpeg", dpi = 300)
 		}
 		if(type == "ttest") {
+ga <<- hera1
 			df1 <- as.data.frame(cbind(from_id = hera1$id_1, to_id = hera1$id_2, Probability = hera1$p_value, Element = paste(hera1$side_1, hera1$element_1,sep='-')))
 			df2 <- as.data.frame(cbind(from_id = hera1$id_2, to_id = hera1$id_1, Probability = hera1$p_value, Element = paste(hera1$side_2, hera1$element_2,sep='-')))
 			df <- rbind(df1, df2)
 			df$Probability <- as.numeric(df$Probability)
 			naplot <- ggplot(data = df, aes(from_id = from_id, to_id = to_id, colour = Element, linewidth=Probability)) + geom_net(repel = TRUE, fontsize = 3, vjust = -1.5, layout.alg="fruchtermanreingold",size = 3, labelon = labtf, ecolour = "grey70", linetype=1, directed = FALSE, ealpha = 0.5) + theme_net() +   xlim(c(-0.05, 1.05)) + theme(legend.text = element_text(size=8), legend.position = "top", legend.title=element_blank()) + scale_color_manual(values = c("#126a8f", "#ea6011"))
+gb <<- naplot			
 			ggsave(paste(fpath, "/network.jpg",sep=""), plot = naplot, device = "jpeg", dpi = 300)
+		
 		}
 		if(type == "ante") {
 			df1 <- as.data.frame(cbind(from_id = hera1$am_id, to_id = hera1$pm_id, Probability = hera1$p_value, Element = rep("Stature", nrow(hera1))))
@@ -230,5 +233,6 @@ output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, metho
 			ggsave(paste(fpath, "/network.jpg",sep=""), plot = naplot, device = "jpeg", dpi = 300)
 		}
 	}
+print("WTF")
 	print("Output files written")
 }

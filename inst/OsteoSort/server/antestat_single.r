@@ -31,6 +31,8 @@ output$stature_reference_ante <- renderUI({
 	selectInput(inputId = "stature_reference_ante", label = "Reference", choices = reference_name_list$reference_name_list)
 })
 
+
+
 stature_reference_imported_ante <- reactiveValues(stature_reference_imported_ante = data.frame())
 
 ante_elements <- reactiveValues(df = c())
@@ -53,6 +55,12 @@ observeEvent(input$stature_reference_ante, {
 			}
 		}
 	}
+	measurement_units <- ""
+	stature_units <- ""
+	if(any(units_df$units_df[,1] == input$stature_reference_ante)) {
+		measurement_units <- paste(" (", units_df$units_df[units_df$units_df$Reference == input$stature_reference_ante,3], ")", sep="")
+		stature_units <- paste(" (", units_df$units_df[units_df$units_df$Reference == input$stature_reference_ante,2], ")", sep="")
+	}
 
 	output$single_ante_elements <- renderUI({
 		selectInput(inputId = "single_ante_elements", label = "Elements", choices = ante_elements$df)
@@ -60,10 +68,12 @@ observeEvent(input$stature_reference_ante, {
 
 	output$single_measurements_ante <- renderUI({
 		lapply(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], function(i) {
-			numericInput(paste0(i,"_ante"), label = i, value = "", min=0,max=999,step=0.01)
+			numericInput(paste0(i,"_ante"), label = paste0(i,measurement_units), value = "", min=0,max=999,step=0.01)
 		})
 	})
-
+	output$antestat_input_t <- renderUI({
+		numericInput(inputId = 'antestat_input', label = paste0('Stature', stature_units), value = '')
+	})
 
 })
 

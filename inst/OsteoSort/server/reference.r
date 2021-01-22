@@ -2,6 +2,7 @@
 reference_name_list <- reactiveValues(reference_name_list = list.files(system.file("extdata/data", '', package = "OsteoSort"), recursive = FALSE, full.names = FALSE))
 reference_list <- reactiveValues(reference_list = list())
 config_df <- reactiveValues(config_df = data.frame())
+units_df <- reactiveValues(units_df = data.frame())
 
 observeEvent(TRUE, {
 	reference_name_list$reference_name_list <- reference_name_list$reference_name_list[grepl(".ref", reference_name_list$reference_name_list)]
@@ -11,6 +12,7 @@ observeEvent(TRUE, {
 	reference_name_list$reference_name_list <- gsub(".ref", "", reference_name_list$reference_name_list)
 	names(reference_list$reference_list) <- reference_name_list$reference_name_list
 	config_df$config_df <- read.csv(file = system.file("extdata/data", 'config', package = "OsteoSort"), header = TRUE, sep=",", stringsAsFactors=FALSE)
+	units_df$units_df <- read.csv(file = system.file("extdata/data", 'units', package = "OsteoSort"), header = TRUE, sep=",", stringsAsFactors=FALSE)
 })
 
 output$importRefR <- renderUI({
@@ -60,9 +62,11 @@ observeEvent(input$Reference_Sample, {
 		tempcona <- colnames(reference_list$reference_list[[input$Reference_Sample]][,-c(1:6)])
 		selectInput(inputId = "config_a_input", label = "", choices = tempcona)
 	})
-
 	output$reference_config <- DT::renderDataTable ({
 		DT::datatable(config_df$config_df, options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20), rowname = FALSE)
+	})
+	output$reference_units <- DT::renderDataTable ({
+		DT::datatable(units_df$units_df, options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 20), rowname = FALSE)
 	})
 
 })
@@ -77,6 +81,38 @@ observeEvent(input$config_a_input, {
 
 output$config_render <- renderUI({
 	radioButtons(inputId = "config_options", label = "", choices = c("Articulation_t-test","Stature"), selected = "Articulation_t-test")
+})
+
+output$units1 <- renderUI({
+	textInput(inputId = "units1", label = "Stature", value = "cm")
+})
+output$units2 <- renderUI({
+	textInput(inputId = "units2", label = "Measurement", value = "mm")
+})
+
+observeEvent(input$units_add, {
+	skip = FALSE
+	for(i in 1:nrow(units_df$units_df)) {
+		if(units_df$units_df[i,1] == input$Reference_Sample && units_df$units_df[i,2] == input$units1 && units_df$units_df[i,3] == input$units2) {
+			skip = TRUE
+		}
+	}
+	if(!skip) {
+		units_df$units_df <- rbind(units_df$units_df, data.frame(Reference = input$Reference_Sample, Stature = input$units1, Measurement = input$units2))
+	}
+	if(!skip) {
+		write.csv(units_df$units_df, file = system.file("extdata/data", 'units', package = "OsteoSort"), col.names = TRUE, sep=",", row.names = FALSE)
+	}
+})
+
+observeEvent(input$units_delete, {
+	for(i in 1:nrow(units_df$units_df)) {
+		if(units_df$units_df[i,1] == input$Reference_Sample && units_df$units_df[i,2] == input$units1 && units_df$units_df[i,3] == input$units2) {
+			units_df$units_df <- units_df$units_df[-i,]
+			write.csv(units_df$units_df, file = system.file("extdata/data", 'units', package = "OsteoSort"), col.names = TRUE, sep=",", row.names = FALSE)
+			break
+		}
+	}
 })
 
 observeEvent(input$config_add, {

@@ -39,9 +39,35 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 					tags$style(type = "text/css", "#refsel { width:100%; font-size:85%; background-color:#126a8f }")
 				)
 			),
+			br(),
 			fluidRow(
 				column(12,
-					HTML("<h5><b>Configuration</h5></b>"),
+					HTML("<h5><b>Reference Units</h5></b>"),
+					br()
+				)
+			),
+			fluidRow(
+				column(6,
+					uiOutput("units1")
+				),
+				column(6,
+					uiOutput("units2")
+				)
+			),
+			fluidRow(
+				column(6,
+					actionButton('units_add', 'Add', icon = icon("plus-square")),
+					tags$style(type = "text/css", "#units_add { width:100%; font-size:85%; background-color:#126a8f }")
+				),
+				column(6,
+					actionButton('units_delete', 'Delete', icon = icon("minus-square")),
+					tags$style(type = "text/css", "#units_delete { width:100%; font-size:85%; background-color:#126a8f }")
+				)
+			),
+			br(),
+			fluidRow(
+				column(12,
+					HTML("<h5><b>Test Configuration</h5></b>"),
 					uiOutput("config_render")
 				)
 			),
@@ -75,7 +101,14 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 						)
 					,width = 12)
 				),
-			 	tabPanel("Configuration",
+			 	tabPanel("Reference Units",
+					fluidRow(
+						column(12,
+							DT::dataTableOutput('reference_units')
+						)
+					,width = 12)
+				),
+			 	tabPanel("Test Configuration",
 					fluidRow(
 						column(12,
 							DT::dataTableOutput('reference_config')

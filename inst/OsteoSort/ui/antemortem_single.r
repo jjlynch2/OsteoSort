@@ -10,7 +10,7 @@ antemortem_single <- tabPanel("Single",icon = icon("gear", lib="font-awesome"),
 					uiOutput("single_ante_elements")
 				),
 				column(6,
-					numericInput(inputId = 'antestat_input', label = 'Stature', value = ''),
+					uiOutput("antestat_input_t"),
 					textInput(inputId = 'Antemortem_ID_ante', label = 'Antemortem ID', value = 'X1')
 				),
 				column(6,
