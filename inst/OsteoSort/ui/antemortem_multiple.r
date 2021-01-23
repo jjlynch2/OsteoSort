@@ -2,6 +2,8 @@ antemortem_multiple <- tabPanel("Multiple",icon = icon("gears", lib="font-awesom
 	sidebarLayout(
 		sidebarPanel(
 			uiOutput("stature_reference_antem"),
+			htmlOutput('measurement_units_ante'),
+			br(),
 			fluidRow(
 				column(12,
 					selectInput("state_reference_ante_sidem", "Side", c(Left='Left', Right='Right'))
@@ -62,7 +64,11 @@ antemortem_multiple <- tabPanel("Multiple",icon = icon("gears", lib="font-awesom
 							uiOutput("forcante")
 						),	
 						tabPanel("Statistical Parameters",
-							uiOutput("alphalevelsantestatm")
+							fluidRow(
+								column(6,
+									uiOutput("alphalevelsantestatm")
+								)
+							)
 						)
 					)
 				)

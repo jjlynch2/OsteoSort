@@ -1,15 +1,18 @@
 outlier_stature <- tabPanel("Stature",icon = icon("user", lib="font-awesome"),
 	sidebarLayout(
 		sidebarPanel(
-			uiOutput('resettableInput4'),
 			checkboxInput("custom", "Specify Slope and Intercept", FALSE),
 			conditionalPanel(condition = "input.custom",
 				numericInput("slope", label = "Slope", value = "", min=0,max=999,step=0.01),
 				numericInput("intercept", label = "Intercept", value = "", min=0,max=999,step=0.01)
 			),
 			conditionalPanel(condition = "!input.custom",
-				uiOutput("stature_reference")
+				htmlOutput('antestat_outputmm'),
+				uiOutput("stature_reference"),
+				htmlOutput('measurement_units_stature'),
+				br(),
 			),
+			uiOutput('resettableInput4'),
 			uiOutput("testtypem1"),
 			fluidRow(
 				column(6,

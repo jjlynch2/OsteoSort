@@ -1,16 +1,5 @@
-output$resettableInput4 <- renderUI({
-	input$clearFile4
-	input$uploadFormat
-	fileInput('file4', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
-})
-
 output$outliercontent4 <- renderUI({
 	HTML(paste(""))
-})
-
-#clears session for multiple comparison
-observeEvent(input$clearFile4, {
-	fileInput('file4', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 })
 
 fileoutputstature1 <- reactiveValues(fileoutputstature1 = TRUE)
@@ -76,7 +65,6 @@ observeEvent(input$custom, {
 })
 
 
-
 stature_reference <- reactiveValues(stature_reference = c("temp"))
 observeEvent(input$stature_reference, {
 	stature_reference$stature_reference <- input$stature_reference
@@ -90,6 +78,29 @@ observeEvent(input$stature_reference, {
 	if(input$stature_reference != "Custom") {
 		stature_reference_imported$stature_reference_imported <- reference_list$reference_list[[stature_reference$stature_reference]]
 	}
+
+	output$measurement_units_stature <- renderUI({
+		if(any(units_df$units_df[,1] == input$stature_reference)) {
+			measurement_units <- paste(" ", units_df$units_df[units_df$units_df$Reference == input$stature_reference,3], sep="")
+			stature_units <- paste(" ", units_df$units_df[units_df$units_df$Reference == input$stature_reference,2], sep="")
+			HTML(paste("<strong>","Measurement units:",measurement_units, "</strong><br/>",
+				   "<strong>","Stature units:",stature_units, "</strong><br/>"
+			))
+		} else {
+			HTML(paste(""))
+		}
+	})
+})
+
+#clears session for multiple comparison
+output$resettableInput4 <- renderUI({
+	input$clearFile4
+	input$uploadFormat
+	fileInput('file4', 'Upload postmortem measurements', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+})
+
+observeEvent(input$clearFile4, {
+	fileInput('file4', 'Upload postmortem measurements', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 })
 
 observeEvent(input$pro4, {

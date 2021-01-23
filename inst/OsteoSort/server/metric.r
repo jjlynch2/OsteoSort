@@ -2,7 +2,7 @@
 output$resettableInput3 <- renderUI({
 	input$clearFile3
 	input$uploadFormat
-	fileInput('file3', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+	fileInput('file3', 'Upload postmortem measurements', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 })
 
 output$outliercontent <- renderUI({
@@ -11,7 +11,7 @@ output$outliercontent <- renderUI({
 
 #clears session for multiple comparison
 observeEvent(input$clearFile3, {
-	fileInput('file3', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+	fileInput('file3', 'Upload postmortem measurements', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
 })
 
 fileoutputl1 <- reactiveValues(fileoutputl1 = TRUE)

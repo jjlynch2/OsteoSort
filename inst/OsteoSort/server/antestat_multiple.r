@@ -67,6 +67,18 @@ stature_reference_imported_antem <- reactiveValues(stature_reference_imported_an
 ante_elementsm <- reactiveValues(df = c())
 ante_measurementsm <- reactiveValues(df = c())
 observeEvent(input$stature_reference_antem, {
+	output$measurement_units_ante <- renderUI({
+		if(any(units_df$units_df[,1] == input$stature_reference_antem)) {
+			measurement_units <- paste(" ", units_df$units_df[units_df$units_df$Reference == input$stature_reference_antem,3], sep="")
+			stature_units <- paste(" ", units_df$units_df[units_df$units_df$Reference == input$stature_reference_antem,2], sep="")
+			HTML(paste("<strong>","Measurement units:",measurement_units, "</strong><br/>",
+				   "<strong>","Stature units:",stature_units, "</strong><br/>"
+			))
+		} else {
+			HTML(paste(""))
+		}
+	})
+
 	stature_reference_imported_antem$stature_reference_imported_antem <- reference_list$reference_list[[stature_reference_antem$stature_reference_antem]]
 	antem <- config_df$config_df[config_df$config_df$Method == 'Stature',]
 	ref_col_namesm <- colnames(stature_reference_imported_antem$stature_reference_imported_antem)
@@ -91,47 +103,27 @@ observeEvent(input$stature_reference_antem, {
 	output$multiple_measurements_ante <- renderUI({
 		selectizeInput("Measurement_ante_mm", label = "Measurement", choices = ante_measurementsm$df[which(ante_elementsm$df == input$multiple_ante_elements)], selected = ante_measurementsm$df[which(ante_elementsm$df == input$multiple_ante_elements)], multiple = TRUE)
 	})
-
-	#file upload render for multiple comparison
-	output$resettableInputante1 <- renderUI({
-		input$clearFile1ante
-		input$uploadFormat
-
-		stature_units <- ""
-		if(any(units_df$units_df[,1] == input$stature_reference_antem)) {
-			stature_units <- paste(" (", units_df$units_df[units_df$units_df$Reference == input$stature_reference_antem,2], ")", sep="")
-		}
-
-		fileInput('file1ante', paste0('Upload antemortem statures', stature_units), accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
-	})
-	#file upload render for multiple comparison
-	output$resettableInputante2 <- renderUI({
-		input$clearFile1ante
-		input$uploadFormat
-
-		measurement_units <- ""
-		if(any(units_df$units_df[,1] == input$stature_reference_antem)) {
-			measurement_units <- paste(" (", units_df$units_df[units_df$units_df$Reference == input$stature_reference_antem,3], ")", sep="")
-		}
-
-		fileInput('file2ante', paste0('Upload postmortem measurements', measurement_units), accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
-	})
-	#clears session for multiple comparison
-	observeEvent(input$clearFile1ante, {
-
-		stature_units <- ""
-		measurement_units <- ""
-		if(any(units_df$units_df[,1] == input$stature_reference_antem)) {
-			stature_units <- paste(" (", units_df$units_df[units_df$units_df$Reference == input$stature_reference_antem,2], ")", sep="")
-			measurement_units <- paste(" (", units_df$units_df[units_df$units_df$Reference == input$stature_reference_antem,3], ")", sep="")
-		}
-
-		fileInput('file1ante', paste0('Upload antemortem statures', stature_units), accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
-		fileInput('file2ante', paste0('Upload postmortem measurements', measurement_units), accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
-	})
 })
 
+#file upload render for multiple comparison
+output$resettableInputante1 <- renderUI({
+	input$clearFile1ante
+	input$uploadFormat
+	fileInput('file1ante','Upload antemortem statures', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+})
 
+#file upload render for multiple comparison
+output$resettableInputante2 <- renderUI({
+	input$clearFile1ante
+	input$uploadFormat
+	fileInput('file2ante','Upload postmortem measurements', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+})
+
+#clears session for multiple comparison
+observeEvent(input$clearFile1ante, {
+	fileInput('file1ante', 'Upload antemortem statures', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+	fileInput('file2ante', 'Upload postmortem measurements', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))  
+})
 
 observeEvent(input$proantestatm, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))

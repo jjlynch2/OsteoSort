@@ -18,11 +18,11 @@ forcefun <- function(hera1) {
 output$resettableInput <- renderUI({
 	input$clearFile1
 	input$uploadFormat
-	fileInput('file1', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))
+	fileInput('file1', 'Upload postmortem measurements', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))
 })
 
 observeEvent(input$clearFile1, {
-	fileInput('file1', '', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))
+	fileInput('file1', 'Upload postmortem measurements', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'))
 })
 
 output$multiple_contents <- renderUI({
@@ -140,6 +140,15 @@ multiple_MLB <- reactiveValues(multiple_ML = c("temp"))
 multiple_MLA <- reactiveValues(multiple_ML = c("temp"))
 
 observeEvent(input$multiple_reference, {
+	output$measurement_units_multiple <- renderUI({
+		if(any(units_df$units_df[,1] == input$multiple_reference)) {
+			measurement_units <- paste(" ", units_df$units_df[units_df$units_df$Reference == input$multiple_reference,3], sep="")
+			HTML(paste("<strong>","Measurement units:",measurement_units, '</strong><br/>'))
+		} else {
+			HTML(paste(""))
+		}
+	})
+
 	multiple_reference_imported$multiple_reference_imported <- reference_list$reference_list[[multiple_reference$multiple_reference]]
 	elements$elements <- unique(multiple_reference_imported$multiple_reference_imported$Element)
 	art <- config_df$config_df[config_df$config_df$Method == 'Articulation_t-test',]

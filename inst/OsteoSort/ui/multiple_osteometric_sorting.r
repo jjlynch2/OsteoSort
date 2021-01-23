@@ -3,6 +3,8 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 	sidebarLayout(
 		sidebarPanel(
 			uiOutput("multiple_reference"),
+			htmlOutput('measurement_units_multiple'),
+			br(),
 			uiOutput("multiple_analysis"),
 			uiOutput("testtype2"),
 			uiOutput('resettableInput'),

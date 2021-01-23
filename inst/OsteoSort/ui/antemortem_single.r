@@ -2,6 +2,8 @@ antemortem_single <- tabPanel("Single",icon = icon("gear", lib="font-awesome"),
 	sidebarLayout(
 		sidebarPanel(
 			uiOutput("stature_reference_ante"),
+			htmlOutput('measurement_units_antes'),
+			br(),
 			fluidRow(
 				column(12,
 					selectInput("state_reference_ante_side", "Side", c(Left='Left', Right='Right'))

@@ -92,6 +92,15 @@ single_MLA <- reactiveValues(single_ML = c("temp"))
 single_ML <- reactiveValues(single_ML = c("temp"))
 
 observeEvent(input$single_reference, {
+	output$measurement_units_single <- renderUI({
+		if(any(units_df$units_df[,1] == input$single_reference)) {
+			measurement_units <- paste(" ", units_df$units_df[units_df$units_df$Reference == input$single_reference,3], sep="")
+			HTML(paste("<strong>","Measurement units:",measurement_units, '</strong><br/>'))
+		} else {
+			HTML(paste(""))
+		}
+	})
+
 	single_reference_imported$single_reference_imported <- reference_list$reference_list[[single_reference$single_reference]]
 	elements$elements <- unique(single_reference_imported$single_reference_imported$Element)
 

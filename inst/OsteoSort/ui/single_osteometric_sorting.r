@@ -5,6 +5,8 @@ single_osteometric_sorting <- tabPanel("Single",icon = icon("gear", lib="font-aw
 			tags$style(type='text/css', ".selectize-input { font-size: 14px; line-height: 14px;} .selectize-dropdown { font-size: 14px; line-height: 14px; }"),
 			tags$style(".irs-bar, .irs-bar-edge, .irs-single, irs.grid-pol {background: #126a8f; border-color: #126a8f;}"),
 			uiOutput("single_reference"),
+			htmlOutput('measurement_units_single'),
+			br(),
 			uiOutput("single_analysis"),
 			conditionalPanel(condition = "input.single_analysis == 'Antimere t-test'",
 				uiOutput("single_element_pair_match"),

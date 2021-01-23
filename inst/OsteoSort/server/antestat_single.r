@@ -55,28 +55,31 @@ observeEvent(input$stature_reference_ante, {
 			}
 		}
 	}
-	measurement_units <- ""
-	stature_units <- ""
-	if(any(units_df$units_df[,1] == input$stature_reference_ante)) {
-		measurement_units <- paste(" (", units_df$units_df[units_df$units_df$Reference == input$stature_reference_ante,3], ")", sep="")
-		stature_units <- paste(" (", units_df$units_df[units_df$units_df$Reference == input$stature_reference_ante,2], ")", sep="")
-	}
-
-	output$single_ante_elements <- renderUI({
-		selectInput(inputId = "single_ante_elements", label = "Elements", choices = ante_elements$df)
+	output$measurement_units_antes <- renderUI({
+		if(any(units_df$units_df[,1] == input$stature_reference_ante)) {
+			measurement_units <- paste(" ", units_df$units_df[units_df$units_df$Reference == input$stature_reference_ante,3], sep="")
+			stature_units <- paste(" ", units_df$units_df[units_df$units_df$Reference == input$stature_reference_ante,2], sep="")
+			HTML(paste("<strong>","Measurement units:",measurement_units, "</strong><br/>",
+				   "<strong>","Stature units:",stature_units, "</strong><br/>"
+			))
+		} else {
+			HTML(paste(""))
+		}
 	})
-
-	output$single_measurements_ante <- renderUI({
-		lapply(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], function(i) {
-			numericInput(paste0(i,"_ante"), label = paste0(i,measurement_units), value = "", min=0,max=999,step=0.01)
-		})
-	})
-	output$antestat_input_t <- renderUI({
-		numericInput(inputId = 'antestat_input', label = paste0('Stature', stature_units), value = '')
-	})
-
 })
 
+output$single_ante_elements <- renderUI({
+	selectInput(inputId = "single_ante_elements", label = "Elements", choices = ante_elements$df)
+})
+
+output$single_measurements_ante <- renderUI({
+	lapply(ante_measurements$df[which(ante_elements$df == input$single_ante_elements)], function(i) {
+		numericInput(paste0(i,"_ante"), label = i, value = "", min=0,max=999,step=0.01)
+	})
+})
+output$antestat_input_t <- renderUI({
+	numericInput(inputId = 'antestat_input', label = 'Stature', value = '')
+})
 
 observeEvent(input$proantestat, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
