@@ -10,7 +10,6 @@ output$tabpanpan <- renderUI({
 	panels2 <- list(
 		tabPanel("Results ",DT::dataTableOutput('table2D')),
 		tabPanel("Registration",imageOutput('pwspeci')),
-		tabPanel("Graph", imageOutput('multiple_plot_na_2d')),
 		tabPanel("Interactive", forceNetworkOutput("forceNetworkOSM2d"))
 	)
 	do.call(tabsetPanel, panels2)
@@ -75,24 +74,6 @@ observeEvent(input$fileoutput2Dtps, {
 output$fileoutput2Dtps <- renderUI({
 	checkboxInput(inputId = "fileoutput2Dtps", label = "Output TPS registered coordinates", value = FALSE)
 })
-
-multiple_file_output_graph_2d <- reactiveValues(multiple_file_output_graph_2d = TRUE) 
-output$multiple_file_output_graph_2d <- renderUI({
-	checkboxInput(inputId = "multiple_file_output_graph_2d", label = "Output network graph", value = TRUE)
-})
-observeEvent(input$multiple_file_output_graph_2d, {
-	multiple_file_output_graph_2d$multiple_file_output_graph_2d <- input$multiple_file_output_graph_2d
-})
-
-
-labtf2d <- reactiveValues(labtf2d = TRUE) 
-output$labtf2d <- renderUI({
-	checkboxInput(inputId = "labtf2d", label = "Network graph labels", value = TRUE)
-})
-observeEvent(input$labtf2d, {
-	labtf2d$labtf2d <- input$labtf2d
-})
-
 
 nthreshold <- reactiveValues(nthreshold = 0.8)
 observeEvent(input$nthreshold, {
@@ -176,7 +157,7 @@ observeEvent(input$pro2D, {
 			setProgress(value = 1, message = "Tracing outlines", detail = '')
 			out1 <- outline.images(imagelist1 = input$rightimages$name, imagelist2 = input$leftimages$name, threshold =nthreshold$nthreshold, scale = scale2D$scale2D, mirror = mirror2D$mirror2D)
 			setProgress(value = 2, message = "Running comparisons", detail = '')
-			out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, dist = max_avg_distance$max_avg_distance, n_lowest_distances = shortlistn$shortlistn, labtf2d = labtf2d$labtf2d, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps, multiple_file_output_graph_2d$multiple_file_output_graph_2d), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D)
+			out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, dist = max_avg_distance$max_avg_distance, n_lowest_distances = shortlistn$shortlistn, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D)
 			direc <- out2[[3]]
 			sd <- paste(sessiontemp,direc,sep="/")
 			if(forc2d$forc2d) {
@@ -194,16 +175,6 @@ observeEvent(input$pro2D, {
 							)
 						})
 					}
-			}
-			if(multiple_file_output_graph_2d$multiple_file_output_graph_2d) {
-				imagetemp2 <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
-				output$multiple_plot_na_2d <- renderImage({
-					list(src = imagetemp2,
-						contentType = 'image/jpg',
-						height = 800,
-						alt = "A"
-					)
-				}, deleteFile = FALSE)
 			}
 			if(fileoutput2Dplot$fileoutput2Dplot) {
 				pwspec <- list.files(sd)
@@ -236,7 +207,7 @@ observeEvent(input$pro2D, {
 			output$contents2D <- renderUI({
 				HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
 			})
-			if(multiple_file_output_graph_2d$multiple_file_output_graph_2d || fileoutput2Dexcel1$fileoutput2Dexcel1 || fileoutput2Dexcel2$fileoutput2Dexcel2 || fileoutput2Dplot$fileoutput2Dplot || fileoutput2Dtps$fileoutput2Dtps) {
+			if(fileoutput2Dexcel1$fileoutput2Dexcel1 || fileoutput2Dexcel2$fileoutput2Dexcel2 || fileoutput2Dplot$fileoutput2Dplot || fileoutput2Dtps$fileoutput2Dtps) {
 				output$downloadData2D <- downloadHandler(
 					filename <- function() {
 						paste("results.zip")

@@ -73,9 +73,6 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 				tabPanel("Rejected",
 					DT::dataTableOutput('tablenr')
 				),
-				tabPanel("Graph",
-					imageOutput('multiple_plot_na')
-				),
 				tabPanel("Interactive",
 					forceNetworkOutput("forceNetworkOSM")
 				),
@@ -83,10 +80,6 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 					tabsetPanel(id="multiple_tab",
 						tabPanel("Output Parameters",
 							uiOutput("multiple_file_output1"),
-							uiOutput("multiple_file_output_graph"),
-							conditionalPanel(condition = "input.multiple_file_output_graph", 
-								uiOutput("labtf")
-							),
 							uiOutput("forc")
 						),
 						tabPanel("Statistical Parameters",

@@ -1,4 +1,4 @@
-ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, labtf = TRUE, output_options = c(TRUE, FALSE, FALSE), tails = 2, yeojohnson = TRUE, ztest = FALSE, reference = NULL) {
+ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, output_options = c(TRUE, FALSE), tails = 2, yeojohnson = TRUE, ztest = FALSE, reference = NULL) {
 	force(alphalevel)
 	force(absolute)
 	force(zmean)
@@ -157,11 +157,6 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	}
 	if(output_options[2] && nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 		no_return_value <- OsteoSort:::output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot",fpath=sd)
-	}
-	if(length(output_options) > 2) { 
-		if(output_options[3]) { 
-			no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ttest", labtf = labtf,fpath=sd)
-		}	
 	}
 	#cleanup
 	gc()

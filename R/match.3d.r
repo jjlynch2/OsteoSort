@@ -1,4 +1,4 @@
-match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = TRUE, output_options = c(TRUE,TRUE,TRUE,FALSE,TRUE), iteration = 50, threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
+match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_options = c(TRUE,TRUE,TRUE,FALSE), iteration = 50, threads = 1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average", band_threshold = 4, band = TRUE, fragment = FALSE) {
 	print("Form comparisons started")
 	start_time <- start_time()
 	if(fragment == "Complete") {fragment <- FALSE}
@@ -15,6 +15,9 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	nz <- 1 #comparison counter
 	pairwise_coords <- list() #saved pairwise registration
 	renderlist <- data.frame(0,0,0)
+
+ga <<- list(data, min, sessiontempdir, output_options, iteration, threads, n_lowest_distances, hide_distances, dist, band_threshold, band, fragment)
+
 	if(fragment) {
 		withProgress(message = '', detail = '', value = 1, min=0, max=length(list1) * length(list2), {
 			for(z in 1:length(list1)) {
@@ -78,7 +81,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 							d1 <- d1t
 						}
 					}
-					if(output_options[[5]]) {
+					if(output_options[[4]]) {
 						write.tmp.data(ptemp1, ptemp2, paste(names(list2)[i], names(list1)[z], sep="-"), direc, sessiontempdir)
 					}
 					renderlist[nz,] <- paste(names(list2)[i], names(list1)[z], sep="-")
@@ -139,7 +142,7 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 							d1 <- d1t
 						}
 					}
-					if(output_options[[5]]) {
+					if(output_options[[4]]) {
 						write.tmp.data(ptemp, listb[[x]], paste(names(list1)[i], names(list2)[x], sep="-"), direc, sessiontempdir)
 					}
 					renderlist[nz,] <- paste(names(list1)[i], names(list2)[x], sep="-")
@@ -189,7 +192,6 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, labtf3d = 
 	if(output_options[1]) {no <- OsteoSort:::output_function(resmatches, method="3D", type="csv-res", fpath=sd)}
 	if(output_options[2]) {no <- OsteoSort:::output_function(matches, method="3D", type="csv-all", fpath=sd)}
 	if(output_options[3]) {no <- OsteoSort:::output_function(pairwise_coords, method="3D", type="coord", fpath=sd)}
-	if(output_options[4]) {no <- OsteoSort:::output_function(hera1 = resmatches, method="networkanalysis", type="2D-3D", labtf = labtf3d, fpath=sd)}
 	comparisons <- length(list1) * length(list2) #number of comparisons
 	gc()
 	print("Form comparisons completed")

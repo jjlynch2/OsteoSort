@@ -1,4 +1,4 @@
-match.2d <- function(outlinedata = NULL, sessiontempdir = NULL, fragment = FALSE, labtf2d = TRUE, output_options = c(TRUE,TRUE,TRUE,TRUE,FALSE), iteration = 10, threads=1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average") {
+match.2d <- function(outlinedata = NULL, sessiontempdir = NULL, fragment = FALSE, output_options = c(TRUE,TRUE,TRUE,TRUE), iteration = 10, threads=1, n_lowest_distances = 1, hide_distances = FALSE, dist = "average") {
 	print("Form comparisons started")
 	start_time <- start_time()
 
@@ -80,7 +80,6 @@ match.2d <- function(outlinedata = NULL, sessiontempdir = NULL, fragment = FALSE
 		if(output_options[2]) {setProgress(value = 1, message = "Saving: all-distances.csv", detail='');no <- OsteoSort:::output_function(matches, method="2D", type="csv-all", fpath=sd)}
 		if(output_options[3]) {setProgress(value = 1, message = "Saving: registration plots", detail='');no <- OsteoSort:::output_function(coords, method="2D", type="plot", fpath=sd)}
 		if(output_options[4]) {setProgress(value = 1, message = "Saving: coordinates.tps", detail='');no <- OsteoSort:::output_function(coords, method="2D", type="coord", fpath=sd)}
-		if(output_options[5]) {setProgress(value = 1, message = "Saving: network.jpg", detail='');no <- OsteoSort:::output_function(hera1 = resmatches, method="networkanalysis", type="2D-3D", labtf = labtf2d, fpath=sd)}
 		setProgress(value = 5, message = "Completed", detail='')
 	})
 	gc()

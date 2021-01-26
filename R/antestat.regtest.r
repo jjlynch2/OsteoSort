@@ -1,4 +1,4 @@
-antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, sessiontempdir = NULL, labtfa = TRUE, output_options = c(TRUE,FALSE,FALSE), alphalevel = 0.05) {
+antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, sessiontempdir = NULL, output_options = c(TRUE,FALSE), alphalevel = 0.05) {
 	force(alphalevel)
 	force(output_options)
 	force(sessiontempdir)
@@ -67,11 +67,6 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 										type="plot2",
 										fpath=sd
 						)
-	}
-	if(length(output_options) > 2) { 
-		if(output_options[3]) {
-			no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="ante", labtf = labtfa, fpath=sd)
-		}
 	}
 
 	gc()

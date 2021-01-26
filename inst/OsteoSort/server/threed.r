@@ -103,26 +103,6 @@ output$fileoutput3Dtps <- renderUI({
 })
 
 
-
-multiple_file_output_graph_3d <- reactiveValues(multiple_file_output_graph_3d = FALSE) 
-output$multiple_file_output_graph_3d <- renderUI({
-	checkboxInput(inputId = "multiple_file_output_graph_3d", label = "Output network graph", value = FALSE)
-})
-observeEvent(input$multiple_file_output_graph_3d, {
-	multiple_file_output_graph_3d$multiple_file_output_graph_3d <- input$multiple_file_output_graph_3d
-})
-
-
-labtf3d <- reactiveValues(labtf3d = FALSE) 
-output$labtf3d <- renderUI({
-	checkboxInput(inputId = "labtf3d", label = "Network graph labels", value = FALSE)
-})
-observeEvent(input$labtf3d, {
-	labtf3d$labtf3d <- input$labtf3d
-})
-
-
-
 nthreshold3D <- reactiveValues(nthreshold3D = 4)
 observeEvent(input$nthreshold3D, {
 	nthreshold3D$nthreshold3D <- input$nthreshold3D
@@ -211,7 +191,7 @@ observeEvent(input$pro3D, {
 			setProgress(value = 2, message = "Importing data", detail = '')
 			out1 <- input.3d(list1 = input$rightimages3D$name, list2 = input$leftimages3D$name)
 			setProgress(value = 3, message = "Running comparisons", detail = '')
-			out2 <- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, multiple_file_output_graph_3d$multiple_file_output_graph_3d, render$render), labtf3d = labtf3d$labtf3d, sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
+			out2 <- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, render$render), sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
 			direc <- out2[[2]]
 			sd <- paste(sessiontemp, direc, sep="/")
 			dirdel$dirdel <- direc
@@ -245,19 +225,7 @@ observeEvent(input$pro3D, {
 					}
 			}
 
-			if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps || multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
-				if(multiple_file_output_graph_3d$multiple_file_output_graph_3d) {
-					nimages <- paste(sessiontemp, "/", direc, "/", "network.jpg", sep="")
-				} else {
-					nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")
-				}
-				output$multiple_plot_na_3d <- renderImage({
-					list(src = nimages,
-						contentType = 'image/jpg',
-						height = 800,
-						alt = "A"
-					)
-				}, deleteFile = FALSE)
+			if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps) {
 				output$downloadData3D <- downloadHandler(
 					filename <- function() {
 						paste("results.zip")

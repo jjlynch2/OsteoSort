@@ -1,7 +1,6 @@
-reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, ztest = NULL, reference = NULL, labtf = TRUE, output_options = c(TRUE,FALSE, FALSE), type = "Logarithm Composite", alphalevel = 0.05) {	
+reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, reference = NULL, output_options = c(TRUE,FALSE), type = "Logarithm Composite", alphalevel = 0.05) {	
 	force(alphalevel)
 	force(type)
-	force(ztest)
 	force(output_options)
 	force(sessiontempdir)
 
@@ -68,7 +67,7 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 			results_formatted[i,11] <- c("Excluded")
 		}
 	}
-	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, tails = 2, ztransform = ztest, type = type, reference = reference), fpath=sd)
+	no_return_value <- OsteoSort:::output_function(method = "options", options = data.frame(alphalevel = alphalevel, tails = 2, type = type, reference = reference), fpath=sd)
 	if(output_options[1]) {
 		no_return_value <- OsteoSort:::output_function(results_formatted, method="exclusion", type="csv", fpath=sd)
 	}
@@ -85,12 +84,6 @@ reg.test <- function(refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessi
 															fpath=sd
 						)
 	}
-	if(length(output_options) > 2) { 
-		if(output_options[3]) {
-			no_return_value <- OsteoSort:::output_function(hera1 <- results_formatted[results_formatted$result == "Cannot Exclude",], method="networkanalysis", type="association", labtf = labtf, fpath=sd)
-		}
-	}
-
 	gc()
 	print("Finished.")
 	t_time <- end_time(start_time)

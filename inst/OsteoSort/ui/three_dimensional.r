@@ -38,9 +38,6 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 				tabPanel("Render ",
 					rglwidgetOutput('webgl3D', width = "1200px", height = "1200px")
 				),
-				tabPanel("Graph",
-					imageOutput('multiple_plot_na_3d')
-				),
 				tabPanel("Interactive",
 					forceNetworkOutput("forceNetworkOSMd")
 				)
@@ -51,10 +48,6 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 						uiOutput('fileoutput3Dexcel1'),
 						uiOutput('fileoutput3Dexcel2'),
 						uiOutput('fileoutput3Dtps'),
-						uiOutput("multiple_file_output_graph_3d"),
-						conditionalPanel(condition = "input.multiple_file_output_graph_3d", 
-							uiOutput("labtf3d")
-						),
 						uiOutput("forcd"),
 						uiOutput("render")
 					),

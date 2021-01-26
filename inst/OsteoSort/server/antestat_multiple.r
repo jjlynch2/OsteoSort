@@ -31,21 +31,6 @@ observeEvent(input$fileoutputant1m, {
 	fileoutputant1m$fileoutputant1m <- input$fileoutputant1m
 })
 
-multiple_file_output_graph_ante <- reactiveValues(multiple_file_output_graph_ante = TRUE) 
-output$multiple_file_output_graph_ante <- renderUI({
-	checkboxInput(inputId = "multiple_file_output_graph_ante", label = "Output network graph", value = TRUE)
-})
-observeEvent(input$multiple_file_output_graph_ante, {
-	multiple_file_output_graph_ante$multiple_file_output_graph_ante <- input$multiple_file_output_graph_ante
-})
-
-labtfa <- reactiveValues(labtfa = TRUE) 
-output$labtfa <- renderUI({
-	checkboxInput(inputId = "labtfa", label = "Network graph labels", value = TRUE)
-})
-observeEvent(input$labtfa, {
-	labtfa$labtfa <- input$labtfa
-})
 
 alphalevelsantestatm <- reactiveValues(alphalevelsantestatm = 0.05) 
 output$alphalevelsantestatm <- renderUI({
@@ -151,12 +136,12 @@ observeEvent(input$proantestatm, {
 		if(is.null(outtemp1m)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		if(is.null(input$Measurement_ante_mm)) {removeModal();shinyalert(title = "ERROR!", text="The measurement is missing.",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 		incProgress(amount = 1, message = "Antemortem: running comparisons")
-		outtemp2m <- antestat.regtest(labtfa = labtfa$labtfa,
+		outtemp2m <- antestat.regtest(
 									antemortem = outtemp1m[[1]], 
 									postmortem = outtemp1m[[2]], 
 									ref = outtemp1m[[3]],
 									alphalevel = alphalevelsantestatm$alphalevelsantestatm, 
-									output_options = c(fileoutputant1m$fileoutputant1m, FALSE, multiple_file_output_graph_ante$multiple_file_output_graph_ante), 
+									output_options = c(fileoutputant1m$fileoutputant1m, FALSE), 
 									sessiontempdir = sessiontemp
 		)
 
@@ -202,21 +187,9 @@ observeEvent(input$proantestatm, {
 					})
 				}
 		}
-		if(fileoutputant1m$fileoutputant1m || multiple_file_output_graph_ante$multiple_file_output_graph_ante) {
+		if(fileoutputant1m$fileoutputant1m) {
 			sd <- paste(sessiontemp,outtemp2m[[1]],sep="/")
 			nimages <- list.files(sd)
-			if(multiple_file_output_graph_ante$multiple_file_output_graph_ante && length(nimages[grep(".jpg", nimages)]) != 0) {
-				nimages <- paste(sessiontemp, "/", outtemp2m[[1]], "/", nimages[grep(".jpg", nimages)], sep="")
-			} else {
-				nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")
-			}
-			output$multiple_plot_na_ante <- renderImage({
-				list(src = nimages,
-					contentType = 'image/jpg',
-					height = 800,
-					alt = "A"
-				)
-			}, deleteFile = FALSE)
 			output$downloadantestatm <- downloadHandler(
 				filename <- function() {
 					paste("results.zip")

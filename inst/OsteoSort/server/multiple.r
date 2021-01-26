@@ -37,21 +37,6 @@ observeEvent(input$multiple_file_output1, {
 	multiple_file_output1$multiple_file_output1 <- input$multiple_file_output1
 })
 
-multiple_file_output_graph <- reactiveValues(multiple_file_output_graph = TRUE) 
-output$multiple_file_output_graph <- renderUI({
-	checkboxInput(inputId = "multiple_file_output_graph", label = "Output network graph", value = TRUE)
-})
-observeEvent(input$multiple_file_output_graph, {
-	multiple_file_output_graph$multiple_file_output_graph <- input$multiple_file_output_graph
-})
-
-labtf <- reactiveValues(labtf = TRUE) 
-output$labtf <- renderUI({
-	checkboxInput(inputId = "labtf", label = "Network graph labels", value = TRUE)
-})
-observeEvent(input$labtf, {
-	labtf$labtf <- input$labtf
-})
 
 forc <- reactiveValues(forc = TRUE) 
 output$forc <- renderUI({
@@ -60,6 +45,7 @@ output$forc <- renderUI({
 observeEvent(input$forc, {
 	forc$forc <- input$forc
 })
+
 
 multiple_common_alpha_level <- reactiveValues(multiple_common_alpha_level = 0.05) 
 output$multiple_common_alpha_level <- renderUI({
@@ -298,7 +284,7 @@ observeEvent(input$pro, {
 			art.d1 <- art.input(side = input$multiple_non_antimere_side, ref = multiple_reference_imported$multiple_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2], measurementsa = measa, measurementsb = measb)
 			if(is.null(art.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			incProgress(amount = 1, message = "Articulation t-test: running comparisons")
-			d2 <- ttest(labtf = labtf$labtf, ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, reference = multiple_reference$multiple_reference, output_options = c(multiple_file_output1$multiple_file_output1, FALSE, multiple_file_output_graph$multiple_file_output_graph))
+			d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, reference = multiple_reference$multiple_reference, output_options = c(multiple_file_output1$multiple_file_output1, FALSE))
 			tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 		} else if(input$multiple_analysis == "Antimere t-test") {
 			if(is.null(input$multiple_measurement_antimere)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
@@ -307,7 +293,7 @@ observeEvent(input$pro, {
 			pm.d1 <- pm.input(sort = tempdata1, bone = input$multiple_elements_pairmatch, measurements = meas, ref = multiple_reference_imported$multiple_reference_imported)
 			if(is.null(pm.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			incProgress(amount = 1, message = "Antimere t-test: running comparisons")
-			d2 <- ttest(labtf = labtf$labtf, ztest = multiple_ztransform$multiple_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, reference = multiple_reference$multiple_reference, output_options = c(multiple_file_output1$multiple_file_output1, FALSE, multiple_file_output_graph$multiple_file_output_graph))
+			d2 <- ttest(ztest = multiple_ztransform$multiple_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, reference = multiple_reference$multiple_reference, output_options = c(multiple_file_output1$multiple_file_output1, FALSE))
 			tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 		} else if(input$multiple_analysis == "Non-Antimere regression") {
 			if(is.null(input$multiple_measurement_association_a) || is.null(input$multiple_measurement_association_b)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
@@ -320,7 +306,7 @@ observeEvent(input$pro, {
 			reg.d1 <- reg.input(sorta = sorta, sortb = sortb, sidea = input$multiple_association_side_a, sideb = input$multiple_association_side_b, bonea = input$multiple_elements_association_a, boneb = input$multiple_elements_association_b, measurementsa = measa, measurementsb = measb, ref = multiple_reference_imported$multiple_reference_imported)
 			if(is.null(reg.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			incProgress(amount = 1, message = "Non-antimere regression: running comparisons")
-			d2 <- reg.test(labtf = labtf$labtf, ztest = multiple_ztransform$multiple_ztransform, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, reference = multiple_reference$multiple_reference, output_options = c(multiple_file_output1$multiple_file_output1, FALSE, multiple_file_output_graph$multiple_file_output_graph))
+			d2 <- reg.test(refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, reference = multiple_reference$multiple_reference, output_options = c(multiple_file_output1$multiple_file_output1, FALSE))
 			tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 		}
 		#if combinations exist, produces output
@@ -350,7 +336,7 @@ observeEvent(input$pro, {
 		output$tablenr <- DT::renderDataTable({
 			DT::datatable(d2[[5]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 		})
-		if(multiple_file_output1$multiple_file_output1 || multiple_file_output_graph$multiple_file_output_graph) {
+		if(multiple_file_output1$multiple_file_output1) {
 			sd <- paste(sessiontemp,direc,sep="/")
 			nimages <- list.files(sd)
 			if(forc$forc) {
@@ -369,19 +355,6 @@ observeEvent(input$pro, {
 					})
 				}
 			}
-
-			if(multiple_file_output_graph$multiple_file_output_graph && length(nimages[grep(".jpg", nimages)]) != 0) {
-				nimages <- paste(sessiontemp, "/", direc, "/", nimages[grep(".jpg", nimages)], sep="")
-			} else {
-				nimages <- system.file("OsteoSort/www", 'blank.jpg', package = "OsteoSort")
-			}
-			output$multiple_plot_na <- renderImage({
-				list(src = nimages,
-					contentType = 'image/jpg',
-					height = 800,
-					alt = "A"
-				)
-			}, deleteFile = FALSE)
 			output$downloadData <- downloadHandler(
 				filename <- function() {
 				paste("results.zip")

@@ -47,9 +47,6 @@ antemortem_multiple <- tabPanel("Multiple",icon = icon("gears", lib="font-awesom
 		 		tabPanel("Excluded",
 		 			DT::dataTableOutput('antestat_table2m')
 				),
-				tabPanel("Graph",
-					imageOutput('multiple_plot_na_ante')
-				),
 				tabPanel("Interactive",
 					forceNetworkOutput("forceNetworkOSMante")
 				),
@@ -57,10 +54,6 @@ antemortem_multiple <- tabPanel("Multiple",icon = icon("gears", lib="font-awesom
 			 		tabsetPanel(id="tabSelected2m",
 						tabPanel("Output Paramters",
 							uiOutput('fileoutputant1m'),
-							uiOutput('multiple_file_output_graph_ante'),
-							conditionalPanel(condition = "input.multiple_file_output_graph_ante", 
-								uiOutput('labtfa')
-							),
 							uiOutput("forcante")
 						),	
 						tabPanel("Statistical Parameters",
