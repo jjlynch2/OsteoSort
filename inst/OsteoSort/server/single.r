@@ -303,7 +303,7 @@ observeEvent(input$proc, {
 			reg.d1 <- reg.input(sorta = sorta, sortb = sortb, sidea = input$single_association_side_a, sideb = input$single_association_side_b, bonea = input$single_elements_association_a, boneb = input$single_elements_association_b, measurementsa = single_MLA$single_ML, measurementsb = single_MLB$single_ML, ref = single_reference_imported$single_reference_imported)
 			if(is.null(reg.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			incProgress(amount = 1, message = "Non-antimere regression: running comparison")
-			d2 <- reg.test(ztest = single_ztransform$single_ztransform, refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
+			d2 <- reg.test(refa = reg.d1[[1]], refb = reg.d1[[2]], sorta = reg.d1[[3]], sortb = reg.d1[[4]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, output_options = c(single_file_output1$single_file_output1, single_file_output2$single_file_output2))
 			tempDF <- rbind(d2[[2]], d2[[3]])
 		}
 
