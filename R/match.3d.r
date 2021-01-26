@@ -15,9 +15,6 @@ match.3d <- function(data = NULL, min = 1e+15, sessiontempdir = NULL, output_opt
 	nz <- 1 #comparison counter
 	pairwise_coords <- list() #saved pairwise registration
 	renderlist <- data.frame(0,0,0)
-
-ga <<- list(data, min, sessiontempdir, output_options, iteration, threads, n_lowest_distances, hide_distances, dist, band_threshold, band, fragment)
-
 	if(fragment) {
 		withProgress(message = '', detail = '', value = 1, min=0, max=length(list1) * length(list2), {
 			for(z in 1:length(list1)) {
