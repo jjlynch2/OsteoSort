@@ -20,9 +20,9 @@ dash <- tabPanel("About",icon = icon("question", lib="font-awesome"),
 			fluidRow(
 				HTML("<p><h4><b>Files</b></h4></p>")
 			),
-			fluidRow(
-				actionButton('Create_Desktop_Icon', 'Desktop Shortcut', icon = icon("gears"))
-			),
+			#fluidRow(
+			#	actionButton('Create_Desktop_Icon', 'Desktop Shortcut', icon = icon("gears"))
+			#),
 			fluidRow(br()),
 			fluidRow(
 				downloadButton('antemortem_template', 'Antemortem template')

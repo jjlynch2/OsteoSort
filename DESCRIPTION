@@ -16,7 +16,6 @@ Depends:
 	JuliaCall,
 	ggplot2,
 	shinyalert,
-	ggrepel,
 	networkD3,
 	dplyr,
 	grid,
@@ -37,7 +36,6 @@ Imports:
 	JuliaCall,
 	ggplot2,
 	shinyalert,
-	ggrepel,
 	networkD3,
 	network,
 	sna
