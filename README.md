@@ -35,11 +35,19 @@ OsteoSort()
 * Rmath
 
 ## Changes for OsteoSort version 1.3.0
+* The Julia programming language is now integrated as the new analytical platform.
+* Reference data can be imported and exported.
+* The user interface is now dynamic and generates based on the reference data and user input.
+* The ability to check for updates on GitHub has been implemented.
+* Z-transform method is now implemeneted.
+* Three-dimensional point cloud antimere sorting is now supported.
+* Two-dimensional photograph antimere sorting now uses pairwise registration.
+
+
 
 ## Other Windows Dependencies
 * Julia must be in your Windows environrment PATH to run.
 
 ## Known Issues
-* A bug exists in the StatsModels package version 0.6.0 in Julia, which prevents RCall from precompiling. This bug breaks JuliaCall in R. Downgrading the package to version 0.5.0 will allow OsteoSort to run properly.
 * Some versions of JuliaCall require RCall to be manually rebuilt in Julia.
 

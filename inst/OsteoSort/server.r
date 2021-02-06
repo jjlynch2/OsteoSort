@@ -15,9 +15,9 @@ shinyServer(function(input, output, session) {
 	source(system.file("OsteoSort/server", 'multiple.r', package = "OsteoSort"), local=TRUE) ###imports multiple comparison server code
 	source(system.file("OsteoSort/server", 'metric.r', package = "OsteoSort"), local=TRUE) ###imports metric comparison server code
 	source(system.file("OsteoSort/server", 'stature.r', package = "OsteoSort"), local=TRUE) ###imports stature outlier comparison server code
-	#source(system.file("OsteoSort/server", 'twod.r', package = "OsteoSort"), local=TRUE) ###imports two-dimensional scomparison server code
-	#source(system.file("OsteoSort/server", 'threed.r', package = "OsteoSort"), local=TRUE) ###imports three-dimensional comparison server code
-	#source(system.file("OsteoSort/server", 'threedalignment.r', package = "OsteoSort"), local=TRUE) ###imports three-dimensional alignment tool
+	source(system.file("OsteoSort/server", 'twod.r', package = "OsteoSort"), local=TRUE) ###imports two-dimensional scomparison server code
+	source(system.file("OsteoSort/server", 'threed.r', package = "OsteoSort"), local=TRUE) ###imports three-dimensional comparison server code
+	source(system.file("OsteoSort/server", 'threedalignment.r', package = "OsteoSort"), local=TRUE) ###imports three-dimensional alignment tool
 	source(system.file("OsteoSort/server", 'antestat_single.r', package = "OsteoSort"), local=TRUE) ###imports single comparison antemortem stature code
 	source(system.file("OsteoSort/server", 'antestat_multiple.r', package = "OsteoSort"), local=TRUE) ###imports multiple comparison antemortem stature code
 	source(system.file("OsteoSort/server", 'files.r', package = "OsteoSort"), local=TRUE) ###imports code to save supplemental files from help menu
@@ -28,6 +28,6 @@ shinyServer(function(input, output, session) {
 	source(system.file("OsteoSort/server", 'update_gh.r', package = "OsteoSort"), local=TRUE) ###imports code to check for updates
 	source(system.file("OsteoSort/server", 'about_refs.r', package = "OsteoSort"), local=TRUE) ###imports code to display references
 	source(system.file("OsteoSort/server", 'changes.r', package = "OsteoSort"), local=TRUE) ###imports code to display version changes
-	#source(system.file("OsteoSort/server", 'exit_parameters.r', package = "OsteoSort"), local=TRUE) ###imports code to execute when app closes. comment for shiny-server deployment
-	source(system.file("OsteoSort/server", 'exit_parameters_shiny-server.r', package = "OsteoSort"), local=TRUE) #uncomment for shiny-server deployment
+	source(system.file("OsteoSort/server", 'exit_parameters.r', package = "OsteoSort"), local=TRUE) ###imports code to execute when app closes. comment for shiny-server deployment
+	#source(system.file("OsteoSort/server", 'exit_parameters_shiny-server.r', package = "OsteoSort"), local=TRUE) #uncomment for shiny-server deployment
 })
