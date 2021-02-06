@@ -25,6 +25,8 @@ OsteoSort()
 * networkD3
 * network
 * sna
+* grid
+* dplyr
 
 ## Julia Dependencies
 * Pkg
