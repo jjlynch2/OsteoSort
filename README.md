@@ -3,7 +3,7 @@
 ## Installation
 ```javascript
 require("devtools")
-install_github("jjlynch2/OsteoSort")
+install_github("jjlynch2/OsteoSort", ref="v1.3.0")
 library(OsteoSort)
 OsteoSort()
 ```
@@ -50,4 +50,5 @@ OsteoSort()
 
 ## Known Issues
 * Some versions of JuliaCall require RCall to be manually rebuilt in Julia.
+* Some newer versions of R may require Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true") to avoid warnings being converted to errors during installation.
 

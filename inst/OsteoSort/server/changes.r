@@ -13,6 +13,6 @@ output$changes <- renderUI({
 		"Three-dimensional point cloud antimere sorting is now supported.",
 		"<p></p>",
 		"Two-dimensional photograph antimere sorting now uses pairwise registration.",
-		"<br><br><br><br><br><br><p></p>"
+		"<br><br><br><br><p></p>"
 		,sep=""))
 })
