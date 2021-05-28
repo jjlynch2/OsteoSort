@@ -1,6 +1,6 @@
 function measurement_counter_plot(v1)
 	res = 0
-	for i in 1:size(v1,2)
+	for i in 1:size(v1,1)
 		if v1[i] != 0
 			res += 1
 		end
@@ -9,10 +9,10 @@ function measurement_counter_plot(v1)
 end
 
 function REGSL_plot(SL, SR, RL, RR)
-	res_1 = measurement_counter_plot(SL)
-	res_2 = measurement_counter_plot(SR)
-	dsum_1 = log(sum(SL))
-	dsum_2 = log(sum(SR))
+	res_1 = measurement_counter_plot(SL[1:end])
+	res_2 = measurement_counter_plot(SR[1:end])
+	dsum_1 = log(sum(SL[1:end]))
+	dsum_2 = log(sum(SR[1:end]))
 	refd_1 = zeros(1,1)
 	refd_2 = zeros(1,1)
 	for i in 1:size(RL,1)
@@ -37,7 +37,7 @@ function REGSL_plot(SL, SR, RL, RR)
 			refd_2 = vcat(refd_2, log(ref_dsum_2))
 		end
 	end
-	refd_1 = refd_1[2:end,] #remove 0
-	refd_2 = refd_2[2:end,] #remove 0
+	refd_1 = refd_1[2:end,1] #remove 0
+	refd_2 = refd_2[2:end,1] #remove 0
 	return [refd_1, refd_2, dsum_1, dsum_2]
 end
