@@ -1,9 +1,9 @@
-## OsteoSort 1.3.0
+## OsteoSort 1.3.1
 
 ## Installation
 ```javascript
 require("devtools")
-install_github("jjlynch2/OsteoSort", ref="v1.3.0")
+install_github("jjlynch2/OsteoSort", ref="v1.3.1")
 library(OsteoSort)
 OsteoSort()
 ```
@@ -36,16 +36,8 @@ OsteoSort()
 * Optim
 * Rmath
 
-## Changes for OsteoSort version 1.3.0
-* The Julia programming language is now integrated as the new analytical platform.
-* Reference data can be imported and exported.
-* The user interface is now dynamic and generates based on the reference data and user input.
-* The ability to check for updates on GitHub has been implemented.
-* Z-transform method is now implemeneted.
-* Three-dimensional point cloud antimere sorting is now supported.
-* Two-dimensional photograph antimere sorting now uses pairwise registration.
-
-
+## Changes for OsteoSort version 1.3.1
+* Bug fix: the independent and dependent mean and standard deviations were switched for probability calculation
 
 ## Other Windows Dependencies
 * Julia must be in your Windows environrment PATH to run.
