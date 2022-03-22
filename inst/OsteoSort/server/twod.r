@@ -152,8 +152,11 @@ observeEvent(input$pro2D, {
 		if(!is.null(input$leftimages$datapath) && !is.null(input$leftimages$datapath)) { #prevents crashing
 			leftimages <- input$leftimages$datapath
 			rightimages <- input$rightimages$datapath
+			
 			file.copy(input$leftimages$datapath, input$leftimages$name)
 			file.copy(input$rightimages$datapath, input$rightimages$name)
+			
+			
 			setProgress(value = 1, message = "Tracing outlines", detail = '')
 			out1 <- outline.images(imagelist1 = input$rightimages$name, imagelist2 = input$leftimages$name, threshold =nthreshold$nthreshold, scale = scale2D$scale2D, mirror = mirror2D$mirror2D)
 			setProgress(value = 2, message = "Running comparisons", detail = '')

@@ -1,6 +1,6 @@
 Package: OsteoSort
 Title: Osteo Sorting of Commingled Human Remains
-Version: 1.3.1
+Version: 1.3.2
 Authors@R: person("Jeff", "Lynch", email = "jjlynch@osteocoder.com", role = c("aut","cre"))
 Description: This package allows the statistical osteological sorting of commingled human skeletal remains using metric, 2D, and 3D data. http://osteocoder.com
 Depends:
@@ -20,7 +20,9 @@ Depends:
 	dplyr,
 	grid,
 	network,
-	sna
+	sna,
+	shinydashboard,
+	shinyWidgets
 License: GPL-2
 LazyData: true
 ByteCompile: true
@@ -40,4 +42,6 @@ Imports:
 	dplyr,
 	grid,
 	network,
-	sna
+	sna,
+	shinydashboard,
+	shinyWidgets

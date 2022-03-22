@@ -1,6 +1,6 @@
 JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, source = FALSE, recall_libraries = FALSE) {
 	if(!julia_exists("ref_dif_s")) {
-		if (libraries) {
+		if(libraries) {
 			withProgress(message = 'Loading analytical environment', detail = '', value = 0, min=0, max=9, {
 				julia <- JuliaCall::julia_setup(install=TRUE) #Set to false after deploying to shiny-server for startup speed
 				pkg = c("Pkg","Statistics", "Distributed","SharedArrays", "Optim", "Rmath", "GLM", "NearestNeighbors")
@@ -19,6 +19,13 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 				julia_source(system.file("jl", "z_test.jl", package = "OsteoSort"))
 				julia_source(system.file("jl", "regression_plot.jl", package = "OsteoSort"))
 				julia_source(system.file("jl", "radius_search.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "knn_ind_dst.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "point_to_plane.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "point_to_point.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "fragment_landmarks.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "alignment_landmarks.jl", package = "OsteoSort"))
+				julia_source(system.file("jl", "icp.jl", package = "OsteoSort"))
+				
 			})
 		}
 
@@ -36,7 +43,7 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 			julia_call("clean_cores")
 		}
 
-		if (source) {
+		if(source) {
 			julia_source(system.file("jl", "library.jl", package = "OsteoSort"))
 			julia_source(system.file("jl", "t_test.jl", package = "OsteoSort"))
 			julia_source(system.file("jl", "t_test_plot.jl", package = "OsteoSort"))
@@ -46,6 +53,12 @@ JuliaSetup <- function(add_cores = 1, remove_cores = FALSE, libraries = FALSE, s
 			julia_source(system.file("jl", "regression_plot.jl", package = "OsteoSort"))
 			julia_source(system.file("jl", "regression_helpers.jl", package = "OsteoSort"))
 			julia_source(system.file("jl", "z_test.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "knn_ind_dst.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "point_to_plane.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "point_to_point.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "fragment_landmarks.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "alignment_landmarks.jl", package = "OsteoSort"))
+			julia_source(system.file("jl", "icp.jl", package = "OsteoSort"))
 		}
 
 		if(recall_libraries) {

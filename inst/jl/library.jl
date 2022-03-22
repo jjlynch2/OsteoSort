@@ -8,3 +8,9 @@
 @everywhere using Rmath
 @everywhere using GLM
 @everywhere using NearestNeighbors
+@everywhere using Dates
+@everywhere using DelimitedFiles
+@everywhere using LinearAlgebra
+@everywhere using MultivariateStats
+@everywhere using Printf
+@everywhere using StatsBase

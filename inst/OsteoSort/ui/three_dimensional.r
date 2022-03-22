@@ -2,10 +2,8 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 	titlePanel(""),
 	sidebarLayout(
 		sidebarPanel(
-			selectInput(inputId ="fragcomp3d", label = "Analysis:", choices = c("Complete", "Fragmented"), selected = "Complete"),
 			uiOutput('resettableInput3D'),	
 			uiOutput('resettableInput3DD'),
-			uiOutput("mspec3D"),
 			fluidRow(
 				column(6,
 					actionButton("settings3D","Settings", icon=icon("keyboard-o"))
@@ -35,9 +33,6 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 				tabPanel("Results ",
 					DT::dataTableOutput('table3D')
 				),
-				tabPanel("Render ",
-					rglwidgetOutput('webgl3D', width = "1200px", height = "1200px")
-				),
 				tabPanel("Interactive",
 					forceNetworkOutput("forceNetworkOSMd")
 				)
@@ -47,29 +42,13 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 					tabPanel("Output Parameters",
 						uiOutput('fileoutput3Dexcel1'),
 						uiOutput('fileoutput3Dexcel2'),
-						uiOutput('fileoutput3Dtps'),
-						uiOutput("forcd"),
-						uiOutput("render")
+						uiOutput("forcd")
 					),
 					tabPanel("Statistical Parameters",
 						fluidRow(
 							column(4,
-								h4("Outline"),
-								uiOutput('banding'),
-								conditionalPanel(condition = "input.banding",
-									uiOutput('nthreshold3D')
-								)
-							),
-							column(4, 
-								h4("Registration"),
-								uiOutput('icp3D'),
-								uiOutput('trans3D')
-							),
-							column(4,
 								h4("Distance"),
-								uiOutput('max_avg_distance3D'),
-								uiOutput('shortlistn3D'),
-								uiOutput('hidedist3D')
+								uiOutput('shortlistn3D')
 							)
 						)
 					),

@@ -1,29 +1,25 @@
 output$update_gh <- renderUI({
 	version_gh <- OsteoSort:::gh_update()
 	if (is.null(version_gh[[1]])) {
-		HTML(paste("<p><h4><b>Updates</b></h4></p>",
+		HTML(paste(
 		"Unable to check for updates<br>",
 		"Are you online?",
-		"<br><br><br><br><br><p></p>",
 		sep=""))
 	}
 	else if(version_gh[[1]] > version_gh[[2]]) {
-		HTML(paste("<p><h4><b>Updates</b></h4></p>",
+		HTML(paste(
 		"A newer version is available: ",
 		version_gh[[1]],
-		"<br><br><br><br><br><br><br><p></p>",
 		sep=""))
 	}
 	else if(version_gh[[1]] == version_gh[[2]]) {
-		HTML(paste("<p><h4><b>Updates</b></h4></p>",
+		HTML(paste(
 		"Latest version is installed",
-		"<br><br><br><br><br><br><br><p></p>",
 		sep=""))
 	}
 	else if(version_gh[[1]] < version_gh[[2]]) {
-		HTML(paste("<p><h4><b>Updates</b></h4></p>",
+		HTML(paste(
 		"Development version is installed",
-		"<br><br><br><br><br><br><br><p></p>",
 		sep=""))
 	}
 })

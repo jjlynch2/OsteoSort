@@ -131,7 +131,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 									element_2 = sortb[results[,2],3], 
 									side_2 = sortb[results[,2],2], 
 									measurements = measurements, 
-									p_value = round(results[,4], digits = 4), 
+									p_value = round(results[,4], digits = 5), 
 									mean = round(results[,5], digits = 4), 
 									sd = round(results[,6], digits =4), 
 									sample = results[,7]

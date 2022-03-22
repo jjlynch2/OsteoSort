@@ -7,6 +7,12 @@ install_github("jjlynch2/OsteoSort", ref="v1.3.1")
 library(OsteoSort)
 OsteoSort()
 ```
+## Development Version (v1.3.2)
+```javascript
+require("devtools")
+install_github("jjlynch2/OsteoSort")
+library(OsteoSort)
+OsteoS
 
 ## R Dependencies
 * pixmap
@@ -27,6 +33,8 @@ OsteoSort()
 * sna
 * grid
 * dplyr
+* shinydashboard
+* shinyWidgets
 
 ## Julia Dependencies
 * Pkg
@@ -36,8 +44,8 @@ OsteoSort()
 * Optim
 * Rmath
 
-## Changes for OsteoSort version 1.3.1
-* Bug fix: the independent and dependent mean and standard deviations were switched for probability calculation
+## Changes for OsteoSort version 1.3.x
+* Optimized Julia code for three-dimensional osteometric sorting
 
 ## Other Windows Dependencies
 * Julia must be in your Windows environrment PATH to run.

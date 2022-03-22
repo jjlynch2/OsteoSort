@@ -13,6 +13,9 @@ source(system.file("OsteoSort/ui", 'outlier_stature.r', package = "OsteoSort"), 
 source(system.file("OsteoSort/ui", 'exit_button.r', package = "OsteoSort"), local=TRUE) ###imports exit button code
 shinyUI(
 navbarPage(theme = "css/flatly.min.css", windowTitle = "OsteoSort",
+	header = tagList(
+		useShinydashboard()
+	),
 	tags$script(HTML(paste("var header = $('.navbar > .container-fluid');header.append('<div style=\"float:left\"><img src=\"osteosort_new.png\" alt=\"alt\" style=\"float:right; width:200px;padding-top:0px;\"></div><div style=\"float:right; padding-top:15px\">", 
 		uiOutput("memUsage"), "</div>');console.log(header)", sep=""))
 	),

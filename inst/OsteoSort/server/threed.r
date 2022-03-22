@@ -69,9 +69,6 @@ observeEvent(input$clearFile3D, {
 		file.remove(input$leftimages3D$name)
 	}
 	delete.tmp.data(dirdel$dirdel, sessiontemp)
-	output$mspec3D <- renderUI({
-		selectInput(inputId = "mspec3D", label = "Choose comparison", choices = "")
-	})
 	fileInput('leftimages3D', 'Upload first data set', accept=c("xyz"), multiple = TRUE)
 	fileInput('rightimages3D', 'Upload second data set', accept=c("xyz"), multiple = TRUE)
 })
@@ -92,60 +89,12 @@ output$fileoutput3Dexcel2 <- renderUI({
 	checkboxInput(inputId = "fileoutput3Dexcel2", label = "Output all distances to excel file ", value = TRUE)
 })
 
-
-
-fileoutput3Dtps <- reactiveValues(fileoutput3Dtps = FALSE)
-observeEvent(input$fileoutput3Dtps, {
-	fileoutput3Dtps$fileoutput3Dtps <- input$fileoutput3Dtps
-})
-output$fileoutput3Dtps <- renderUI({
-	checkboxInput(inputId = "fileoutput3Dtps", label = "Output TPS registered coordinates", value = FALSE)
-})
-
-
-nthreshold3D <- reactiveValues(nthreshold3D = 4)
-observeEvent(input$nthreshold3D, {
-	nthreshold3D$nthreshold3D <- input$nthreshold3D
-})
-output$nthreshold3D <- renderUI({
-	sliderInput(inputId = "nthreshold3D", label = "Threshold for centroid bands", min=0.5, max=100, value=4, step=0.5)
-})
-
-
-
 shortlistn3D <- reactiveValues(shortlistn3D = 1)
 observeEvent(input$shortlistn3D, {
 	shortlistn3D$shortlistn3D <- input$shortlistn3D
 })
 output$shortlistn3D <- renderUI({
 	sliderInput(inputId = "shortlistn3D", label = "Shortest distance matches", min = 1, max = 100, value = 1, step = 1)
-})
-
-
-
-hidedist3D <- reactiveValues(hidedist3D = FALSE)
-observeEvent(input$hidedist3D, {
-	hidedist3D$hidedist3D <- input$hidedist3D
-})
-output$hidedist3D <- renderUI({
-	checkboxInput(inputId = "hidedist3D", label = "Hide distance from results", value = FALSE)
-})
-
-
-banding <- reactiveValues(banding = TRUE)
-observeEvent(input$banding, {
-	banding$banding <- input$banding
-})
-output$banding <- renderUI({
-	checkboxInput(inputId = "banding", label = "Centroid bands", value = TRUE)
-})
-
-render <- reactiveValues(render = FALSE)
-observeEvent(input$render, {
-	render$render <- input$render
-})
-output$render <- renderUI({
-	checkboxInput(inputId = "render", label = "Save registrations", value = FALSE)
 })
 
 ncores3D <- reactiveValues(ncores3D = detectCores()-1)
@@ -155,32 +104,7 @@ observeEvent(input$ncores3D, {
 output$ncores3D <- renderUI({
 	sliderInput(inputId = "ncores3D", label = "Number of cores", min=1, max=detectCores(), value=detectCores()-1, step =1)
 })
-
-
-max_avg_distance3D <- reactiveValues(max_avg_distance3D = "average")
-observeEvent(input$max_avg_distance3D, {
-	max_avg_distance3D$max_avg_distance3D <- input$max_avg_distance3D
-})
-output$max_avg_distance3D <- renderUI({
-	radioButtons(inputId = "max_avg_distance3D", label = "Distance type:", choices = c("maximum",  "average"), selected = "average")
-})
-
-icp3D <- reactiveValues(icp3D = 50)
-observeEvent(input$icp3D, {
-	icp3D$icp3D <- input$icp3D
-})
-output$icp3D <- renderUI({
-	sliderInput(inputId = "icp3D", label = "ICP iterations", min=1, max=1000, value=50, step=1)
-})
-
 				
-observeEvent(input$leftimages3D$datapath, {
-	file.copy(input$leftimages3D$datapath, input$leftimages3D$name)
-})
-observeEvent(input$rightimages3D$datapath, {
-	file.copy(input$rightimages3D$datapath, input$rightimages3D$name)
-})
-
 observeEvent(input$pro3D, {
 	output$contents3D <- renderUI({
 	   HTML(paste(""))
@@ -188,10 +112,10 @@ observeEvent(input$pro3D, {
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
 	withProgress(message = 'Calculation has started', detail = '', value = 1, min=0, max=4, {
 		if(!is.null(input$leftimages3D$datapath) && !is.null(input$leftimages3D$datapath)) { #prevents crashing
-			setProgress(value = 2, message = "Importing data", detail = '')
-			out1 <- input.3d(list1 = input$rightimages3D$name, list2 = input$leftimages3D$name)
 			setProgress(value = 3, message = "Running comparisons", detail = '')
-			out2 <- match.3d(data = out1, hide_distances = hidedist3D$hidedist3D, iteration = icp3D$icp3D, dist = max_avg_distance3D$max_avg_distance3D, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2, fileoutput3Dtps$fileoutput3Dtps, render$render), sessiontempdir = sessiontemp, threads = ncores3D$ncores3D, band_threshold = nthreshold3D$nthreshold3D/2, band = banding$banding, fragment = input$fragcomp3d)
+
+			out2 <- match.3d(path1 = input$leftimages3D$datapath, path2 = input$rightimages3D$datapath, names1 = input$leftimages3D$name, names2 = input$rightimages3D$name, n_lowest_distances = shortlistn3D$shortlistn3D, output_options = c(fileoutput3Dexcel1$fileoutput3Dexcel1, fileoutput3Dexcel2$fileoutput3Dexcel2), sessiontempdir = sessiontemp, cores = ncores3D$ncores3D)
+			
 			direc <- out2[[2]]
 			sd <- paste(sessiontemp, direc, sep="/")
 			dirdel$dirdel <- direc
@@ -202,12 +126,8 @@ observeEvent(input$pro3D, {
 			})
 
 			output$contents3D <- renderUI({
-				HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[6]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
+				HTML(paste("<strong>Completed in: ", "<font color=\"#00688B\">", out2[[5]], " minutes</font></strong><br>","<strong>Potential matches: ", "<font color=\"#00688B\">", pm, "</font></strong>"))
 			})
-			output$mspec3D <- renderUI({
-				selectInput(inputId = "mspec3D", label = "Choose comparison", choices = c(out2[[5]][,3]))
-			})
-
 			if(forcd$forcd) {
 					if(nrow(out2[[1]]) > 1){
 						td <- forcefun3d(out2[[1]])
@@ -225,7 +145,7 @@ observeEvent(input$pro3D, {
 					}
 			}
 
-			if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2 || fileoutput3Dtps$fileoutput3Dtps) {
+			if(fileoutput3Dexcel1$fileoutput3Dexcel1 || fileoutput3Dexcel2$fileoutput3Dexcel2) {
 				output$downloadData3D <- downloadHandler(
 					filename <- function() {
 						paste("results.zip")
@@ -248,23 +168,6 @@ observeEvent(input$pro3D, {
 				)
 			}
 		}
-		observeEvent(input$mspec3D, {
-			if(input$mspec3D != "" && isTRUE(render$render)) {
-				tt <- import.tmp.data(input$mspec3D, dirdel$dirdel, sessiontemp)
-				tt1 <- tt[[1]][c(1:3)]
-				tt2 <- tt[[2]][c(1:3)]
-				output$webgl3D <- renderRglwidget ({
-					try(rgl.close())
-
-					points3d(tt1, size=3, col="dimgray", box=FALSE)
-					points3d(tt2, size=3, col="dodgerblue", box=FALSE)
-					axes3d(c('x++', 'y++', 'z++'))
-
-					rglwidget()
-				})
-			}
-		})
-
 		gc()
 		removeModal()
 		setProgress(value = 4, message = "Completed", detail = '')

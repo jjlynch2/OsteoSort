@@ -33,7 +33,7 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 								element = postmortem[results[,2],3],     #5
 								
 								measurements = colnames(ref)[5],           #6
-								p_value = round(results[,3], digits = 4),  #7
+								p_value = round(results[,3], digits = 5),  #7
 								r2 = round(results[,5], digits = 4),       #8
 								sample = results[,4]
 								),                     #9
