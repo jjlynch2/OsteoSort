@@ -12,7 +12,8 @@ OsteoSort()
 require("devtools")
 install_github("jjlynch2/OsteoSort")
 library(OsteoSort)
-OsteoS
+OsteoSort()
+```
 
 ## R Dependencies
 * pixmap
