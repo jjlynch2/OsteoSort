@@ -33,10 +33,14 @@ output$resettableInput2DD <- renderUI({
 
 observeEvent(input$clearFile2D, {
 	if(!is.null(input$leftimages$datapath) && !is.null(input$leftimages$datapath)) { #prevents crashing
-		file.remove(input$leftimages$datapath)
-		file.remove(input$leftimages$name)
-		file.remove(input$rightimages$datapath)
-		file.remove(input$rightimages$name)
+		t_split <- strsplit(input$leftimages$datapath[1], "/")[[1]]
+		l_path <- paste(t_split[-length(t_split)], collapse="/")
+		
+		t_split <- strsplit(input$rightimages$datapath[1], "/")[[1]]
+		r_path <- paste(t_split[-length(t_split)], collapse="/")
+		
+		unlink(l_path, recursive=TRUE)
+		unlink(r_path, recursive=TRUE)
 	}
 	file.remove(list.files(full.names=TRUE, recursive = TRUE))
 	fileInput('leftimages', 'Upload first image set', accept=c('jpeg', "jpg"), multiple = TRUE)
@@ -149,16 +153,20 @@ observeEvent(input$pro2D, {
 	})	
 	showModal(modalDialog(title = "Calculation has started...Window will update when finished.", easyClose = FALSE, footer = NULL))
 	withProgress(message = 'Calculation has started', detail = '', value = 1, min=0, max=3, {
-		if(!is.null(input$leftimages$datapath) && !is.null(input$leftimages$datapath)) { #prevents crashing
-			leftimages <- input$leftimages$datapath
-			rightimages <- input$rightimages$datapath
+		if(!is.null(input$leftimages$datapath) && !is.null(input$rightimages$datapath)) { #prevents crashing
 			
-			file.copy(input$leftimages$datapath, input$leftimages$name)
-			file.copy(input$rightimages$datapath, input$rightimages$name)
-			
-			
+			t_split <- strsplit(input$leftimages$datapath[1], "/")[[1]]
+			l_path <- paste(t_split[-length(t_split)], collapse="/")
+			left_p <- paste(l_path, input$leftimages$name, sep="/")
+			file.rename(input$leftimages$datapath, left_p)
+		
+			t_split <- strsplit(input$rightimages$datapath[1], "/")[[1]]
+			r_path <- paste(t_split[-length(t_split)], collapse="/")
+			right_p <- paste(r_path, input$rightimages$name, sep="/")
+			file.rename(input$rightimages$datapath, right_p)
+
 			setProgress(value = 1, message = "Tracing outlines", detail = '')
-			out1 <- outline.images(imagelist1 = input$rightimages$name, imagelist2 = input$leftimages$name, threshold =nthreshold$nthreshold, scale = scale2D$scale2D, mirror = mirror2D$mirror2D)
+			out1 <- outline.images(imagelist1 = right_p, imagelist2 = left_p, threshold =nthreshold$nthreshold, scale = scale2D$scale2D, mirror = mirror2D$mirror2D)
 			setProgress(value = 2, message = "Running comparisons", detail = '')
 			out2 <- match.2d(outlinedata = out1, hide_distances = hidedist$hidedist, iteration = icp2D$icp2D, dist = max_avg_distance$max_avg_distance, n_lowest_distances = shortlistn$shortlistn, output_options = c(fileoutput2Dexcel1$fileoutput2Dexcel1, fileoutput2Dexcel2$fileoutput2Dexcel2, fileoutput2Dplot$fileoutput2Dplot, fileoutput2Dtps$fileoutput2Dtps), sessiontempdir = sessiontemp, threads = ncores2D$ncores2D)
 			direc <- out2[[3]]
