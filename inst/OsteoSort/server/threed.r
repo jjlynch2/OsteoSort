@@ -120,7 +120,7 @@ observeEvent(input$pro3D, {
 			sd <- paste(sessiontemp, direc, sep="/")
 			dirdel$dirdel <- direc
 			if(is.null(nrow(out2[[1]]))) {pm <- 1; out2[[1]] <- rbind(out2[[1]],c(NA,NA,NA)) }
-			if(!is.null(nrow(out2[[5]]))) {pm <- nrow(as.matrix(out2[[1]][,1]))}
+			if(!is.null(nrow(out2[[1]]))) {pm <- nrow(as.matrix(out2[[1]][,1]))}
 			output$table3D <- DT::renderDataTable({
 				DT::datatable(out2[[1]], selection = list(mode="multiple"), options = list(lengthMenu = c(5,10,15,20,25,30), pageLength = 10), rownames = FALSE)
 			})
