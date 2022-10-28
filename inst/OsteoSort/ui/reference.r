@@ -9,7 +9,7 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 			),
 			fluidRow(
 				column(12,
-					actionButton("clearFileRef", "Clear Import  ", icon = icon("window-close")),
+					actionButton("clearFileRef", "Clear Import  ", icon = icon("rectangle-xmark")),
 					tags$style(type = "text/css", "#clearFileRef { width:100%; font-size:85%; background-color:#126a8f }")
 				)
 			),
@@ -21,7 +21,7 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 			br(),
 			fluidRow(
 				column(12,
-					actionButton("refdel", "Delete Reference  ", icon = icon("window-close")),
+					actionButton("refdel", "Delete Reference  ", icon = icon("rectangle-xmark")),
 					tags$style(type = "text/css", "#refdel { width:100%; font-size:85%; background-color:#126a8f }")
 				)
 			),
@@ -35,7 +35,7 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 			br(),
 			fluidRow(
 				column(12,
-					actionButton("refsel", "Add Selected Rows  ", icon = icon("plus-square")),
+					actionButton("refsel", "Add Selected Rows  ", icon = icon("square-plus")),
 					tags$style(type = "text/css", "#refsel { width:100%; font-size:85%; background-color:#126a8f }")
 				)
 			),
@@ -56,11 +56,11 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 			),
 			fluidRow(
 				column(6,
-					actionButton('units_add', 'Add', icon = icon("plus-square")),
+					actionButton('units_add', 'Add', icon = icon("square-plus")),
 					tags$style(type = "text/css", "#units_add { width:100%; font-size:85%; background-color:#126a8f }")
 				),
 				column(6,
-					actionButton('units_delete', 'Delete', icon = icon("minus-square")),
+					actionButton('units_delete', 'Delete', icon = icon("square-minus")),
 					tags$style(type = "text/css", "#units_delete { width:100%; font-size:85%; background-color:#126a8f }")
 				)
 			),
@@ -83,11 +83,11 @@ reference <- tabPanel("Reference",icon = icon("server", lib="font-awesome"),
 			),
 			fluidRow(
 				column(6,
-					actionButton('config_add', 'Add', icon = icon("plus-square")),
+					actionButton('config_add', 'Add', icon = icon("square-plus")),
 					tags$style(type = "text/css", "#config_add { width:100%; font-size:85%; background-color:#126a8f }")
 				),
 				column(6,
-					actionButton('config_delete', 'Delete', icon = icon("minus-square")),
+					actionButton('config_delete', 'Delete', icon = icon("square-minus")),
 					tags$style(type = "text/css", "#config_delete { width:100%; font-size:85%; background-color:#126a8f }")
 				)
 			),

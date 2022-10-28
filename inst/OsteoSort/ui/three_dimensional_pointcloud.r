@@ -1,4 +1,4 @@
-three_dimensional_pointcloud <- tabPanel("3D Point Cloud Tools",icon = icon("cloud-download", lib="glyphicon"),
+three_dimensional_pointcloud <- tabPanel("3D Point Cloud Tools",icon = icon("cloud-arrow-down", lib="glyphicon"),
 	titlePanel(""),
 	sidebarLayout(
 		sidebarPanel(
@@ -55,19 +55,19 @@ three_dimensional_pointcloud <- tabPanel("3D Point Cloud Tools",icon = icon("clo
 			fluidRow(br()),
 			fluidRow(
 				column(6,
-					actionButton("reimport", "Reimport", icon=icon("arrows-alt"))
+					actionButton("reimport", "Reimport", icon=icon("file-import"))
 				),
 				column(6,
-					actionButton("landmarks_dig","Landmarks", icon=icon("arrows-alt"))
+					actionButton("landmarks_dig","Landmarks", icon=icon("hand-pointer"))
 				)
 			),
 			fluidRow(br()),
 			fluidRow(
 				column(6,
-					actionButton("simplify","Simplify", icon=icon("cloud-download"))
+					actionButton("simplify","Simplify", icon=icon("cloud-arrow-down"))
 				),
 				column(6,
-					actionButton("clearFile3Da", " Clear   ", icon = icon("window-close"))
+					actionButton("clearFile3Da", " Clear   ", icon = icon("rectangle-xmark"))
 				)
 			),
 			fluidRow(br()),

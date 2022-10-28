@@ -6,16 +6,16 @@ three_dimensional <- tabPanel("3D Antimere",icon = icon("sort-by-order", lib="gl
 			uiOutput('resettableInput3DD'),
 			fluidRow(
 				column(6,
-					actionButton("settings3D","Settings", icon=icon("keyboard-o"))
+					actionButton("settings3D","Settings", icon=icon("sliders"))
 				),
 				column(6,
-					actionButton("pro3D","Process ", icon = icon("cog"))
+					actionButton("pro3D","Process ", icon = icon("gear"))
 				)
 			),
 			fluidRow(br()),
 			fluidRow(
 				column(6,
-					actionButton("clearFile3D", "Clear   ", icon = icon("window-close"))
+					actionButton("clearFile3D", "Clear   ", icon = icon("rectangle-xmark"))
 				),
 				column(6,
 					downloadButton("downloadData3D", "Save    ")

@@ -61,10 +61,10 @@ single_osteometric_sorting <- tabPanel("Single",icon = icon("gear", lib="font-aw
 			),
 			fluidRow(
 				column(6,
-					actionButton("settings2","Settings", icon=icon("keyboard-o"))
+					actionButton("settings2","Settings", icon=icon("sliders"))
 				),
 				column(6,
-					actionButton("proc","Process ", icon = icon("cog"))
+					actionButton("proc","Process ", icon = icon("gear"))
 				)
 			),
 			fluidRow(br()),

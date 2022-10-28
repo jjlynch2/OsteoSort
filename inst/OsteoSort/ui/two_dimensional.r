@@ -7,16 +7,16 @@ two_dimensional <- tabPanel("2D Antimere",icon = icon("picture", lib="glyphicon"
 			uiOutput('pwspec'),
 			fluidRow(
 				column(6,
-					actionButton("settings2D","Settings", icon=icon("keyboard-o"))
+					actionButton("settings2D","Settings", icon=icon("sliders"))
 				),
 				column(6,
-					actionButton("pro2D","Process ", icon = icon("cog"))
+					actionButton("pro2D","Process ", icon = icon("gear"))
 				)
 			),
 			fluidRow(br()),
 			fluidRow(
 				column(6,
-					actionButton("clearFile2D", "Clear   ", icon = icon("window-close"))
+					actionButton("clearFile2D", "Clear   ", icon = icon("rectangle-xmark"))
 				),
 				column(6,
 					downloadButton("downloadData2D", "Save    ")

@@ -112,7 +112,7 @@ output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, metho
 		}
 		if(type == "plot") {
 			ptemp <- qplot(hera1[[3]], geom="histogram", xlab="", ylab="", col = I("grey"), fill = I("#126a8f")) + geom_vline(xintercept = hera1[[4]], linetype = "dashed", color="#ea6011", size=1) + theme_minimal() + theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 20))
-			ggsave(paste(fpath,"/graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300)
+			ggsave(paste(fpath,"/graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300, bg="white")
 		}
 		if(type == "plot2") {
 			d <- data.frame(x = hera1[[3]], y = hera1[[4]])
@@ -123,7 +123,7 @@ output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, metho
 			ptemp <- ptemp + geom_line(aes(y = pm1[,2]), linetype = "dashed", color = "black", size=1)
 			ptemp <- ptemp + geom_line(aes(y = pm1[,3]), linetype = "dashed", color = "black", size=1)
 			ptemp <- ptemp + geom_point(x = hera1[[5]], y = hera1[[6]], col = "#126a8f", size = 4)
-			ggsave(paste(fpath,"/graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300)
+			ggsave(paste(fpath,"/graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300, bg="white")
 		}
 	}
 	if(method == "3D") {
@@ -154,7 +154,7 @@ output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, metho
 					d <- data.frame(x = tempa[,1], y = tempa[,2])
 					Specimens <- c(rep(names(hera1)[[i]], nrow(hera1[[i]])), rep(names(hera1)[[i-1]], nrow(hera1[[i-1]])))
 					ptemp <- ggplot(d, aes(x = x, y = y, color = Specimens)) + theme_minimal() + geom_point(size = 3) + labs(x="", y="") + scale_color_manual(values = c("dimgray","dodgerblue")) 
-					ggsave(paste(fpath,"/",names(hera1)[[i]], "-", names(hera1)[[i-1]], ".jpg",sep=""), plot = ptemp, device = "jpeg", dpi = 300)
+					ggsave(paste(fpath,"/",names(hera1)[[i]], "-", names(hera1)[[i-1]], ".jpg",sep=""), plot = ptemp, device = "jpeg", dpi = 300, bg="white")
 				}
 			}
 		}
@@ -169,7 +169,7 @@ output_function <- function(hera1 = NULL, rejected = NULL, options = NULL, metho
 			if(!hera1[[8]]) {
 				ptemp <- ptemp + geom_vline(xintercept = hera1[[6]], linetype = "dashed", color="black", size=1) + geom_vline(xintercept = hera1[[7]], linetype = "dashed", color="black", size=1) 
 			}
-			ggsave(paste(fpath,"/graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300)
+			ggsave(paste(fpath,"/graph",hera1[[1]],"-",hera1[[2]],".jpg",sep=''), plot = ptemp, device = "jpeg", dpi = 300, bg="white")
 		}
 	}
 	print("Output files written")

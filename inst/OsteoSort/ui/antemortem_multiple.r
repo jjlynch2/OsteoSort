@@ -17,16 +17,16 @@ antemortem_multiple <- tabPanel("Multiple",icon = icon("gears", lib="font-awesom
 			uiOutput('resettableInputante2'),
 			fluidRow(
 				column(6,
-					actionButton("settingsantem","Settings", icon=icon("keyboard-o"))
+					actionButton("settingsantem","Settings", icon=icon("sliders"))
 				),
 				column(6,
-					actionButton("proantestatm","Process ", icon = icon("cog"))
+					actionButton("proantestatm","Process ", icon = icon("gear"))
 				)
 			),
 			fluidRow(br()),
 			fluidRow(
 				column(6,
-					actionButton("clearFile1ante", "Clear   ", icon = icon("window-close"))
+					actionButton("clearFile1ante", "Clear   ", icon = icon("rectangle-xmark"))
 				),
 				column(6,
 					downloadButton("downloadantestatm", "Save    ")

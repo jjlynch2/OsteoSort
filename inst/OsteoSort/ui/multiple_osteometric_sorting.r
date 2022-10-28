@@ -40,16 +40,16 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 			),
 			fluidRow(
 				column(6,
-					actionButton("settings1","Settings", icon=icon("keyboard-o"))
+					actionButton("settings1","Settings", icon=icon("sliders"))
 				),
 				column(6,
-					actionButton("pro","Process ", icon = icon("cog"))
+					actionButton("pro","Process ", icon = icon("gear"))
 				)
 			),
 			fluidRow(br()),
 			fluidRow(
 				column(6,
-					actionButton("clearFile1", "Clear   ", icon = icon("window-close"))
+					actionButton("clearFile1", "Clear   ", icon = icon("rectangle-xmark"))
 				),
 				column(6,
 					downloadButton("downloadData", "Save    ")

@@ -1,20 +1,20 @@
-outlier_metric <- tabPanel("Metric",icon = icon("line-chart", lib="font-awesome"),
+outlier_metric <- tabPanel("Metric",icon = icon("chart-line", lib="font-awesome"),
 	sidebarLayout(
 		sidebarPanel(
 			uiOutput('resettableInput3'),
 			uiOutput("testtypem"),
 			fluidRow(
 				column(6,
-					actionButton("settings3","Settings", icon=icon("keyboard-o"))
+					actionButton("settings3","Settings", icon=icon("sliders"))
 				),
 				column(6,
-					actionButton("pro3","Process ", icon = icon("cog"))
+					actionButton("pro3","Process ", icon = icon("gear"))
 				)
 			),
 			fluidRow(br()),
 			fluidRow(
 				column(6,
-					actionButton("clearFile3", "Clear   ", icon = icon("window-close"))
+					actionButton("clearFile3", "Clear   ", icon = icon("rectangle-xmark"))
 				),
 				column(6,
 					downloadButton("outlierdownload", "Save    ")

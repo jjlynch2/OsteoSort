@@ -16,16 +16,16 @@ outlier_stature <- tabPanel("Stature",icon = icon("user", lib="font-awesome"),
 			uiOutput("testtypem1"),
 			fluidRow(
 				column(6,
-					actionButton("settings4","Settings", icon=icon("keyboard-o"))
+					actionButton("settings4","Settings", icon=icon("sliders"))
 				),
 				column(6,
-					actionButton("pro4","Process ", icon = icon("cog"))
+					actionButton("pro4","Process ", icon = icon("gear"))
 				)
 			),
 			fluidRow(br()),
 			fluidRow(
 				column(6,
-					actionButton("clearFile4", "Clear   ", icon = icon("window-close"))
+					actionButton("clearFile4", "Clear   ", icon = icon("rectangle-xmark"))
 				),
 				column(6,
 					downloadButton("outlierdownload4", "Save    ")

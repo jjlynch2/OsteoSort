@@ -22,10 +22,10 @@ antemortem_single <- tabPanel("Single",icon = icon("gear", lib="font-awesome"),
 			),
 			fluidRow(
 				column(6,
-					actionButton("settingsante","Settings", icon=icon("keyboard-o"))
+					actionButton("settingsante","Settings", icon=icon("sliders"))
 				),
 				column(6,
-					actionButton("proantestat","Process ", icon = icon("cog"))
+					actionButton("proantestat","Process ", icon = icon("gear"))
 				)
 			),
 			fluidRow(br()),

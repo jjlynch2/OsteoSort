@@ -1,5 +1,4 @@
 dash <- tabPanel("About",icon = icon("question", lib="font-awesome"),
-	shinyalert::useShinyalert(),
 	tags$style(HTML("
 		.box.box-solid.box-primary>.box-header {
 			  color:#ffffff;
