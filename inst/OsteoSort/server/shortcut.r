@@ -3,7 +3,7 @@ observeEvent(input$Create_Desktop_Icon, {
 		target <- paste('"', file.path(R.home("bin"), "R.exe"), '"', sep="")
 		arguments <- paste('"', "-e ", "library(OsteoSort);OsteoSort()", '"', sep="")
 		icon <- paste('"', system.file("vbs/OsteoSort.ico", package = "OsteoSort"), '"', sep="")
-		pathname <- file.path(Sys.getenv("USERPROFILE"), "Desktop")
+		pathname <- paste(file.path(Sys.getenv("USERPROFILE"), "Desktop"), "/OsteoSort.lnk", sep="")
 		vbs <- paste('"', system.file("vbs/createLink.vbs", package = "OsteoSort"), '"', sep="")
 		system(paste("cscript", vbs, pathname, target, arguments, icon, sep=" "))
 	}
