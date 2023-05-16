@@ -99,7 +99,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 
 	measurement_names <- unique(c(colnames(sorta[,-c(1:3)]), colnames(sortb[,-c(1:3)])))
 
-	if(sorta[results[,1],3] != sortb[results[,2],3]) {
+	if(sorta[results[,1],3][1] != sortb[results[,2],3][1]) {
 		measurements[2] = 1
 		measurement_names = c(measurement_names[1], measurement_names[3])
 	} #if non-antimere test hack
