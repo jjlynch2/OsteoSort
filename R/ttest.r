@@ -17,10 +17,10 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	print("Comparisons started")
 	start_time <- start_time()
 	options(warn = -1) #disables warnings
-	if(is.na(sorta) || is.null(sorta)) {return(NULL)}
-	if(is.na(sortb) || is.null(sortb)) {return(NULL)}
-	if(is.na(refa) || is.null(refa)) {return(NULL)}
-	if(is.na(refb) || is.null(refb)) {return(NULL)}
+	if(all(is.na(sorta)) || is.null(sorta)) {return(NULL)}
+	if(all(is.na(sortb)) || is.null(sortb)) {return(NULL)}
+	if(all(is.na(refa)) || is.null(refa)) {return(NULL)}
+	if(all(is.na(refb)) || is.null(refb)) {return(NULL)}
 	
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 	sd <- paste(sessiontempdir, direc, sep="/")
