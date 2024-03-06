@@ -9,9 +9,9 @@ antestat.regtest <- function(antemortem = NULL, postmortem = NULL, ref = NULL, s
 	print("Comparisons are running...")
 	start_time <- start_time()
 
-	if(is.na(antemortem) || is.null(antemortem)) {return(NULL)}
-	if(is.na(postmortem) || is.null(postmortem)) {return(NULL)}
-	if(is.na(ref) || is.null(ref)) {return(NULL)}
+	if(all(is.na(antemortem)) || is.null(antemortem)) {return(NULL)}
+	if(all(is.na(postmortem)) || is.null(postmortem)) {return(NULL)}
+	if(all(is.na(ref)) || is.null(ref)) {return(NULL)}
 
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 	sd <- paste(sessiontempdir, direc, sep="/")
