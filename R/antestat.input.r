@@ -1,7 +1,7 @@
 antestat.input <- function(antemortem_stature = NULL, postmortem_measurement = NULL, ref = NULL, measurement = NULL, side = NULL, bone = NULL) {
 	print("Filtering data by element type and specified measurement...")
-	if(is.na(antemortem_stature) || is.null(antemortem_stature)) {return(NULL)} #input san
-	if(is.na(postmortem_measurement) || is.null(postmortem_measurement)) {return(NULL)} #input san	
+	if(all(is.na(antemortem_stature)) || is.null(antemortem_stature)) {return(NULL)} #input san
+	if(all(is.na(postmortem_measurement)) || is.null(postmortem_measurement)) {return(NULL)} #input san	
 	antemortem_stature <- data.frame(antemortem_stature, stringsAsFactors = FALSE)
 	postmortem_measurement <- data.frame(postmortem_measurement, stringsAsFactors = FALSE)
 	bone <- tolower(bone)

@@ -5,7 +5,7 @@ match.3d <- function(path1 = NULL, path2 = NULL, names1 = NULL, names2 = NULL, s
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 	sd <- paste(sessiontempdir, direc, sep="/")
 
-	JuliaSetup(add_cores = cores) #reloads libraries and source code after cores are added
+	RJS(add_cores = cores) #reloads libraries and source code after cores are added
 
 	results <- julia_call("OMS", path1, path2)
 
