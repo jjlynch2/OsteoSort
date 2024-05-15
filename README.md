@@ -1,20 +1,17 @@
-## OsteoSort 1.3.1
+## OsteoSort 1.3.2
 
-## Installation
-```javascript
-require("devtools")
-install_github("jjlynch2/OsteoSort", ref="v1.3.1")
-library(OsteoSort)
-OsteoSort()
-```
-## Development Version (v1.3.2)
+## Changes
+OsteoSort 1.3.2 will be the final release of OsteoSort with support for 2D and 3D data. This should be finalized within the next few weeks. The 3D osteometric sorting method will be pulled into a new project and released as an independent tool (OS3D) due to increased complexity. The 2D osteomertic sorting method will be deprecated.
+
+Future iterations of OsteoSort (1.4.x) will include a cloud-based environment (freely accessible with registered accounts) and instructions on deploying a docker container. That release will support the traditional metric-based osteometric sorting methods. This is anticpated to be released sometime next year.
+
+## OsteoSort 1.3.2 (development) Installation
 ```javascript
 require("devtools")
 install_github("jjlynch2/OsteoSort")
 library(OsteoSort)
 OsteoSort()
 ```
-
 ## R Dependencies
 * pixmap
 * jpeg
@@ -45,13 +42,12 @@ OsteoSort()
 * Optim
 * Rmath
 
-## Changes for OsteoSort version 1.3.x
-* Optimized Julia code for three-dimensional osteometric sorting
-
 ## Other Windows Dependencies
 * Julia must be in your Windows environrment PATH to run.
 
 ## Known Issues
-* Some versions of JuliaCall require RCall to be manually rebuilt in Julia.
-* Some newer versions of R may require Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true") to avoid warnings being converted to errors during installation.
-
+* Some systems require the RCall package in Julia to be rebuilt. 
+```javascript
+using Pkg
+Pkg.build("RCall")
+```

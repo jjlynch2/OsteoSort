@@ -7,7 +7,6 @@ statsort <- function (sort, ref, method = "Quartiles", measurements = NULL, cuto
 	cutoff <- cutoff[1]
 	nocut <- FALSE
 	if(cutoffmax == cutoff) {nocut <- TRUE}
-
 	direc <- OsteoSort:::analytical_temp_space(output_options, sessiontempdir) #creates temporary space 
 	sd <- paste(sessiontempdir, direc, sep="/")
 
@@ -19,7 +18,7 @@ statsort <- function (sort, ref, method = "Quartiles", measurements = NULL, cuto
 	sort <- sortdata
 	sort <- na.omit(sort)
 
-	if(ref[1] == "Custom") {
+	if(any(ref[1] == "Custom")) {
 		slope <- as.numeric(ref[2])
 		intercept <- as.numeric(ref[3])
 		pointestimate <- array(NA,c(length(sort[,1]),4))
@@ -66,7 +65,7 @@ statsort <- function (sort, ref, method = "Quartiles", measurements = NULL, cuto
 	m <- mean(as.numeric(pointestimate[,4]))
 	me <- median(as.numeric(pointestimate[,4]))
 	IQQ <- quantile(as.numeric(pointestimate[,4]))[4] -  quantile(as.numeric(pointestimate[,4]))[2]
-	
+
 	if(method == "Standard_deviation") {
 		standarddeviation <- sd(as.numeric(pointestimate[,4])) 
 		meann <- mean(as.numeric(pointestimate[,4]))
@@ -86,7 +85,7 @@ statsort <- function (sort, ref, method = "Quartiles", measurements = NULL, cuto
 		lowermax <- Q1 - IQ * cutoffmax
 		plotme <- median(as.numeric(pointestimate[,4]))
 	}
-	
+
 	outlierdfupper <- array(NA,c(length(sort[,1]),4))
 	outlierdflower <- array(NA,c(length(sort[,1]),4))
 	nonoutliersdf <- array(NA,c(length(sort[,1]),4))
@@ -119,10 +118,6 @@ statsort <- function (sort, ref, method = "Quartiles", measurements = NULL, cuto
 	colnames(nonoutliersdf) <- c("id", "Side", "Element", "Point Estimate")
 	colnames(outlierdflower) <- c("id", "Side", "Element", "Point Estimate")
 	colnames(outlierdfupper) <- c("id", "Side", "Element", "Point Estimate")
-	
-	if(all(is.na(nonoutliersdf))) {nonoutliersdf <- NULL}
-	if(all(is.na(outlierdflower))) {outlierdflower <- NULL}
-	if(all(is.na(outlierdfupper))) {outlierdfupper <- NULL}
 
 	if(!is.null(upperfile)) {
 		if(!all(is.null(outlierdfupper))) { #skips if all NA (no outliers)
