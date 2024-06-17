@@ -77,6 +77,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 			plot_data <- julia_call("TTEST_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
 		}
 	}
+
 	#transform numerical T/F to measurement names
 	if(ztest) {
 		mn <- (ncol(results)-7)/2
@@ -98,7 +99,6 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	}
 
 	measurement_names <- unique(c(colnames(sorta[,-c(1:3)]), colnames(sortb[,-c(1:3)])))
-
 	if(sorta[results[,1],3][1] != sortb[results[,2],3][1]) {
 		measurements[2] = 1
 		measurement_names = c(measurement_names[1], measurement_names[3])
@@ -108,7 +108,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 		measurements[measurements[,i] != 0,i] <- paste(measurement_names[i], " ", sep="")
 		measurements[measurements[,i] == 0,i] <- ""
 		if(ztest) {
-			if(zmeans[,i] != 0) {
+			if(all(zmeans[,i] != 0)) {
 				zmeans[zmeans[,i] != 0,i] <- paste("'", gsub(" ", "", measurement_names[i]), "': ", zmeans[zmeans[,i] != 0,i],",",sep="")
 				zstd[zstd[,i] != 0,i] <- paste("'", gsub(" ", "", measurement_names[i]), "': ", zstd[zstd[,i] != 0,i],",",sep="")
 			}
