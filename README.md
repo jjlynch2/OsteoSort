@@ -5,10 +5,10 @@ OsteoSort 1.3.2 will be the final release of OsteoSort with support for 2D and 3
 
 Future iterations of OsteoSort (1.4.x) will include a cloud-based environment (freely accessible with registered accounts) and instructions on deploying a docker container. That release will support the traditional metric-based osteometric sorting methods. This is anticpated to be released sometime next year.
 
-## OsteoSort 1.3.2 (development) Installation
+## OsteoSort 1.3.2 Installation
 ```javascript
 require("devtools")
-install_github("jjlynch2/OsteoSort")
+install_github("jjlynch2/OsteoSort", ref="v1.3.2")
 library(OsteoSort)
 OsteoSort()
 ```
