@@ -51,3 +51,6 @@ OsteoSort()
 using Pkg
 Pkg.build("RCall")
 ```
+
+## Citation
+Lynch, J.J. 2024 OsteoSort. Computerized Osteometric Sorting. Version 1.3.2. The Defense POW/MIA Accounting Agency, Offutt AFB, NE.
