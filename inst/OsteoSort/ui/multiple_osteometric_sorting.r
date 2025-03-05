@@ -73,14 +73,14 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 				tabPanel("Rejected",
 					DT::dataTableOutput('tablenr')
 				),
-				tabPanel("Interactive",
-					forceNetworkOutput("forceNetworkOSM")
-				),
+				#tabPanel("Interactive",
+				#	forceNetworkOutput("forceNetworkOSM")
+				#),
 				bsModal("settingsmultiple", title = "Settings", trigger = "settings1", size = "medium", 
 					tabsetPanel(id="multiple_tab",
 						tabPanel("Output Parameters",
-							uiOutput("multiple_file_output1"),
-							uiOutput("forc")
+							uiOutput("multiple_file_output1")#,
+							#uiOutput("forc")
 						),
 						tabPanel("Statistical Parameters",
 							fluidRow(

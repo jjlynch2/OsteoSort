@@ -279,7 +279,7 @@ end
 #############################################
 #############################################
 ##Reference absolute value difference
-@everywhere function ref_difa(res, RL, RR)
+function ref_difa(res, RL, RR)
 	refd = []
 	for i in 1:size(RL,1)
 		dsum = 0
@@ -298,7 +298,7 @@ end
 end
 
 ##Reference value difference
-@everywhere function ref_dif(res, RL, RR)
+function ref_dif(res, RL, RR)
 	refd = []
 	for i in 1:size(RL,1)
 		dsum = 0
