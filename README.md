@@ -1,56 +1,44 @@
-## OsteoSort 1.3.2
+## OsteoSort 1.4.0
 
 ## Changes
-OsteoSort 1.3.2 will be the final release of OsteoSort with support for 2D and 3D data. This should be finalized within the next few weeks. The 3D osteometric sorting method will be pulled into a new project and released as an independent tool (OS3D) due to increased complexity. The 2D osteomertic sorting method will be deprecated.
 
-Future iterations of OsteoSort (1.4.x) will include a cloud-based environment (freely accessible with registered accounts) and instructions on deploying a docker container. That release will support the traditional metric-based osteometric sorting methods. This is anticpated to be released sometime next year.
-
-## OsteoSort 1.3.2 Installation
-```javascript
-require("devtools")
-install_github("jjlynch2/OsteoSort", ref="v1.3.2")
-library(OsteoSort)
-OsteoSort()
+## Installation
+```sh
+docker build -t osteosort .
+docker run -d -p 3838:3838 osteosort
 ```
+
 ## R Dependencies
-* pixmap
-* jpeg
-* Morpho
 * DT
 * shiny
 * htmltools
 * zip
-* rgl
-* ClusterR
 * JuliaCall
 * ggplot2
 * shinyalerts
-* ggrepel
-* networkD3
-* network
-* sna
 * grid
 * dplyr
-* shinydashboard
-* shinyWidgets
 
 ## Julia Dependencies
-* Pkg
 * Statistics
-* Distributed
-* SharedArrays
 * Optim
 * Rmath
-
-## Other Windows Dependencies
-* Julia must be in your Windows environrment PATH to run.
-
-## Known Issues
-* Some systems require the RCall package in Julia to be rebuilt. 
-```javascript
-using Pkg
-Pkg.build("RCall")
-```
+* GLM
+* RCall
+* Suppressor
+* OSJ (local OsteoSort package)
 
 ## Citation
-Lynch, J.J. 2024 OsteoSort. Computerized Osteometric Sorting. Version 1.3.2. The Defense POW/MIA Accounting Agency, Offutt AFB, NE.
+Lynch, J.J. 2025 OsteoSort. Computerized Osteometric Sorting. Version 1.4.0. Defense POW/MIA Accounting Agency, Offutt AFB, NE.
+
+## TODO
+1. Verify z-test
+2. Add cache for size in z-test? see ttestab cache example
+3. Clean up allocated arrays outside of nested loops in z-test
+4. Fix deprecated argument in GLM package
+5. Verify that the session temp is deleting correctly. Could be a tmp perm issue.
+6. Verify the memory is releasing. Could be reactive statements causing this. The app timeout should help with this issue
+7. Change UI to be an assemble style for reference
+    a. May need a new config for measurements to use in constructing the UI. That way it occurs prior to the database call.
+8. Add calls for postgres db
+9. Rebuild JSON CoRA OsteoSort API (waiting on Sachin for this)
