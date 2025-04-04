@@ -44,14 +44,6 @@ observeEvent(input$multiple_mean, {
 	multiple_mean$multiple_mean <- input$multiple_mean
 })
 
-multiple_ztransform <- reactiveValues(multiple_ztransform = FALSE) 
-output$multiple_ztransform <- renderUI({
-	checkboxInput(inputId = "multiple_ztransform", label = "Z-transform: weighted effect size", value = FALSE)
-})
-observeEvent(input$multiple_ztransform, {
-	multiple_ztransform$multiple_ztransform <- input$multiple_ztransform
-})
-
 multiple_tails <- reactiveValues(multiple_tails = 2) 
 output$multiple_tails <- renderUI({
 	radioButtons(inputId = "multiple_tails", label = "Tails", choices = list(1, 2), selected = 2, inline = TRUE)
@@ -241,7 +233,7 @@ observeEvent(input$pro, {
 			art.d1 <- art.input(side = input$multiple_non_antimere_side, ref = multiple_reference_imported$multiple_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][1], boneb = strsplit(input$multiple_element_non_antimere, split = "-")[[1]][2], measurementsa = measa, measurementsb = measb)
 			if(is.null(art.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			incProgress(amount = 1, message = "running comparisons")
-			d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, reference = multiple_reference$multiple_reference)
+			d2 <- ttest(sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, reference = multiple_reference$multiple_reference)
 			tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results	
 		} else if(input$multiple_analysis == "pair-match") {
 			if(is.null(input$multiple_measurement_antimere)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
@@ -250,7 +242,7 @@ observeEvent(input$pro, {
 			pm.d1 <- pm.input(sort = tempdata1, bone = input$multiple_elements_pairmatch, measurements = meas, ref = multiple_reference_imported$multiple_reference_imported)
 			if(is.null(pm.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			incProgress(amount = 1, message = "running comparisons")
-			d2 <- ttest(ztest = multiple_ztransform$multiple_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, reference = multiple_reference$multiple_reference)
+			d2 <- ttest(sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, reference = multiple_reference$multiple_reference)
 			tempDF <- rbind(d2[[2]], d2[[3]]) #combines excluded and not excluded for results
 		} else if(input$multiple_analysis == "osr") {
 			if(is.null(input$multiple_measurement_association_a) || is.null(input$multiple_measurement_association_b)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
@@ -313,19 +305,19 @@ observeEvent(input$pro, {
 				} else {file.remove(paste(sd,"rejected-selected-list.csv",sep="/"))}
 				if(is.numeric(input$table_rows_selected) && is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
 					hera1 <- list(rbind(d2[[2]][input$table_rows_selected,], d2[[3]][input$tablen_rows_selected,]),d2[[6]],d2[[7]])
-					no_return_value <- output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform), fpath=sd)
+					no_return_value <- output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails), fpath=sd)
 				}
 				if(is.numeric(input$table_rows_selected) && !is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
 					hera1 <- list(rbind(d2[[2]][input$table_rows_selected,], d2[[3]]),d2[[6]],d2[[7]])
-					no_return_value <- output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform), fpath=sd)
+					no_return_value <- output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails), fpath=sd)
 				}
 				if(!is.numeric(input$table_rows_selected) && is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
 					hera1 <- list(rbind(d2[[2]], d2[[3]][input$tablen_rows_selected,]),d2[[6]],d2[[7]])
-					no_return_value <- output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform), fpath=sd)
+					no_return_value <- output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails), fpath=sd)
 				}
 				if(!is.numeric(input$table_rows_selected) && !is.numeric(input$tablen_rows_selected) && cnam[1] == "se_id") {
 					hera1 <- list(rbind(d2[[2]], d2[[3]]),d2[[6]],d2[[7]])
-					no_return_value <- output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails, ztest = multiple_ztransform$multiple_ztransform), fpath=sd)
+					no_return_value <- output_function(hera1, method="exclusion", type="cora", cora_data = cora_data, options = c(multiple_reference$multiple_reference, alphalevel = multiple_common_alpha_level$multiple_common_alpha_level, absolute = multiple_absolute_value$multiple_absolute_value, zmean = multiple_mean$multiple_mean, yeojohnson = multiple_yeojohnson$multiple_yeojohnson, tails = multiple_tails$multiple_tails), fpath=sd)
 				}
 				files <- list.files(sd, recursive = TRUE, full.names=TRUE)
 				zip:::zipr(zipfile = paste(sd,"/",direc,'.zip',sep=''), files = files[1], compression = 1)

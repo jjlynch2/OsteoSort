@@ -19,9 +19,6 @@ TTESTA_plot(left, right, ref_left, ref_right)
 TTEST_plot(left, right, ref_left, ref_right)
 TTESTB_plot(left, right, ref_left, ref_right)
 
-#ztest
-ZTEST(left, right, ref_left, ref_right)
-
 #various ttest
 TTESTABM(left, right, ref_left, ref_right, tails)
 TTESTAM(left, right, ref_left, ref_right, tails)

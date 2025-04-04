@@ -84,23 +84,18 @@ single_osteometric_sorting <- tabPanel("Single",icon = icon("gear", lib="font-aw
 			br(),
 			DT::dataTableOutput('table2'),
 			bsModal("settingssingle", title = "Settings", trigger = "settings2", size = "medium", 
-		 		tabsetPanel(id="single_tab",
-					fluidRow(
-						column(8, 
-							conditionalPanel(condition = "input.single_analysis == 'osr'", 
-								uiOutput("association_types")
-							),
-							conditionalPanel(condition = "input.single_analysis == 'pair-match'", 
-								uiOutput("single_ztransform")
-							),
-							conditionalPanel(condition = "!input.single_ztransform && input.single_analysis != 'osr' || input.single_analysis == 'articulation'",
-								uiOutput("single_absolute_value"),
-								uiOutput("single_yeojohnson"),
-								uiOutput("single_mean"),
-								uiOutput("single_tails")
-							),
-							uiOutput("common_alpha_level")
-						)
+				fluidRow(
+					column(8, 
+						conditionalPanel(condition = "input.single_analysis == 'osr'", 
+							uiOutput("association_types")
+						),
+						conditionalPanel(condition = "input.single_analysis != 'osr'",
+							uiOutput("single_absolute_value"),
+							uiOutput("single_yeojohnson"),
+							uiOutput("single_mean"),
+							uiOutput("single_tails")
+						),
+						uiOutput("common_alpha_level")
 					)
 				)
 			),

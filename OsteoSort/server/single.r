@@ -14,14 +14,6 @@ observeEvent(input$single_absolute_value, {
 	single_absolute_value$single_absolute_value <- input$single_absolute_value
 })
 
-single_ztransform <- reactiveValues(single_ztransform = FALSE) 
-output$single_ztransform <- renderUI({
-	checkboxInput(inputId = "single_ztransform", label = "Z-transform: weighted effect size", value = FALSE)
-})
-observeEvent(input$single_ztransform, {
-	single_ztransform$single_ztransform <- input$single_ztransform
-})
-
 single_yeojohnson <- reactiveValues(single_yeojohnson = FALSE) 
 output$single_yeojohnson <- renderUI({
 	checkboxInput(inputId = "single_yeojohnson", label = "YeoJohnson transformation", value = FALSE)
@@ -120,6 +112,7 @@ observeEvent(input$single_reference, {
 	output$single_element_pair_match <- renderUI({
 		selectInput(inputId = "single_elements_pairmatch", label = "Element", choices = elements$elements)
 	})
+
 	output$single_elements_association_a <- renderUI({
 		selectInput(inputId = "single_elements_association_a", label = "Independent", choices = elements$elements)
 	})
@@ -219,7 +212,7 @@ observeEvent(input$proc, {
 			art.d1 <- art.input(side = input$single_osr_side, ref = single_reference_imported$single_reference_imported, sorta = sorta, sortb = sortb, bonea = strsplit(input$single_element_osr, split = "-")[[1]][1], boneb = strsplit(input$single_element_osr, split = "-")[[1]][2], measurementsa = tempa, measurementsb = tempb)
 			incProgress(amount = 1, message = "running comparison")
 			if(is.null(art.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
-			d2 <- ttest(ztest = FALSE, sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, yeojohnson = single_yeojohnson$single_yeojohnson, tails = single_tails$single_tails)
+			d2 <- ttest(sorta = art.d1[[3]], sortb = art.d1[[4]], refa = art.d1[[1]], refb = art.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, yeojohnson = single_yeojohnson$single_yeojohnson, tails = single_tails$single_tails)
 			tempDF <- rbind(d2[[2]], d2[[3]])
 		} else if(input$single_analysis == "pair-match") {
 			single_input_list_left <- reactiveValues(single_input_list_left = c())
@@ -249,7 +242,7 @@ observeEvent(input$proc, {
 			pm.d1 <- pm.input(sort = rbind(sortleft, sortright), bone = input$single_elements_pairmatch, measurements = single_ML$single_ML, ref = single_reference_imported$single_reference_imported)
 			if(is.null(pm.d1)) {removeModal();shinyalert(title = "ERROR!", text="There was an error with the input and/or reference data",type = "error", closeOnClickOutside = TRUE, showConfirmButton = TRUE, confirmButtonText="Dismiss");return(NULL)}
 			incProgress(amount = 1, message = "running comparison")
-			d2 <- ttest(ztest = single_ztransform$single_ztransform, sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, yeojohnson = single_yeojohnson$single_yeojohnson, tails = single_tails$single_tails)
+			d2 <- ttest(sorta = pm.d1[[3]], sortb = pm.d1[[4]], refa = pm.d1[[1]], refb = pm.d1[[2]], sessiontempdir = sessiontemp, alphalevel = common_alpha_level$common_alpha_level, reference = single_reference$single_reference, absolute = single_absolute_value$single_absolute_value, zmean = single_mean$single_mean, yeojohnson = single_yeojohnson$single_yeojohnson, tails = single_tails$single_tails)
 			tempDF <- rbind(d2[[2]], d2[[3]])
 		} else if(input$single_analysis == "osr") {
 			single_input_list_A <- reactiveValues(single_input_list_A = c())
@@ -284,12 +277,10 @@ observeEvent(input$proc, {
 
 		direc <- d2[[1]]
 		sd <- paste(sessiontemp,direc,sep="/")
+
 		nimages <- list.files(sd)
-		if(length(nimages[grep(".jpg", nimages)]) != 0) {
-			nimages <- paste(sessiontemp, "/", direc, "/", nimages[grep(".jpg", nimages)], sep="")
-		} else {
-			nimages <- ""
-		}
+		nimages <- paste(sessiontemp, "/", direc, "/", nimages[grep(".jpg", nimages)], sep="")
+
 		output$single_plot <- renderImage({
 			list(src = nimages,
 				contentType = 'image/jpg',
@@ -297,6 +288,7 @@ observeEvent(input$proc, {
 				alt = ""
 			)
 		}, deleteFile = FALSE)
+
 		files <- list.files(sd, recursive = TRUE, full.names=TRUE)
 		zip:::zipr(zipfile = paste(sd,"/",direc,'.zip',sep=''), files = files)
 		output$downloadData2 <- downloadHandler(

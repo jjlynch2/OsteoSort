@@ -1,4 +1,6 @@
-ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, tails = 2, yeojohnson = TRUE, ztest = FALSE, reference = NULL) {
+ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, sessiontempdir = NULL, alphalevel = 0.1, absolute = TRUE, zmean = FALSE, tails = 2, yeojohnson = TRUE, reference = NULL) {
+	start_time <- start_time()
+
 	force(alphalevel)
 	force(absolute)
 	force(zmean)
@@ -11,10 +13,7 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	refb <- cbind(refb,fa = 0)
 	sorta <- cbind(sorta,fa = 0)
 	sortb <- cbind(sortb,fa = 0)
-	zmeans <- NULL
-	zstd <- NULL
-	start_time <- start_time()
-	options(warn = -1) #disables warnings
+	
 	if(all(is.na(sorta)) || is.null(sorta)) {return(NULL)}
 	if(all(is.na(sortb)) || is.null(sortb)) {return(NULL)}
 	if(all(is.na(refa)) || is.null(refa)) {return(NULL)}
@@ -22,11 +21,8 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	
 	direc <- analytical_temp_space(sessiontempdir) #creates temporary space 
 	sd <- paste(sessiontempdir, direc, sep="/")
-	if(ztest) {
-		#ztest no plot
-		results <- julia_call("OSJ.ZTEST", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
-	}
-	else if(absolute && zmean && yeojohnson) {
+
+	if(absolute && zmean && yeojohnson) {
 		results <- julia_call("OSJ.TTESTABM", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]), tails)
 		if(nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
 			plot_data <- julia_call("OSJ.TTESTAB_plot", as.matrix(sorta[,-c(1:3)]), as.matrix(sortb[,-c(1:3)]), as.matrix(refa[,-c(1:3)]), as.matrix(refb[,-c(1:3)]))
@@ -76,49 +72,24 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	}
 
 	#transform numerical T/F to measurement names
-	if(ztest) {
-		mn <- (ncol(results)-7)/2
-		if(nrow(results) > 1) {
-			measurements <- data.frame(results[,c(8:(7+mn))])
-			zmeans <- measurements
-			zstd <- data.frame(results[,c((8+mn):ncol(results))])
-		}else {
-			measurements <- data.frame(t(results[,c(8:(7+mn))]))
-			zmeans <- measurements
-			zstd <- data.frame(t(results[c((8+mn):ncol(results))]))
-		}
-	} else {
-		if(nrow(results) > 1) {
-			measurements <- data.frame(results[,c(8:ncol(results))])
-		}else {
-			measurements <- data.frame(t(results[c(8:length(results))]))
-		}
+	if(nrow(results) > 1) {
+		measurements <- data.frame(results[,c(8:ncol(results))])
+	}else {
+		measurements <- data.frame(t(results[c(8:length(results))]))
 	}
 
 	measurement_names <- unique(c(colnames(sorta[,-c(1:3)]), colnames(sortb[,-c(1:3)])))
 	if(sorta[results[,1],3][1] != sortb[results[,2],3][1]) {
 		measurements[2] = 1
 		measurement_names = c(measurement_names[1], measurement_names[3])
-	} #if non-antimere test hack
+	} #if articulation test hack
 
 	for(i in 1:ncol(measurements)) {
 		measurements[measurements[,i] != 0,i] <- paste(measurement_names[i], " ", sep="")
 		measurements[measurements[,i] == 0,i] <- ""
-		if(ztest) {
-			if(all(zmeans[,i] != 0)) {
-				zmeans[zmeans[,i] != 0,i] <- paste("'", gsub(" ", "", measurement_names[i]), "': ", zmeans[zmeans[,i] != 0,i],",",sep="")
-				zstd[zstd[,i] != 0,i] <- paste("'", gsub(" ", "", measurement_names[i]), "': ", zstd[zstd[,i] != 0,i],",",sep="")
-			}
-			zmeans[zmeans[,i] == 0,i] <- "" 
-			zstd[zstd[,i] == 0,i] <- "" 
-		}
 	}
 
 	measurements <- do.call(paste0, measurements[c(1:ncol(measurements))])
-	if(ztest) {
-		zmeans <- do.call(paste0, zmeans[c(1:ncol(zmeans))])
-		zstd <- do.call(paste0, zstd[c(1:ncol(zstd))])
-	}
 
 	#format data.frame to return
 	results_formatted <- data.frame(
@@ -141,19 +112,13 @@ ttest <- function (refa = NULL, refb = NULL, sorta = NULL, sortb = NULL, session
 	results_formatted <- results_formatted[results_formatted$measurements != "",]
 
 	#Append exclusion results
-	for(i in 1:nrow(results_formatted)) {
-		if(results_formatted[i,8] > alphalevel) {
-			results_formatted[i,12] <- c("Cannot Exclude")
-		}
-		if(results_formatted[i,8] <= alphalevel) {
-			results_formatted[i,12] <- c("Excluded")
-		}
-	}
-	output_function(method = "options", options = data.frame(alphalevel = alphalevel, absolute_value = absolute, zero_mean = zmean, tails = tails, yeojohnson = yeojohnson, ztransform = ztest, reference = reference),fpath=sd)
+    results_formatted[results_formatted[,8] > alphalevel,12] <- "Cannot Exclude"
+    results_formatted[results_formatted[,8] <= alphalevel,12] <- "Excluded"
+	output_function(method = "options", options = data.frame(alphalevel = alphalevel, absolute_value = absolute, zero_mean = zmean, tails = tails, yeojohnson = yeojohnson, reference = reference), fpath=sd)
 	output_function(results_formatted, rejected = rejected, method="exclusion", type="csv",fpath=sd)
-	if(nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1 && ztest == FALSE) { 
-		output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot",fpath=sd)
+	if(nrow(as.matrix(sorta)) == 1 && nrow(as.matrix(sortb)) == 1) { 
+		output_function(hera1 <- list(results_formatted[1,1], results_formatted[1,4], plot_data[1:nrow(plot_data)-1,], plot_data[nrow(plot_data),]), method="exclusion", type="plot", fpath=sd)
 	}
 	t_time <- end_time(start_time)
-	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time, rejected, zmeans, zstd))
+	return(list(direc,results_formatted[results_formatted$result == "Cannot Exclude",],results_formatted[results_formatted$result == "Excluded",], t_time, rejected))
 }

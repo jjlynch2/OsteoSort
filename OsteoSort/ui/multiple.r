@@ -56,6 +56,25 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 			tags$style(type = "text/css", "#pro { width:100%; font-size:85%; background-color:#126a8f  }"),
 			tags$style(type = "text/css", "#clearFile1 { width:100%; font-size:85%; background-color:#126a8f }"),
 			tags$style(type = "text/css", "#downloadData { width:100%; font-size:85%; background-color:#126a8f }"),
+            tags$style(HTML('
+                table.dataTable tbody tr.selected td,
+                table.dataTable tbody td.selected {
+                    border-top-color: white !important;
+                    box-shadow: inset 0 0 0 9999px #126a8f !important;
+                }
+
+                table.dataTable tbody tr:active td {
+                    background-color: #126a8f !important;
+                }
+
+                :root {
+                    --dt-row-selected: transparent !important;
+                }
+
+                table.dataTable tbody tr:hover, table.dataTable tbody tr:hover td {
+                    background-color: #126a8f !important;
+                }
+            ')),
 			width=2
 		),
 		mainPanel(
@@ -74,25 +93,20 @@ multiple_osteometric_sorting <- tabPanel("Multiple",icon = icon("gears", lib="fo
 					br(),
 					DT::dataTableOutput('tablenr')
 				),
-				bsModal("settingsmultiple", title = "Settings", trigger = "settings1", size = "medium", 
-					tabsetPanel(id="multiple_tab",
-						fluidRow(
-							column(8,
-								conditionalPanel(condition = "input.multiple_analysis == 'osr'", 
-									uiOutput("multiple_association_types")
-								),
-								conditionalPanel(condition = "input.multiple_analysis == 'pair-match'", 
-									uiOutput("multiple_ztransform")
-								),
-								conditionalPanel(condition = "!input.multiple_ztransform && input.multiple_analysis != 'osr'",
-									uiOutput("multiple_absolute_value"),
-									uiOutput("multiple_yeojohnson"),
-									uiOutput("multiple_mean"),
-									uiOutput("multiple_tails")
-								),
-								uiOutput("multiple_common_alpha_level")
-							)
-						)
+			),
+			bsModal("settingsmultiple", title = "Settings", trigger = "settings1", size = "medium", 
+				fluidRow(
+					column(8,
+						conditionalPanel(condition = "input.multiple_analysis == 'osr'", 
+							uiOutput("multiple_association_types")
+						),
+						conditionalPanel(condition = "input.multiple_analysis != 'osr'",
+							uiOutput("multiple_absolute_value"),
+							uiOutput("multiple_yeojohnson"),
+							uiOutput("multiple_mean"),
+							uiOutput("multiple_tails")
+						),
+						uiOutput("multiple_common_alpha_level")
 					)
 				)
 			),
